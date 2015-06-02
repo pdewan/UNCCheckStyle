@@ -3,24 +3,38 @@
 "-//eclipse-cs//DTD Check Metadata 1.1//EN"
 "http://eclipse-cs.sourceforge.net/dtds/checkstyle-metadata_1_1.dtd">
 <checkstyle-metadata>
-    <rule-group-metadata name="UNC custom checks" priority="1600">
+	<rule-group-metadata name="UNC custom checks"
+		priority="1600">
 
-        <rule-metadata name="%MethodLimit.name" internal-name="MethodLimit" parent="TreeWalker">
-            <alternative-name internal-name="unc.cs.checks.MethodLimitCheck" />
-            <description>%MethodLimit.desc</description>
-            <property-metadata name="max" datatype="Integer" default-value="30">
-                <description>The maximum number of allowed methods.</description>
-            </property-metadata>
-            <quickfix classname="unc.cs.checks.MethodLimitQuickfix" />
-        </rule-metadata>
-               <rule-metadata name="%ClassIsNotType.name" internal-name="ClassIsNotType" parent="TreeWalker">
-            <alternative-name internal-name="unc.cs.checks.ClassIsNotTypeCheck" />
-            <description>%ClassIsNotType.desc</description>           
-        </rule-metadata>
-          </rule-metadata>
-               <rule-metadata name="%ClassHasOneInterface.name" internal-name="ClassHasOneInterface" parent="TreeWalker">
-            <alternative-name internal-name="unc.cs.checks.ClassHasOneInterfaceCheck" />
-            <description>%ClassHasOneInterface.desc</description>           
-        </rule-metadata>
-    </rule-group-metadata>
+		<rule-metadata name="%MethodLimit.name" internal-name="MethodLimit"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MethodLimitCheck" />
+			<description>%MethodLimit.desc</description>
+			<property-metadata name="max" datatype="Integer"
+				default-value="30">
+				<description>The maximum number of allowed methods.</description>
+			</property-metadata>
+			<quickfix classname="unc.cs.checks.MethodLimitQuickfix" />
+		</rule-metadata>
+		<rule-metadata name="%ClassIsNotType.name"
+			internal-name="ClassIsNotType" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassIsNotTypeCheck" />
+			<description>%ClassIsNotType.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ClassHasOneInterface.name"
+			internal-name="ClassHasOneInterface" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassHasOneInterfaceCheck" />
+			<description>%ClassHasOneInterface.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%CopyPackageDeclaration.name"
+			internal-name="CopyPackageDeclaration" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.CopyPackageDeclarationCheck" />
+			<description>%CCopyPackageDeclaration.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%MethodCall.name"
+			internal-name="MethodCall" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MethodCallCheck" />
+			<description>%CCopyPackageDeclaration.desc</description>
+		</rule-metadata>
+	</rule-group-metadata>
 </checkstyle-metadata>

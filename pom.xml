@@ -8,8 +8,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.eclipsecs</groupId>
-    <artifactId>unc.pd</artifactId>
+    <artifactId>unc.cs</artifactId>
     <version>6.5.0-SNAPSHOT</version>
     <packaging>eclipse-plugin</packaging>
-    <name>eclipse-cs Sample Plugin</name>
+    <name>UNC CS Plugin</name>
 </project>

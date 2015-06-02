@@ -65,15 +65,15 @@ public final class ClassHasOneInterfaceCheck extends Check {
 		return new int[] { TokenTypes.CLASS_DEF };
 	}
 
-	@Override
-	public int[] getRequiredTokens() {
-		return getDefaultTokens();
-	}
-
-	@Override
-	public int[] getAcceptableTokens() {
-		return new int[] { TokenTypes.CLASS_DEF };
-	}
+//	@Override
+//	public int[] getRequiredTokens() {
+//		return getDefaultTokens();
+//	}
+//
+//	@Override
+//	public int[] getAcceptableTokens() {
+//		return new int[] { TokenTypes.CLASS_DEF };
+//	}
 
 	boolean hasOneInterface(DetailAST aClassDef) {
 		int numInterfaces = 0;

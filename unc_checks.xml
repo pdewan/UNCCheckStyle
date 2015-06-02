@@ -27,6 +27,12 @@
         <module name="ClassHasOneInterface">
             <message key="classHasOneInterface" value="Class with instance methods should have exactly one (possibly extending) interface."/>
         </module>
+         <module name="CopyPackageDeclaration">
+            <message key="copyPackageDeclaration" value="Need package declaration"/>
+        </module>
+         <module name="MethodCall">
+            <message key="methodCall" value="Need to call methods {0}"/>
+        </module>
         <module name="LineLength">
             <property name="max" value="${maxLineLength}"/>
         </module>

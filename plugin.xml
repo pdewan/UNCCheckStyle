@@ -36,7 +36,7 @@
         <filter
             name="UNC Filter"
             internal-name="UNCFilter"
-            description="UNCe Filter (doing nothing)"
+            description="UNC Filter (doing nothing)"
             class="unc.cs.filter.SampleFilter"/>
     </extension>
 </plugin>
