@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.1"?>
+<plugin>
+
+    <!-- This plugin provides custom Checkstyle modules. -->
+    <extension
+          point="net.sf.eclipsecs.core.checkstyleAddonProvider">
+    </extension>
+    
+    <!-- This plugin provides custom quickfixes for Checkstyle problems. -->
+    <extension
+          point="net.sf.eclipsecs.ui.checkstyleQuickfixProvider">
+    </extension>
+
+    <!-- 
+        Sample builtin check configuration
+    -->
+    <extension
+        id="checkstyle.CheckConfiguration"
+        point="net.sf.eclipsecs.core.configurations">
+        <check-configuration
+            name="UNC Checks"
+            location="unc_checks.xml"
+            description="UNC configuration"
+            default-weight="2">
+            <property name="maxLineLength" value="50"/>
+        </check-configuration>
+    </extension>
+
+    <!-- 
+        Sample checkstyle plugin filter
+    -->
+    <extension
+        id="checkstyle.CheckstyleFilters"
+        point="net.sf.eclipsecs.core.filters">
+        <filter
+            name="UNC Filter"
+            internal-name="UNCFilter"
+            description="UNCe Filter (doing nothing)"
+            class="unc.cs.filter.SampleFilter"/>
+    </extension>
+</plugin>
