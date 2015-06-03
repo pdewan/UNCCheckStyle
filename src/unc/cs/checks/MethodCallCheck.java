@@ -50,17 +50,32 @@ public final class MethodCallCheck extends Check {
             log(ast.getLineNo(), MSG_KEY);
         }
     }
+    
+//    public static String getMethodName(DetailAST ast) {
+//    	DetailAST methodComponent = ast.getFirstChild();
+//    	while (methodComponent.getType() == TokenTypes.DOT)
+//    		methodComponent = methodComponent.getLastChild();
+//    	
+//    	return methodComponent.getText();
+//    	
+//    }
+    public static DetailAST getLastDescendent(DetailAST ast) {
+    	DetailAST result = ast.getFirstChild();
+    	while (result.getChildCount() > 0)
+    		result = result.getLastChild();    	
+    	return result;    	
+    }
 
     @Override
     public void visitToken(DetailAST ast) {
-    	DetailAST expressionList = ast.findFirstToken(TokenTypes.ELIST);
-    	DetailAST methodSpecifier = expressionList.getPreviousSibling();
-    	methodSpecifier = ast.getFirstChild();
-    	DetailAST methodComponent = methodSpecifier;
-    	while (methodComponent.getType() == TokenTypes.DOT)
-    		methodComponent = methodComponent.getLastChild();
-    	
-    	String methodText = methodComponent.getText();
-        System.out.println("Method text:" + methodText);
+//    	DetailAST expressionList = ast.findFirstToken(TokenTypes.ELIST);
+//    	DetailAST methodSpecifier = expressionList.getPreviousSibling();
+//    	methodSpecifier = ast.getFirstChild();
+//    	DetailAST methodComponent = methodSpecifier;
+//    	while (methodComponent.getType() == TokenTypes.DOT)
+//    		methodComponent = methodComponent.getLastChild();
+//    	
+//    	String methodText = methodComponent.getText();
+        System.out.println("Method text:" + getLastDescendent(ast).getText());
     }
 }
