@@ -21,12 +21,23 @@
             <property name="max" value="1"/>
             <message key="methodlimit" value="Man, only {0} methods allowed."/>
         </module>
-        <module name="ClassIsNotType">
-            <message key="classIsNotType" value="Class {0} rather than interface used as the type of variable."/>
+          <module name="NoDuplicateShortTypeName">
+            <message key="noDuplicateShortTypeName" value="Repeated short type name {0}"/>
         </module>
         <module name="ClassHasOneInterface">
             <message key="classHasOneInterface" value="Class with instance methods should have exactly one (possibly extending) interface."/>
         </module>
+         <module name="ClassDefined">
+            <message key="classDefined" value="Class {0} defined."/>
+        </module>
+        <module name="InterfaceDefined">
+            <message key="interfaceDefined" value="Class {0} defined."/>
+        </module>
+      
+        <module name="ClassIsNotType">
+            <message key="classIsNotType" value="Class {0} rather than interface used as the type of variable."/>
+        </module>
+        
          <module name="CopyPackageDeclaration">
             <message key="copyPackageDeclaration" value="Need package declaration"/>
         </module>

@@ -98,7 +98,7 @@ public final class ClassIsNotTypeCheck extends AbstractFormatCheck {
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
 	 */
-	public static final String MSG_KEY = "illegal.type";
+	public static final String MSG_KEY = "classIsNotType";	
 
 	/** Default value of pattern for illegal class name. */
 	private static final String DEFAULT_FORMAT = "^(.*[\\.])?Abstract.*$";
@@ -146,6 +146,8 @@ public final class ClassIsNotTypeCheck extends AbstractFormatCheck {
 
 	@Override
 	public void visitToken(DetailAST ast) {
+    	System.out.println("Check called:" + MSG_KEY);
+
 		switch (ast.getType()) {
 		case TokenTypes.METHOD_DEF:
 			if (isVerifiable(ast)) {

@@ -32,9 +32,11 @@ public final class ClassHasOneInterfaceCheck extends Check {
 	/** flag to control whether marker interfaces are allowed. */
 	private boolean allowMarkerInterfaces = true;
 
+
 	public ClassHasOneInterfaceCheck() {
 
 	}
+	   
 
 	boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
 		boolean foundPublic = false;
@@ -62,7 +64,7 @@ public final class ClassHasOneInterfaceCheck extends Check {
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.CLASS_DEF };
+		return new int[] { TokenTypes.CLASS_DEF};
 	}
 
 //	@Override
@@ -76,6 +78,7 @@ public final class ClassHasOneInterfaceCheck extends Check {
 //	}
 
 	boolean hasOneInterface(DetailAST aClassDef) {
+		
 		int numInterfaces = 0;
 		DetailAST implementsClause = aClassDef
 				.findFirstToken(TokenTypes.IMPLEMENTS_CLAUSE);
@@ -93,7 +96,11 @@ public final class ClassHasOneInterfaceCheck extends Check {
 	}
 
 	@Override
-	public void visitToken(DetailAST ast) {
+	public void visitToken(DetailAST ast) {	
+    	System.out.println("Check called:" + MSG_KEY);
+		DetailAST classNameAST = ast.findFirstToken(TokenTypes.IDENT);
+    	String name = classNameAST.getText();
+    	System.out.println ("Visiting class:" + name);
 		final DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
 		if (hasOneInterface(ast)) {
 			return;

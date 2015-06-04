@@ -40,7 +40,7 @@ public final class MethodCallCheck extends Check {
 //    }
 
     @Override
-    public void beginTree(DetailAST ast) {
+    public void beginTree(DetailAST ast) {    	
         defined = false;
     }
 

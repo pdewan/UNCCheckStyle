@@ -5,7 +5,21 @@
 <checkstyle-metadata>
 	<rule-group-metadata name="UNC custom checks"
 		priority="1600">
-
+		<rule-metadata name="%ClassDefined.name" internal-name="ClassDefined"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassDefinedCheck" />
+			<description>%ClassDefined.desc</description>			
+		</rule-metadata>
+		<rule-metadata name="%InterfaceDefined.name" internal-name="InterfaceDefined"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.InterfaceDefinedCheck" />
+			<description>%InterfaceDefined.desc</description>			
+		</rule-metadata>
+		<rule-metadata name="%NoDuplicateShortName.name" internal-name="NoDuplicateShortName"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.NoDuplicateShortNameCheck" />
+			<description>%NoDuplicateShortNameDefined.desc</description>			
+		</rule-metadata>
 		<rule-metadata name="%MethodLimit.name" internal-name="MethodLimit"
 			parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.MethodLimitCheck" />
