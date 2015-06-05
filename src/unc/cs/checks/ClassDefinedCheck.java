@@ -14,14 +14,18 @@ public class ClassDefinedCheck extends TypeDefinedCheck{
 		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
 	}
 	public void visitToken(DetailAST ast) {
-    	System.out.println("Check called:" + MSG_KEY);
+//    	System.out.println("Check called:" + MSG_KEY);
 
 		if (maybeVisitPackage(ast) ) 
 			return;
 		
-		DetailAST anInterfaceNameAST = ast.findFirstToken(TokenTypes.IDENT);
-		String anInterfaceName = anInterfaceNameAST.getText();
-		SymbolTableFactory.getOrCreateSymbolTable().getInterfaceNameToAST().put(packageName + "." + anInterfaceName, ast);
+		DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
+		String aShortName = aClassNameAST.getText();
+		String aFullName = packageName + "." + aShortName;
+		SymbolTableFactory.getOrCreateSymbolTable().getClassNameToAST().
+			put(aFullName, ast);
+		log(ast.getLineNo(), MSG_KEY, aFullName);
+		System.out.println(MSG_KEY + " " + aFullName);
 		
 	}
 }

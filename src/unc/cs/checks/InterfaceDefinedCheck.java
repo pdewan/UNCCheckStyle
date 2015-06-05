@@ -19,6 +19,10 @@ public class InterfaceDefinedCheck extends TypeDefinedCheck{
 		
 		DetailAST anInterfaceNameAST = ast.findFirstToken(TokenTypes.IDENT);
 		String anInterfaceName = anInterfaceNameAST.getText();
-		SymbolTableFactory.getOrCreateSymbolTable().getInterfaceNameToAST().put(packageName + "." + anInterfaceName, ast);
+		String aFullName = packageName + "." + anInterfaceName;
+		SymbolTableFactory.getOrCreateSymbolTable().
+			getInterfaceNameToAST().put(aFullName, ast);
+		log(ast.getLineNo(), MSG_KEY, aFullName);
+		System.out.println(MSG_KEY + " " + aFullName);
 	}
 }

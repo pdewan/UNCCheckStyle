@@ -13,4 +13,7 @@ public interface SymbolTable {
 	List<String> matchingFullClassNames(String aTypeName);
 	List<String> matchingFullInterfaceNames(String aTypeName);
 	List<String> matchingFullTypeNames(String aTypeName);
+	boolean isClass(String aTypeName);
+	boolean isInterface(String aTypeName);
+	Map<String, DetailAST> getClassNameToAST();
 }

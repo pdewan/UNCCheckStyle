@@ -30,10 +30,10 @@
 			</property-metadata>
 			<quickfix classname="unc.cs.checks.MethodLimitQuickfix" />
 		</rule-metadata>
-		<rule-metadata name="%ClassIsNotType.name"
-			internal-name="ClassIsNotType" parent="TreeWalker">
-			<alternative-name internal-name="unc.cs.checks.ClassIsNotTypeCheck" />
-			<description>%ClassIsNotType.desc</description>
+		<rule-metadata name="%VariableHasClassType.name"
+			internal-name="VariableHasClassType" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.VariableHasClassTypeCheck" />
+			<description>%VariableHasClassType.desc</description>
 		</rule-metadata>
 		<rule-metadata name="%ClassHasOneInterface.name"
 			internal-name="ClassHasOneInterface" parent="TreeWalker">

@@ -15,6 +15,7 @@ public class ASymbolTable implements SymbolTable{
 	Map<String, DetailAST> packageNameToAST = new HashMap();
 	Map<String, DetailAST> methodCallToAST = new HashMap();
 	Map<String, DetailAST> methodDeclarationToAST = new HashMap();
+	@Override
 	public Map<String, DetailAST> getClassNameToAST() {
 		return classNameToAST;
 	}
@@ -30,6 +31,7 @@ public class ASymbolTable implements SymbolTable{
 	public Map<String, DetailAST> getMethodDeclarationToAST() {
 		return methodDeclarationToAST;
 	}
+	@Override
 	public boolean isInterface (String aTypeName) {
 		Set<String> anInterfaceNames = interfaceNameToAST.keySet();
 		for (String aFullName:anInterfaceNames) {
@@ -37,8 +39,9 @@ public class ASymbolTable implements SymbolTable{
 		}
 		return false;
 	}
+	@Override
 	public boolean isClass (String aTypeName) {
-		return matchingFullClassNames(aTypeName).size() > 1;
+		return matchingFullClassNames(aTypeName).size() >= 1;
 	}
 	@Override
 	public List<String> matchingFullClassNames (String aTypeName) {
