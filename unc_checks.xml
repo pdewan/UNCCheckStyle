@@ -17,7 +17,7 @@
 
     <module name="TreeWalker">
         <module name="VariableHasClassType">
-            <message key="variableHasClassType" value="Class {0} rather than interface used as the type of variable."/>
+            <message key="variableHasClassType" value="Class {0} rather than interface used as the type of {1} at {2}"/>
         </module>
       <module name="MethodLimit">
             <property name="max" value="1"/>

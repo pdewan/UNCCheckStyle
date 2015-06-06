@@ -31,13 +31,16 @@ public class ASymbolTable implements SymbolTable{
 	public Map<String, DetailAST> getMethodDeclarationToAST() {
 		return methodDeclarationToAST;
 	}
+	public static boolean typeMatches(String aFullName, String aShortOrFullName) {
+		return aFullName.equals(aShortOrFullName) || aFullName.endsWith("." + aShortOrFullName);
+	}
+	@Override
+	public boolean isType(String aTypeName) {
+		return isInterface(aTypeName) || isClass(aTypeName);
+	}
 	@Override
 	public boolean isInterface (String aTypeName) {
-		Set<String> anInterfaceNames = interfaceNameToAST.keySet();
-		for (String aFullName:anInterfaceNames) {
-			if (aFullName.contains(aTypeName)) return true;
-		}
-		return false;
+		return matchingFullInterfaceNames(aTypeName).size() >= 1;
 	}
 	@Override
 	public boolean isClass (String aTypeName) {
@@ -48,7 +51,7 @@ public class ASymbolTable implements SymbolTable{
 		List<String> result = new ArrayList();
 		Set<String> aClassNames = classNameToAST.keySet();
 		for (String aFullName:aClassNames) {
-			if (aFullName.contains(aTypeName)) {
+			if (typeMatches(aFullName, aTypeName)) {
 				result.add(aFullName);
 			}
 		}
@@ -59,7 +62,7 @@ public class ASymbolTable implements SymbolTable{
 		List<String> result = new ArrayList();
 		Set<String> aClassNames = interfaceNameToAST.keySet();
 		for (String aFullName:aClassNames) {
-			if (aFullName.contains(aTypeName)) {
+			if (typeMatches(aFullName, aTypeName)) {
 				result.add(aFullName);
 			}
 		}

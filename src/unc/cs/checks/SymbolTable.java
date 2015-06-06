@@ -16,4 +16,5 @@ public interface SymbolTable {
 	boolean isClass(String aTypeName);
 	boolean isInterface(String aTypeName);
 	Map<String, DetailAST> getClassNameToAST();
+	boolean isType(String aTypeName);
 }
