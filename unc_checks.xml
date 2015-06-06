@@ -17,7 +17,9 @@
 
     <module name="TreeWalker">
         <module name="VariableHasClassType">
+        	<!--
             <message key="variableHasClassType" value="Class {0} rather than interface used as the type of {1} at {2}"/>
+       -->
         </module>
       <module name="MethodLimit">
             <property name="max" value="1"/>
@@ -29,6 +31,7 @@
         <module name="ClassHasOneInterface">
             <message key="classHasOneInterface" value="Class with instance methods should have exactly one (possibly extending) interface."/>
         </module>
+        <!--
          <module name="ClassDefined">
             <message key="classDefined" value="Class {0} defined."/>
         </module>
@@ -39,12 +42,15 @@
          <module name="CopyPackageDeclaration">
             <message key="copyPackageDeclaration" value="Need package declaration"/>
         </module>
+        -->
          <module name="MethodCall">
             <message key="methodCall" value="Need to call methods {0}"/>
         </module>
+        <!--
         <module name="LineLength">
             <property name="max" value="${maxLineLength}"/>
         </module>
+        -->
 
         <module name="Regexp">
             <property name="format" value="(interface [a-zA-Z0-9 &lt;&gt;,\./*?[\s]]* \{)|((@Immutable|@ThreadSafe|@NotThreadSafe)(.*[\n])*.*(class|enum) [a-zA-Z0-9\s&lt;&gt;,\./*?]* \{)" />

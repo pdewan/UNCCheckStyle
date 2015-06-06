@@ -68,14 +68,6 @@ public final class MethodCallCheck extends Check {
 
     @Override
     public void visitToken(DetailAST ast) {
-//    	DetailAST expressionList = ast.findFirstToken(TokenTypes.ELIST);
-//    	DetailAST methodSpecifier = expressionList.getPreviousSibling();
-//    	methodSpecifier = ast.getFirstChild();
-//    	DetailAST methodComponent = methodSpecifier;
-//    	while (methodComponent.getType() == TokenTypes.DOT)
-//    		methodComponent = methodComponent.getLastChild();
-//    	
-//    	String methodText = methodComponent.getText();
         System.out.println("Method text:" + getLastDescendent(ast).getText());
     }
 }
