@@ -6,7 +6,7 @@
 	<rule-group-metadata name="UNC custom checks"
 		priority="1600">
 		<rule-metadata name="%ClassDefined.name" internal-name="ClassDefined"
-			parent="TreeWalker">
+			parent="unc.tools.checkstyle.AnExtendibleTreeWalker">
 			<alternative-name internal-name="unc.cs.checks.ClassDefinedCheck" />
 			<description>%ClassDefined.desc</description>			
 		</rule-metadata>

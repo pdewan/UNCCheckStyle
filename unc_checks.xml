@@ -14,8 +14,10 @@
     <module name="Header">
         <property name="headerFile" value="${config_loc}/java.header"/>
     </module>
-
+	<!--
     <module name="TreeWalker">
+    -->
+    <module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
         <module name="VariableHasClassType">
         	<!--
             <message key="variableHasClassType" value="Class {0} rather than interface used as the type of {1} at {2}"/>
