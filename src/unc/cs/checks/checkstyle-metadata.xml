@@ -11,14 +11,14 @@
 			<description>%ClassDefined.desc</description>			
 		</rule-metadata>
 		<rule-metadata name="%InterfaceDefined.name" internal-name="InterfaceDefined"
-			parent="TreeWalker">
+			parent="unc.tools.checkstyle.AnExtendibleTreeWalker">
 			<alternative-name internal-name="unc.cs.checks.InterfaceDefinedCheck" />
 			<description>%InterfaceDefined.desc</description>			
 		</rule-metadata>
-		<rule-metadata name="%NoDuplicateShortName.name" internal-name="NoDuplicateShortName"
+		<rule-metadata name="%NoDuplicateShortTypeName.name" internal-name="NoDuplicateShortTypeName"
 			parent="TreeWalker">
-			<alternative-name internal-name="unc.cs.checks.NoDuplicateShortNameCheck" />
-			<description>%NoDuplicateShortNameDefined.desc</description>			
+			<alternative-name internal-name="unc.cs.checks.NoDuplicateShortTypeNameCheck" />
+			<description>%NoDuplicateShortTypeNameDefined.desc</description>			
 		</rule-metadata>
 		<rule-metadata name="%MethodLimit.name" internal-name="MethodLimit"
 			parent="TreeWalker">
@@ -40,15 +40,11 @@
 			<alternative-name internal-name="unc.cs.checks.ClassHasOneInterfaceCheck" />
 			<description>%ClassHasOneInterface.desc</description>
 		</rule-metadata>
-		<rule-metadata name="%CopyPackageDeclaration.name"
-			internal-name="CopyPackageDeclaration" parent="TreeWalker">
-			<alternative-name internal-name="unc.cs.checks.CopyPackageDeclarationCheck" />
-			<description>%CCopyPackageDeclaration.desc</description>
-		</rule-metadata>
+		
 		<rule-metadata name="%MethodCall.name"
 			internal-name="MethodCall" parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.MethodCallCheck" />
-			<description>%CCopyPackageDeclaration.desc</description>
+			<description>%MethodCall.desc</description>
 		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

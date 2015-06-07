@@ -27,6 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import sun.security.action.GetLongAction;
 import antlr.TokenStreamRecognitionException;
 
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
@@ -49,14 +50,17 @@ import com.puppycrawl.tools.checkstyle.api.FileText;
 public  class AnExtendibleTreeWalker
     extends AbstractFileSetCheck {
 	TreeWalker delegate;
-	Object cache;
-	Method alreadyChecked;
+	Object delegateCache;
+	Method cacheAlreadyChecked;
 	Method delegateProcessFiltered;
+//	Method cacheDestroy;
 
 
 //	  PropertyCacheFile cache = new PropertyCacheFile(null, null);
 	public AnExtendibleTreeWalker() {
 		Field delegateCacheField;
+		Field delegateMessageField;
+//		Field myMessageField; // same as delegateMessageField
 		delegate = new TreeWalker();
 		
 		try {
@@ -68,11 +72,18 @@ public  class AnExtendibleTreeWalker
 			delegateCacheField = delegate.getClass()
 					.getDeclaredField("cache");
 			delegateCacheField.setAccessible(true);
-			cache = delegateCacheField.get(delegate);
-			Class delegateCacheClass = cache.getClass();
-			alreadyChecked = delegateCacheClass.getDeclaredMethod
+			delegateMessageField = AbstractFileSetCheck.class.getDeclaredField("messages");
+			delegateMessageField.setAccessible(true);
+		
+			delegateMessageField.set(delegate, delegateMessageField.get(this));
+			
+			delegateCache = delegateCacheField.get(delegate);
+			Class delegateCacheClass = delegateCache.getClass();
+			cacheAlreadyChecked = delegateCacheClass.getDeclaredMethod
 					("alreadyChecked", new Class[]{String.class, Long.TYPE});
-			alreadyChecked.setAccessible(true);
+//			cacheDestroy = delegateCacheClass.getDeclaredMethod
+//					("destroy");
+			cacheAlreadyChecked.setAccessible(true);
 //			System.out.println (" found the methods");
 			
 			
@@ -92,6 +103,7 @@ public  class AnExtendibleTreeWalker
 		}
 		// TODO Auto-generated constructor stub
 	}
+	
 
 	@Override
 	protected void processFiltered(File file, List<String> lines) {
@@ -100,12 +112,13 @@ public  class AnExtendibleTreeWalker
 	        final long timestamp = file.lastModified();
      
 	        try {
-				if ((Boolean) alreadyChecked.invoke(cache, 
+				if ((Boolean) cacheAlreadyChecked.invoke(delegateCache, 
 						new Object[] {fileName, timestamp})	        
 //	        if (cache.alreadyChecked(fileName, timestamp)
 				         || !Utils.fileExtensionMatches(file, getFileExtensions())) {
 				    return;
 				}
+				delegateProcessFiltered.invoke(delegate, new Object[] {file, lines});
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
 				// TODO Auto-generated catch block
@@ -130,6 +143,7 @@ public  class AnExtendibleTreeWalker
     @Override
     public void destroy() {
       delegate.destroy();
+      super.destroy();
     }
     
     public void setModuleFactory(ModuleFactory moduleFactory) {

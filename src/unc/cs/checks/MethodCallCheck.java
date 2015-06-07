@@ -68,6 +68,8 @@ public final class MethodCallCheck extends Check {
 
     @Override
     public void visitToken(DetailAST ast) {
-        System.out.println("Method text:" + getLastDescendent(ast).getText());
+//        System.out.println("Method text:" + getLastDescendent(ast).getText());
+        log(ast.getLineNo(), MSG_KEY, getLastDescendent(ast).getText());
+
     }
 }
