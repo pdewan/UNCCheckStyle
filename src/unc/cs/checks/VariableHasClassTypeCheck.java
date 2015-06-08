@@ -119,7 +119,7 @@ public final class VariableHasClassTypeCheck extends Check implements
 	private void visitParameterDef(DetailAST paradef) {
 		final DetailAST grandParentAST = paradef.getParent().getParent();
 
-		// if (grandParentAST.getType() == TokenTypes.METHOD_DEF
+		if (grandParentAST.getType() == TokenTypes.METHOD_DEF)
 		// && isCheckedMethod(grandParentAST)) {
 		addToPendingTypeUses(paradef);
 		// }

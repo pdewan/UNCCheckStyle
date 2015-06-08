@@ -19,13 +19,15 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	protected boolean isInterface;
 	protected String superClass;
 	protected String[] interfaces;
-	String currentMethodName;
-	boolean currentMethodIsPublic;
+	protected String currentMethodName;
+	protected boolean currentMethodIsPublic;
+	protected List<String> currentMethodParameterTypes;
+	
 	
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
-						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF };
+						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
 	}
    
     public static String[] getInterfaces(DetailAST aClassDef) {
@@ -82,8 +84,16 @@ public class STBuilderCheck extends TypeDefinedCheck{
     	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
     	currentMethodName = aMethodNameAST.getText();
     	currentMethodIsPublic = ClassHasOneInterfaceCheck.isPublicInstanceMethod(methodDef);
-		DetailAST aMethodParametersAST = methodDef.findFirstToken(TokenTypes.);
 	}
+    public void visitParamDef(DetailAST paramDef) {
+    	final DetailAST grandParentAST = paramDef.getParent().getParent();
+		if (!(grandParentAST.getType() == TokenTypes.METHOD_DEF))
+			return;
+		final DetailAST aType = paramDef.findFirstToken(TokenTypes.TYPE);
+		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+		currentMethodParameterTypes.add(anIdentifierType.getText());
+
+    }
 	public void visitClass(DetailAST ast) {
 		visitType(ast);
 		String[] superTypes = getSuperTypes(ast);
@@ -98,9 +108,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    	interfaces = getSuperTypes(ast);
 			isInterface = true;
 		}
-    public void visitMethod(DetailAST ast) {
-		
-	} 
+     
 	public void visitToken(DetailAST ast) {
 //    	System.out.println("Check called:" + MSG_KEY);
 		switch (ast.getType()) {
@@ -115,6 +123,9 @@ public class STBuilderCheck extends TypeDefinedCheck{
 			return;
 		case TokenTypes.METHOD_DEF:
 			visitMethod(ast);
+			return;
+		case TokenTypes.PARAMETER_DEF:
+			visitParamDef(ast);
 			return;
 		default:
 			System.err.println("Unexpected token");
