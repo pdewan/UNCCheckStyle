@@ -37,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import unc.cs.symbolTable.SymbolTableFactory;
+
 public final class VariableHasClassTypeCheck extends Check implements
 		ContinuationProcessor {
 

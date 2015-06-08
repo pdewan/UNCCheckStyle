@@ -1,4 +1,4 @@
-package unc.cs.checks;
+package unc.cs.symbolTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +15,8 @@ public class ASymbolTable implements SymbolTable{
 	Map<String, DetailAST> packageNameToAST = new HashMap();
 	Map<String, DetailAST> methodCallToAST = new HashMap();
 	Map<String, DetailAST> methodDeclarationToAST = new HashMap();
+	Map<String, STClass>   typeNameToSTClass = new HashMap<>();
+	
 	@Override
 	public Map<String, DetailAST> getClassNameToAST() {
 		return classNameToAST;

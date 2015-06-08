@@ -1,4 +1,4 @@
-package unc.cs.checks;
+package unc.cs.symbolTable;
 
 import java.util.List;
 import java.util.Map;

@@ -1,5 +1,8 @@
 package unc.cs.checks;
 
+import unc.cs.symbolTable.SymbolTable;
+import unc.cs.symbolTable.SymbolTableFactory;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 

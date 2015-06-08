@@ -26,7 +26,7 @@ public final class MethodCallCheck extends Check {
 
     @Override
     public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.METHOD_CALL, TokenTypes.METHOD_REF};
+        return new int[] {TokenTypes.METHOD_CALL};
     }
 
 //    @Override
@@ -68,7 +68,9 @@ public final class MethodCallCheck extends Check {
 
     @Override
     public void visitToken(DetailAST ast) {
-//        System.out.println("Method text:" + getLastDescendent(ast).getText());
+    	if (ast.getType() != TokenTypes.METHOD_CALL)
+    		return;
+        System.out.println("Method text:" + getLastDescendent(ast).getText());
         log(ast.getLineNo(), MSG_KEY, getLastDescendent(ast).getText());
 
     }

@@ -1,4 +1,6 @@
-package unc.cs.checks;
+package unc.cs.symbolTable;
+
+
 public class SymbolTableFactory {
 	static SymbolTable symbolTable;
 	

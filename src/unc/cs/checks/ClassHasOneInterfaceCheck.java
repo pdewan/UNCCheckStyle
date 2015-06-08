@@ -38,7 +38,7 @@ public final class ClassHasOneInterfaceCheck extends Check {
 	}
 	   
 
-	boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
+	public static boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
 		boolean foundPublic = false;
 		final DetailAST modifiersAst = methodOrVariableDef
 				.findFirstToken(TokenTypes.MODIFIERS);

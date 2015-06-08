@@ -11,11 +11,19 @@
 
 
 <module name="unc.tools.checkstyle.AnExtendibleChecker">
+
+<!--
+<module name="Checker">
+-->
+
     <property name="severity" value="warning"/>
 
     <module name="Header">
         <property name="headerFile" value="${config_loc}/java.header"/>
     </module>
+    
+    <module name="JavadocPackage"/>
+    
   
     <module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
     <property name="severity" value="warning"/>
@@ -66,14 +74,15 @@
         </module>
         -->
          <module name="MethodCall">
-            <message key="methodCall" value="Called method {0}"/>
+            <message key="methodCall" value="Called disallowed method {0}"/>
         </module>
         <!--
         <module name="LineLength">
             <property name="max" value="${maxLineLength}"/>
         </module>
         -->
-
+         <module name="PackageDeclaration"/>
+        
         <module name="Regexp">
             <property name="format" value="(interface [a-zA-Z0-9 &lt;&gt;,\./*?[\s]]* \{)|((@Immutable|@ThreadSafe|@NotThreadSafe)(.*[\n])*.*(class|enum) [a-zA-Z0-9\s&lt;&gt;,\./*?]* \{)" />
             <property name="message" value="Classes should be annotated with @Immutable, @ThreadSafe or @NotThreadSafe" />
