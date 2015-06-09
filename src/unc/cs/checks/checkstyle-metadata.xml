@@ -15,6 +15,11 @@
 			<alternative-name internal-name="unc.cs.checks.InterfaceDefinedCheck" />
 			<description>%InterfaceDefined.desc</description>			
 		</rule-metadata>
+			<rule-metadata name="%STBuilder.name" internal-name="STBuilder"
+			parent="unc.tools.checkstyle.AnExtendibleTreeWalker">
+			<alternative-name internal-name="unc.cs.checks.STBuilderCheck" />
+			<description>%STBuilder.desc</description>			
+		</rule-metadata>
 		<rule-metadata name="%NoDuplicateShortTypeName.name" internal-name="NoDuplicateShortTypeName"
 			parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.NoDuplicateShortTypeNameCheck" />

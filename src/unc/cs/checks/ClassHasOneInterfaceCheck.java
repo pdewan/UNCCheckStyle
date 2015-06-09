@@ -21,7 +21,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
  * 
  * @author lkuehne
  */
-public final class ClassHasOneInterfaceCheck extends Check {
+public final class ClassHasOneInterfaceCheck extends UNCCheck {
 
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
@@ -117,7 +117,7 @@ public final class ClassHasOneInterfaceCheck extends Check {
 				if (isPublicInstanceMethod(methodDef)) {
 					// System.out.println("Started Logging");
 
-					log(ast.getLineNo(), MSG_KEY);
+					extendibleLog(ast.getLineNo(), MSG_KEY);
 					// System.out.println("Ended Logging");
 
 					return;

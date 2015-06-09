@@ -39,7 +39,7 @@ import java.util.Set;
 
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public final class VariableHasClassTypeCheck extends Check implements
+public final class VariableHasClassTypeCheck extends UNCCheck implements
 		ContinuationProcessor {
 
 	public VariableHasClassTypeCheck() {

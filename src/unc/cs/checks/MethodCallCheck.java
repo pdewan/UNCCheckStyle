@@ -13,7 +13,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  * @author Oliver Burn
  */
-public final class MethodCallCheck extends Check {
+public final class MethodCallCheck extends UNCCheck {
 
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -46,9 +46,9 @@ public final class MethodCallCheck extends Check {
 
     @Override
     public void finishTree(DetailAST ast) {
-        if (!defined) {
-            log(ast.getLineNo(), MSG_KEY);
-        }
+//        if (!defined) {
+////            log(ast.getLineNo(), MSG_KEY);
+//        }
     }
     
 //    public static String getMethodName(DetailAST ast) {

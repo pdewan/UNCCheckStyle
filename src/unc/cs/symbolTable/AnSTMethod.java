@@ -2,29 +2,25 @@ package unc.cs.symbolTable;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
-public class AnSTMethod extends AnSTAnnotatable implements STMethod {
-	STClass declaringClass;
-	String name;
+public class AnSTMethod extends AnSTNameable implements STMethod {
+	String declaringClass;
 	String[] parameterTypes;
 	boolean isPublic;
-	public AnSTMethod(DetailAST ast, String name, String[] actualParameters,
-			STClass declaringClass, String name2, String[] parameterTypes,
+	public AnSTMethod(DetailAST ast, String name, 
+			String declaringClass, String[] parameterTypes,
 			boolean isPublic, String returnType) {
-		super(ast, name, actualParameters);
+		super(ast, name);
 		this.declaringClass = declaringClass;
-		name = name2;
 		this.parameterTypes = parameterTypes;
 		this.isPublic = isPublic;
 		this.returnType = returnType;
 	}
 	String returnType;
 	
-	public STClass getDeclaringClass() {
+	public String getDeclaringClass() {
 		return declaringClass;
 	}
-	public String getName() {
-		return name;
-	}
+	
 	public String[] getParameterTypes() {
 		return parameterTypes;
 	}

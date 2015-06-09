@@ -36,7 +36,11 @@
             <property name="severity" value="info"/>
         
             <message key="interfaceDefined" value="Interface {0} defined."/>
-        </module>   
+        </module> 
+        <module name="STBuilder">
+            <property name="severity" value="info"/>
+        
+        </module>  
         
 	 </module>
 	
