@@ -34,7 +34,7 @@ public class AnSTClass extends AnSTNameable implements STClass {
 	@Override
 	public STMethod[] getMethods() {
 		// TODO Auto-generated method stub
-		return null;
+		return declaredMethods;
 	}
 	@Override
 	public STMethod[] getMethod(String aName, String[] aParameterTypes) {

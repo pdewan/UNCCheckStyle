@@ -126,7 +126,8 @@ public class STBuilderCheck extends TypeDefinedCheck{
     
     public void visitType(DetailAST ast) {  
 //    	
-		typeAST = ast;
+		maybeVisitPackage(ast);
+    	typeAST = ast;
     	DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
 		String aShortName = aClassNameAST.getText();
 		String aFullName = packageName + "." + aShortName;
@@ -155,7 +156,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
     	currentMethodName = aMethodNameAST.getText();
     	currentMethodIsPublic = ClassHasOneInterfaceCheck.isPublicInstanceMethod(methodDef);
     	DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
-    	FullIdent aTypeFullIdent = FullIdent.createFullIdent(typeDef);
+    	FullIdent aTypeFullIdent = FullIdent.createFullIdent(typeDef.getFirstChild());
     	currentMethodType = aTypeFullIdent.getText();
     	currentMethodAST = methodDef;
     	
@@ -172,7 +173,9 @@ public class STBuilderCheck extends TypeDefinedCheck{
 
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		String text = anIdentifierType.getText();
-		currentMethodParameterTypes.add(anIdentifierType.getText());
+		if (arrayDeclAST != null)
+			text = text + "[]";
+		currentMethodParameterTypes.add(text);
 
     }
 	public void visitClass(DetailAST ast) {
@@ -224,7 +227,16 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    public void finishTree(DetailAST ast) {
 	    	
 	    	STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
-	    	
+	    	STClass anSTClass = new AnSTClass(
+	    			typeAST, 
+	    			typeName, 
+	    			aMethods, 
+	    			interfaces, 
+	    			superClass, 
+	    			packageName, 
+	    			isInterface);
+	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+	    			typeName, anSTClass);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }

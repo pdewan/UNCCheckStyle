@@ -17,6 +17,7 @@ public class ASymbolTable implements SymbolTable{
 	Map<String, DetailAST> methodDeclarationToAST = new HashMap();
 	Map<String, STClass>   typeNameToSTClass = new HashMap<>();
 	
+	
 	@Override
 	public Map<String, DetailAST> getClassNameToAST() {
 		return classNameToAST;
@@ -76,4 +77,8 @@ public class ASymbolTable implements SymbolTable{
 		result.addAll(matchingFullInterfaceNames(aTypeName));
 		return result;
 	}	
+	@Override
+	public Map<String, STClass> getTypeNameToSTClass() {
+		return typeNameToSTClass;
+	}
 }

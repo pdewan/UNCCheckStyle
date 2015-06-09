@@ -24,7 +24,7 @@ public class InterfaceDefinedCheck extends TypeDefinedCheck{
 		String aFullName = packageName + "." + anInterfaceName;
 		SymbolTableFactory.getOrCreateSymbolTable().
 			getInterfaceNameToAST().put(aFullName, ast);
-		extendibleLog(ast.getLineNo(), MSG_KEY, aFullName);
+		log(ast.getLineNo(), MSG_KEY, aFullName);
 		System.out.println(MSG_KEY + " " + aFullName);
 	}
 }

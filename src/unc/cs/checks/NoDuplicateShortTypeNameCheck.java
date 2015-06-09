@@ -24,7 +24,7 @@ public class NoDuplicateShortTypeNameCheck extends TypeDefinedCheck {
 		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
 		if (aSymbolTable.matchingFullTypeNames(aTypeName).size() > 1) {
 			System.out.println("dupliicateshortname:" + aFullTypeName);
-			extendibleLog(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), "noDuplicateShortTypeName",
+			log(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), "noDuplicateShortTypeName",
 					aTypeNameAST.getText());
 		}			
 //		SymbolTableFactory.getOrCreateSymbolTable().getInterfaceNameToAST().put(packageName + "." + aTypeName, ast);

@@ -26,7 +26,7 @@ public class ClassDefinedCheck extends TypeDefinedCheck{
 		String aFullName = packageName + "." + aShortName;
 		SymbolTableFactory.getOrCreateSymbolTable().getClassNameToAST().
 			put(aFullName, ast);
-		extendibleLog(ast.getLineNo(), MSG_KEY, aFullName);
+		log(ast.getLineNo(), MSG_KEY, aFullName);
 		System.out.println(MSG_KEY + " " + aFullName);
 		
 	}
