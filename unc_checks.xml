@@ -12,10 +12,6 @@
 
 <module name="unc.tools.checkstyle.AnExtendibleChecker">
 
-<!--
-<module name="Checker">
--->
-
     <property name="severity" value="warning"/>
 
     <module name="Header">
@@ -26,34 +22,23 @@
     
   
     <module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
-    <property name="severity" value="warning"/>
-     <module name="ClassDefined">
-         <property name="severity" value="info"/>
-     
-            <message key="classDefined" value="Class {0} defined."/>
-        </module>
-        <module name="InterfaceDefined">
+    <property name="severity" value="info"/>
+      
+        <module name="STBuilder">
+       
             <property name="severity" value="info"/>
         
-            <message key="interfaceDefined" value="Interface {0} defined."/>
-        </module> 
-        <module name="STBuilder">
-            <property name="severity" value="info"/>
+        
         
         </module>  
         
 	 </module>
 	
-	 <!--
-    <module name=""unc.tools.checkstyle.AnExtendibleTreeWalker"">
-     -->
     
     <module name="TreeWalker">
    
         <module name="VariableHasClassType">
-        	<!--
-            <message key="variableHasClassType" value="Class {0} rather than interface used as the type of {1} at {2}"/>
-       -->
+        
         </module>
       <module name="MethodLimit">
             <property name="max" value="4"/>
@@ -65,18 +50,7 @@
         <module name="ClassHasOneInterface">
             <message key="classHasOneInterface" value="Class with instance methods should have exactly one (possibly extending) interface."/>
         </module>
-        <!--
-         <module name="ClassDefined">
-            <message key="classDefined" value="Class {0} defined."/>
-        </module>
-        <module name="InterfaceDefined">
-            <message key="interfaceDefined" value="Class {0} defined."/>
-        </module>    
         
-         <module name="CopyPackageDeclaration">
-            <message key="copyPackageDeclaration" value="Need package declaration"/>
-        </module>
-        -->
          <module name="MethodCall">
             <message key="methodCall" value="Called disallowed method {0}"/>
         </module>
@@ -86,11 +60,22 @@
         </module>
         -->
          <module name="PackageDeclaration"/>
-        
+          <!--
         <module name="Regexp">
             <property name="format" value="(interface [a-zA-Z0-9 &lt;&gt;,\./*?[\s]]* \{)|((@Immutable|@ThreadSafe|@NotThreadSafe)(.*[\n])*.*(class|enum) [a-zA-Z0-9\s&lt;&gt;,\./*?]* \{)" />
             <property name="message" value="Classes should be annotated with @Immutable, @ThreadSafe or @NotThreadSafe" />
             <property name="illegalPattern" value="false" />
+        </module>
+         -->
+         <module name="ClassDefined">
+         <property name="severity" value="info"/>
+     
+            <message key="classDefined" value="Class {0} defined."/>
+        </module>
+        <module name="InterfaceDefined">
+            <property name="severity" value="info"/>
+        
+            <message key="interfaceDefined" value="Interface {0} defined."/>
         </module>
     </module>
 </module>

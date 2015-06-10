@@ -15,9 +15,7 @@ public class ASymbolTable implements SymbolTable{
 	Map<String, DetailAST> packageNameToAST = new HashMap();
 	Map<String, DetailAST> methodCallToAST = new HashMap();
 	Map<String, DetailAST> methodDeclarationToAST = new HashMap();
-	Map<String, STClass>   typeNameToSTClass = new HashMap<>();
-	
-	
+	Map<String, STClass>   typeNameToSTClass = new HashMap<>();	
 	@Override
 	public Map<String, DetailAST> getClassNameToAST() {
 		return classNameToAST;

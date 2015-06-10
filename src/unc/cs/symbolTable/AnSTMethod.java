@@ -27,6 +27,7 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	public String getReturnType() {
 		return returnType;
 	}
+	@Override
 	public boolean isPublic() {
 		return isPublic;
 	}

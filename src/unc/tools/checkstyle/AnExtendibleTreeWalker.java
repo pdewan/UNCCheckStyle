@@ -30,6 +30,7 @@ import java.util.List;
 import sun.security.action.GetLongAction;
 import antlr.TokenStreamRecognitionException;
 
+import com.puppycrawl.tools.checkstyle.DefaultContext;
 import com.puppycrawl.tools.checkstyle.ModuleFactory;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.Utils;
@@ -62,6 +63,7 @@ public  class AnExtendibleTreeWalker
 		Field delegateMessageField;
 //		Field myMessageField; // same as delegateMessageField
 		delegate = new TreeWalker();
+		delegate.setSeverity(getSeverity());
 		
 		try {
 			delegateProcessFiltered = delegate.getClass().
@@ -130,7 +132,7 @@ public  class AnExtendibleTreeWalker
 	}
 	@Override
     public void finishLocalSetup() {
-		delegate.finishLocalSetup();
+		delegate.finishLocalSetup();	    
     }
 
     @Override

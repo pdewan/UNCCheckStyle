@@ -22,5 +22,8 @@ public class AnSTNameable implements STNameable {
 	public String getName() {
 		return name;
 	}
+	public String toString() {
+		return name;
+	}
 
 }

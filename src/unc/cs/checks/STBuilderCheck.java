@@ -9,8 +9,10 @@ import java.util.Set;
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import unc.cs.symbolTable.AnSTClass;
 import unc.cs.symbolTable.AnSTMethod;
+import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.STClass;
 import unc.cs.symbolTable.STMethod;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
@@ -23,8 +25,7 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 public class STBuilderCheck extends TypeDefinedCheck{
 	
 	public static final String MSG_KEY = "stBuilder";
-	protected String typeName;
-	protected DetailAST typeAST;
+	
 	protected boolean isInterface;
 	protected String superClass;
 	protected String[] interfaces;
@@ -34,19 +35,19 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	protected boolean currentMethodIsPublic;
 	protected List<String> currentMethodParameterTypes = new ArrayList();
 	
-	protected Map<String, String> propertyNameToType = new HashMap();
-	protected List<String> propertyNames = new ArrayList();
-	protected List<String> editablePropertyNames = new ArrayList();
-	protected List<String> tags= new ArrayList();
+	protected List<STNameable> propertyNames = new ArrayList();
+	protected List<STNameable> editablePropertyNames = new ArrayList();
+	protected List<STNameable> tags= new ArrayList();
 	protected List<STMethod> stMethods = new ArrayList();
+	protected STNameable structurePattern;
 
 	
-	@Override
-	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
-						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
-	}
-   
+//	@Override
+//	public int[] getDefaultTokens() {
+//		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
+//						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
+//	}
+//   
     public static String[] getInterfaces(DetailAST aClassDef) {
     	List<String> anInterfaces = new ArrayList();
     	String[] emptyArray = {};
@@ -84,8 +85,8 @@ public class STBuilderCheck extends TypeDefinedCheck{
 		return (String[]) aSuperTypes.toArray(emptyArray);
 		
     }
-    public static List<String> getArrayLiterals (DetailAST parentOfArrayInitializer) {
-    	List<String> result = new ArrayList<>();
+    public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitializer) {
+    	List<STNameable> result = new ArrayList<>();
     	final DetailAST arrayInit =
     			parentOfArrayInitializer.findFirstToken(TokenTypes.ANNOTATION_ARRAY_INIT);
 		 if (arrayInit == null)
@@ -94,7 +95,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 		 
 		 while (anArrayElementExpression != null) {
 			 DetailAST anArrayElement = anArrayElementExpression.getFirstChild();
-			 result.add(anArrayElement.getText());
+			 result.add(new AnSTNameable(anArrayElement, anArrayElement.getText()));
 			 if (anArrayElementExpression.getNextSibling() == null)
 				 break;
 			 anArrayElementExpression = anArrayElementExpression.getNextSibling().getNextSibling();
@@ -115,7 +116,17 @@ public class STBuilderCheck extends TypeDefinedCheck{
 		if (annotationAST == null)
 			return;
 		editablePropertyNames = getArrayLiterals(annotationAST);
-
+    }
+    public void maybeVisitStructurePattern(DetailAST ast) {  
+    	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "StructurePattern");		
+		if (annotationAST == null)
+			return;
+		DetailAST expressionAST = annotationAST.findFirstToken(TokenTypes.EXPR);
+		DetailAST actualParamAST = expressionAST.getFirstChild();
+		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
+		structurePattern = new AnSTNameable(actualParamAST, actualParamIDent.getText());
+		
+		
     }
     public void maybeVisitTags(DetailAST ast) {  
     	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
@@ -126,12 +137,14 @@ public class STBuilderCheck extends TypeDefinedCheck{
     
     public void visitType(DetailAST ast) {  
 //    	
-		maybeVisitPackage(ast);
-    	typeAST = ast;
-    	DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
-		String aShortName = aClassNameAST.getText();
-		String aFullName = packageName + "." + aShortName;
-		typeName = aFullName;	
+//		maybeVisitPackage(ast);
+//    	typeAST = ast;
+//    	DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
+//		String aShortName = aClassNameAST.getText();
+//		String aFullName = packageName + "." + aShortName;
+//		typeName = aFullName;	
+    	super.visitType(ast);
+		maybeVisitStructurePattern(ast);
 		maybeVisitPropertyNames(ast);
 		maybeVisitEditablePropertyNames(ast);
 		maybeVisitTags(ast);
@@ -217,7 +230,8 @@ public class STBuilderCheck extends TypeDefinedCheck{
 		
 	}
 	 @Override
-	    public void beginTree(DetailAST ast) {    	
+	    public void beginTree(DetailAST ast) {  
+		 super.beginTree(ast);
 		 	currentMethodName = null;
 		 	typeName = null;
 		 	stMethods.clear();
@@ -235,8 +249,15 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    			superClass, 
 	    			packageName, 
 	    			isInterface);
+	    	STNameable[] dummyArray = new STNameable[0];
+	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
+	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
+	    	anSTClass.initTags(tags.toArray(dummyArray));
+	    	anSTClass.initStructurePatternName(structurePattern);
+	    	anSTClass.introspect();
 	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 	    			typeName, anSTClass);
+	    	log (typeAST.getLineNo(), MSG_KEY, typeName);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }

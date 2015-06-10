@@ -12,7 +12,6 @@ public class AnExtendibleChecker extends Checker {
 
 	public AnExtendibleChecker() throws CheckstyleException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 	@Override
 	public int process(List<File> files) {
