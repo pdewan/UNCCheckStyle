@@ -8,11 +8,11 @@ public interface STClass extends STNameable{
 	String getPackage();
 	boolean isInterface();
 	String getSuperClass();
-	void initDeclaredPropertyNames(STNameable[] aPropertyNames);
-	void initEditablePropertyNames(STNameable[] anEditablePropertyNames);
-	void initTags(STNameable[] aTags);
+//	void initDeclaredPropertyNames(STNameable[] aPropertyNames);
+//	void initEditablePropertyNames(STNameable[] anEditablePropertyNames);
+//	void initTags(STNameable[] aTags);
 	STNameable getStructurePatternName();
-	void initStructurePatternName(STNameable structurePatternName);
+//	void initStructurePatternName(STNameable structurePatternName);
 	STNameable[] getDeclaredPropertyNames();
 	STNameable[] getDeclaredEditablePropertyNames();
 	STNameable[] getTags();

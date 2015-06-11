@@ -14,11 +14,12 @@ public abstract class TypeDefinedCheck extends Check {
     public void beginTree(DetailAST ast) {
         packageName = DEFAULT_PACKAGE;
     } 
-	@Override
-	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
-						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
-	}
+//	@Override
+//	public int[] getDefaultTokens() {
+//		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
+//						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
+//	}
+	
 	
 	public boolean maybeVisitPackage(DetailAST ast) {
 		if (ast.getType() == TokenTypes.PACKAGE_DEF) {

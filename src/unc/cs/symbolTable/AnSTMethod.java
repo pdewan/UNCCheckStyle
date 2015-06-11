@@ -3,17 +3,19 @@ package unc.cs.symbolTable;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTMethod extends AnSTNameable implements STMethod {
-	String declaringClass;
-	String[] parameterTypes;
-	boolean isPublic;
+	final String declaringClass;
+	final String[] parameterTypes;
+	final boolean isPublic;
+	final boolean isVisible;
 	public AnSTMethod(DetailAST ast, String name, 
 			String declaringClass, String[] parameterTypes,
-			boolean isPublic, String returnType) {
+			boolean isPublic, String returnType, boolean anIsVisible) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
 		this.isPublic = isPublic;
 		this.returnType = returnType;
+		isVisible = anIsVisible;
 	}
 	String returnType;
 	
@@ -30,6 +32,11 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	@Override
 	public boolean isPublic() {
 		return isPublic;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return isVisible;
 	}
 
 }

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import unc.cs.symbolTable.STClass;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public final class VariableHasClassTypeCheck extends UNCCheck implements
@@ -175,14 +176,39 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 	/*
 	 * check returns non null if check finished
 	 */
+//	public Boolean checkIdentifierType(DetailAST ast, DetailAST aTreeAST) {
+//		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
+//		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
+//		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+//		String aTypeName = anIdentifierType.getText();
+//		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
+//			return null;
+//		if (isMatchingClassName(anIdentifierType.getText())) {
+//			 String aSourceName =
+//			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+////			String aSourceName = toTypeName(aTreeAST);
+//			log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
+//					msgKey(), anIdentifierType.getText(),
+//					anIdentifier.getText(),
+//					aSourceName + ":" + anIdentifier.getLineNo());
+//			return true;
+//		}
+//		return false;
+//	}
+	protected boolean checkType(STClass anSTClass) {
+		return anSTClass.isInterface();
+	}
 	public Boolean checkIdentifierType(DetailAST ast, DetailAST aTreeAST) {
 		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
 		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		String aTypeName = anIdentifierType.getText();
-		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
+		STClass anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
+				getSTClassByShortName(aTypeName);
+		if (anSTClass == null)
+//		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
 			return null;
-		if (isMatchingClassName(anIdentifierType.getText())) {
+		if (!checkType(anSTClass)) {
 			 String aSourceName =
 			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
 //			String aSourceName = toTypeName(aTreeAST);

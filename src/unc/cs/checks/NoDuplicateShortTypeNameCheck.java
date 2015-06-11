@@ -22,7 +22,7 @@ public class NoDuplicateShortTypeNameCheck extends TypeDefinedCheck {
 		String aTypeName = aTypeNameAST.getText();
 		String aFullTypeName = packageName + "." + aTypeName;
 		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
-		if (aSymbolTable.matchingFullTypeNames(aTypeName).size() > 1) {
+		if (aSymbolTable.matchingFullSTTypeNames(aTypeName).size() > 1) {
 			System.out.println("dupliicateshortname:" + aFullTypeName);
 			log(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), "noDuplicateShortTypeName",
 					aTypeNameAST.getText());

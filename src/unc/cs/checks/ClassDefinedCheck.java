@@ -9,25 +9,33 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class ClassDefinedCheck extends TypeDefinedCheck{
 	
 	public static final String MSG_KEY = "classDefined";
-
+	
 	
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
 	}
-	public void visitToken(DetailAST ast) {
-//    	System.out.println("Check called:" + MSG_KEY);
+	public void visitType(DetailAST ast) {  
 
-		if (maybeVisitPackage(ast) ) 
+    	super.visitType(ast);
+		log(ast.getLineNo(), MSG_KEY, typeName);
+
+
+    }
+	public void visitToken(DetailAST ast) {
+		
+		switch (ast.getType()) {
+		case TokenTypes.PACKAGE_DEF: 
+			visitPackage(ast);
+			return;
+		case TokenTypes.CLASS_DEF:
+			visitType(ast);
 			return;
 		
-		DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
-		String aShortName = aClassNameAST.getText();
-		String aFullName = packageName + "." + aShortName;
-		SymbolTableFactory.getOrCreateSymbolTable().getClassNameToAST().
-			put(aFullName, ast);
-		log(ast.getLineNo(), MSG_KEY, aFullName);
-		System.out.println(MSG_KEY + " " + aFullName);
+		default:
+			System.err.println("Unexpected token");
+		}
 		
 	}
+	
 }

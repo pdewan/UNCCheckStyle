@@ -1,5 +1,8 @@
 package unc.cs.checks;
 
+import unc.cs.symbolTable.STClass;
+import unc.cs.symbolTable.SymbolTableFactory;
+
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -21,7 +24,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
  * 
  * @author lkuehne
  */
-public final class ClassHasOneInterfaceCheck extends UNCCheck {
+public final class ClassHasOneInterfaceCheck extends TypeDefinedCheck {
 
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
@@ -29,43 +32,48 @@ public final class ClassHasOneInterfaceCheck extends UNCCheck {
 	 */
 	public static final String MSG_KEY = "classHasOneInterface";
 
-	/** flag to control whether marker interfaces are allowed. */
-	private boolean allowMarkerInterfaces = true;
+//	/** flag to control whether marker interfaces are allowed. */
+//	private boolean allowMarkerInterfaces = true;
 
-
+	
 	public ClassHasOneInterfaceCheck() {
 
 	}
-	   
-
-	public static boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
-		boolean foundPublic = false;
-		final DetailAST modifiersAst = methodOrVariableDef
-				.findFirstToken(TokenTypes.MODIFIERS);
-		if (modifiersAst.getFirstChild() != null) {
-
-			for (DetailAST modifier = modifiersAst.getFirstChild(); modifier != null; modifier = modifier
-					.getNextSibling()) {
-				// System.out.println("Checking modifier:" + modifier);
-				if (modifier.getType() == TokenTypes.LITERAL_STATIC) {
-					// System.out.println("Not instance");
-					return false;
-				}
-				if (modifier.getType() == TokenTypes.LITERAL_PUBLIC) {
-					foundPublic = true;
-				}
-
-			}
-		}
-		// System.out.println("instance");
-
-		return foundPublic;
-	}
-
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.CLASS_DEF};
+		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
+	}  
+	public void visitType(DetailAST ast) {  
+
+    	super.visitType(ast);
+//		log(ast.getLineNo(), MSG_KEY, typeName);
+    	STClass anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
+    			getSTClassByFullName(typeName);
+    	if (anSTClass.getInterfaces().length != 1)    		
+    		log(ast.getLineNo(), MSG_KEY, typeName);
+
+    }
+
+	public void visitToken(DetailAST ast) {
+		
+		switch (ast.getType()) {
+		case TokenTypes.PACKAGE_DEF: 
+			visitPackage(ast);
+			return;
+		case TokenTypes.CLASS_DEF:
+			visitType(ast);
+			return;
+		
+		default:
+			System.err.println("Unexpected token");
+		}
+		
 	}
+
+//	@Override
+//	public int[] getDefaultTokens() {
+//		return new int[] { TokenTypes.CLASS_DEF};
+//	}
 
 //	@Override
 //	public int[] getRequiredTokens() {
@@ -77,78 +85,70 @@ public final class ClassHasOneInterfaceCheck extends UNCCheck {
 //		return new int[] { TokenTypes.CLASS_DEF };
 //	}
 
-	boolean hasOneInterface(DetailAST aClassDef) {
-		
-		int numInterfaces = 0;
-		DetailAST implementsClause = aClassDef
-				.findFirstToken(TokenTypes.IMPLEMENTS_CLAUSE);
+//	boolean hasOneInterface(DetailAST aClassDef) {
+//		
+//		int numInterfaces = 0;
+//		DetailAST implementsClause = aClassDef
+//				.findFirstToken(TokenTypes.IMPLEMENTS_CLAUSE);
+//
+//		if (implementsClause == null)
+//			return false;
+//		DetailAST anImplementedInterface = implementsClause
+//				.findFirstToken(TokenTypes.IDENT);
+//		while (anImplementedInterface != null) {
+//			if (anImplementedInterface.getType() == TokenTypes.IDENT)
+//				numInterfaces++;
+//			anImplementedInterface = anImplementedInterface.getNextSibling();
+//		}
+//		return numInterfaces == 1;
+//	}
 
-		if (implementsClause == null)
-			return false;
-		DetailAST anImplementedInterface = implementsClause
-				.findFirstToken(TokenTypes.IDENT);
-		while (anImplementedInterface != null) {
-			if (anImplementedInterface.getType() == TokenTypes.IDENT)
-				numInterfaces++;
-			anImplementedInterface = anImplementedInterface.getNextSibling();
-		}
-		return numInterfaces == 1;
-	}
+//	@Override
+//	public void visitToken(DetailAST ast) {	
+//    	System.out.println("Check called:" + MSG_KEY);
+//		DetailAST classNameAST = ast.findFirstToken(TokenTypes.IDENT);
+//    	String name = classNameAST.getText();
+//    	System.out.println ("Visiting class:" + name);
+//		final DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
+//		if (hasOneInterface(ast)) {
+//			return;
+//		}
+//
+//		DetailAST methodDef = objBlock.findFirstToken(TokenTypes.METHOD_DEF);
+//		while (methodDef != null) {
+//			if (methodDef.getType() == TokenTypes.METHOD_DEF) // for some reason
+//																// curly brace
+//																// is last
+//																// sibling {
+//
+//				// System.out.println("Checking:" + methodDef);
+//				if (isPublicInstanceMethod(methodDef)) {
+//					// System.out.println("Started Logging");
+//
+//					extendibleLog(ast.getLineNo(), MSG_KEY);
+//					// System.out.println("Ended Logging");
+//
+//					return;
+//				}
+//
+//			// System.out.println("Setting next sibling");
+//
+//			methodDef = methodDef.getNextSibling();
+//
+//			// System.out.println("Set next sibling");
+//
+//		}
+//
+//		// final DetailAST variableDef = objBlock
+//		// .findFirstToken(TokenTypes.VARIABLE_DEF);
+//		// final boolean methodRequired = !allowMarkerInterfaces
+//		// || variableDef != null;
+//		//
+//		// if (methodDef == null && methodRequired) {
+//		// log(ast.getLineNo(), MSG_KEY);
+//		// }
+//
+//	}
 
-	@Override
-	public void visitToken(DetailAST ast) {	
-    	System.out.println("Check called:" + MSG_KEY);
-		DetailAST classNameAST = ast.findFirstToken(TokenTypes.IDENT);
-    	String name = classNameAST.getText();
-    	System.out.println ("Visiting class:" + name);
-		final DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
-		if (hasOneInterface(ast)) {
-			return;
-		}
-
-		DetailAST methodDef = objBlock.findFirstToken(TokenTypes.METHOD_DEF);
-		while (methodDef != null) {
-			if (methodDef.getType() == TokenTypes.METHOD_DEF) // for some reason
-																// curly brace
-																// is last
-																// sibling {
-
-				// System.out.println("Checking:" + methodDef);
-				if (isPublicInstanceMethod(methodDef)) {
-					// System.out.println("Started Logging");
-
-					extendibleLog(ast.getLineNo(), MSG_KEY);
-					// System.out.println("Ended Logging");
-
-					return;
-				}
-
-			// System.out.println("Setting next sibling");
-
-			methodDef = methodDef.getNextSibling();
-
-			// System.out.println("Set next sibling");
-
-		}
-
-		// final DetailAST variableDef = objBlock
-		// .findFirstToken(TokenTypes.VARIABLE_DEF);
-		// final boolean methodRequired = !allowMarkerInterfaces
-		// || variableDef != null;
-		//
-		// if (methodDef == null && methodRequired) {
-		// log(ast.getLineNo(), MSG_KEY);
-		// }
-
-	}
-
-	/**
-	 * Controls whether marker interfaces like Serializable are allowed.
-	 * 
-	 * @param flag
-	 *            whether to allow marker interfaces or not
-	 */
-	public void setAllowMarkerInterfaces(boolean flag) {
-		allowMarkerInterfaces = flag;
-	}
+	
 }

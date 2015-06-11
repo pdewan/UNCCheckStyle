@@ -13,18 +13,26 @@ public class InterfaceDefinedCheck extends TypeDefinedCheck{
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
 	}
-	public void visitToken(DetailAST ast) {
-    	System.out.println("Check called:" + MSG_KEY);
+	public void visitType(DetailAST ast) {  
 
-		if (maybeVisitPackage(ast) ) 
+    	super.visitType(ast);
+		log(ast.getLineNo(), MSG_KEY, typeName);
+
+
+    }
+	public void visitToken(DetailAST ast) {
+		
+		switch (ast.getType()) {
+		case TokenTypes.PACKAGE_DEF: 
+			visitPackage(ast);
+			return;
+		case TokenTypes.INTERFACE_DEF:
+			visitType(ast);
 			return;
 		
-		DetailAST anInterfaceNameAST = ast.findFirstToken(TokenTypes.IDENT);
-		String anInterfaceName = anInterfaceNameAST.getText();
-		String aFullName = packageName + "." + anInterfaceName;
-		SymbolTableFactory.getOrCreateSymbolTable().
-			getInterfaceNameToAST().put(aFullName, ast);
-		log(ast.getLineNo(), MSG_KEY, aFullName);
-		System.out.println(MSG_KEY + " " + aFullName);
+		default:
+			System.err.println("Unexpected token");
+		}
+		
 	}
 }

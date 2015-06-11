@@ -6,14 +6,13 @@ import java.util.Map;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTClass extends AnSTNameable implements STClass {
-	STNameable[] declaredPropertyNames, delcaredEditablePropertyNames, tags;
-	
+	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags;	
 	protected final STMethod[] declaredMethods;
 	protected final String[] interfaces;
 	protected final String packageName;
 	protected final boolean isInterface;
 	protected final String superClass;
-	protected  STNameable structurePatternName;
+	protected final  STNameable structurePatternName;
 	
 	protected STMethod[] getters;
 	protected STMethod[] setters;
@@ -23,13 +22,22 @@ public class AnSTClass extends AnSTNameable implements STClass {
 	
 	public AnSTClass(DetailAST ast, String name, 
 			STMethod[] declaredMethods, String[] interfaces, String superClass,
-			String packageName, boolean isInterface) {
+			String packageName, boolean isInterface,
+			STNameable aStructurePatternName,
+			STNameable[] aDeclaredPropertyNames, 
+			STNameable[] aDeclaredEditablePropertyNames, 
+			STNameable[] aTags
+			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
 		this.interfaces = interfaces;
 		this.superClass = superClass;
 		this.packageName = packageName;
 		this.isInterface = isInterface;
+		structurePatternName = aStructurePatternName;
+		declaredPropertyNames = aDeclaredEditablePropertyNames;
+		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
+		tags = aTags;
 	}
 	public STMethod[] getDeclaredMethods() {
 		return declaredMethods;
@@ -61,31 +69,31 @@ public class AnSTClass extends AnSTNameable implements STClass {
 	public STNameable[] getDeclaredPropertyNames() {
 		return declaredPropertyNames;
 	}
-	public void initDeclaredPropertyNames(STNameable[] propertyNames) {
-		this.declaredPropertyNames = propertyNames;
-	}
+//	public void initDeclaredPropertyNames(STNameable[] propertyNames) {
+//		this.declaredPropertyNames = propertyNames;
+//	}
 	@Override
 	public STNameable[] getDeclaredEditablePropertyNames() {
-		return delcaredEditablePropertyNames;
+		return declaredEditablePropertyNames;
 	}
-	public void initEditablePropertyNames(STNameable[] editablePropertyNames) {
-		this.delcaredEditablePropertyNames = editablePropertyNames;
-	}
+//	public void initEditablePropertyNames(STNameable[] editablePropertyNames) {
+//		this.declaredEditablePropertyNames = editablePropertyNames;
+//	}
 	@Override
 	public STNameable[] getTags() {
 		return tags;
 	}
-	public void initTags(STNameable[] tags) {
-		this.tags = tags;
-	}
+//	public void initTags(STNameable[] tags) {
+//		this.tags = tags;
+//	}
 	@Override
 	public STNameable getStructurePatternName() {
 		return structurePatternName;
 	}
-	@Override
-	public void initStructurePatternName(STNameable structurePatternName) {
-		this.structurePatternName = structurePatternName;
-	}
+//	@Override
+//	public void initStructurePatternName(STNameable structurePatternName) {
+//		this.structurePatternName = structurePatternName;
+//	}
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 

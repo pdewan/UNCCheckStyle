@@ -33,6 +33,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	protected String currentMethodType;
 	protected DetailAST currentMethodAST;
 	protected boolean currentMethodIsPublic;
+	protected boolean currentMethodIsVisible;;
 	protected List<String> currentMethodParameterTypes = new ArrayList();
 	
 	protected List<STNameable> propertyNames = new ArrayList();
@@ -42,13 +43,13 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	protected STNameable structurePattern;
 
 	
-//	@Override
-//	public int[] getDefaultTokens() {
-//		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
-//						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
-//	}
-//   
-    public static String[] getInterfaces(DetailAST aClassDef) {
+	@Override
+	public int[] getDefaultTokens() {
+		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
+						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
+	}
+ 
+	public static String[] getInterfaces(DetailAST aClassDef) {
     	List<String> anInterfaces = new ArrayList();
     	String[] emptyArray = {};
     	int numInterfaces = 0;
@@ -124,9 +125,17 @@ public class STBuilderCheck extends TypeDefinedCheck{
 		DetailAST expressionAST = annotationAST.findFirstToken(TokenTypes.EXPR);
 		DetailAST actualParamAST = expressionAST.getFirstChild();
 		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
-		structurePattern = new AnSTNameable(actualParamAST, actualParamIDent.getText());
-		
-		
+		structurePattern = new AnSTNameable(actualParamAST, actualParamIDent.getText());		
+    }
+    public void maybeVisitVisible(DetailAST ast) {  
+    	currentMethodIsVisible = true;
+    	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Visible");		
+		if (annotationAST == null)
+			return;
+		DetailAST expressionAST = annotationAST.findFirstToken(TokenTypes.EXPR);
+		DetailAST actualParamAST = expressionAST.getFirstChild();
+		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
+		currentMethodIsVisible = !"false".equals(actualParamIDent.getText());
     }
     public void maybeVisitTags(DetailAST ast) {  
     	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
@@ -160,18 +169,20 @@ public class STBuilderCheck extends TypeDefinedCheck{
     				currentMethodName, 
     				typeName,
     				aParameterTypes, 
-    				currentMethodIsPublic, 
-    				currentMethodType);
+    				currentMethodIsPublic,     				
+    				currentMethodType,
+    				currentMethodIsVisible);
     		stMethods.add(anSTMethod);
     	}    	
     	currentMethodParameterTypes.clear();    	
     	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
     	currentMethodName = aMethodNameAST.getText();
-    	currentMethodIsPublic = ClassHasOneInterfaceCheck.isPublicInstanceMethod(methodDef);
+    	currentMethodIsPublic = STBuilderCheck.isPublicInstanceMethod(methodDef);
     	DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
     	FullIdent aTypeFullIdent = FullIdent.createFullIdent(typeDef.getFirstChild());
     	currentMethodType = aTypeFullIdent.getText();
     	currentMethodAST = methodDef;
+    	maybeVisitVisible(methodDef);
     	
 	}
     public void visitParamDef(DetailAST paramDef) {
@@ -198,6 +209,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 			superClass = null;
 		else
 			superClass = superTypes[0];
+		interfaces = getInterfaces(ast);
 		isInterface = false;
 	}
 	 public void visitInterface(DetailAST ast) {
@@ -241,6 +253,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    public void finishTree(DetailAST ast) {
 	    	
 	    	STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
+	    	STNameable[] dummyArray = new STNameable[0];
 	    	STClass anSTClass = new AnSTClass(
 	    			typeAST, 
 	    			typeName, 
@@ -248,12 +261,15 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    			interfaces, 
 	    			superClass, 
 	    			packageName, 
-	    			isInterface);
-	    	STNameable[] dummyArray = new STNameable[0];
-	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
-	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
-	    	anSTClass.initTags(tags.toArray(dummyArray));
-	    	anSTClass.initStructurePatternName(structurePattern);
+	    			isInterface,
+	    			structurePattern,
+	    			propertyNames.toArray(dummyArray),
+	    			editablePropertyNames.toArray(dummyArray),
+	    			tags.toArray(dummyArray));
+//	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
+//	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
+//	    	anSTClass.initTags(tags.toArray(dummyArray));
+//	    	anSTClass.initStructurePatternName(structurePattern);
 	    	anSTClass.introspect();
 	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 	    			typeName, anSTClass);
@@ -262,4 +278,28 @@ public class STBuilderCheck extends TypeDefinedCheck{
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }
 	    }
+
+		public static boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
+			boolean foundPublic = false;
+			final DetailAST modifiersAst = methodOrVariableDef
+					.findFirstToken(TokenTypes.MODIFIERS);
+			if (modifiersAst.getFirstChild() != null) {
+		
+				for (DetailAST modifier = modifiersAst.getFirstChild(); modifier != null; modifier = modifier
+						.getNextSibling()) {
+					// System.out.println("Checking modifier:" + modifier);
+					if (modifier.getType() == TokenTypes.LITERAL_STATIC) {
+						// System.out.println("Not instance");
+						return false;
+					}
+					if (modifier.getType() == TokenTypes.LITERAL_PUBLIC) {
+						foundPublic = true;
+					}
+		
+				}
+			}
+			// System.out.println("instance");
+		
+			return foundPublic;
+		}
 }

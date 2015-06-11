@@ -6,4 +6,5 @@ public interface STMethod extends STNameable{
 	String[] getParameterTypes();
 	String getReturnType();
 	boolean isPublic();
+	boolean isVisible();
 }
