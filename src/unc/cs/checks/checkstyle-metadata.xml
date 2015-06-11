@@ -45,7 +45,11 @@
 			<alternative-name internal-name="unc.cs.checks.ClassHasOneInterfaceCheck" />
 			<description>%ClassHasOneInterface.desc</description>
 		</rule-metadata>
-		
+		<rule-metadata name="%ClassHasAtLeastOneInterface.name"
+			internal-name="ClassHasAtLeastOneInterface" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassHasAtLeastOneInterfaceCheck" />
+			<description>%unc.cs.checks.ClassHasAtLeastOneInterfaceCheck.desc</description>
+		</rule-metadata>		
 		<rule-metadata name="%MethodCall.name"
 			internal-name="MethodCall" parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.MethodCallCheck" />

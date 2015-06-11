@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
-public class AnSTClass extends AnSTNameable implements STClass {
+public class AnSTType extends AnSTNameable implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags;	
 	protected final STMethod[] declaredMethods;
 	protected final String[] interfaces;
@@ -20,7 +20,7 @@ public class AnSTClass extends AnSTNameable implements STClass {
 	
 
 	
-	public AnSTClass(DetailAST ast, String name, 
+	public AnSTType(DetailAST ast, String name, 
 			STMethod[] declaredMethods, String[] interfaces, String superClass,
 			String packageName, boolean isInterface,
 			STNameable aStructurePatternName,

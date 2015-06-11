@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import unc.cs.symbolTable.STClass;
+import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public final class VariableHasClassTypeCheck extends UNCCheck implements
@@ -94,8 +94,9 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 		}
 	}
 
-	String msgKey() {
-
+	@Override
+	protected String msgKey() {
+		// TODO Auto-generated method stub
 		return MSG_KEY;
 	}
 
@@ -195,7 +196,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 //		}
 //		return false;
 //	}
-	protected boolean checkType(STClass anSTClass) {
+	protected boolean checkType(STType anSTClass) {
 		return anSTClass.isInterface();
 	}
 	public Boolean checkIdentifierType(DetailAST ast, DetailAST aTreeAST) {
@@ -203,7 +204,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		String aTypeName = anIdentifierType.getText();
-		STClass anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
+		STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
 				getSTClassByShortName(aTypeName);
 		if (anSTClass == null)
 //		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
@@ -283,6 +284,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 		ContinuationNotifierFactory.getOrCreateSingleton()
 				.notifyContinuationProcessors();
 	}
+	
 
 	static {
 		for (String aType : IGNORED_TYPES) {

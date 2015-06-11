@@ -1,30 +1,13 @@
 package unc.cs.checks;
 
-import unc.cs.symbolTable.STClass;
+import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
-/**
- * Implements Bloch, Effective Java, Item 17 - Use Interfaces only to define
- * types.
- * 
- * <p>
- * An interface should describe a <em>type</em>, it is therefore inappropriate
- * to define an interface that does not contain any methods but only constants.
- * </p>
- * 
- * <p>
- * The check can be configured to also disallow marker interfaces like
- * <code>java.io.Serializable</code>, that do not contain methods or constants
- * at all.
- * </p>
- * 
- * @author lkuehne
- */
-public final class ClassHasOneInterfaceCheck extends TypeDefinedCheck {
+public class ClassHasOneInterfaceCheck extends STClassVisited {
 
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
@@ -39,35 +22,48 @@ public final class ClassHasOneInterfaceCheck extends TypeDefinedCheck {
 	public ClassHasOneInterfaceCheck() {
 
 	}
+//	@Override
+//	public int[] getDefaultTokens() {
+//		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
+//	}  
+//	
+	protected boolean typeCheck(STType anSTClass) {
+		// 0 is checked by ClassHasAtLeastOneInterface
+		return (anSTClass.getInterfaces().length <= 1);
+	}
+	
+//	protected void log(DetailAST ast) {
+//		log(ast.getLineNo(), msgKey(), typeName);
+//	}
+//	public void visitType(DetailAST ast) {  
+//
+//    	super.visitType(ast);
+////		log(ast.getLineNo(), MSG_KEY, typeName);
+//    	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
+//    			getSTClassByFullName(typeName);
+//    	if (!classCheck(anSTClass))
+//    		log(ast);
+//    	
+//
+//    }
+
+//	public void visitToken(DetailAST ast) {		
+//		switch (ast.getType()) {
+//		case TokenTypes.PACKAGE_DEF: 
+//			visitPackage(ast);
+//			return;
+//		case TokenTypes.CLASS_DEF:
+//			visitType(ast);
+//			return;		
+//		default:
+//			System.err.println("Unexpected token");
+//		}
+//		
+//	}
 	@Override
-	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
-	}  
-	public void visitType(DetailAST ast) {  
-
-    	super.visitType(ast);
-//		log(ast.getLineNo(), MSG_KEY, typeName);
-    	STClass anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
-    			getSTClassByFullName(typeName);
-    	if (anSTClass.getInterfaces().length != 1)    		
-    		log(ast.getLineNo(), MSG_KEY, typeName);
-
-    }
-
-	public void visitToken(DetailAST ast) {
-		
-		switch (ast.getType()) {
-		case TokenTypes.PACKAGE_DEF: 
-			visitPackage(ast);
-			return;
-		case TokenTypes.CLASS_DEF:
-			visitType(ast);
-			return;
-		
-		default:
-			System.err.println("Unexpected token");
-		}
-		
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return MSG_KEY;
 	}
 
 //	@Override

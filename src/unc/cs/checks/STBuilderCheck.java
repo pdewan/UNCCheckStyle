@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
-import unc.cs.symbolTable.AnSTClass;
+import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
-import unc.cs.symbolTable.STClass;
+import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -22,7 +22,7 @@ import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
-public class STBuilderCheck extends TypeDefinedCheck{
+public class STBuilderCheck extends TypeVisitedCheck{
 	
 	public static final String MSG_KEY = "stBuilder";
 	
@@ -254,7 +254,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    	
 	    	STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
 	    	STNameable[] dummyArray = new STNameable[0];
-	    	STClass anSTClass = new AnSTClass(
+	    	STType anSTClass = new AnSTType(
 	    			typeAST, 
 	    			typeName, 
 	    			aMethods, 
@@ -273,7 +273,7 @@ public class STBuilderCheck extends TypeDefinedCheck{
 	    	anSTClass.introspect();
 	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 	    			typeName, anSTClass);
-	    	log (typeAST.getLineNo(), MSG_KEY, typeName);
+	    	log (typeAST.getLineNo(), msgKey(), typeName);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }
@@ -301,5 +301,10 @@ public class STBuilderCheck extends TypeDefinedCheck{
 			// System.out.println("instance");
 		
 			return foundPublic;
+		}
+		@Override
+		protected String msgKey() {
+			// TODO Auto-generated method stub
+			return MSG_KEY;
 		}
 }

@@ -4,7 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class BeanPatternCheck extends TypeDefinedCheck {
+public class BeanPatternCheck extends TypeVisitedCheck {
 
 	@Override
 	public int[] getDefaultTokens() {
@@ -30,6 +30,11 @@ public class BeanPatternCheck extends TypeDefinedCheck {
 		default:
 			System.err.println("Unexpected token");
 		}
+	}
+	@Override
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return MSG_KEY;
 	}
 
 }

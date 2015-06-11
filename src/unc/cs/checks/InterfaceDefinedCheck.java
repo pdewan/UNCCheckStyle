@@ -6,7 +6,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class InterfaceDefinedCheck extends TypeDefinedCheck{
+public class InterfaceDefinedCheck extends TypeVisitedCheck{
 	public static final String MSG_KEY = "interfaceDefined";	
 
 	@Override
@@ -16,7 +16,7 @@ public class InterfaceDefinedCheck extends TypeDefinedCheck{
 	public void visitType(DetailAST ast) {  
 
     	super.visitType(ast);
-		log(ast.getLineNo(), MSG_KEY, typeName);
+		log(ast.getLineNo(), msgKey(), typeName);
 
 
     }
@@ -34,5 +34,10 @@ public class InterfaceDefinedCheck extends TypeDefinedCheck{
 			System.err.println("Unexpected token");
 		}
 		
+	}
+	@Override
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return MSG_KEY;
 	}
 }

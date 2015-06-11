@@ -50,9 +50,13 @@
         <module name="ClassHasOneInterface">
             <message key="classHasOneInterface" value="Class with instance methods should have exactly one (possibly extending) interface."/>
         </module>
+         <module name="ClassHasAtLeastOneInterface">
+            <message key="classHasAtLeastOneInterface" value="Class with instance methods should have an interface."/>
+        </module>
         
          <module name="MethodCall">
             <message key="methodCall" value="Called disallowed method {0}"/>
+            <property name="disallowedMethods" value="split, trim"/>
         </module>
         <!--
         <module name="LineLength">

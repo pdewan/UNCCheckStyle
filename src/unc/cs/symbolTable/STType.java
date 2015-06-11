@@ -1,6 +1,6 @@
 package unc.cs.symbolTable;
 
-public interface STClass extends STNameable{
+public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
 	String[] getInterfaces();

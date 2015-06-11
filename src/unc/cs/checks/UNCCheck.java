@@ -1,6 +1,7 @@
 package unc.cs.checks;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public abstract class UNCCheck extends Check{
 	public final void extendibleLog(int line, String key, Object... args) {
@@ -15,5 +16,6 @@ public abstract class UNCCheck extends Check{
 
         log(lineNo, colNo, key, args);
     }
+    protected  abstract String msgKey();
 
 }

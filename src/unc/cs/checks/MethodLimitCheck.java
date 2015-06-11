@@ -4,7 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class MethodLimitCheck extends Check {
+public class MethodLimitCheck extends UNCCheck {
 	
 	public static final String MSG_KEY = "methodLimit";	
 
@@ -23,7 +23,7 @@ public class MethodLimitCheck extends Check {
     }
 
     public void visitToken(DetailAST ast) {
-    	System.out.println("Check called:" + MSG_KEY);
+    	System.out.println("Check called:" + msgKey());
         // find the OBJBLOCK node below the CLASS_DEF/INTERFACE_DEF
         DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
         // count the number of direct children of the OBJBLOCK
@@ -31,7 +31,12 @@ public class MethodLimitCheck extends Check {
         int methodDefs = objBlock.getChildCount(TokenTypes.METHOD_DEF);
         // report error if limit is reached
         if (methodDefs > max) {
-            log(ast.getLineNo(), MSG_KEY, max);
+            log(ast.getLineNo(), msgKey(), max);
         }
     }
+    @Override
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return MSG_KEY;
+	}
 }

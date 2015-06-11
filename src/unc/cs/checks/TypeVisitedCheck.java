@@ -1,10 +1,12 @@
 package unc.cs.checks;
 
+import unc.cs.symbolTable.STType;
+
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public abstract class TypeDefinedCheck extends Check {
+public abstract class TypeVisitedCheck extends UNCCheck {
 	public static final String MSG_KEY = "typeDefined";	
 	public static final String DEFAULT_PACKAGE = "default"; 
 	protected String packageName;
@@ -43,6 +45,11 @@ public abstract class TypeDefinedCheck extends Check {
 		packageName = ast.findFirstToken(TokenTypes.IDENT).getText();
 		System.out.println("found package:" + packageName);	
 	}
+	protected void log(DetailAST ast) {
+	    log(ast.getLineNo(), msgKey(), typeName);
+    }
+  
+	
 	
     
 }

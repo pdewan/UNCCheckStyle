@@ -1,6 +1,12 @@
 package unc.cs.checks;
 
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
+import unc.cs.symbolTable.STType;
+
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -13,21 +19,20 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  * @author Oliver Burn
  */
-public final class MethodCallCheck extends UNCCheck {
+public  class MethodCallCheck extends MethodCallVisitedCheck {
 
     /**
      * A key is pointing to the warning message text in "messages.properties"
      * file.
      */
     public static final String MSG_KEY = "methodCall";
-
-    /** is package defined. */
-    private boolean defined;
-
-    @Override
-    public int[] getDefaultTokens() {
-        return new int[] {TokenTypes.METHOD_CALL};
-    }
+    protected String[] disallowedMethods;
+    protected Set<String> disallowedMethodsSet = new HashSet();
+//   
+//    @Override
+//    public int[] getDefaultTokens() {
+//        return new int[] {TokenTypes.METHOD_CALL};
+//    }
 
 //    @Override
 //    public int[] getRequiredTokens() {
@@ -39,17 +44,17 @@ public final class MethodCallCheck extends UNCCheck {
 //        return new int[] {TokenTypes.PACKAGE_DEF};
 //    }
 
-    @Override
-    public void beginTree(DetailAST ast) {    	
-        defined = false;
-    }
+//    @Override
+//    public void beginTree(DetailAST ast) {    	
+//        defined = false;
+//    }
 
-    @Override
-    public void finishTree(DetailAST ast) {
-//        if (!defined) {
-////            log(ast.getLineNo(), MSG_KEY);
-//        }
-    }
+//    @Override
+//    public void finishTree(DetailAST ast) {
+////        if (!defined) {
+//////            log(ast.getLineNo(), MSG_KEY);
+////        }
+//    }
     
 //    public static String getMethodName(DetailAST ast) {
 //    	DetailAST methodComponent = ast.getFirstChild();
@@ -59,19 +64,45 @@ public final class MethodCallCheck extends UNCCheck {
 //    	return methodComponent.getText();
 //    	
 //    }
-    public static DetailAST getLastDescendent(DetailAST ast) {
-    	DetailAST result = ast.getFirstChild();
-    	while (result.getChildCount() > 0)
-    		result = result.getLastChild();    	
-    	return result;    	
-    }
-
+//    public static DetailAST getLastDescendent(DetailAST ast) {
+//    	DetailAST result = ast.getFirstChild();
+//    	while (result.getChildCount() > 0)
+//    		result = result.getLastChild();    	
+//    	return result;    	
+//    }
+//
+//    @Override
+//    public void visitToken(DetailAST ast) {
+//    	if (ast.getType() != TokenTypes.METHOD_CALL)
+//    		return;
+//        System.out.println("Method text:" + getLastDescendent(ast).getText());
+//        log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
+//
+//    }
     @Override
-    public void visitToken(DetailAST ast) {
-    	if (ast.getType() != TokenTypes.METHOD_CALL)
-    		return;
-        System.out.println("Method text:" + getLastDescendent(ast).getText());
-        log(ast.getLineNo(), MSG_KEY, getLastDescendent(ast).getText());
-
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return MSG_KEY;
+	}
+    
+    public String[] getDisallowedMethods() {
+    	return disallowedMethods;
     }
+    
+    public void setDisallowedMethods (String[] newValue) {
+    	disallowedMethods = newValue;
+//		String[] toArray = newValue.split(",");
+		for (String s:disallowedMethods) {
+			disallowedMethodsSet.add(s);
+		}		
+	}
+
+	@Override
+	protected boolean check(DetailAST ast, String aMethodName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	
+	
 }

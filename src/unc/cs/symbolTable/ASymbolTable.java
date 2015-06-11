@@ -15,7 +15,7 @@ public class ASymbolTable implements SymbolTable{
 //	Map<String, DetailAST> packageNameToAST = new HashMap();
 	Map<String, DetailAST> methodCallToAST = new HashMap();
 //	Map<String, DetailAST> methodDeclarationToAST = new HashMap();
-	Map<String, STClass>   typeNameToSTClass = new HashMap<>();	
+	Map<String, STType>   typeNameToSTClass = new HashMap<>();	
 	@Override
 //	public Map<String, DetailAST> getClassNameToAST() {
 //		return classNameToAST;
@@ -37,7 +37,7 @@ public class ASymbolTable implements SymbolTable{
 	}
 	@Override
 	public boolean isType(String aTypeName) {
-		STClass aClass = getSTClassByShortName(aTypeName);
+		STType aClass = getSTClassByShortName(aTypeName);
 		return aClass != null;
 	}
 //	@Override
@@ -46,13 +46,13 @@ public class ASymbolTable implements SymbolTable{
 //	}
 	@Override
 	public boolean isInterface (String aTypeName) {
-		STClass aClass = getSTClassByShortName(aTypeName);
+		STType aClass = getSTClassByShortName(aTypeName);
 		return aClass != null && aClass.isInterface();
 //		return matchingFullInterfaceNames(aTypeName).size() >= 1;
 	}
 	@Override
 	public boolean isClass (String aTypeName) {
-		STClass aClass = getSTClassByShortName(aTypeName);
+		STType aClass = getSTClassByShortName(aTypeName);
 		return aClass != null && !aClass.isInterface();
 //		return matchingFullClassNames(aTypeName).size() >= 1;
 	}
@@ -96,19 +96,19 @@ public class ASymbolTable implements SymbolTable{
 //		return result;
 //	}
 	@Override
-	public STClass getSTClassByShortName(String aTypeName) {
+	public STType getSTClassByShortName(String aTypeName) {
 		List<String> aFullNames =  matchingFullSTTypeNames(aTypeName);
 		if (aFullNames.size() != 1)
 			return null;
 		return getSTClassByFullName(aFullNames.get(0));
 	}
 	@Override
-	public STClass getSTClassByFullName(String aTypeName) {
+	public STType getSTClassByFullName(String aTypeName) {
 		
 		return typeNameToSTClass.get(aTypeName);
 	}
 	@Override
-	public Map<String, STClass> getTypeNameToSTClass() {
+	public Map<String, STType> getTypeNameToSTClass() {
 		return typeNameToSTClass;
 	}
 }
