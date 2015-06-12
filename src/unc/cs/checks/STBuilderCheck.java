@@ -23,7 +23,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class STBuilderCheck extends ComprehensiveVisitCheck{
-	
+	protected List<STMethod> stMethods = new ArrayList();
+	protected List<STMethod> stConstructors = new ArrayList();
 	public static final String MSG_KEY = "stBuilder";
 	
 //	protected boolean isInterface;
@@ -162,7 +163,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //    }
     
     protected void processPreviousMethodData() {
-    	if (currentMethodName != null) {
+    	if (currentMethodName != null ) {
     		String[] aParameterTypes = currentMethodParameterTypes.toArray(new String[0]);
     		STMethod anSTMethod = new AnSTMethod(
     				currentMethodAST, 
@@ -172,6 +173,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodIsPublic,     				
     				currentMethodType,
     				currentMethodIsVisible);
+    		if (currentMethodIsConstructor)
+    			stConstructors.add(anSTMethod);
+    		else
     		stMethods.add(anSTMethod);
     	}
     	
@@ -265,14 +269,21 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //		 	typeName = null;
 //		 	stMethods.clear();
 //	    }
+    public void beginTree(DetailAST ast) {  
+ 		 super.beginTree(ast); 		 	
+ 		 	stMethods.clear();
+ 		 	stConstructors.clear();
+ 	    }
 	 
 	  protected void processMethodAndClassData() {
 		  STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
+		  STMethod[] aConstructors = stConstructors.toArray(new STMethod[0]);
 	    	STNameable[] dummyArray = new STNameable[0];
 	    	STType anSTClass = new AnSTType(
 	    			typeAST, 
 	    			typeName, 
 	    			aMethods, 
+	    			aConstructors,
 	    			interfaces, 
 	    			superClass, 
 	    			packageName, 

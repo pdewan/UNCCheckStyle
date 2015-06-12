@@ -9,7 +9,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck;
 
 
-public class IllegalClassImportedCheck extends UNCCheck {
+public class IllegalTypeImportedCheck extends UNCCheck {
 	public static final String MSG_KEY = "illegalClassImported";
 
     Set<String>  illegalClasses = new HashSet();
@@ -17,8 +17,8 @@ public class IllegalClassImportedCheck extends UNCCheck {
         return new int[] {TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT};
     }
     
-    public void setIllegalClasses(String... from) {
-    	for (String aClass:illegalClasses) {
+    public void setIllegalTypes(String... from) {
+    	for (String aClass:from) {
     		illegalClasses.add(aClass);
     	}
     }

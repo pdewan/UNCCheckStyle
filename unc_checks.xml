@@ -54,9 +54,13 @@
             <message key="classHasAtLeastOneInterface" value="Class with instance methods should have an interface."/>
         </module>
         
-         <module name="MethodCall">
-            <message key="methodCall" value="Called disallowed method {0}"/>
+         <module name="IllegalMethodCall">
+            <message key="illegalMethodCall" value="Called disallowed method {0}"/>
             <property name="disallowedMethods" value="split, trim"/>
+        </module>
+           <module name="IllegalTypeImported">
+            <message key="illegalTypeImported" value="Used illegal type {0}"/>
+            <property name="illegalTypes" value="java.util.HashSet, java.util.Vector"/>
         </module>
         <!--
         <module name="LineLength">

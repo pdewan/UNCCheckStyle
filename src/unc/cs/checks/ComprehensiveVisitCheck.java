@@ -29,6 +29,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	protected boolean isInterface;
 	protected String superClass;
 	protected String[] interfaces;
+	protected boolean currentMethodIsConstructor;
 	protected String currentMethodName;
 	protected String currentMethodType;
 	protected DetailAST currentMethodAST;
@@ -39,7 +40,8 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	protected List<STNameable> propertyNames;
 	protected List<STNameable> editablePropertyNames;
 	protected List<STNameable> tags= new ArrayList();
-	protected List<STMethod> stMethods = new ArrayList();
+	
+
 	protected STNameable structurePattern;
 
 	
@@ -47,6 +49,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
 						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, 
+						TokenTypes.CTOR_DEF,
 						TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
 						TokenTypes.PARAMETER_DEF };
 	}
@@ -186,8 +189,19 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 //    	}
 //    	
 //    }
+  public void visitMethod(DetailAST methodDef) {
+  	processPreviousMethodData();
+  	currentMethodIsConstructor = false;
+  	visitMethodOrConstructor(methodDef);
+  }
+   public void visitConstructor(DetailAST methodDef) {
+	  	processPreviousMethodData();
+	  	currentMethodIsConstructor = true;
+	  	visitMethodOrConstructor(methodDef);
+   }
+
 		
-    public void visitMethod(DetailAST methodDef) {
+    public void visitMethodOrConstructor(DetailAST methodDef) {
 //    	if (currentMethodName != null) {
 //    		String[] aParameterTypes = currentMethodParameterTypes.toArray(new String[0]);
 //    		STMethod anSTMethod = new AnSTMethod(
@@ -205,12 +219,13 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
     	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
     	currentMethodName = aMethodNameAST.getText();
     	currentMethodIsPublic = ComprehensiveVisitCheck.isPublicInstanceMethod(methodDef);
+    	if (!currentMethodIsConstructor) {
     	DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
     	FullIdent aTypeFullIdent = FullIdent.createFullIdent(typeDef.getFirstChild());
     	currentMethodType = aTypeFullIdent.getText();
+        }
     	currentMethodAST = methodDef;
-    	maybeVisitVisible(methodDef);
-    	
+    	maybeVisitVisible(methodDef);    	
 	}
     public void visitParamDef(DetailAST paramDef) {
     	final DetailAST grandParentAST = paramDef.getParent().getParent();
@@ -272,6 +287,9 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		case TokenTypes.METHOD_DEF:
 			visitMethod(ast);
 			return;
+		case TokenTypes.CTOR_DEF:
+			visitConstructor(ast);
+			return;
 		case TokenTypes.PARAMETER_DEF:
 			visitParamDef(ast);
 			return;
@@ -291,7 +309,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		 super.beginTree(ast);
 		 	currentMethodName = null;
 		 	typeName = null;
-		 	stMethods.clear();
+//		 	stMethods.clear();
 		 	imports.clear();
 	    }
 	  protected abstract void processMethodAndClassData();

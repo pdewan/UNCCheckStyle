@@ -8,6 +8,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 public class AnSTType extends AnSTNameable implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, imports;	
 	protected final STMethod[] declaredMethods;
+	protected final STMethod[] declaredConstructors;
 	protected final String[] interfaces;
 	protected final String packageName;
 	protected final boolean isInterface;
@@ -21,7 +22,9 @@ public class AnSTType extends AnSTNameable implements STType {
 
 	
 	public AnSTType(DetailAST ast, String name, 
-			STMethod[] declaredMethods, String[] interfaces, String superClass,
+			STMethod[] declaredMethods,
+			STMethod[] aDeclaredConstructors,
+			String[] interfaces, String superClass,
 			String packageName, boolean isInterface,
 			STNameable aStructurePatternName,
 			STNameable[] aDeclaredPropertyNames, 
@@ -31,6 +34,7 @@ public class AnSTType extends AnSTNameable implements STType {
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
+		this.declaredConstructors = aDeclaredConstructors;
 		this.interfaces = interfaces;
 		this.superClass = superClass;
 		this.packageName = packageName;
@@ -43,6 +47,10 @@ public class AnSTType extends AnSTNameable implements STType {
 	}
 	public STMethod[] getDeclaredMethods() {
 		return declaredMethods;
+	}
+	@Override
+	public STMethod[] getDeclaredConstructors() {
+		return declaredConstructors;
 	}
 	public String[] getInterfaces() {
 		return interfaces;

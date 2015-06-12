@@ -50,9 +50,14 @@
 			<alternative-name internal-name="unc.cs.checks.ClassHasAtLeastOneInterfaceCheck" />
 			<description>%unc.cs.checks.ClassHasAtLeastOneInterfaceCheck.desc</description>
 		</rule-metadata>		
-		<rule-metadata name="%MethodCall.name"
-			internal-name="MethodCall" parent="TreeWalker">
-			<alternative-name internal-name="unc.cs.checks.MethodCallCheck" />
+		<rule-metadata name="%IllegalMethodCall.name"
+			internal-name="IllegalMethodCall" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalMethodCallCheck" />
+			<description>%MethodCall.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalTypeImported.name"
+			internal-name="IllegalTypeImported" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalTypeImportedCheck" />
 			<description>%MethodCall.desc</description>
 		</rule-metadata>
 	</rule-group-metadata>

@@ -18,4 +18,5 @@ public interface STType extends STNameable{
 	STNameable[] getTags();	
 	void introspect();
 	STNameable[] getImports();
+	STMethod[] getDeclaredConstructors();
 }

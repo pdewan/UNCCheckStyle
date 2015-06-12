@@ -19,7 +19,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
  * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
  * @author Oliver Burn
  */
-public  class MethodCallCheck extends MethodCallVisitedCheck {
+public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -99,8 +99,7 @@ public  class MethodCallCheck extends MethodCallVisitedCheck {
 
 	@Override
 	protected boolean check(DetailAST ast, String aMethodName) {
-		// TODO Auto-generated method stub
-		return false;
+		return !disallowedMethodsSet.contains(aMethodName);
 	}
 
 	
