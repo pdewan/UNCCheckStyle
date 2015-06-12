@@ -28,8 +28,8 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	
 	protected boolean isInterface;
 	protected boolean isElaboration;
-	protected String superClass;
-	protected String[] interfaces;
+	protected STNameable superClass;
+	protected STNameable[] interfaces;
 	protected boolean currentMethodIsConstructor;
 	protected String currentMethodName;
 	protected String currentMethodType;
@@ -58,9 +58,9 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 						TokenTypes.PARAMETER_DEF };
 	}
  
-	public static String[] getInterfaces(DetailAST aClassDef) {
-    	List<String> anInterfaces = new ArrayList();
-    	String[] emptyArray = {};
+	public static STNameable[] getInterfaces(DetailAST aClassDef) {
+    	List<STNameable> anInterfaces = new ArrayList();
+    	STNameable[] emptyArray = {};
     	int numInterfaces = 0;
 		DetailAST implementsClause = aClassDef
 				.findFirstToken(TokenTypes.IMPLEMENTS_CLAUSE);
@@ -70,16 +70,16 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 				.findFirstToken(TokenTypes.IDENT);
 		while (anImplementedInterface != null) {
 			if (anImplementedInterface.getType() == TokenTypes.IDENT)
-				anInterfaces.add(anImplementedInterface.getText());
+				anInterfaces.add(new AnSTNameable (anImplementedInterface, anImplementedInterface.getText()));
 			anImplementedInterface = anImplementedInterface.getNextSibling();
 		}
-		return (String[]) anInterfaces.toArray(emptyArray);    	
+		return (STNameable[]) anInterfaces.toArray(emptyArray);    	
     }
     
     
-    public static String[] getSuperTypes(DetailAST aClassDef) {
-    	List<String> aSuperTypes = new ArrayList();
-    	String[] emptyArray = {};
+    public static STNameable[] getSuperTypes(DetailAST aClassDef) {
+    	List<STNameable> aSuperTypes = new ArrayList();
+    	STNameable[] emptyArray = {};
     	int numInterfaces = 0;
 		DetailAST extendsClause = aClassDef
 				.findFirstToken(TokenTypes.EXTENDS_CLAUSE);
@@ -89,10 +89,10 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 				.findFirstToken(TokenTypes.IDENT);
 		while (anExtendedType != null) {
 			if (anExtendedType.getType() == TokenTypes.IDENT)
-				aSuperTypes.add(anExtendedType.getText());
+				aSuperTypes.add(new AnSTNameable(anExtendedType, anExtendedType.getText()));
 			anExtendedType = anExtendedType.getNextSibling();
 		}
-		return (String[]) aSuperTypes.toArray(emptyArray);
+		return (STNameable[]) aSuperTypes.toArray(emptyArray);
 		
     }
     public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitializer) {
@@ -251,7 +251,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
     }
 	public void visitClass(DetailAST ast) {
 		visitType(ast);
-		String[] superTypes = getSuperTypes(ast);
+		STNameable[] superTypes = getSuperTypes(ast);
 		if (superTypes.length == 0)
 			superClass = null;
 		else

@@ -11,10 +11,10 @@ public class AnSTType extends AnSTNameable implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, imports;	
 	protected final STMethod[] declaredMethods;
 	protected final STMethod[] declaredConstructors;
-	protected final String[] interfaces;
+	protected final STNameable[] interfaces;
 	protected final String packageName;
 	protected final boolean isInterface, isGeneric, isElaboration;
-	protected final String superClass;
+	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
 	protected STMethod[] getters;
 	protected STMethod[] setters;
@@ -26,7 +26,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	public AnSTType(DetailAST ast, String name, 
 			STMethod[] declaredMethods,
 			STMethod[] aDeclaredConstructors,
-			String[] interfaces, String superClass,
+			STNameable[] interfaces, STNameable superClass,
 			String packageName, boolean isInterface,
 			boolean anIsGeneric,
 			boolean anIsElaboration,
@@ -58,7 +58,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	public STMethod[] getDeclaredConstructors() {
 		return declaredConstructors;
 	}
-	public String[] getInterfaces() {
+	public STNameable[] getInterfaces() {
 		return interfaces;
 	}
 	public String getPackage() {
@@ -78,7 +78,7 @@ public class AnSTType extends AnSTNameable implements STType {
 		return null;
 	}
 	@Override
-	public String getSuperClass() {
+	public STNameable getSuperClass() {
 		return superClass;
 	}
 	@Override

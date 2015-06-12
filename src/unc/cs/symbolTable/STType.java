@@ -3,11 +3,11 @@ package unc.cs.symbolTable;
 public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
-	String[] getInterfaces();
+	STNameable[] getInterfaces();
 	STMethod[] getMethod(String aName, String[] aParameterTypes);
 	String getPackage();
 	boolean isInterface();
-	String getSuperClass();
+	STNameable getSuperClass();
 //	void initDeclaredPropertyNames(STNameable[] aPropertyNames);
 //	void initEditablePropertyNames(STNameable[] anEditablePropertyNames);
 //	void initTags(STNameable[] aTags);
