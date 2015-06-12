@@ -15,6 +15,7 @@ public interface STType extends STNameable{
 //	void initStructurePatternName(STNameable structurePatternName);
 	STNameable[] getDeclaredPropertyNames();
 	STNameable[] getDeclaredEditablePropertyNames();
-	STNameable[] getTags();
+	STNameable[] getTags();	
 	void introspect();
+	STNameable[] getImports();
 }

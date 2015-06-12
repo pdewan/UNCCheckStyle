@@ -6,7 +6,7 @@ import java.util.Map;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTType extends AnSTNameable implements STType {
-	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags;	
+	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, imports;	
 	protected final STMethod[] declaredMethods;
 	protected final String[] interfaces;
 	protected final String packageName;
@@ -26,7 +26,8 @@ public class AnSTType extends AnSTNameable implements STType {
 			STNameable aStructurePatternName,
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
-			STNameable[] aTags
+			STNameable[] aTags,
+			STNameable[] anImports
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
@@ -38,6 +39,7 @@ public class AnSTType extends AnSTNameable implements STType {
 		declaredPropertyNames = aDeclaredEditablePropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
 		tags = aTags;
+		imports = anImports;
 	}
 	public STMethod[] getDeclaredMethods() {
 		return declaredMethods;
@@ -82,6 +84,10 @@ public class AnSTType extends AnSTNameable implements STType {
 	@Override
 	public STNameable[] getTags() {
 		return tags;
+	}
+	@Override
+	public STNameable[] getImports() {
+		return imports;
 	}
 //	public void initTags(STNameable[] tags) {
 //		this.tags = tags;
