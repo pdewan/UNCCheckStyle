@@ -7,6 +7,7 @@ import unc.cs.symbolTable.STType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public abstract  class MethodCallVisitedCheck extends STClassVisited {
@@ -17,7 +18,8 @@ public abstract  class MethodCallVisitedCheck extends STClassVisited {
      */
     public static final String MSG_KEY = "methodCallVisited";
 
- 
+    protected String shortMethodName;
+    protected String longMethodName;
 
     @Override
     public int[] getDefaultTokens() {
@@ -40,16 +42,18 @@ public abstract  class MethodCallVisitedCheck extends STClassVisited {
 
     }
     
-    protected abstract boolean check(DetailAST ast, String aMethodName) ;
+    protected abstract boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName) ;
 
     
     public void visitCall(DetailAST ast) {
 //    	if (ast.getType() != TokenTypes.METHOD_CALL)
 //    		return;
-    	String aMethodName = getLastDescendent(ast).getText();
+    	shortMethodName = getLastDescendent(ast).getText();
+    	FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
+    	longMethodName = aFullIdent.getText();
 //        System.out.println("Method text:" + getLastDescendent(ast).getText());
-    	if (!check(ast, aMethodName))
-           log(ast, aMethodName);
+    	if (!check(ast, shortMethodName, longMethodName))
+           log(ast, shortMethodName);
 //        log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
 
     }

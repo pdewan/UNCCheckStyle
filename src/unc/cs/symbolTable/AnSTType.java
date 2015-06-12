@@ -1,6 +1,8 @@
 package unc.cs.symbolTable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -11,13 +13,13 @@ public class AnSTType extends AnSTNameable implements STType {
 	protected final STMethod[] declaredConstructors;
 	protected final String[] interfaces;
 	protected final String packageName;
-	protected final boolean isInterface;
+	protected final boolean isInterface, isGeneric, isElaboration;
 	protected final String superClass;
-	protected final  STNameable structurePatternName;
-	
+	protected final  STNameable structurePatternName;	
 	protected STMethod[] getters;
 	protected STMethod[] setters;
 	protected Map<String, PropertyInfo> actualPropertyInfo = new HashMap();
+	protected List<STMethod> declaredInits = new ArrayList();
 	
 
 	
@@ -26,6 +28,8 @@ public class AnSTType extends AnSTNameable implements STType {
 			STMethod[] aDeclaredConstructors,
 			String[] interfaces, String superClass,
 			String packageName, boolean isInterface,
+			boolean anIsGeneric,
+			boolean anIsElaboration,
 			STNameable aStructurePatternName,
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
@@ -39,6 +43,8 @@ public class AnSTType extends AnSTNameable implements STType {
 		this.superClass = superClass;
 		this.packageName = packageName;
 		this.isInterface = isInterface;
+		isGeneric = anIsGeneric;
+		isElaboration = anIsElaboration;
 		structurePatternName = aStructurePatternName;
 		declaredPropertyNames = aDeclaredEditablePropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;

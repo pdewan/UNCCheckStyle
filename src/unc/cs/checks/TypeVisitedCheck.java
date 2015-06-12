@@ -12,6 +12,8 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected String packageName;
 	protected String typeName;
 	protected DetailAST typeAST;
+	protected DetailAST typeNameAST;
+	protected boolean isGeneric;
 	@Override
     public void beginTree(DetailAST ast) {
         packageName = DEFAULT_PACKAGE;
@@ -36,8 +38,9 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //	    	
 //			maybeVisitPackage(ast);
 	    	typeAST = ast;
-	    	DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
-			String aShortName = aClassNameAST.getText();
+	    	typeNameAST = ast.findFirstToken(TokenTypes.IDENT);
+	    	isGeneric =  (typeNameAST.getNextSibling().getType() == TokenTypes.TYPE_PARAMETERS);
+			String aShortName = typeNameAST.getText();
 			String aFullName = packageName + "." + aShortName;
 			typeName = aFullName;
 	 }

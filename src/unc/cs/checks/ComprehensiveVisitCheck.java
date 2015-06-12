@@ -27,6 +27,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 //	public static final String MSG_KEY = "stBuilder";
 	
 	protected boolean isInterface;
+	protected boolean isElaboration;
 	protected String superClass;
 	protected String[] interfaces;
 	protected boolean currentMethodIsConstructor;
@@ -48,7 +49,10 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
-						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, 
+						TokenTypes.INTERFACE_DEF, 
+						TokenTypes.TYPE_ARGUMENTS,
+						TokenTypes.TYPE_PARAMETERS,
+						TokenTypes.METHOD_DEF, 
 						TokenTypes.CTOR_DEF,
 						TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
 						TokenTypes.PARAMETER_DEF };
@@ -156,13 +160,6 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
     }
     
     public void visitType(DetailAST ast) {  
-//    	
-//		maybeVisitPackage(ast);
-//    	typeAST = ast;
-//    	DetailAST aClassNameAST = ast.findFirstToken(TokenTypes.IDENT);
-//		String aShortName = aClassNameAST.getText();
-//		String aFullName = packageName + "." + aShortName;
-//		typeName = aFullName;	
     	super.visitType(ast);
 		maybeVisitStructurePattern(ast);
 		maybeVisitPropertyNames(ast);
@@ -244,6 +241,14 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		currentMethodParameterTypes.add(text);
 
     }
+    public void visitTypeParameters(DetailAST typeParameters) {
+    	isGeneric = true;
+
+    }
+    public void visitTypeArguments(DetailAST typeParameters) {
+    	isElaboration = true;
+
+    }
 	public void visitClass(DetailAST ast) {
 		visitType(ast);
 		String[] superTypes = getSuperTypes(ast);
@@ -293,6 +298,12 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		case TokenTypes.PARAMETER_DEF:
 			visitParamDef(ast);
 			return;
+		case TokenTypes.TYPE_PARAMETERS:
+			visitTypeParameters(ast);
+			return;		
+		case TokenTypes.TYPE_ARGUMENTS:
+			visitTypeArguments(ast);
+			return;
 		case TokenTypes.IMPORT:
 			visitImport(ast);
 			return;
@@ -309,69 +320,19 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		 super.beginTree(ast);
 		 	currentMethodName = null;
 		 	typeName = null;
+		 	isInterface = false;
+		 	isGeneric = false;
+		 	isElaboration = false;
 //		 	stMethods.clear();
 		 	imports.clear();
 	    }
 	  protected abstract void processMethodAndClassData();
 	 
-//	  protected void processMethodAndClassData() {
-//		  STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
-//	    	STNameable[] dummyArray = new STNameable[0];
-//	    	STType anSTClass = new AnSTType(
-//	    			typeAST, 
-//	    			typeName, 
-//	    			aMethods, 
-//	    			interfaces, 
-//	    			superClass, 
-//	    			packageName, 
-//	    			isInterface,
-//	    			structurePattern,
-//	    			propertyNames.toArray(dummyArray),
-//	    			editablePropertyNames.toArray(dummyArray),
-//	    			tags.toArray(dummyArray));
-////	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
-////	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
-////	    	anSTClass.initTags(tags.toArray(dummyArray));
-////	    	anSTClass.initStructurePatternName(structurePattern);
-//	    	anSTClass.introspect();
-//	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
-//	    			typeName, anSTClass);
-//	    	log (typeAST.getLineNo(), msgKey(), typeName);
-////	        if (!defined) {
-//////	            log(ast.getLineNo(), MSG_KEY);
-////	        }
-//		  
-//	  }
+
 
 	    @Override
 	    public void finishTree(DetailAST ast) {
 	    	processMethodAndClassData();
-	    	
-//	    	STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
-//	    	STNameable[] dummyArray = new STNameable[0];
-//	    	STType anSTClass = new AnSTType(
-//	    			typeAST, 
-//	    			typeName, 
-//	    			aMethods, 
-//	    			interfaces, 
-//	    			superClass, 
-//	    			packageName, 
-//	    			isInterface,
-//	    			structurePattern,
-//	    			propertyNames.toArray(dummyArray),
-//	    			editablePropertyNames.toArray(dummyArray),
-//	    			tags.toArray(dummyArray));
-////	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
-////	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
-////	    	anSTClass.initTags(tags.toArray(dummyArray));
-////	    	anSTClass.initStructurePatternName(structurePattern);
-//	    	anSTClass.introspect();
-//	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
-//	    			typeName, anSTClass);
-//	    	log (typeAST.getLineNo(), msgKey(), typeName);
-////	        if (!defined) {
-//////	            log(ast.getLineNo(), MSG_KEY);
-////	        }
 	    }
 
 		public static boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
@@ -393,13 +354,8 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		
 				}
 			}
-			// System.out.println("instance");
 		
 			return foundPublic;
 		}
-//		@Override
-//		protected String msgKey() {
-//			// TODO Auto-generated method stub
-//			return MSG_KEY;
-//		}
+
 }

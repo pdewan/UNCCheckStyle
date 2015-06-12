@@ -98,8 +98,8 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 	}
 
 	@Override
-	protected boolean check(DetailAST ast, String aMethodName) {
-		return !disallowedMethodsSet.contains(aMethodName);
+	protected boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName) {
+		return !disallowedMethodsSet.contains(aShortMethodName);
 	}
 
 	
