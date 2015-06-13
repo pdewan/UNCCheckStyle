@@ -40,7 +40,7 @@ import java.util.Set;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public final class VariableHasClassTypeCheck extends UNCCheck implements
+public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck implements
 		ContinuationProcessor {
 
 	public VariableHasClassTypeCheck() {
@@ -53,8 +53,8 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 	 * file.
 	 */
 	public static final String MSG_KEY = "variableHasClassType";
-	Map<DetailAST, List<DetailAST>> astToPendingTypeUses = new HashMap();
-	Map<DetailAST, FileContents> astToFileContents = new HashMap();
+//	Map<DetailAST, List<DetailAST>> astToPendingChecks = new HashMap();
+//	Map<DetailAST, FileContents> astToFileContents = new HashMap();
 	// List<FullIdent> pendingTypeUses = new ArrayList();
 
 	/*
@@ -108,7 +108,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 	 */
 	private void visitMethodDef(DetailAST methodDef) {
 		// if (isCheckedMethod(methodDef)) {
-		addToPendingTypeUses(methodDef);
+		maybeAddToPendingTypeChecks(methodDef);
 		// }
 	}
 
@@ -123,7 +123,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 
 		if (grandParentAST.getType() == TokenTypes.METHOD_DEF)
 		// && isCheckedMethod(grandParentAST)) {
-		addToPendingTypeUses(paradef);
+		maybeAddToPendingTypeChecks(paradef);
 		// }
 	}
 
@@ -134,7 +134,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 	 *            variable to check.
 	 */
 	private void visitVariableDef(DetailAST variableDef) {
-		addToPendingTypeUses(variableDef);
+		maybeAddToPendingTypeChecks(variableDef);
 	}
 
 	/**
@@ -143,14 +143,14 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 	 * @param ast
 	 *            node to check.
 	 */
-	private void addToPendingTypeUses(DetailAST ast) {
+	private void maybeAddToPendingTypeChecks(DetailAST ast) {
 		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
 		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		if (ignoreTypesSet.contains(anIdentifierType.getText()))
 			return;
-		if (checkIdentifierType(ast, currentTree) == null)
-			pendingTypeUses().add(ast);
+		if (doPendingCheck(ast, currentTree) == null)
+			pendingChecks().add(ast);
 
 		// if (isMatchingClassName(ident.getText())) {
 		// log(ident.getLineNo(), ident.getColumnNo(), msgKey(),
@@ -158,14 +158,14 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 		// }
 	}
 
-	public static String shortFileName(String longName) {
-		int index = longName.lastIndexOf('/');
-		if (index <= 0)
-			index = longName.lastIndexOf('\\');
-		if (index <= 0)
-			return longName;
-		return longName.substring(index + 1);
-	}
+//	public static String shortFileName(String longName) {
+//		int index = longName.lastIndexOf('/');
+//		if (index <= 0)
+//			index = longName.lastIndexOf('\\');
+//		if (index <= 0)
+//			return longName;
+//		return longName.substring(index + 1);
+//	}
 
 	public static String toTypeName(DetailAST aTreeAST) {
 		DetailAST aTypeDeclaration = aTreeAST
@@ -199,7 +199,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 	protected boolean checkType(STType anSTClass) {
 		return anSTClass.isInterface();
 	}
-	public Boolean checkIdentifierType(DetailAST ast, DetailAST aTreeAST) {
+	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
 		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
 		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
@@ -221,27 +221,30 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 		}
 		return false;
 	}
+	
+	
 
-	public void checkPendingTypeUses() {
-		// for (List<FullIdent> aPendingTypeUses:astToPendingTypeUses.values())
-		// {
 
-		for (DetailAST anAST : astToPendingTypeUses.keySet()) {
-			List<DetailAST> aPendingTypeUses = astToPendingTypeUses.get(anAST);
-			// FileContents aFileContents = astToFileContents.get(anAST);
-			// setFileContents(aFileContents);
-
-			if (aPendingTypeUses.isEmpty())
-				continue;
-			List<DetailAST> aPendingTypeUsesCopy = new ArrayList(
-					aPendingTypeUses);
-			for (DetailAST aTypeUse : aPendingTypeUsesCopy) {
-				if (checkIdentifierType(aTypeUse, anAST) != null)
-					aPendingTypeUses.remove(aTypeUse);
-
-			}
-		}
-	}
+//	public void doPendingChecks() {
+//		// for (List<FullIdent> aPendingTypeUses:astToPendingTypeUses.values())
+//		// {
+//
+//		for (DetailAST aPendingAST : astToPendingChecks.keySet()) {
+//			List<DetailAST> aPendingChecks = astToPendingChecks.get(aPendingAST);
+//			// FileContents aFileContents = astToFileContents.get(anAST);
+//			// setFileContents(aFileContents);
+//
+//			if (aPendingChecks.isEmpty())
+//				continue;
+//			List<DetailAST> aPendingTypeChecksCopy = new ArrayList(
+//					aPendingChecks);
+//			for (DetailAST aPendingCheck : aPendingTypeChecksCopy) {
+//				if (doPendingCheck(aPendingCheck, aPendingAST) != null)
+//					aPendingChecks.remove(aPendingCheck);
+//
+//			}
+//		}
+//	}
 
 	/**
 	 * @param className
@@ -255,15 +258,15 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 
 	@Override
 	public void processDeferredChecks() {
-		checkPendingTypeUses();
+		doPendingChecks();
 
 	}
 
-	List<DetailAST> pendingTypeUses() {
-		List<DetailAST> result = astToPendingTypeUses.get(currentTree);
+	List<DetailAST> pendingChecks() {
+		List<DetailAST> result = astToPendingChecks.get(currentTree);
 		if (result == null) {
 			result = new ArrayList<>();
-			astToPendingTypeUses.put(currentTree, result);
+			astToPendingChecks.put(currentTree, result);
 		}
 		return result;
 	}
@@ -276,7 +279,7 @@ public final class VariableHasClassTypeCheck extends UNCCheck implements
 		System.out.println("Message Bundle:" + getMessageBundle());
 		astToFileContents.put(ast, getFileContents());
 		currentTree = ast;
-		pendingTypeUses().clear();
+		pendingChecks().clear();
 	}
 
 	@Override

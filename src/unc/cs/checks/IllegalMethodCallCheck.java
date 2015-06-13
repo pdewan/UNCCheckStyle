@@ -25,7 +25,7 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
      * A key is pointing to the warning message text in "messages.properties"
      * file.
      */
-    public static final String MSG_KEY = "methodCall";
+    public static final String MSG_KEY = "illegalMethodCall";
     protected String[] disallowedMethods;
     protected Set<String> disallowedMethodsSet = new HashSet();
 //   

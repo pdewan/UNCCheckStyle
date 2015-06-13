@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public class AnSTType extends AnSTNameable implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, imports;	
@@ -16,8 +17,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	protected final boolean isInterface, isGeneric, isElaboration;
 	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
-	protected STMethod[] getters;
-	protected STMethod[] setters;
+	protected STMethod[] inits;
 	protected Map<String, PropertyInfo> actualPropertyInfo = new HashMap();
 	protected List<STMethod> declaredInits = new ArrayList();
 	
@@ -116,11 +116,17 @@ public class AnSTType extends AnSTNameable implements STType {
 //	}
 	public  static final String GET = "get";
 	public  static final String SET = "set";
+	public static final String INIT = "init";
+	public static boolean isInit(STMethod anSTMethod) {
+		return isInit(anSTMethod.getName());
+	}
+	public static boolean isInit(String aMethodName) {
+		return aMethodName.startsWith(INIT);
+	}
+	void maybeProcessInit(STMethod anSTMethod) {
+//		if (!anSTMethod.getName().startsWith(INIT))  return;
+		if (isInit(anSTMethod)) return;
 
-	void maybeProcessGetter(STMethod anSTMethod) {
-		if (!anSTMethod.getName().startsWith(GET) ||
-				!anSTMethod.isPublic() ||
-				anSTMethod.getParameterTypes().length != 0) return;
 		String aPropertyName = anSTMethod.getName().substring(GET.length()).toLowerCase();
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
@@ -130,11 +136,38 @@ public class AnSTType extends AnSTNameable implements STType {
 		}			
 		aPropertyInfo.setGetter(anSTMethod);
 	}
+	public static boolean isGetter(STMethod anSTMethod) {
+		return anSTMethod.getName().startsWith(GET) &&
+				anSTMethod.isPublic() &&
+				anSTMethod.getParameterTypes().length != 0;
+	}
+
+	void maybeProcessGetter(STMethod anSTMethod) {
+		if (!isGetter(anSTMethod))
+			return;
+//		if (!anSTMethod.getName().startsWith(GET) ||
+//				!anSTMethod.isPublic() ||
+//				anSTMethod.getParameterTypes().length != 0) return;
+		String aPropertyName = anSTMethod.getName().substring(GET.length()).toLowerCase();
+		String aPropertyType = anSTMethod.getReturnType();
+		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
+		if (aPropertyInfo == null) {
+			aPropertyInfo = new APropertyInfo();
+			actualPropertyInfo.put(aPropertyName, aPropertyInfo);
+		}			
+		aPropertyInfo.setGetter(anSTMethod);
+	}
+	public static boolean isSetter(STMethod anSTMethod) {
+		return anSTMethod.getName().startsWith(SET) &&
+				anSTMethod.isPublic() &&
+				anSTMethod.getParameterTypes().length != 1;
+	}
 	void maybeProcessSetter(STMethod anSTMethod) {
-		if (!anSTMethod.getName().startsWith(SET) ||
-		!anSTMethod.isPublic() ||
-		anSTMethod.getParameterTypes().length != 1) return;
-			
+//		if (!anSTMethod.getName().startsWith(SET) ||
+//		!anSTMethod.isPublic() ||
+//		anSTMethod.getParameterTypes().length != 1) return;
+		if (!isSetter(anSTMethod)) 
+			return;			
 		String aPropertyName = anSTMethod.getName().substring(SET.length()).toLowerCase();
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);

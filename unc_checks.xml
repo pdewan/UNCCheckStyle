@@ -58,6 +58,11 @@
             <message key="illegalMethodCall" value="Called disallowed method {0}"/>
             <property name="disallowedMethods" value="split, trim"/>
         </module>
+         <module name="IllegalInitCall">
+            <message key="illegalInitCall" value="init method {0} should be called by an init method or a constructor"/>
+        </module>
+        <module name="IllegalComponentInstantiation">
+        </module>
            <module name="IllegalTypeImported">
             <message key="illegalTypeImported" value="Used illegal type {0}"/>
             <property name="illegalTypes" value="java.util.HashSet, java.util.Vector"/>
@@ -76,13 +81,11 @@
         </module>
          -->
          <module name="ClassDefined">
-         <property name="severity" value="info"/>
-     
+         <property name="severity" value="info"/>     
             <message key="classDefined" value="Class {0} defined."/>
         </module>
         <module name="InterfaceDefined">
-            <property name="severity" value="info"/>
-        
+            <property name="severity" value="info"/>        
             <message key="interfaceDefined" value="Interface {0} defined."/>
         </module>
     </module>

@@ -18,6 +18,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
@@ -41,9 +42,11 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	protected List<STNameable> propertyNames;
 	protected List<STNameable> editablePropertyNames;
 	protected List<STNameable> tags= new ArrayList();
-	
+
 
 	protected STNameable structurePattern;
+	Map<DetailAST, List<DetailAST>> astToPendingChecks = new HashMap();
+	Map<DetailAST, FileContents> astToFileContents = new HashMap();
 
 	
 	@Override
@@ -168,7 +171,9 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 //		FullIdent aFullIdent = CheckUtils.createFullType(ast);
 //		typeName = aFullIdent.getText();
     }
-  protected abstract void processPreviousMethodData();
+  protected void processPreviousMethodData() {
+	  
+  }
 
     
 //    protected void processPreviousMethodData() {
@@ -326,7 +331,9 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 //		 	stMethods.clear();
 		 	imports.clear();
 	    }
-	  protected abstract void processMethodAndClassData();
+	  protected void processMethodAndClassData() {
+		  
+	  }
 	 
 
 
@@ -356,6 +363,39 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 			}
 		
 			return foundPublic;
+		}
+		public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
+			return false;
+		}
+
+		// pending check stuff
+		public void doPendingChecks() {
+			// for (List<FullIdent> aPendingTypeUses:astToPendingTypeUses.values())
+			// {
+
+			for (DetailAST aPendingAST : astToPendingChecks.keySet()) {
+				List<DetailAST> aPendingChecks = astToPendingChecks.get(aPendingAST);
+				// FileContents aFileContents = astToFileContents.get(anAST);
+				// setFileContents(aFileContents);
+
+				if (aPendingChecks.isEmpty())
+					continue;
+				List<DetailAST> aPendingTypeChecksCopy = new ArrayList(
+						aPendingChecks);
+				for (DetailAST aPendingCheck : aPendingTypeChecksCopy) {
+					if (doPendingCheck(aPendingCheck, aPendingAST) != null)
+						aPendingChecks.remove(aPendingCheck);
+
+				}
+			}
+		}
+		public static String shortFileName(String longName) {
+			int index = longName.lastIndexOf('/');
+			if (index <= 0)
+				index = longName.lastIndexOf('\\');
+			if (index <= 0)
+				return longName;
+			return longName.substring(index + 1);
 		}
 
 }

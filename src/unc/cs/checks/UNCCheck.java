@@ -1,9 +1,14 @@
 package unc.cs.checks;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FileContents;
 
 public abstract class UNCCheck extends Check{
+
 	public final void extendibleLog(int line, String key, Object... args) {
 		System.out.println("key:" + key);
         log(line, key, args);

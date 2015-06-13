@@ -10,7 +10,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public abstract  class MethodCallVisitedCheck extends STClassVisited {
+public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -25,9 +25,9 @@ public abstract  class MethodCallVisitedCheck extends STClassVisited {
     public int[] getDefaultTokens() {
         return new int[] {TokenTypes.METHOD_CALL};
     }
-	protected  boolean typeCheck(STType anSTClass) {
-		return true; // we probably will not flag the type
-	}
+//	protected  boolean typeCheck(STType anSTClass) {
+//		return true; // we probably will not flag the type
+//	}
 	
 	
 
@@ -58,11 +58,11 @@ public abstract  class MethodCallVisitedCheck extends STClassVisited {
 
     }
     public void visitToken(DetailAST ast) {	
-		if (ast.getType() == TokenTypes.METHOD_CALL)
+    		
+    		if (ast.getType() == TokenTypes.METHOD_CALL)
 			visitCall(ast);
-		else
-			super.visitToken(ast);
-		
+    		else 
+    			super.visitToken(ast);
 	}
     @Override
 	protected String msgKey() {
