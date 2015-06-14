@@ -47,6 +47,8 @@
           <module name="NoDuplicateShortTypeName">
             <message key="noDuplicateShortTypeName" value="Repeated short type name {0}"/>
         </module>
+          <module name="NoFullTypeName">
+        </module>
         <module name="ClassHasOneInterface">
             <message key="classHasOneInterface" value="Class with instance methods should have exactly one (possibly extending) interface."/>
         </module>

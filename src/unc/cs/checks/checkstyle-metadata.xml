@@ -25,6 +25,11 @@
 			<alternative-name internal-name="unc.cs.checks.NoDuplicateShortTypeNameCheck" />
 			<description>%NoDuplicateShortTypeNameDefined.desc</description>			
 		</rule-metadata>
+		<rule-metadata name="%NoFullTypeName.name" internal-name="NoFullTypeName"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.NoFullTypeNameCheck" />
+			<description>%NoFullTypeNameDefined.desc</description>			
+		</rule-metadata>
 		<rule-metadata name="%MethodLimit.name" internal-name="MethodLimit"
 			parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.MethodLimitCheck" />
