@@ -1,5 +1,7 @@
 package unc.cs.symbolTable;
 
+import java.util.Map;
+
 public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
@@ -19,4 +21,7 @@ public interface STType extends STNameable{
 	void introspect();
 	STNameable[] getImports();
 	STMethod[] getDeclaredConstructors();
+	STNameable[] getPropertyNames();
+	Map<String, PropertyInfo> getDeclaredPropertyInfos();
+	Map<String, PropertyInfo> getPropertyInfos();
 }

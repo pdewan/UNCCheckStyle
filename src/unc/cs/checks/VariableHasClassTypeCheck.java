@@ -1,23 +1,6 @@
 package unc.cs.checks;
 
-////////////////////////////////////////////////////////////////////////////////
-//checkstyle: Checks Java source code for adherence to a set of rules.
-//Copyright (C) 2001-2015 the original author or authors.
-//
-//This library is free software; you can redistribute it and/or
-//modify it under the terms of the GNU Lesser General Public
-//License as published by the Free Software Foundation; either
-//version 2.1 of the License, or (at your option) any later version.
-//
-//This library is distributed in the hope that it will be useful,
-//but WITHOUT ANY WARRANTY; without even the implied warranty of
-//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-//Lesser General Public License for more details.
-//
-//You should have received a copy of the GNU Lesser General Public
-//License along with this library; if not, write to the Free Software
-//Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-////////////////////////////////////////////////////////////////////////////////
+
 
 import com.google.common.collect.Sets;
 import com.puppycrawl.tools.checkstyle.Utils;
@@ -145,7 +128,7 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 */
 	private void maybeAddToPendingTypeChecks(DetailAST ast) {
 		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
-		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
+//		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		if (ignoreTypesSet.contains(anIdentifierType.getText()))
 			return;
@@ -199,6 +182,7 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	protected boolean checkType(STType anSTClass) {
 		return anSTClass.isInterface();
 	}
+	@Override
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
 		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
 		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
@@ -213,10 +197,17 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 			 String aSourceName =
 			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
 //			String aSourceName = toTypeName(aTreeAST);
+			 if (aTreeAST == currentTree) {
 			log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
 					msgKey(), anIdentifierType.getText(),
 					anIdentifier.getText(),
 					aSourceName + ":" + anIdentifier.getLineNo());
+			 } else {
+				 log(0, 
+							msgKey(), anIdentifierType.getText(),
+							anIdentifier.getText(),
+							aSourceName + ":" + anIdentifier.getLineNo());
+			 }
 			return true;
 		}
 		return false;
@@ -256,38 +247,40 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 		return SymbolTableFactory.getOrCreateSymbolTable().isClass(className);
 	}
 
-	@Override
-	public void processDeferredChecks() {
-		doPendingChecks();
+//	@Override
+//	public void processDeferredChecks() {
+//		doPendingChecks();
+//
+//	}
 
-	}
+//	List<DetailAST> pendingChecks() {
+//		List<DetailAST> result = astToPendingChecks.get(currentTree);
+//		if (result == null) {
+//			result = new ArrayList<>();
+//			astToPendingChecks.put(currentTree, result);
+//			astToFileContents.put(currentTree, getFileContents());
+//
+//		}
+//		return result;
+//	}
 
-	List<DetailAST> pendingChecks() {
-		List<DetailAST> result = astToPendingChecks.get(currentTree);
-		if (result == null) {
-			result = new ArrayList<>();
-			astToPendingChecks.put(currentTree, result);
-		}
-		return result;
-	}
+//	DetailAST currentTree;
 
-	DetailAST currentTree;
+//	@Override
+//	public void beginTree(DetailAST ast) {
+////		System.out.println("ID =" + getId());
+////		System.out.println("Message Bundle:" + getMessageBundle());
+////		astToFileContents.put(ast, getFileContents());
+////		currentTree = ast;
+////		pendingChecks().clear();
+//	}
 
-	@Override
-	public void beginTree(DetailAST ast) {
-		System.out.println("ID =" + getId());
-		System.out.println("Message Bundle:" + getMessageBundle());
-		astToFileContents.put(ast, getFileContents());
-		currentTree = ast;
-		pendingChecks().clear();
-	}
-
-	@Override
-	public void finishTree(DetailAST ast) {
-		ContinuationNotifierFactory.getOrCreateSingleton()
-				.notifyContinuationProcessors();
-	}
-	
+//	@Override
+//	public void finishTree(DetailAST ast) {
+//		ContinuationNotifierFactory.getOrCreateSingleton()
+//				.notifyContinuationProcessors();
+//	}
+//	
 
 	static {
 		for (String aType : IGNORED_TYPES) {

@@ -23,7 +23,8 @@ import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
-public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
+public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck implements
+ContinuationProcessor{
 	
 //	public static final String MSG_KEY = "stBuilder";
 	
@@ -42,6 +43,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 	protected List<STNameable> propertyNames;
 	protected List<STNameable> editablePropertyNames;
 	protected List<STNameable> tags= new ArrayList();
+	DetailAST currentTree;
 
 
 	protected STNameable structurePattern;
@@ -216,7 +218,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 //    				currentMethodIsVisible);
 //    		stMethods.add(anSTMethod);
 //    	}    
-    	processPreviousMethodData();
+//    	processPreviousMethodData();
     	currentMethodParameterTypes.clear();    	
     	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
     	currentMethodName = aMethodNameAST.getText();
@@ -320,6 +322,16 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		}
 		
 	}
+	protected List<DetailAST> pendingChecks() {
+		List<DetailAST> result = astToPendingChecks.get(currentTree);
+		if (result == null) {
+			result = new ArrayList<>();
+			astToPendingChecks.put(currentTree, result);
+			astToFileContents.put(currentTree, getFileContents());
+
+		}
+		return result;
+	}
 	 @Override
 	    public void beginTree(DetailAST ast) {  
 		 super.beginTree(ast);
@@ -330,6 +342,8 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 		 	isElaboration = false;
 //		 	stMethods.clear();
 		 	imports.clear();
+		 	currentTree = ast;
+			pendingChecks().clear();
 	    }
 	  protected void processMethodAndClassData() {
 		  
@@ -339,8 +353,19 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 
 	    @Override
 	    public void finishTree(DetailAST ast) {
+	    	if (currentMethodName != null)
+	    	processPreviousMethodData();
 	    	processMethodAndClassData();
+	    	// this is more efficient
+	    	processDeferredChecks(); 
+//	    	ContinuationNotifierFactory.getOrCreateSingleton()
+//			.notifyContinuationProcessors();
 	    }
+	    
+		public void processDeferredChecks() {
+			doPendingChecks();
+
+		}
 
 		public static boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
 			boolean foundPublic = false;
@@ -374,6 +399,7 @@ public abstract class ComprehensiveVisitCheck extends TypeVisitedCheck{
 			// {
 
 			for (DetailAST aPendingAST : astToPendingChecks.keySet()) {
+				if (aPendingAST == currentTree) continue; 
 				List<DetailAST> aPendingChecks = astToPendingChecks.get(aPendingAST);
 				// FileContents aFileContents = astToFileContents.get(anAST);
 				// setFileContents(aFileContents);

@@ -45,6 +45,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     		else
     		stMethods.add(anSTMethod);
     	}
+    	currentMethodName = null;
     	
     }
 		

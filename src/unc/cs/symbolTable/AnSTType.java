@@ -85,6 +85,26 @@ public class AnSTType extends AnSTNameable implements STType {
 	public STNameable[] getDeclaredPropertyNames() {
 		return declaredPropertyNames;
 	}
+	@Override
+	public STNameable[] getPropertyNames() {
+		List<STNameable> result = new ArrayList<>();
+		STNameable[] aPropertyNames = getDeclaredPropertyNames();
+		while (true) {
+			for (STNameable aNameable:aPropertyNames) {
+				result.add(aNameable);
+			}
+			STNameable aSuperClass = getSuperClass();
+			if (aSuperClass == null || aSuperClass.getName().endsWith("Object"))
+			     break;
+			STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperClass.getName());
+			if (anSTClass == null)
+				return null; // assume that we are only inheriting our own types
+			aPropertyNames = anSTClass.getDeclaredPropertyNames();
+			
+		}
+		return  result.toArray(new STNameable[0]);
+	}
+	
 //	public void initDeclaredPropertyNames(STNameable[] propertyNames) {
 //		this.declaredPropertyNames = propertyNames;
 //	}
@@ -139,7 +159,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	public static boolean isGetter(STMethod anSTMethod) {
 		return anSTMethod.getName().startsWith(GET) &&
 				anSTMethod.isPublic() &&
-				anSTMethod.getParameterTypes().length != 0;
+				anSTMethod.getParameterTypes().length == 0;
 	}
 
 	void maybeProcessGetter(STMethod anSTMethod) {
@@ -183,5 +203,27 @@ public class AnSTType extends AnSTNameable implements STType {
 			maybeProcessGetter(anSTMethod);
 			maybeProcessSetter(anSTMethod);			
 		}
+	}
+	@Override
+	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
+		return actualPropertyInfo;
+	}
+	@Override
+	public Map<String, PropertyInfo> getPropertyInfos() {
+		Map<String, PropertyInfo> result = new HashMap<>();
+		Map<String, PropertyInfo> aPropertyInfos = getDeclaredPropertyInfos();
+		while (true) {
+			for (String aPropertyName:aPropertyInfos.keySet()) {
+				result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
+			}
+			STNameable aSuperClass = getSuperClass();
+			if (aSuperClass == null || aSuperClass.getName().endsWith("Object"))
+			     break;
+			STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperClass.getName());
+			if (anSTClass == null)
+				return null; // assume that we are only inheriting our own types
+			aPropertyInfos = anSTClass.getDeclaredPropertyInfos();			
+		}
+		return result;
 	}
 }
