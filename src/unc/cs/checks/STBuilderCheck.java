@@ -39,7 +39,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				aParameterTypes, 
     				currentMethodIsPublic,     				
     				currentMethodType,
-    				currentMethodIsVisible);
+    				currentMethodIsVisible,
+    				currentMethodTags.toArray(dummyArray));
     		if (currentMethodIsConstructor)
     			stConstructors.add(anSTMethod);
     		else
@@ -55,11 +56,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
  		 	stMethods.clear();
  		 	stConstructors.clear();
  	    }
+	STNameable[] dummyArray = new STNameable[0];
+
 	 
 	  protected void processMethodAndClassData() {
 		  STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
 		  STMethod[] aConstructors = stConstructors.toArray(new STMethod[0]);
-	    	STNameable[] dummyArray = new STNameable[0];
 	    	STType anSTClass = new AnSTType(
 	    			typeAST, 
 	    			typeName, 
@@ -74,7 +76,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			structurePattern,
 	    			propertyNames.toArray(dummyArray),
 	    			editablePropertyNames.toArray(dummyArray),
-	    			tags.toArray(dummyArray),
+	    			typeTags.toArray(dummyArray),
 	    			imports.toArray(dummyArray));
 //	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
 //	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));

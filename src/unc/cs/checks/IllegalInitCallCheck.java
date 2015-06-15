@@ -13,7 +13,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 
-public class IllegalInitCallCheck extends MethodCallVisitedCheck {
+public class IllegalInitCallCheck extends InitCallCheck {
 
     /**
      * A key is pointing to the warning message text in "messages.properties"
@@ -26,27 +26,27 @@ public class IllegalInitCallCheck extends MethodCallVisitedCheck {
 	protected String msgKey() {
 		return MSG_KEY;
 	}
-    @Override
-	public int[] getDefaultTokens() {
-		return new int[] {
-						TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
-//						TokenTypes.INTERFACE_DEF, 
-//						TokenTypes.TYPE_ARGUMENTS,
-//						TokenTypes.TYPE_PARAMETERS,
-						TokenTypes.METHOD_DEF, 
-						TokenTypes.CTOR_DEF,
-						TokenTypes.METHOD_CALL
-//						TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
-//						TokenTypes.PARAMETER_DEF 
-						};
-	}
-    public static boolean isExternalCall(String aLongMethodName) {
-    	return aLongMethodName.indexOf(".") != -1 
-				&& !aLongMethodName.startsWith("this");
-    }
+//    @Override
+//	public int[] getDefaultTokens() {
+//		return new int[] {
+//						TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
+////						TokenTypes.INTERFACE_DEF, 
+////						TokenTypes.TYPE_ARGUMENTS,
+////						TokenTypes.TYPE_PARAMETERS,
+//						TokenTypes.METHOD_DEF, 
+//						TokenTypes.CTOR_DEF,
+//						TokenTypes.METHOD_CALL
+////						TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
+////						TokenTypes.PARAMETER_DEF 
+//						};
+//	}
+//    public static boolean isExternalCall(String aLongMethodName) {
+//    	return aLongMethodName.indexOf(".") != -1 
+//				&& !aLongMethodName.startsWith("this");
+//    }
     
 	@Override
-	// succeeds if an init call
+	// succeeds if an init call in an init call
 	protected boolean check(DetailAST ast, String aShortMethodName,
 			String aLongMethodName) {
 		return (

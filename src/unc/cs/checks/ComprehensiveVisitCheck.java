@@ -1,5 +1,6 @@
 package unc.cs.checks;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,7 +43,10 @@ ContinuationProcessor{
 	protected List<STNameable> imports = new ArrayList();
 	protected List<STNameable> propertyNames;
 	protected List<STNameable> editablePropertyNames;
-	protected List<STNameable> tags= new ArrayList();
+	protected List<STNameable> typeTags= new ArrayList();
+	protected List<STNameable> currentMethodTags= new ArrayList();
+	protected Set<String> excludeTags;
+	protected Set<String> includeTags;
 	DetailAST currentTree;
 
 
@@ -53,7 +57,8 @@ ContinuationProcessor{
 	
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
+		return new int[] {TokenTypes.PACKAGE_DEF, 
+						TokenTypes.CLASS_DEF,  
 						TokenTypes.INTERFACE_DEF, 
 						TokenTypes.TYPE_ARGUMENTS,
 						TokenTypes.TYPE_PARAMETERS,
@@ -61,6 +66,96 @@ ContinuationProcessor{
 						TokenTypes.CTOR_DEF,
 						TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
 						TokenTypes.PARAMETER_DEF };
+	}
+	
+	public void setIncludeTags(String[] newVal) {
+		this.includeTags = new HashSet(Arrays.asList(newVal));		
+	}
+	public void setExcludeTags(String[] newVal) {
+		this.excludeTags = new HashSet(Arrays.asList(newVal));		
+	}
+	
+	public boolean hasExcludeTags() {
+		return excludeTags != null && excludeTags.size() > 1;
+	}
+	
+	public boolean hasIncludeTags() {
+		return includeTags != null && includeTags.size() > 1;
+	}
+	
+	public boolean checkTagOfCurrentType(String aTag) {
+		if (hasIncludeTags()) {
+			return includeTags.contains(aTag);
+		} else { // we know it has exclude tags
+			return !excludeTags.contains(aTag);
+		}
+	}
+	public boolean checkIncludeTagOfCurrentType(String aTag) {
+			return includeTags.contains(aTag);
+		
+	}
+	public boolean checkExcludeTagOfCurrentType(String aTag) {
+		return !excludeTags.contains(aTag);
+	
+   } 
+//	public boolean checkIncludeTagOfCurrentType(String aTag) {
+//		if (
+//			return includeTags.contains(aTag);
+//		} else { // we know it has exclude tags
+//			return !excludeTags.contains(aTag);
+//		}
+//	}
+	
+	public boolean checkTagsOfCurrentType() {
+		if (!hasIncludeTags() && !hasExcludeTags())
+			return true; // all tags checked in this case
+		if (typeName == null) {
+			System.err.println("Check called without type name being populated");
+			return true;
+		}
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
+//		STNameable[] aCurrentTags = anSTType.getTags();
+		List<STNameable> aCurrentTags = typeTags;
+		for (STNameable aCurrentTag:aCurrentTags) {
+			if (checkTagOfCurrentType(aCurrentTag.getName()))
+					return true;
+		}
+		return false;
+		
+	}
+	public boolean checkIncludeTagsOfCurrentType() {
+		if (!hasIncludeTags() && !hasExcludeTags())
+			return true; // all tags checked in this case
+		if (typeName == null) {
+			System.err.println("Check called without type name being populated");
+			return true;
+		}
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
+		STNameable[] aCurrentTags = anSTType.getTags();
+		if (hasIncludeTags())
+			return checkIncludeTagsOfCurrentType(aCurrentTags);
+		else
+			return checkExcludeTagsOfCurrentType(aCurrentTags);		
+	}
+	// if anyone says exclude, exclude
+	public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
+		
+		for (STNameable aCurrentTag:aCurrentTags) {
+			if (checkExcludeTagOfCurrentType(aCurrentTag.getName()))
+					return true;
+		}
+		return false;
+		
+	}
+	// if anyone says include, include
+     public boolean checkIncludeTagsOfCurrentType(STNameable[] aCurrentTags) {
+		
+		for (STNameable aCurrentTag:aCurrentTags) {
+			if (checkIncludeTagOfCurrentType(aCurrentTag.getName()))
+					return true;
+		}
+		return false;
+		
 	}
  
 	public static STNameable[] getInterfaces(DetailAST aClassDef) {
@@ -155,21 +250,29 @@ ContinuationProcessor{
 		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
 		currentMethodIsVisible = !"false".equals(actualParamIDent.getText());
     }
-    public void maybeVisitTags(DetailAST ast) {  
+    public void maybeVisitTypeTags(DetailAST ast) {  
     	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 		if (annotationAST == null) {
-			tags = emptyArrayList;
+			typeTags = emptyArrayList;
 			return;
 		}
-		tags = getArrayLiterals(annotationAST);
+		typeTags = getArrayLiterals(annotationAST);
+    }
+    public void maybeVisitMethodTags(DetailAST ast) {  
+    	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
+		if (annotationAST == null) {
+			currentMethodTags = emptyArrayList;
+			return;
+		}
+		currentMethodTags = getArrayLiterals(annotationAST);
     }
     
-    public void visitType(DetailAST ast) {  
-    	super.visitType(ast);
-		maybeVisitStructurePattern(ast);
-		maybeVisitPropertyNames(ast);
-		maybeVisitEditablePropertyNames(ast);
-		maybeVisitTags(ast);
+    public void visitType(DetailAST typeDef) {  
+    	super.visitType(typeDef);
+		maybeVisitStructurePattern(typeDef);
+		maybeVisitPropertyNames(typeDef);
+		maybeVisitEditablePropertyNames(typeDef);
+		maybeVisitTypeTags(typeDef);
 //		FullIdent aFullIdent = CheckUtils.createFullType(ast);
 //		typeName = aFullIdent.getText();
     }
@@ -197,6 +300,7 @@ ContinuationProcessor{
   	processPreviousMethodData();
   	currentMethodIsConstructor = false;
   	visitMethodOrConstructor(methodDef);
+  	maybeVisitMethodTags(methodDef);
   }
    public void visitConstructor(DetailAST methodDef) {
 	  	processPreviousMethodData();

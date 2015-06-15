@@ -21,23 +21,19 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 import com.puppycrawl.tools.checkstyle.checks.coding.IllegalInstantiationCheck;
 
-public class IllegalComponentInstantiation extends ComprehensiveVisitCheck {
+public abstract class ComponentInstantiationCheck extends ComprehensiveVisitCheck {
 
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
 	 */
-	public static final String MSG_KEY = "illegalComponentInstantiation";
-//	Map<DetailAST, List<DetailAST>> astToPendingTypeInstantiations = new HashMap();
 
-	public IllegalComponentInstantiation() {
+
+	public ComponentInstantiationCheck() {
 		ContinuationNotifierFactory.getOrCreateSingleton()
 				.addContinuationProcessor(this);
 	}
-	@Override
-	protected String msgKey() {
-		return MSG_KEY;
-	}
+	
 
 	@Override
 	public int[] getDefaultTokens() {
@@ -107,36 +103,50 @@ public class IllegalComponentInstantiation extends ComprehensiveVisitCheck {
 		}
 		return false;
 	}
-
+	
+	
 	// fail if instantiate a componnet in a method other than init or
 	// constructor
-	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
-		if (currentMethodIsConstructor || AnSTType.isInit(currentMethodName))
-			return true;
-		DetailAST aTypeAST = ast.getFirstChild();
-		final FullIdent anIdentifierType = FullIdent.createFullIdent(aTypeAST);
-		String anInstantiatedTypeName = anIdentifierType.getText();
-		Boolean anIllegalInstantiation = componentInstantiated(anInstantiatedTypeName, aTreeAST);
-		if (anIllegalInstantiation == null)
-			return null;
-		if (!anIllegalInstantiation)
-			return true;
+	public Boolean inConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
+		return (currentMethodIsConstructor || AnSTType.isInit(currentMethodName));
+////		DetailAST aTypeAST = ast.getFirstChild();
+//		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
+//		String anInstantiatedTypeName = anIdentifierType.getText();
+//		Boolean aComponentInstantiated = componentInstantiated(anInstantiatedTypeName, aTreeAST);
+//		if (aComponentInstantiated == null)
+//			return null;
+//		if (!aComponentInstantiated)
+//			return false;
 
-		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
-				.getFilename());
-		// String aSourceName = toTypeName(aTreeAST);
-		if (aTreeAST == currentTree) {
-		log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
-				msgKey(),  anInstantiatedTypeName,
-				aSourceName );
-		} else {
-			log(0,
-					msgKey(),  anInstantiatedTypeName,
-					aSourceName + ":" + anIdentifierType.getLineNo());
-		}
-		return false;
-
+		
 	}
+//	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
+//	if (currentMethodIsConstructor || AnSTType.isInit(currentMethodName))
+//		return true;
+//	DetailAST aTypeAST = ast.getFirstChild();
+//	final FullIdent anIdentifierType = FullIdent.createFullIdent(aTypeAST);
+//	String anInstantiatedTypeName = anIdentifierType.getText();
+//	Boolean anIllegalInstantiation = componentInstantiated(anInstantiatedTypeName, aTreeAST);
+//	if (anIllegalInstantiation == null)
+//		return null;
+//	if (!anIllegalInstantiation)
+//		return true;
+//
+//	String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
+//			.getFilename());
+//	// String aSourceName = toTypeName(aTreeAST);
+//	if (aTreeAST == currentTree) {
+//	log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
+//			msgKey(),  anInstantiatedTypeName,
+//			aSourceName );
+//	} else {
+//		log(0,
+//				msgKey(),  anInstantiatedTypeName,
+//				aSourceName + ":" + anIdentifierType.getLineNo());
+//	}
+//	return false;
+//
+//}
 
 	void visitInstantiation(DetailAST ast) {
 		if (doPendingCheck(ast, currentTree) == null)

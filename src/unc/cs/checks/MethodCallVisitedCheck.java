@@ -43,7 +43,6 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
     }
     
     protected abstract boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName) ;
-
     
     public void visitCall(DetailAST ast) {
 //    	if (ast.getType() != TokenTypes.METHOD_CALL)
@@ -57,8 +56,7 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 //        log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
 
     }
-    public void visitToken(DetailAST ast) {	
-    		
+    public void visitToken(DetailAST ast) {	    		
     		if (ast.getType() == TokenTypes.METHOD_CALL)
 			visitCall(ast);
     		else 

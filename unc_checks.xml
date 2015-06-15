@@ -54,16 +54,24 @@
         </module>
          <module name="ClassHasAtLeastOneInterface">
             <message key="classHasAtLeastOneInterface" value="Class with instance methods should have an interface."/>
-        </module>
-        
+        </module>        
          <module name="IllegalMethodCall">
             <message key="illegalMethodCall" value="Called disallowed method {0}"/>
             <property name="disallowedMethods" value="split, trim"/>
         </module>
+         <module name="LegalMethodCall">
+            <property name="severity" value="info"/>         
+            <property name="expectedMethods" value="charAt, length, substring"/>
+        </module>
          <module name="IllegalInitCall">
             <message key="illegalInitCall" value="init method {0} should be called by an init method or a constructor"/>
         </module>
+        <module name="LegalInitCall">
+        </module>
         <module name="IllegalComponentInstantiation">
+        </module>
+         <module name="LegalComponentInstantiation">
+             <property name="severity" value="info"/>         
         </module>
            <module name="IllegalTypeImported">
             <message key="illegalTypeImported" value="Used illegal type {0}"/>
@@ -75,6 +83,8 @@
         </module>
         -->
          <module name="PackageDeclaration"/>
+         <module name="HiddenField"/>
+         
           <!--
         <module name="Regexp">
             <property name="format" value="(interface [a-zA-Z0-9 &lt;&gt;,\./*?[\s]]* \{)|((@Immutable|@ThreadSafe|@NotThreadSafe)(.*[\n])*.*(class|enum) [a-zA-Z0-9\s&lt;&gt;,\./*?]* \{)" />
