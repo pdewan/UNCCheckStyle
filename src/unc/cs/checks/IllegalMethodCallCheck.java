@@ -98,7 +98,7 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 	}
 
 	@Override
-	protected boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName) {
+	protected boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
 		return !disallowedMethodsSet.contains(aShortMethodName);
 	}
 

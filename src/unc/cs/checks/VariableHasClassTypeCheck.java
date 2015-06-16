@@ -101,7 +101,7 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * @param paradef
 	 *            parameter list for check.
 	 */
-	private void visitParameterDef(DetailAST paradef) {
+	public void visitParameterDef(DetailAST paradef) {
 		final DetailAST grandParentAST = paradef.getParent().getParent();
 
 		if (grandParentAST.getType() == TokenTypes.METHOD_DEF)
@@ -116,7 +116,8 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * @param variableDef
 	 *            variable to check.
 	 */
-	private void visitVariableDef(DetailAST variableDef) {
+	public void visitVariableDef(DetailAST variableDef) {
+		super.visitVariableDef(variableDef);
 		maybeAddToPendingTypeChecks(variableDef);
 	}
 

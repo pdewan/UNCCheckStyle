@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
+import sun.reflect.generics.scope.MethodScope;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
@@ -21,6 +22,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
+import com.puppycrawl.tools.checkstyle.api.ScopeUtils;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
@@ -43,8 +45,11 @@ ContinuationProcessor{
 	protected List<STNameable> imports = new ArrayList();
 	protected List<STNameable> propertyNames;
 	protected List<STNameable> editablePropertyNames;
-	protected List<STNameable> typeTags= new ArrayList();
-	protected List<STNameable> currentMethodTags= new ArrayList();
+	protected List<STNameable> typeTags;
+	protected List<STNameable> currentMethodTags;
+	protected Map<String, String> typeScope = new HashMap();
+	protected List<STNameable> globalVariables = new ArrayList();
+	protected Map<String, String> currentMethodScope = new HashMap();
 	protected Set<String> excludeTags;
 	protected Set<String> includeTags;
 	DetailAST currentTree;
@@ -57,15 +62,20 @@ ContinuationProcessor{
 	
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.PACKAGE_DEF, 
+		return new int[] {
+						TokenTypes.PACKAGE_DEF, 
 						TokenTypes.CLASS_DEF,  
 						TokenTypes.INTERFACE_DEF, 
 						TokenTypes.TYPE_ARGUMENTS,
 						TokenTypes.TYPE_PARAMETERS,
+						TokenTypes.VARIABLE_DEF,
+						TokenTypes.PARAMETER_DEF,
 						TokenTypes.METHOD_DEF, 
 						TokenTypes.CTOR_DEF,
 						TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
-						TokenTypes.PARAMETER_DEF };
+						TokenTypes.LCURLY,
+						TokenTypes.RCURLY
+						};
 	}
 	
 	public void setIncludeTags(String[] newVal) {
@@ -157,15 +167,17 @@ ContinuationProcessor{
 		return false;
 		
 	}
+ 	static STNameable[] emptyNameableArray = {};
+ 	static List<STNameable> emptyNameableList =new ArrayList();
+
  
 	public static STNameable[] getInterfaces(DetailAST aClassDef) {
     	List<STNameable> anInterfaces = new ArrayList();
-    	STNameable[] emptyArray = {};
     	int numInterfaces = 0;
 		DetailAST implementsClause = aClassDef
 				.findFirstToken(TokenTypes.IMPLEMENTS_CLAUSE);
 		if (implementsClause == null)
-			return emptyArray;
+			return emptyNameableArray;
 		DetailAST anImplementedInterface = implementsClause
 				.findFirstToken(TokenTypes.IDENT);
 		while (anImplementedInterface != null) {
@@ -173,7 +185,7 @@ ContinuationProcessor{
 				anInterfaces.add(new AnSTNameable (anImplementedInterface, anImplementedInterface.getText()));
 			anImplementedInterface = anImplementedInterface.getNextSibling();
 		}
-		return (STNameable[]) anInterfaces.toArray(emptyArray);    	
+		return (STNameable[]) anInterfaces.toArray(emptyNameableArray);    	
     }
     
     
@@ -323,7 +335,9 @@ ContinuationProcessor{
 //    		stMethods.add(anSTMethod);
 //    	}    
 //    	processPreviousMethodData();
-    	currentMethodParameterTypes.clear();    	
+    	currentMethodParameterTypes.clear(); 
+    	currentMethodScope.clear();
+	 	currentMethodTags = emptyNameableList;
     	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
     	currentMethodName = aMethodNameAST.getText();
     	currentMethodIsPublic = ComprehensiveVisitCheck.isPublicInstanceMethod(methodDef);
@@ -387,6 +401,76 @@ ContinuationProcessor{
 		 STNameable anSTNameable = new AnSTNameable(ast, anImport.getText());
 		 imports.add(anSTNameable);
 	 }
+	 
+	 public void visitLCurly(DetailAST ast) {
+		 
+	 }
+	 
+     public void visitRCurly(DetailAST ast) {
+		 
+	 }
+     
+     public void visitVariableOrParameterDef(DetailAST ast) {
+    	 if (ScopeUtils.inCodeBlock(ast))
+    		 addToMethodScope(ast);
+    	 else
+    		 addToTypeScope(ast);		 
+	 }
+     
+     public String lookupType (String aVariable) {
+    	 String result = currentMethodScope.get(aVariable);
+    	 if (result == null)
+    		  result = typeScope.get(aVariable);
+    	 return result;
+     }
+     
+     public void visitVariableDef(DetailAST paramOrVarDef) {
+    	 visitVariableOrParameterDef(paramOrVarDef);
+    	 if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
+    		 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+    	 		final DetailAST anIdentifier = paramOrVarDef.findFirstToken(TokenTypes.IDENT);
+//    	 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+//    	 		final FullIdent anIdentifierType = FullIdent.createFullIdent(aType);
+    	 		STNameable anSTNameable = new AnSTNameable(paramOrVarDef, anIdentifier.getText());
+    	 		globalVariables.add(anSTNameable);
+    	 }
+		 
+	 }
+     
+     public void visitParameterDef(DetailAST ast) {
+    	 visitVariableOrParameterDef(ast);
+	 }	
+     
+     public void addToMethodScope(DetailAST paramOrVarDef) {
+//    	 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+// 		final DetailAST anIdentifier = paramOrVarDef.findFirstToken(TokenTypes.IDENT);
+// 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+// 		currentMethodScope.put(anIdentifier.getText(), anIdentifierType.getText());
+    	 addToScope(paramOrVarDef, currentMethodScope);
+     }
+     
+     public static String getTypeName (DetailAST paramOrVarDef) {
+    	 return FullIdent.createFullIdentBelow(paramOrVarDef.findFirstToken(TokenTypes.TYPE)).getText();
+
+     }
+     
+     public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope) {
+//    	 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+ 		final DetailAST anIdentifier = paramOrVarDef.findFirstToken(TokenTypes.IDENT);
+// 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+// 		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(aType);
+
+ 		aScope.put(anIdentifier.getText(), getTypeName(paramOrVarDef));
+     }
+     
+     public void addToTypeScope(DetailAST paramOrVarDef) {
+//    	 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+// 		final DetailAST anIdentifier = paramOrVarDef.findFirstToken(TokenTypes.IDENT);
+// 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+// 		typeScope.put(anIdentifier.getText(), anIdentifierType.getText());
+    	 addToScope(paramOrVarDef, typeScope);
+     }
+       
      
 	public void visitToken(DetailAST ast) {
 //    	System.out.println("Check called:" + MSG_KEY);
@@ -421,6 +505,16 @@ ContinuationProcessor{
 		case TokenTypes.STATIC_IMPORT:
 			visitStaticImport(ast);
 			return;
+		case TokenTypes.LCURLY:
+			visitLCurly(ast);
+			return;
+		case TokenTypes.RCURLY:
+			visitRCurly(ast);
+			return;
+		case TokenTypes.VARIABLE_DEF:
+			visitVariableDef(ast);
+			return;
+			
 		default:
 			System.err.println("Unexpected token");
 		}
@@ -440,12 +534,16 @@ ContinuationProcessor{
 	    public void beginTree(DetailAST ast) {  
 		 super.beginTree(ast);
 		 	currentMethodName = null;
+		 	currentMethodScope.clear();
+		 	typeTags = emptyNameableList;
+		 	typeScope.clear();
 		 	typeName = null;
 		 	isInterface = false;
 		 	isGeneric = false;
 		 	isElaboration = false;
 //		 	stMethods.clear();
 		 	imports.clear();
+		 	globalVariables.clear();
 		 	currentTree = ast;
 			pendingChecks().clear();
 	    }
