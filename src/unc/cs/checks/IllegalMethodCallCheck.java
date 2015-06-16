@@ -26,8 +26,17 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
      * file.
      */
     public static final String MSG_KEY = "illegalMethodCall";
-    protected String[] disallowedMethods;
-    protected Set<String> disallowedMethodsSet = new HashSet();
+    protected String[] disallowedMethods, disallowedClasses, allowedClasses, allowedMethods;
+    
+  
+ // disallow all methods of this class except the allowed methods
+    protected Set<String> disallowedClassSet = new HashSet(); 
+// if disallowed class set is missing, then it is *    
+    protected Set<String> allowedMethodSet = new HashSet();
+ // all methods of these classes can be used, except the disallowed methods
+    protected Set<String> allowedClassSet =new HashSet();
+    // if allowed clsas set is missing, then it is *
+    protected Set<String> disallowedMethodSet = new HashSet();
 //   
 //    @Override
 //    public int[] getDefaultTokens() {
@@ -93,13 +102,70 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
     	disallowedMethods = newValue;
 //		String[] toArray = newValue.split(",");
 		for (String s:disallowedMethods) {
-			disallowedMethodsSet.add(s);
+			disallowedMethodSet.add(s);
 		}		
 	}
+    public void setAllowedMethods (String[] newValue) {
+    	allowedMethods = newValue;
+//		String[] toArray = newValue.split(",");
+		for (String s:allowedMethods) {
+			allowedMethodSet.add(s);
+		}		
+	}
+    public void setDisallowedClasses (String[] newValue) {
+    	disallowedClasses = newValue;
+//		String[] toArray = newValue.split(",");
+		for (String s:disallowedClasses) {
+			disallowedClassSet.add(s);
+		}		
+	}
+    public void setAllowedClasses (String[] newValue) {
+    	allowedClasses = newValue;
+//		String[] toArray = newValue.split(",");
+		for (String s:allowedClasses) {
+			allowedClassSet.add(s);
+		}		
+	}
+	protected boolean checkAtomic(String aLongMethodName) {
+		if (disallowedMethodSet.size() > 1)
+			return !disallowedMethodSet.contains(aLongMethodName);
+		else if (allowedMethodSet.size() > 1)
+			return allowedMethodSet.contains(aLongMethodName);
+		else
+			return true; // succeeds if nothing specified
+	}
+//	protected boolean checkAtomicDisallowed(String aLongMethodName) {
+//		return !allowedMethodSet.contains(aLongMethodName);
+//	}
+	/*
+	 * need to allow calls from all local classes or ones with certain tags
+	 */
+	protected boolean checkAllowedClassDisallowedMethods(String[] aCallParts, String aLongMethodName) {		
+		String aCalledClass = aCallParts[0];
+		if (!allowedClassSet.contains(aCalledClass))
+			return false;
+		return !disallowedMethodSet.contains(aLongMethodName);
+	}
+	protected boolean checkDisallowedClassAllowedMethods(String[] aCallParts, String aLongMethodName) {		
+		String aCalledClass = aCallParts[0];
+		if (!disallowedClassSet.contains(aCalledClass))
+			return true;
+		return allowedMethodSet.contains(aLongMethodName);
+	}
+
 
 	@Override
 	protected boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
-		return !disallowedMethodsSet.contains(aShortMethodName);
+		if (aCallParts.length > 2) // cannot dissect it into a class
+		     return checkAtomic(aLongMethodName);
+		// give precedence to disallowed
+		else if (disallowedClassSet.size() > 0) {
+			return checkDisallowedClassAllowedMethods(aCallParts, aLongMethodName);			
+		} else if (allowedClassSet.size() > 0) {
+			return checkAllowedClassDisallowedMethods(aCallParts, aLongMethodName);
+		} else { // no inheritance, just check
+			return checkAtomic(aLongMethodName);
+		}
 	}
 
 	

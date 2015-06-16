@@ -81,6 +81,19 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
     	}
     	return aCallPartsList.toArray(new String[0]);
     }
+    public String toLongName(String[] aNormalizedName) {
+    	StringBuffer retVal = new StringBuffer();
+    	int index = 0;
+    	while (true) {
+    		if (index >= aNormalizedName.length) {
+    			return retVal.toString();
+    		}
+    		if (index > 0)
+    			retVal.append(".");
+    		retVal.append(aNormalizedName[index]);
+    		index ++;
+    	}
+    }
     public void visitCall(DetailAST ast) {
 //    	if (ast.getType() != TokenTypes.METHOD_CALL)
 //    		return;
@@ -88,9 +101,11 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
     	FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
     	longMethodName = aFullIdent.getText();
     	String[] aCallParts = longMethodName.split("\\.");
+    	String[] aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
+    	String aNormalizedLongName = toLongName(aNormalizedParts);
     	
 //        System.out.println("Method text:" + getLastDescendent(ast).getText());
-    	if (!check(ast, shortMethodName, longMethodName, toNormalizedClassBasedCall(aCallParts)))
+    	if (!check(ast, shortMethodName, aNormalizedLongName, aNormalizedParts))
            log(ast, shortMethodName);
 //        log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
 

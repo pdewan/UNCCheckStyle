@@ -1,6 +1,9 @@
 package unc.cs.checks;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -11,17 +14,34 @@ import com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck;
 
 public class IllegalTypeImportedCheck extends UNCCheck {
 	public static final String MSG_KEY = "illegalClassImported";
+	
+//    List<String>  legalClasses = new ArrayList();
+    List<String>  illegalPrefixes;
 
-    Set<String>  illegalClasses = new HashSet();
+
+//    Set<String>  illegalClasses = new HashSet();
+    List<String>  legalPrefixes;
     public int[] getDefaultTokens() {
         return new int[] {TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT};
     }
     
-    public void setIllegalTypes(String... from) {
-    	for (String aClass:from) {
-    		illegalClasses.add(aClass);
-    	}
+    public void setIllegalPrefixes(String... from) {
+    	illegalPrefixes = Arrays.asList(from);
+//    	for (String aPrefix:from) {
+//    		illegalPrefixes.add(aPrefix);
+//    	}
     }
+    public void setLegalPrefixes(String... from) {
+    	legalPrefixes = Arrays.asList(from);
+//    	for (String aClass:from) {
+//    		legalPrefixes.add(aClass);
+//    	}
+    }
+//    public void setLegalPackagesPrefixes(String... from) {
+//    	for (String aPrefix:from) {
+//    		legalPrefixes.add(aPrefix);
+//    	}
+//    }
 	 @Override
 	    public void visitToken(DetailAST ast) {
 	        final FullIdent imp;
@@ -39,8 +59,29 @@ public class IllegalTypeImportedCheck extends UNCCheck {
 	                imp.getText());
 	        }
 	    }
+	 protected boolean isLocalPackage(String importText) {
+		 for (String aPrefix:legalPrefixes) {
+			 if (importText.startsWith(aPrefix))
+				 return true;
+		 }
+		 return false;
+	 }
+	 protected boolean isPrefix (String anImport, List<String> aPrefixes) {
+		 for (String aPrefix:aPrefixes) {
+			 if (anImport.startsWith(aPrefix))
+				 return true;
+		 }
+		 return false;
+	 }
 	 protected boolean isIllegalImport(String importText) {
-		 return (illegalClasses.contains(importText));
+		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
+			 return isPrefix(importText, illegalPrefixes);
+		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 
+			 return !isPrefix(importText, legalPrefixes);
+		 else
+			 return false;
+			 
+		 			 
 	  }
 	@Override
 	protected String msgKey() {
