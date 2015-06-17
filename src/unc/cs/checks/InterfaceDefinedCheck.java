@@ -16,7 +16,7 @@ public class InterfaceDefinedCheck extends TypeVisitedCheck{
 	public void visitType(DetailAST ast) {  
 
     	super.visitType(ast);
-		log(ast.getLineNo(), msgKey(), typeName);
+		log(ast.getLineNo(), msgKey(), fullTypeName);
 
 
     }

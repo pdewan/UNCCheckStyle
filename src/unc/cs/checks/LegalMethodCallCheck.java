@@ -11,14 +11,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-/**
- * Ensures there is a package declaration.
- * Rationale: Classes that live in the null package cannot be
- * imported. Many novice developers are not aware of this.
- *
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
- * @author Oliver Burn
- */
+
 public  class LegalMethodCallCheck extends MethodCallVisitedCheck {
 
     /**
@@ -98,7 +91,7 @@ public  class LegalMethodCallCheck extends MethodCallVisitedCheck {
 	}
     // "fail" if method is in expected set
 	@Override
-	protected boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
+	protected Boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
 		return !expectedMethodsSet.contains(aShortMethodName);
 	}
 

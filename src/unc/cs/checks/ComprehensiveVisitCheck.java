@@ -52,7 +52,8 @@ ContinuationProcessor{
 	protected Map<String, String> currentMethodScope = new HashMap();
 	protected Set<String> excludeTags;
 	protected Set<String> includeTags;
-	DetailAST currentTree;
+	protected DetailAST currentTree;
+	protected boolean tagsInitialized;
 
 
 	protected STNameable structurePattern;
@@ -119,7 +120,7 @@ ContinuationProcessor{
 	public boolean checkTagsOfCurrentType() {
 		if (!hasIncludeTags() && !hasExcludeTags())
 			return true; // all tags checked in this case
-		if (typeName == null) {
+		if (fullTypeName == null) {
 			System.err.println("Check called without type name being populated");
 			return true;
 		}
@@ -136,11 +137,11 @@ ContinuationProcessor{
 	public boolean checkIncludeTagsOfCurrentType() {
 		if (!hasIncludeTags() && !hasExcludeTags())
 			return true; // all tags checked in this case
-		if (typeName == null) {
+		if (fullTypeName == null) {
 			System.err.println("Check called without type name being populated");
 			return true;
 		}
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		STNameable[] aCurrentTags = anSTType.getTags();
 		if (hasIncludeTags())
 			return checkIncludeTagsOfCurrentType(aCurrentTags);
@@ -209,15 +210,15 @@ ContinuationProcessor{
     }
     public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitializer) {
     	List<STNameable> result = new ArrayList<>();
-    	final DetailAST arrayInit =
+    	 DetailAST arrayInit =
     			parentOfArrayInitializer.findFirstToken(TokenTypes.ANNOTATION_ARRAY_INIT);
 		 if (arrayInit == null)
-			 return result;
+			 arrayInit = parentOfArrayInitializer; // single element array
 		 DetailAST anArrayElementExpression = arrayInit.findFirstToken(TokenTypes.EXPR);
 		 
 		 while (anArrayElementExpression != null) {
-			 DetailAST anArrayElement = anArrayElementExpression.getFirstChild();
-			 result.add(new AnSTNameable(anArrayElement, anArrayElement.getText()));
+			 DetailAST anArrayElementAST = anArrayElementExpression.getFirstChild();
+			 result.add(new AnSTNameable(anArrayElementAST, anArrayElementAST.getText()));
 			 if (anArrayElementExpression.getNextSibling() == null)
 				 break;
 			 anArrayElementExpression = anArrayElementExpression.getNextSibling().getNextSibling();
@@ -262,7 +263,16 @@ ContinuationProcessor{
 		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
 		currentMethodIsVisible = !"false".equals(actualParamIDent.getText());
     }
-    public void maybeVisitTypeTags(DetailAST ast) {  
+    protected List<STNameable> typeTags( ) {
+    	if (!tagsInitialized) {
+    		DetailAST aTypeAST = getEnclosingTypeDeclaration(currentTree);
+    		maybeVisitTypeTags(aTypeAST);
+    	}
+    	return typeTags;
+    }
+    public void maybeVisitTypeTags(DetailAST ast) { 
+    	if (tagsInitialized) return;
+    	tagsInitialized = true;
     	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 		if (annotationAST == null) {
 			typeTags = emptyArrayList;
@@ -338,9 +348,11 @@ ContinuationProcessor{
     	currentMethodParameterTypes.clear(); 
     	currentMethodScope.clear();
 	 	currentMethodTags = emptyNameableList;
-    	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
-    	currentMethodName = aMethodNameAST.getText();
-    	currentMethodIsPublic = ComprehensiveVisitCheck.isPublicInstanceMethod(methodDef);
+//    	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
+//    	currentMethodName = aMethodNameAST.getText();
+    	currentMethodName = getName(methodDef);
+
+    	currentMethodIsPublic = ComprehensiveVisitCheck.isPublicAndInstance(methodDef);
     	if (!currentMethodIsConstructor) {
     	DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
     	FullIdent aTypeFullIdent = FullIdent.createFullIdent(typeDef.getFirstChild());
@@ -537,7 +549,7 @@ ContinuationProcessor{
 		 	currentMethodScope.clear();
 		 	typeTags = emptyNameableList;
 		 	typeScope.clear();
-		 	typeName = null;
+		 	fullTypeName = null;
 		 	isInterface = false;
 		 	isGeneric = false;
 		 	isElaboration = false;
@@ -545,6 +557,7 @@ ContinuationProcessor{
 		 	imports.clear();
 		 	globalVariables.clear();
 		 	currentTree = ast;
+		 	tagsInitialized = false;
 			pendingChecks().clear();
 	    }
 	  protected void processMethodAndClassData() {
@@ -569,7 +582,7 @@ ContinuationProcessor{
 
 		}
 
-		public static boolean isPublicInstanceMethod(DetailAST methodOrVariableDef) {
+		public static boolean isPublicAndInstance(DetailAST methodOrVariableDef) {
 			boolean foundPublic = false;
 			final DetailAST modifiersAst = methodOrVariableDef
 					.findFirstToken(TokenTypes.MODIFIERS);
@@ -590,6 +603,28 @@ ContinuationProcessor{
 			}
 		
 			return foundPublic;
+		}
+		public static boolean isStaticAndNotFinal(DetailAST methodOrVariableDef) {
+			boolean foundStatic = false;
+			final DetailAST modifiersAst = methodOrVariableDef
+					.findFirstToken(TokenTypes.MODIFIERS);
+			if (modifiersAst.getFirstChild() != null) {
+		
+				for (DetailAST modifier = modifiersAst.getFirstChild(); modifier != null; modifier = modifier
+						.getNextSibling()) {
+					// System.out.println("Checking modifier:" + modifier);
+					if (modifier.getType() == TokenTypes.FINAL) {
+						// System.out.println("Not instance");
+						return false;
+					}
+					if (modifier.getType() == TokenTypes.LITERAL_STATIC) {
+						foundStatic = true;
+					}
+		
+				}
+			}
+		
+			return foundStatic;
 		}
 		public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
 			return false;
@@ -617,6 +652,16 @@ ContinuationProcessor{
 				}
 			}
 		}
+		protected void maybeAddToPendingTypeChecks(DetailAST ast) {
+			
+			if (doPendingCheck(ast, currentTree) == null)
+				pendingChecks().add(ast);
+
+			// if (isMatchingClassName(ident.getText())) {
+			// log(ident.getLineNo(), ident.getColumnNo(), msgKey(),
+			// ident.getText());
+			// }
+		}
 		public static String shortFileName(String longName) {
 			int index = longName.lastIndexOf('/');
 			if (index <= 0)
@@ -625,5 +670,122 @@ ContinuationProcessor{
 				return longName;
 			return longName.substring(index + 1);
 		}
+		public static DetailAST getEnclosingMethodDeclaration(DetailAST anAST) {
+	    	return getEnclosingTokenType(anAST, TokenTypes.METHOD_DEF);
+	    }
+		
+		public static DetailAST getEnclosingClassDeclaration(DetailAST anAST) {
+	    	return getEnclosingTokenType(anAST, TokenTypes.CLASS_DEF);
+	    }
+		public static DetailAST getEnclosingInterfaceDeclaration(DetailAST anAST) {
+	    	return getEnclosingTokenType(anAST, TokenTypes.INTERFACE_DEF);
+	    }
+		public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
+			DetailAST aClassDef = getEnclosingClassDeclaration(anAST);
+			if (aClassDef == null)
+				return getEnclosingInterfaceDeclaration(anAST);
+			else
+				return aClassDef;
+	    }
+		
+		
+		
+		public static String getEnclosingShortClassName(DetailAST anAST) {
+			return getName(getEnclosingClassDeclaration(anAST));
+		}
+		public static String getEnclosingShortTypeName(DetailAST anAST) {
+			return getName(getEnclosingTypeDeclaration(anAST));
+		}
+		public static String getEnclosingMethodName(DetailAST anAST) {
+			return getName(getEnclosingMethodDeclaration(anAST));
+		}
+	    // not physically but logically enclosing
+	    public static DetailAST getEnclosingTokenType(DetailAST anAST, int aTokenType) {
+	    	if (anAST == null) return null;
+	    	if (anAST.getType() == aTokenType) return anAST;
+	    	DetailAST aParent = anAST.getParent();
+	    	if (aParent != null)
+	    	   return getEnclosingTokenType(aParent, aTokenType);
+	    	return 
+	    			getFirstRightSiblingTokenType(anAST, aTokenType);
+	    }
+	    public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aTokenType) {
+	    	if (anAST == null) return null;
+	    	if (anAST.getType() == aTokenType) return anAST;
+	    	return getFirstRightSiblingTokenType(anAST.getNextSibling(), aTokenType);
+	    	
+	    }
+	    public static DetailAST getRoot(DetailAST anAST, int aTokenType) {
+	    	if (anAST == null) return null;
+	    	DetailAST aParent = anAST.getParent();
+	    	if (aParent == null)
+	    		return aParent;
+	    	return getRoot(aParent, aTokenType);
+	    	
+	    }
+	    
+	    public int lineNo(DetailAST ast, DetailAST aTreeAST) {
+	    	 return aTreeAST == currentTree?ast.getLineNo():0;
+	    }
+	    public int lineNo(FullIdent aFullIdent, DetailAST aTreeAST) {
+	    	 return aTreeAST == currentTree?aFullIdent.getLineNo():0;
+	    }
+	    public int columnNo(DetailAST ast, DetailAST aTreeAST) {
+	         return  aTreeAST == currentTree?ast.getColumnNo():0;
+	    }
+	    public int columnNo(FullIdent aFullIdent, DetailAST aTreeAST) {
+	         return  aTreeAST == currentTree?aFullIdent.getColumnNo():0;
+	    }
+	    public boolean contains(List<STNameable> aTags, String aTag) {
+	    	for (STNameable aNameable:aTags) {
+	    		if (matchesStoredTag(aNameable.getName(), aTag))
 
+//	    		if (aNameable.getName().equals(aTag))
+	    			return true;	    		
+	    	}
+	    	return false;
+	    }
+	    
+	    public static String maybeStripQuotes(String aString) {
+	    	if (aString.indexOf("\"") != -1) // quote rather than named constant
+	    		return aString.substring(1, aString.length() -1);
+	    	return aString;
+	    }
+	    public Boolean matchesStoredTag(String aStoredTag, String aDescriptor) {
+	    		return maybeStripQuotes(aStoredTag).equals(aDescriptor);
+	    	
+	    }
+	    
+	    public  Boolean matchesMyClass(String myClassName, String aDescriptor) {
+	    	if (aDescriptor.length() == 0)
+	    		return true;
+	    	if (aDescriptor.startsWith("@")) {
+	    		String aTag = aDescriptor.substring(1);
+	    		return contains(typeTags(), aTag);	    		
+	    	}
+			return myClassName.equals(aDescriptor);
+		 }
+	    protected boolean isPrefix (String aTarget, List<String> aPrefixes, String myClassName) {
+			 for (String aPrefix:aPrefixes) {
+				 String[] aPrefixParts = aPrefix.split(">");
+				 if ((aPrefixParts.length == 2) && !matchesMyClass(myClassName, aPrefixParts[0]))
+					 continue; // not relevant
+				 String aTruePrefix = aPrefixParts.length == 2?aPrefixParts[1]:aPrefix;
+				 if (aTarget.startsWith(aTruePrefix))
+					 return true;
+			 }
+			 return false;
+		 }
+	    protected boolean containedInClasses (String aTarget, List<String> aList, String myClassName) {
+			 for (String aMember:aList) {
+				 String[] aMemberParts = aMember.split(">");
+				 if ((aMemberParts.length == 2) && !matchesMyClass(myClassName, aMemberParts[0]))
+					 continue; // not relevant
+				 String aTrueMember = aMemberParts.length == 2?aMemberParts[1]:aMember;
+				 if (aTarget.equals(aTrueMember))
+					 return true;
+			 }
+			 return false;
+		 }
+	    
 }

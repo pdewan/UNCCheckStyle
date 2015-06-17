@@ -10,7 +10,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	public static final String MSG_KEY = "typeDefined";	
 	public static final String DEFAULT_PACKAGE = "default"; 
 	protected String packageName;
-	protected String typeName;
+	protected String fullTypeName, shortTypeName;
 	protected DetailAST typeAST;
 	protected DetailAST typeNameAST;
 	protected boolean isGeneric;
@@ -40,17 +40,22 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	    	typeAST = ast;
 	    	typeNameAST = ast.findFirstToken(TokenTypes.IDENT);
 	    	isGeneric =  (typeNameAST.getNextSibling().getType() == TokenTypes.TYPE_PARAMETERS);
-			String aShortName = typeNameAST.getText();
-			String aFullName = packageName + "." + aShortName;
-			typeName = aFullName;
+			 shortTypeName = typeNameAST.getText();
+			 fullTypeName = packageName + "." + shortTypeName;
+//			aFullTypeName = aFullName;
 	 }
 	public void visitPackage(DetailAST ast) {
-		packageName = ast.findFirstToken(TokenTypes.IDENT).getText();
-		System.out.println("found package:" + packageName);	
+		packageName = getName(ast);
+//		packageName = ast.findFirstToken(TokenTypes.IDENT).getText();
+//		System.out.println("found package:" + packageName);	
 	}
 	protected void log(DetailAST ast) {
-	    log(ast.getLineNo(), msgKey(), typeName);
+	    log(ast.getLineNo(), msgKey(), fullTypeName);
     }
+	
+	public static String getName (DetailAST anAST) {
+		return anAST.findFirstToken(TokenTypes.IDENT).getText();
+	}
   
 	
 	

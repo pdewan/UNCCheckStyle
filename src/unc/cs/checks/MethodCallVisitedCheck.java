@@ -20,8 +20,8 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
      */
     public static final String MSG_KEY = "methodCallVisited";
 
-    protected String shortMethodName;
-    protected String longMethodName;
+//    protected String shortMethodName;
+//    protected String longMethodName;
 
     @Override
     public int[] getDefaultTokens() {
@@ -61,12 +61,13 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
     }
     
-    protected abstract boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) ;
+    
+    protected abstract Boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) ;
     
     public String[] toNormalizedClassBasedCall (String[] aCallParts) {
     	List<String> aCallPartsList = new ArrayList();
     	if (aCallParts.length == 1 || "this".equals(aCallParts[0])) { // put the name of the class in which the call occurs
-    		aCallPartsList.add(typeName);
+    		aCallPartsList.add(fullTypeName);
     		aCallPartsList.add(aCallParts[aCallParts.length - 1]);
     	} else if (aCallParts.length == 2) {
     		String aType = lookupType(aCallParts[0]);
@@ -95,19 +96,52 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
     	}
     }
     public void visitCall(DetailAST ast) {
+    	maybeAddToPendingTypeChecks(ast);
+////    	if (ast.getType() != TokenTypes.METHOD_CALL)
+////    		return;
+//    	String shortMethodName = getLastDescendent(ast).getText();
+//    	FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
+//    	String longMethodName = aFullIdent.getText();
+//    	String[] aCallParts = longMethodName.split("\\.");
+//    	String[] aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
+//    	String aNormalizedLongName = toLongName(aNormalizedParts);
+//    	
+////        System.out.println("Method text:" + getLastDescendent(ast).getText());
+//    	Boolean checkResult = check(ast, shortMethodName, aNormalizedLongName, aNormalizedParts);
+//    	if (checkResult == null) {
+//    		pendingChecks().add(ast);
+//    		return;
+//    	}
+////    	if (!check(ast, shortMethodName, aNormalizedLongName, aNormalizedParts))
+//        if (!checkResult) {
+//           log(ast, shortMethodName);
+////        log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
+//        }
+
+    }
+    @Override
+    public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
 //    	if (ast.getType() != TokenTypes.METHOD_CALL)
 //    		return;
-    	shortMethodName = getLastDescendent(ast).getText();
+    	String shortMethodName = getLastDescendent(ast).getText();
     	FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
-    	longMethodName = aFullIdent.getText();
+    	String longMethodName = aFullIdent.getText();
     	String[] aCallParts = longMethodName.split("\\.");
     	String[] aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
     	String aNormalizedLongName = toLongName(aNormalizedParts);
     	
 //        System.out.println("Method text:" + getLastDescendent(ast).getText());
-    	if (!check(ast, shortMethodName, aNormalizedLongName, aNormalizedParts))
+    	Boolean checkResult = check(ast, shortMethodName, aNormalizedLongName, aNormalizedParts);
+    	if (checkResult == null) {
+//    		pendingChecks().add(ast);
+    		return null;
+    	}
+//    	if (!check(ast, shortMethodName, aNormalizedLongName, aNormalizedParts))
+        if (!checkResult) {
            log(ast, shortMethodName);
 //        log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
+        }
+        return checkResult;
 
     }
     public void visitToken(DetailAST ast) {	    		

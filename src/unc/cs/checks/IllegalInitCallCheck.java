@@ -47,7 +47,7 @@ public class IllegalInitCallCheck extends InitCallCheck {
     
 	@Override
 	// succeeds if an init call in an init call
-	protected boolean check(DetailAST ast, String aShortMethodName,
+	protected Boolean check(DetailAST ast, String aShortMethodName,
 			String aLongMethodName, String[] aCallParts) {
 		return (
 				!AnSTType.isInit(aShortMethodName)

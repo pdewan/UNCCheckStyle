@@ -49,10 +49,10 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		};
 	}
 
-	private void maybeAddToPendingTypeChecks(DetailAST anInstantiationAST) {
-		if (doPendingCheck(anInstantiationAST, currentTree) == null)
-			pendingChecks().add(anInstantiationAST);
-	}
+//	protected void maybeAddToPendingTypeChecks(DetailAST anInstantiationAST) {
+//		if (doPendingCheck(anInstantiationAST, currentTree) == null)
+//			pendingChecks().add(anInstantiationAST);
+//	}
 
 	public static boolean typesMatch(String aType1, String aType2) {
 		if (aType1.equals(aType2))

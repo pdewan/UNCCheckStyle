@@ -58,7 +58,7 @@
          <module name="IllegalMethodCall">
             <message key="illegalMethodCall" value="Called disallowed method {0}"/>
             <property name="disallowedClasses" value="Scanner, String"/>            
-            <property name="allowedMethods" value="String.substring, String.charAt, String.length, Scanner.nextLine"/>
+            <property name="allowedMethods" value="String.substring, String.charAt, @Tag1>String.length, Bar>Scanner.nextLine, @Tag1>@Tag2.@Tag3"/>
         </module>
          <module name="LegalMethodCall">
             <property name="severity" value="info"/>         
@@ -76,7 +76,7 @@
         </module>
            <module name="IllegalTypeImported">
             <message key="illegalTypeImported" value="Used illegal type {0}"/>
-            <property name="legalPrefixes" value="java.util, bus.uigen, util"/>
+            <property name="legalPrefixes" value="Foo>java.util, @Tag1>java.util, bus.uigen, Bar>util"/>
         </module>
         <!--
         <module name="LineLength">

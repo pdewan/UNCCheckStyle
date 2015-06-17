@@ -127,19 +127,17 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * @param ast
 	 *            node to check.
 	 */
-	private void maybeAddToPendingTypeChecks(DetailAST ast) {
+	protected void maybeAddToPendingTypeChecks(DetailAST ast) {
 		final DetailAST aType = ast.findFirstToken(TokenTypes.TYPE);
 //		final DetailAST anIdentifier = ast.findFirstToken(TokenTypes.IDENT);
 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		if (ignoreTypesSet.contains(anIdentifierType.getText()))
 			return;
-		if (doPendingCheck(ast, currentTree) == null)
-			pendingChecks().add(ast);
+		super.maybeAddToPendingTypeChecks(ast);
+//		if (doPendingCheck(ast, currentTree) == null)
+//			pendingChecks().add(ast);
 
-		// if (isMatchingClassName(ident.getText())) {
-		// log(ident.getLineNo(), ident.getColumnNo(), msgKey(),
-		// ident.getText());
-		// }
+		
 	}
 
 //	public static String shortFileName(String longName) {
@@ -198,17 +196,31 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 			 String aSourceName =
 			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
 //			String aSourceName = toTypeName(aTreeAST);
-			 if (aTreeAST == currentTree) {
-			log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
-					msgKey(), anIdentifierType.getText(),
-					anIdentifier.getText(),
-					aSourceName + ":" + anIdentifier.getLineNo());
-			 } else {
-				 log(0, 
-							msgKey(), anIdentifierType.getText(),
-							anIdentifier.getText(),
-							aSourceName + ":" + anIdentifier.getLineNo());
-			 }
+			if (aTreeAST == currentTree) {
+				log(anIdentifierType.getLineNo(),
+						anIdentifierType.getColumnNo(), msgKey(),
+						anIdentifierType.getText(), anIdentifier.getText(),
+						aSourceName + ":" + anIdentifier.getLineNo());
+			} else {
+				log(0, msgKey(), anIdentifierType.getText(),
+						anIdentifier.getText(), aSourceName + ":"
+								+ anIdentifier.getLineNo());
+			}
+			  
+//			if (aTreeAST == currentTree) {
+//			 int aLineNo = lineNo(anIdentifierType, aTreeAST);
+//			 int aColumnNo = columnNo(anIdentifierType, aTreeAST);
+//			 
+//				log(aLineNo,
+//						aColumnNo, 
+//						msgKey(),
+//						anIdentifierType.getText(), anIdentifier.getText(),
+//						aSourceName + ":" + anIdentifier.getLineNo());
+//			} else {
+//				log(0, msgKey(), anIdentifierType.getText(),
+//						anIdentifier.getText(), aSourceName + ":"
+//								+ anIdentifier.getLineNo());
+//			}
 			return true;
 		}
 		return false;

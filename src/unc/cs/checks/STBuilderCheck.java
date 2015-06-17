@@ -35,7 +35,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     		STMethod anSTMethod = new AnSTMethod(
     				currentMethodAST, 
     				currentMethodName, 
-    				typeName,
+    				fullTypeName,
     				aParameterTypes, 
     				currentMethodIsPublic,     				
     				currentMethodType,
@@ -64,7 +64,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		  STMethod[] aConstructors = stConstructors.toArray(new STMethod[0]);
 	    	STType anSTClass = new AnSTType(
 	    			typeAST, 
-	    			typeName, 
+	    			fullTypeName, 
 	    			aMethods, 
 	    			aConstructors,
 	    			interfaces, 
@@ -84,8 +84,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //	    	anSTClass.initStructurePatternName(structurePattern);
 	    	anSTClass.introspect();
 	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
-	    			typeName, anSTClass);
-	    	log (typeAST.getLineNo(), msgKey(), typeName);
+	    			fullTypeName, anSTClass);
+	    	log (typeAST.getLineNo(), msgKey(), fullTypeName);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }

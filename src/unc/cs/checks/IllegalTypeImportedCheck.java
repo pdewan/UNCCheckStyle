@@ -12,7 +12,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck;
 
 
-public class IllegalTypeImportedCheck extends UNCCheck {
+public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "illegalClassImported";
 	
 //    List<String>  legalClasses = new ArrayList();
@@ -42,22 +42,55 @@ public class IllegalTypeImportedCheck extends UNCCheck {
 //    		legalPrefixes.add(aPrefix);
 //    	}
 //    }
+    @Override
+    public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
+        final FullIdent imp;
+        if (ast.getType() == TokenTypes.IMPORT) {
+            imp = FullIdent.createFullIdentBelow(ast);
+        }
+        else {
+            imp = FullIdent.createFullIdent(
+                ast.getFirstChild().getNextSibling());
+        }
+        String aMyClass = getEnclosingShortClassName(ast);
+        Boolean isIllegal = isIllegalImport(imp.getText(), aMyClass);
+        if (isIllegal == null)
+        	return null;
+        if (isIllegal) {
+        	if (currentTree == aTreeAST) {
+        
+            log(imp.getLineNo(), imp.getColumnNo(),
+                MSG_KEY,
+                imp.getText(), aMyClass);
+        	} 
+        	else {
+        		log(0,
+                        MSG_KEY,
+                        imp.getText(), aMyClass);
+        	}
+        }
+        	
+       return isIllegal;
+    }
+    
 	 @Override
 	    public void visitToken(DetailAST ast) {
-	        final FullIdent imp;
-	        if (ast.getType() == TokenTypes.IMPORT) {
-	            imp = FullIdent.createFullIdentBelow(ast);
-	        }
-	        else {
-	            imp = FullIdent.createFullIdent(
-	                ast.getFirstChild().getNextSibling());
-	        }
-	        if (isIllegalImport(imp.getText())) {
-	            log(ast.getLineNo(),
-	                ast.getColumnNo(),
-	                MSG_KEY,
-	                imp.getText());
-	        }
+//	        final FullIdent imp;
+//	        if (ast.getType() == TokenTypes.IMPORT) {
+//	            imp = FullIdent.createFullIdentBelow(ast);
+//	        }
+//	        else {
+//	            imp = FullIdent.createFullIdent(
+//	                ast.getFirstChild().getNextSibling());
+//	        }
+//	        if (isIllegalImport(imp.getText(), getEnclosingShortTypeName(ast))) {
+//	            log(ast.getLineNo(),
+//	                ast.getColumnNo(),
+//	                MSG_KEY,
+//	                imp.getText());
+//	        }
+//		 doPendingCheck(ast, currentTree);
+		 maybeAddToPendingTypeChecks(ast);
 	    }
 	 protected boolean isLocalPackage(String importText) {
 		 for (String aPrefix:legalPrefixes) {
@@ -66,18 +99,23 @@ public class IllegalTypeImportedCheck extends UNCCheck {
 		 }
 		 return false;
 	 }
-	 protected boolean isPrefix (String anImport, List<String> aPrefixes) {
-		 for (String aPrefix:aPrefixes) {
-			 if (anImport.startsWith(aPrefix))
-				 return true;
-		 }
-		 return false;
-	 }
-	 protected boolean isIllegalImport(String importText) {
+	 
+//	 protected boolean isPrefix (String aTarget, List<String> aPrefixes, String myClassName) {
+//		 for (String aPrefix:aPrefixes) {
+//			 String[] aPrefixParts = aPrefix.split(">");
+//			 if ((aPrefixParts.length == 2) && !matchesMyClass(myClassName, aPrefixParts[0]))
+//				 continue; // not relevant
+//			 String aTruePrefix = aPrefixParts.length == 2?aPrefixParts[1]:aPrefix;
+//			 if (aTarget.startsWith(aTruePrefix))
+//				 return true;
+//		 }
+//		 return false;
+//	 }
+	 protected Boolean isIllegalImport(String importText, String myClassName) {
 		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
-			 return isPrefix(importText, illegalPrefixes);
+			 return isPrefix(importText, illegalPrefixes, myClassName);
 		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 
-			 return !isPrefix(importText, legalPrefixes);
+			 return !isPrefix(importText, legalPrefixes, myClassName);
 		 else
 			 return false;
 			 
