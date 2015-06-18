@@ -58,7 +58,7 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	}
 
 	@Override
-	public void visitToken(DetailAST ast) {
+	public void checkedVisitToken(DetailAST ast) {
 		System.out.println("Check called:" + MSG_KEY);
 
 		switch (ast.getType()) {

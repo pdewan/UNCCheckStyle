@@ -37,7 +37,7 @@ public class NoFullTypeNameCheck extends UNCCheck {
 //					aTypeName);
 //		}
 //	}
-	public void visitToken(DetailAST ast) {
+	public void checkedVisitToken(DetailAST ast) {
 		visitTypeOrInstantiation(ast);
 //		FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
 //		String aTypeName = aFullIdent.getText();

@@ -58,7 +58,10 @@ ContinuationProcessor{
 
 	protected STNameable structurePattern;
 	Map<DetailAST, List<DetailAST>> astToPendingChecks = new HashMap();
+	Map<DetailAST, Object> astToContinuationData = new HashMap();
+
 	Map<DetailAST, FileContents> astToFileContents = new HashMap();
+	Map<String, DetailAST> fileNameToTree = new HashMap();
 
 	
 	@Override
@@ -134,6 +137,13 @@ ContinuationProcessor{
 		return false;
 		
 	}
+	  public static Boolean hasTag(STNameable[] aTags, String aTag) {
+	    	for (STNameable anSTNameable:aTags) {
+	    		if (anSTNameable.getName().equals(aTag)) return true;
+	    		
+	    	}
+	    	return false;
+	    }
 	public boolean checkIncludeTagsOfCurrentType() {
 		if (!hasIncludeTags() && !hasExcludeTags())
 			return true; // all tags checked in this case
@@ -484,7 +494,7 @@ ContinuationProcessor{
      }
        
      
-	public void visitToken(DetailAST ast) {
+	public void checkedVisitToken(DetailAST ast) {
 //    	System.out.println("Check called:" + MSG_KEY);
 		switch (ast.getType()) {
 		case TokenTypes.PACKAGE_DEF: 
@@ -538,10 +548,21 @@ ContinuationProcessor{
 			result = new ArrayList<>();
 			astToPendingChecks.put(currentTree, result);
 			astToFileContents.put(currentTree, getFileContents());
+			fileNameToTree.put(getFileContents().getFilename(), currentTree);
 
 		}
 		return result;
 	}
+	 protected void maybeCleanUpPendingChecks(DetailAST aNewTree) {
+		 String aFileName = getFileContents().getFilename();
+		 DetailAST prevIncarnation = fileNameToTree.get(aFileName);
+		 if (prevIncarnation != null) {
+			 astToFileContents.remove(prevIncarnation);
+			 astToPendingChecks.get(prevIncarnation).clear();
+		 } 
+		 pendingChecks().clear(); // this is needed to allocate a new entry
+		 
+	 }
 	 @Override
 	    public void beginTree(DetailAST ast) {  
 		 super.beginTree(ast);
@@ -558,7 +579,8 @@ ContinuationProcessor{
 		 	globalVariables.clear();
 		 	currentTree = ast;
 		 	tagsInitialized = false;
-			pendingChecks().clear();
+		 	maybeCleanUpPendingChecks(ast);
+//			pendingChecks().clear();
 	    }
 	  protected void processMethodAndClassData() {
 		  
@@ -756,19 +778,43 @@ ContinuationProcessor{
 	    	
 	    }
 	    
-	    public  Boolean matchesMyClass(String myClassName, String aDescriptor) {
-	    	if (aDescriptor.length() == 0)
+	    public  Boolean matchesMyType( String aDescriptor,  String aShort) {
+	    	String aClassName = shortTypeName;
+	    	if (aDescriptor == null || aDescriptor.length() == 0)
 	    		return true;
 	    	if (aDescriptor.startsWith("@")) {
 	    		String aTag = aDescriptor.substring(1);
 	    		return contains(typeTags(), aTag);	    		
 	    	}
-			return myClassName.equals(aDescriptor);
+			return aClassName.equals(aDescriptor);
 		 }
-	    protected boolean isPrefix (String aTarget, List<String> aPrefixes, String myClassName) {
+	  
+	    
+	    public  Boolean matchesType( String aDescriptor, String aShortClassName) {
+	    	if (aDescriptor == null || aDescriptor.length() == 0)
+	    		return true;
+	    	if (!aDescriptor.startsWith("@")) {
+				return aShortClassName.equals(aDescriptor);
+	    	}
+	    		List<STNameable> aTags = null;
+	    		if (shortTypeName == null || // guaranteed to not be a pending check
+	    				aShortClassName.equals(shortTypeName)) {
+	    			aTags = typeTags();
+	    		} else {
+	    		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().
+	    				getSTClassByShortName(aShortClassName);
+	    		if (anSTType == null)
+	    			return null;
+	    		 aTags = Arrays.asList(anSTType.getTags());
+	    		}
+	    		String aTag = aDescriptor.substring(1);
+
+	    		return contains(aTags, aTag);	    		
+		 }
+	    protected boolean isPrefix (String aTarget, List<String> aPrefixes, String aSourceClassName) {
 			 for (String aPrefix:aPrefixes) {
 				 String[] aPrefixParts = aPrefix.split(">");
-				 if ((aPrefixParts.length == 2) && !matchesMyClass(myClassName, aPrefixParts[0]))
+				 if ((aPrefixParts.length == 2) && !matchesType(aPrefixParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTruePrefix = aPrefixParts.length == 2?aPrefixParts[1]:aPrefix;
 				 if (aTarget.startsWith(aTruePrefix))
@@ -776,10 +822,10 @@ ContinuationProcessor{
 			 }
 			 return false;
 		 }
-	    protected boolean containedInClasses (String aTarget, List<String> aList, String myClassName) {
+	    protected boolean containedInClasses (String aTarget, List<String> aList, String aSourceClassName) {
 			 for (String aMember:aList) {
 				 String[] aMemberParts = aMember.split(">");
-				 if ((aMemberParts.length == 2) && !matchesMyClass(myClassName, aMemberParts[0]))
+				 if ((aMemberParts.length == 2) && !matchesMyType(aMemberParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTrueMember = aMemberParts.length == 2?aMemberParts[1]:aMember;
 				 if (aTarget.equals(aTrueMember))

@@ -13,6 +13,20 @@ public abstract class UNCCheck extends Check{
 		System.out.println("key:" + key);
         log(line, key, args);
     }
+	
+	public abstract void checkedVisitToken(DetailAST ast);
+	
+	public void visitToken(DetailAST ast) {
+		try {
+			checkedVisitToken(ast);
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+			
+		}
+	}
+
 
 
     public final void extendibleLog(int lineNo, int colNo, String key,

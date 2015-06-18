@@ -129,46 +129,77 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 		}		
 	}
     
-	protected Boolean checkAtomic(String aLongMethodName) {
-		if (disallowedMethodCollection.size() > 1)
-			return !disallowedMethodCollection.contains(aLongMethodName);
-		else if (allowedMethodCollection.size() > 1)
-			return allowedMethodCollection.contains(aLongMethodName);
-		else
-			return true; // succeeds if nothing specified
-	}
+    
+//	protected Boolean checkAtomic(DetailAST aCalledMethodAST, String aLongMethodName) {
+//		if (disallowedMethodCollection.size() > 1)
+////			return !disallowedMethodCollection.contains(aLongMethodName);
+//		return !methodCallContainedInSpecifications(aLongMethodName, disallowedMethodCollection, aCalledMethodAST);
+//
+//		else if (allowedMethodCollection.size() > 1)
+//			return allowedMethodCollection.contains(aLongMethodName);
+//		else
+//			return true; // succeeds if nothing specified
+//	}
 //	protected boolean checkAtomicDisallowed(String aLongMethodName) {
 //		return !allowedMethodSet.contains(aLongMethodName);
 //	}
 	/*
 	 * need to allow calls from all local classes or ones with certain tags
 	 */
-	protected Boolean checkAllowedClassDisallowedMethods(String[] aCallParts, String aLongMethodName) {		
+	protected Boolean checkAllowedClassDisallowedMethods(DetailAST aCalledMethod, String[] aCallParts, String aLongMethodName) {		
+//		String aCalledClass = aCallParts[0];
+//		if (!allowedClassCollection.contains(aCalledClass))
+//			return false;
+//		return !disallowedMethodCollection.contains(aLongMethodName);
 		String aCalledClass = aCallParts[0];
-		if (!allowedClassCollection.contains(aCalledClass))
+		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, allowedClassCollection, aCalledMethod);
+		if (aTypesMatch == null)
+			return null;
+		if (!aTypesMatch)
 			return false;
-		return !disallowedMethodCollection.contains(aLongMethodName);
+		Boolean aMethodsMatch =  methodCallContainedInSpecifications(aCallParts, disallowedMethodCollection, aCalledMethod);
+		if (aMethodsMatch == null)
+			return null;
+		return !aMethodsMatch;
 	}
-	protected Boolean checkDisallowedClassAllowedMethods(String[] aCallParts, String aLongMethodName) {		
+	protected Boolean checkDisallowedClassAllowedMethods(DetailAST aCalledMethod, String[] aCallParts, String aLongMethodName) {		
 		String aCalledClass = aCallParts[0];
-		if (!disallowedClassCollection.contains(aCalledClass))
+		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, disallowedClassCollection, aCalledMethod);
+		if (aTypesMatch == null)
+			return null;
+		if (!aTypesMatch)
 			return true;
-		return allowedMethodCollection.contains(aLongMethodName);
+		Boolean aMethodsMatch =  methodCallContainedInSpecifications(aCallParts, allowedMethodCollection, aCalledMethod);
+		if (aMethodsMatch == null)
+			return null;
+		return aMethodsMatch;
+//		
+//		if (!disallowedClassCollection.contains(aCalledClass))
+//			return true;
+//		return allowedMethodCollection.contains(aLongMethodName);
 	}
 
 
 	@Override
-	protected Boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
-		if (aCallParts.length > 2) // cannot dissect it into a class
-		     return checkAtomic(aLongMethodName);
-		// give precedence to disallowed
-		else if (disallowedClassCollection.size() > 0) {
-			return checkDisallowedClassAllowedMethods(aCallParts, aLongMethodName);			
-		} else if (allowedClassCollection.size() > 0) {
-			return checkAllowedClassDisallowedMethods(aCallParts, aLongMethodName);
-		} else { // no inheritance, just check
-			return checkAtomic(aLongMethodName);
+	protected Boolean check(DetailAST aCalledMethodAST, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
+		String[] aNormalizedCallParts = aCallParts;
+		if (aCallParts.length > 2) { // cannot dissect it into a class 
+//		     return checkAtomic(aCalledMethodAST, aLongMethodName);
+			aNormalizedCallParts = new String[1];
+			aNormalizedCallParts[0] = aLongMethodName;
 		}
+		
+		// give precedence to disallowed
+		if (disallowedClassCollection.size() > 0) {
+			return checkDisallowedClassAllowedMethods(aCalledMethodAST, aNormalizedCallParts, aLongMethodName);			
+		} else {
+			//if (allowedClassCollection.size() > 0) {
+			return checkAllowedClassDisallowedMethods(aCalledMethodAST, aNormalizedCallParts, aLongMethodName);
+		} 
+//		else { // no inheritance, just check
+//			//return checkAtomic(aCalledMethodAST, aLongMethodName);
+//			
+//		}
 	}
 
 	

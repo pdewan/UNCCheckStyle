@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import unc.cs.symbolTable.STMethod;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
+import unc.cs.symbolTable.SymbolTableFactory;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -126,8 +129,17 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
     	String shortMethodName = getLastDescendent(ast).getText();
     	FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
     	String longMethodName = aFullIdent.getText();
+    	String[] aNormalizedParts = null;
+    	if (currentTree == aTreeAST) {
     	String[] aCallParts = longMethodName.split("\\.");
-    	String[] aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
+    	 aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
+    	 astToContinuationData.put(ast, aNormalizedParts);
+    	} else {
+    		aNormalizedParts = (String[]) astToContinuationData.get(ast);
+    		if (aNormalizedParts == null) {
+    			System.err.println("Nprmalizedname not saved");
+    		}
+    	}
     	String aNormalizedLongName = toLongName(aNormalizedParts);
     	
 //        System.out.println("Method text:" + getLastDescendent(ast).getText());
@@ -144,15 +156,120 @@ public abstract  class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
         return checkResult;
 
     }
-    public void visitToken(DetailAST ast) {	    		
+    public void checkedVisitToken(DetailAST ast) {	    		
     		if (ast.getType() == TokenTypes.METHOD_CALL)
 			visitCall(ast);
     		else 
-    			super.visitToken(ast);
+    			super.checkedVisitToken(ast);
 	}
     @Override
 	protected String msgKey() {
-		// TODO Auto-generated method stub
 		return MSG_KEY;
 	}
+    protected Boolean typesMatch (String aSourceTypeSpecification, 
+    		String aDestinationTypeSpecification, String anActualDestinationType, DetailAST aCallAST ) {
+    	String aSourceTypeName = this.getName(getEnclosingClassDeclaration(aCallAST));
+    	Boolean aSourceTypeMatches = matchesType(aSourceTypeSpecification, aSourceTypeName);
+    	if (aSourceTypeMatches == null) { // this should never occur
+    		return null;
+    	}
+    	if (!aSourceTypeMatches)
+    		return false;
+    	Boolean aDestinationTypeMatches = matchesType(aDestinationTypeSpecification, anActualDestinationType);
+    	if (aDestinationTypeMatches == null) { 
+    		return null;
+    	}
+    	return aDestinationTypeMatches;   
+    }
+  
+    public static Boolean hasTag(STMethod aMethod, String aTag) {
+    	STNameable[] aTags = aMethod.getTags();
+    	return hasTag(aMethod.getTags(), aTag);
+    }
+    // assume classes have been matched
+    protected Boolean matchMethod (String aMethodSpecification,
+    		String aShortMethodClassName,
+    		String aShortMethodName
+    		) {
+    	if (aMethodSpecification == null)
+    		return true;
+    	if (aMethodSpecification.indexOf("@") == -1)
+    		return aMethodSpecification.equals(aShortMethodName);
+    	String aSpecificationTag = aMethodSpecification.substring(1);
+    	STType aTypeST = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aShortMethodClassName);
+    	if (aTypeST == null)
+    		return null;
+    	STMethod[] aMethods = aTypeST.getMethods();
+    	if (aMethods == null)
+    		return null;
+    	for (STMethod aMethod:aMethods) {
+    		if (hasTag(aMethod, aSpecificationTag))
+    			return true;
+    	}
+    	return false;
+    	
+    }
+    
+    // assume that classes have already matched
+    protected Boolean methodsMatch (String aSourceMethodSpecification, 
+    		String aDestinationMethodSpecification,
+    		String aCallingClass,
+    		String aCalledClass,    		 
+    		String aCallingMethodShortName,     		 
+    		String aCalledMethodShortName ) {
+    	Boolean aSourcesMatch = matchMethod(aSourceMethodSpecification, aCallingClass, aCallingMethodShortName);
+    	if (aSourcesMatch == null)
+    		return null;
+    	Boolean aDestinationsMatch = matchMethod(aDestinationMethodSpecification, aCalledClass, aCalledMethodShortName);
+    	if (aDestinationsMatch == null)
+    		return null;
+    	return aSourcesMatch && aDestinationsMatch;
+    }    	
+    
+    
+    //"String.substring, String.charAt, @Tag1>String.length, Bar>Scanner.nextLine, @Tag1.@Tag3>@Tag2.@Tag4"/>
+    
+    protected Boolean methodCallContainedInSpecifications (String[] aCallParts, List<String> aSpecifications, DetailAST aCallAST) {
+		 Boolean retVal = false;
+    	for (String aMember:aSpecifications) {
+			 SourceAndDestination aSourceAndDestination = new ASourceAndDestination(aMember);
+			 TypeAndMethod aSourceTypeAndMethod = new ATypeAndMethod(aSourceAndDestination.getSource());
+			 TypeAndMethod aDestinationTypeAndMethod = new ATypeAndMethod(aSourceAndDestination.getDestination());
+			 Boolean aTypesMatch = typesMatch(aSourceTypeAndMethod.getType(), 
+					 aDestinationTypeAndMethod.getType(), 
+					 aCallParts[0], aCallAST);
+			 if (aTypesMatch == null) {
+				 retVal = null; // if we do not return true, then we do not know, see if this is an imported class
+				 continue;
+			 }
+			 if (!aTypesMatch)
+				 continue; // some other type may match
+//				 return false;
+			 String aCallingClass = getName(getEnclosingClassDeclaration(aCallAST));
+			 String aCalledClass = aCallParts[0];
+			 String aCallingMethod = getName(getEnclosingMethodDeclaration(aCallAST));
+			 String aCalledMethod = aCallParts[1];
+			 
+			 Boolean aMethodsMatch = methodsMatch(
+					 aSourceTypeAndMethod.getMethod(),
+					 aDestinationTypeAndMethod.getMethod(),
+					 aCallingClass,
+					 aCalledClass,
+					 aCallingMethod,
+					 aCalledMethod);
+			if (aMethodsMatch == null)
+				return null;
+			if (aMethodsMatch)
+				return true;
+					 
+//					 
+//				 
+//			 if ((aSourceAndDestination.length == 2) && !matchesType(myClassName, aSourceAndDestination[0]))
+//				 continue; // not relevant
+//			 String aTrueMember = aSourceAndDestination.length == 2?aSourceAndDestination[1]:aMember;
+//			 if (aTarget.equals(aTrueMember))
+//				 return true;
+		 }
+		 return retVal;
+	 }
 }

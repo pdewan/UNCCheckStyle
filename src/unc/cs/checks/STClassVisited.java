@@ -13,7 +13,7 @@ public abstract class STClassVisited extends STTypeVisited {
 
 	}
 
-	public void visitToken(DetailAST ast) {		
+	public void checkedVisitToken(DetailAST ast) {		
 		switch (ast.getType()) {
 		case TokenTypes.PACKAGE_DEF: 
 			visitPackage(ast);
