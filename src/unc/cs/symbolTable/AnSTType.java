@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
@@ -13,6 +15,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	protected final STMethod[] declaredMethods;
 	protected final STMethod[] declaredConstructors;
 	protected final STNameable[] interfaces;
+	protected final STNameable[] declaredFields;
 	protected final String packageName;
 	protected final boolean isInterface, isGeneric, isElaboration;
 	protected final STNameable superClass;
@@ -34,7 +37,8 @@ public class AnSTType extends AnSTNameable implements STType {
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
 			STNameable[] aTags,
-			STNameable[] anImports
+			STNameable[] anImports,
+			STNameable[] aFields
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
@@ -50,6 +54,7 @@ public class AnSTType extends AnSTNameable implements STType {
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
 		tags = aTags;
 		imports = anImports;
+		declaredFields = aFields;
 	}
 	public STMethod[] getDeclaredMethods() {
 		return declaredMethods;
@@ -67,15 +72,53 @@ public class AnSTType extends AnSTNameable implements STType {
 	public boolean isInterface() {
 		return isInterface;
 	}
+	public static void addToList(List<STMethod> aList, STMethod[] anAdditions) {
+		for (STMethod anAddition:anAdditions) {
+			aList.add(anAddition);
+		}
+	}
+	STMethod[] emptyMethods = new STMethod[0];
 	@Override
 	public STMethod[] getMethods() {
-		// TODO Auto-generated method stub
-		return declaredMethods;
+		List<STMethod> retVal = new ArrayList();
+		addToList(retVal, getDeclaredMethods());
+		STNameable aSuperType = getSuperClass();
+		if (aSuperType != null && !"Object".equals(aSuperType.getName()) &&
+				!ComprehensiveVisitCheck.isExternalImport(aSuperType.getName())) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperType.getName());
+			if (anSTType == null)
+				return null;
+			addToList(retVal, anSTType.getMethods());
+		}
+		return retVal.toArray(emptyMethods);
 	}
 	@Override
-	public STMethod[] getMethod(String aName, String[] aParameterTypes) {
-		// TODO Auto-generated method stub
+	public STMethod getMethod(String aName, String[] aParameterTypes) {
+		STMethod[] aMethods = getMethods();
+		if (aMethods == null)
+			return null;
+		for (STMethod aMethod:aMethods) {
+			if (aMethod.getName().equals(aName) && aMethod.getParameterTypes().equals(aParameterTypes))
+				return aMethod;
+		}
 		return null;
+	}
+	STMethod[] emptyMethodArray = new STMethod[0];
+	
+		
+	
+	@Override
+	public STMethod[] getMethods(String aName) {
+		List<STMethod> resultList = new ArrayList();
+		STMethod[] aMethods = getMethods();
+		if (aMethods == null)
+			return null;
+		for (STMethod aMethod:aMethods) {
+			if (aMethod.getName().equals(aName))
+				resultList.add(aMethod);
+		}
+		return resultList.toArray(emptyMethodArray);
+		
 	}
 	@Override
 	public STNameable getSuperClass() {
@@ -177,10 +220,14 @@ public class AnSTType extends AnSTNameable implements STType {
 		}			
 		aPropertyInfo.setGetter(anSTMethod);
 	}
+	public STNameable[] getDeclaredFields() {
+		return declaredFields;
+	}
 	public static boolean isSetter(STMethod anSTMethod) {
 		return anSTMethod.getName().startsWith(SET) &&
 				anSTMethod.isPublic() &&
-				anSTMethod.getParameterTypes().length != 1;
+				anSTMethod.getParameterTypes().length != 1 &&
+				"void".equals(anSTMethod.getReturnType());
 	}
 	void maybeProcessSetter(STMethod anSTMethod) {
 //		if (!anSTMethod.getName().startsWith(SET) ||

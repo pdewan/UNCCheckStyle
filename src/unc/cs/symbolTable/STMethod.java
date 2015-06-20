@@ -8,4 +8,6 @@ public interface STMethod extends STNameable{
 	boolean isPublic();
 	boolean isVisible();
 	STNameable[] getTags();
+	boolean assignsToGlobal();
+	String[][] methodsCalled();
 }

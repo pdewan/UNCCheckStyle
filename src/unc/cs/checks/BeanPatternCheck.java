@@ -15,7 +15,7 @@ public class BeanPatternCheck extends TypeVisitedCheck {
 	public void visitType(DetailAST ast) {
     	super.visitType(ast);
 	}
-	public void checkedVisitToken(DetailAST ast) {
+	public void doVisitToken(DetailAST ast) {
 		// System.out.println("Check called:" + MSG_KEY);
 		switch (ast.getType()) {
 		case TokenTypes.PACKAGE_DEF:

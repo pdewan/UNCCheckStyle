@@ -12,7 +12,7 @@ public class NoDuplicateShortTypeNameCheck extends TypeVisitedCheck {
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
 	}
-	public void checkedVisitToken(DetailAST ast) {
+	public void doVisitToken(DetailAST ast) {
 //    	System.out.println("Check called:" + msgKey());
 
 		if (maybeVisitPackage(ast) ) 

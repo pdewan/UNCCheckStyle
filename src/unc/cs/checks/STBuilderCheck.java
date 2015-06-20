@@ -26,6 +26,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected List<STMethod> stMethods = new ArrayList();
 	protected List<STMethod> stConstructors = new ArrayList();
 	public static final String MSG_KEY = "stBuilder";
+	static String[] projectPackagePrefixes = {"assignment", "project", "homework"};
 	
 
     
@@ -37,10 +38,13 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodName, 
     				fullTypeName,
     				aParameterTypes, 
-    				currentMethodIsPublic,     				
+    				currentMethodIsPublic,  
+    				currentMethodIsInstance,
     				currentMethodType,
     				currentMethodIsVisible,
-    				currentMethodTags.toArray(dummyArray));
+    				currentMethodTags.toArray(dummyArray),
+    				currentMethodAssignsToGlobalVariable,
+    				methodsCalledByCurrentMethod.toArray(new String[0][0]));
     		if (currentMethodIsConstructor)
     			stConstructors.add(anSTMethod);
     		else
@@ -49,6 +53,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     	currentMethodName = null;
     	
     }
+    
+    public void setProjectPackagePrefixes(String[] aPrefixes) {
+    	projectPackagePrefixes = aPrefixes;
+    }
+    
+    public static String[] geProjectPackagePrefixes() {
+    	return projectPackagePrefixes;
+    }
+		
 		
 
     public void beginTree(DetailAST ast) {  
@@ -77,7 +90,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			propertyNames.toArray(dummyArray),
 	    			editablePropertyNames.toArray(dummyArray),
 	    			typeTags.toArray(dummyArray),
-	    			imports.toArray(dummyArray));
+	    			imports.toArray(dummyArray),
+	    			globalVariables.toArray(dummyArray));
 //	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
 //	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
 //	    	anSTClass.initTags(tags.toArray(dummyArray));

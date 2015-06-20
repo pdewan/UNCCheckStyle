@@ -6,18 +6,28 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	final String declaringClass;
 	final String[] parameterTypes;
 	final boolean isPublic;
+	final boolean isInstance;
 	final boolean isVisible;
 	final STNameable[] tags;
+	final boolean assignsToGlobal;
+	final String[][] methodsCalled;
+	
 	public AnSTMethod(DetailAST ast, String name, 
 			String declaringClass, String[] parameterTypes,
-			boolean isPublic, String returnType, boolean anIsVisible, STNameable[] aTags) {
+			boolean isPublic, boolean anIsInstance, String returnType,
+			boolean anIsVisible, STNameable[] aTags,
+			boolean isAssignsToGlobal,
+			String[][] aMethodsCalled) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
 		this.isPublic = isPublic;
+		isInstance = anIsInstance;
 		this.returnType = returnType;
 		isVisible = anIsVisible;
 		tags = aTags;
+		assignsToGlobal = isAssignsToGlobal;
+		methodsCalled = aMethodsCalled;
 	}
 	String returnType;
 	
@@ -34,6 +44,15 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	@Override
 	public boolean isPublic() {
 		return isPublic;
+	}
+	
+	@Override
+	public boolean assignsToGlobal() {
+		return assignsToGlobal;
+	}
+	@Override
+	public String[][] methodsCalled() {
+		return methodsCalled;
 	}
 
 	@Override

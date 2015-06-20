@@ -6,7 +6,7 @@ public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
 	STNameable[] getInterfaces();
-	STMethod[] getMethod(String aName, String[] aParameterTypes);
+	STMethod getMethod(String aName, String[] aParameterTypes);
 	String getPackage();
 	boolean isInterface();
 	STNameable getSuperClass();
@@ -24,4 +24,5 @@ public interface STType extends STNameable{
 	STNameable[] getPropertyNames();
 	Map<String, PropertyInfo> getDeclaredPropertyInfos();
 	Map<String, PropertyInfo> getPropertyInfos();
+	STMethod[] getMethods(String aName);
 }

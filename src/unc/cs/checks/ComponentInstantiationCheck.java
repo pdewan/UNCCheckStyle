@@ -164,12 +164,12 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 //
 //	}
 
-	public void checkedVisitToken(DetailAST ast) {
+	public void doVisitToken(DetailAST ast) {
 
 		if (ast.getType() == TokenTypes.LITERAL_NEW)
 			visitInstantiation(ast);
 		else
-			super.checkedVisitToken(ast);
+			super.doVisitToken(ast);
 	}
 
 }

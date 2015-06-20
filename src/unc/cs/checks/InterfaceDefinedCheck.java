@@ -20,7 +20,7 @@ public class InterfaceDefinedCheck extends TypeVisitedCheck{
 
 
     }
-	public void checkedVisitToken(DetailAST ast) {
+	public void doVisitToken(DetailAST ast) {
 		
 		switch (ast.getType()) {
 		case TokenTypes.PACKAGE_DEF: 

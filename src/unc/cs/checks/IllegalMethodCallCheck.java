@@ -28,17 +28,16 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
      * file.
      */
     public static final String MSG_KEY = "illegalMethodCall";
-    protected String[] disallowedMethods, disallowedClasses, allowedClasses, allowedMethods;
-    
+    protected String[] exceptionCalls, disallowedCalls, allowedCalls;     
   
  // disallow all methods of this class except the allowed methods
-    protected List<String> disallowedClassCollection = new ArrayList(); 
+    protected List<String> disallowedCallsCollection = new ArrayList(); 
 // if disallowed class set is missing, then it is *    
-    protected List<String> allowedMethodCollection = new ArrayList();
+    protected List<String> exceptionCallsCollection = new ArrayList();
  // all methods of these classes can be used, except the disallowed methods
-    protected List<String> allowedClassCollection = new ArrayList();
+    protected List<String> allowedCallsCollection = new ArrayList();
     // if allowed clsas set is missing, then it is *
-    protected List<String> disallowedMethodCollection = new ArrayList();
+//    protected List<String> disallowedMethodCollection = new ArrayList();
 //   
 //    @Override
 //    public int[] getDefaultTokens() {
@@ -96,36 +95,36 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 		return MSG_KEY;
 	}
     
-    public String[] getDisallowedMethods() {
-    	return disallowedMethods;
+    public String[] getExceptionCalls() {
+    	return exceptionCalls;
     }
     
-    public void setDisallowedMethods (String[] newValue) {
-    	disallowedMethods = newValue;
+    public void setExceptionCalls (String[] newValue) {
+    	exceptionCalls = newValue;
 //		String[] toArray = newValue.split(",");
-		for (String s:disallowedMethods) {
-			disallowedMethodCollection.add(s);
+		for (String s:exceptionCalls) {
+			exceptionCallsCollection.add(s);
 		}		
 	}
-    public void setAllowedMethods (String[] newValue) {
-    	allowedMethods = newValue;
+//    public void setAllowedMethods (String[] newValue) {
+//    	allowedMethods = newValue;
+////		String[] toArray = newValue.split(",");
+//		for (String s:allowedMethods) {
+//			exceptionCallsCollection.add(s);
+//		}		
+//	}
+    public void setDisallowedCalls (String[] newValue) {
+    	disallowedCalls = newValue;
 //		String[] toArray = newValue.split(",");
-		for (String s:allowedMethods) {
-			allowedMethodCollection.add(s);
+		for (String s:disallowedCalls) {
+			disallowedCallsCollection.add(s);
 		}		
 	}
-    public void setDisallowedClasses (String[] newValue) {
-    	disallowedClasses = newValue;
+    public void setAllowedCalls (String[] newValue) {
+    	allowedCalls = newValue;
 //		String[] toArray = newValue.split(",");
-		for (String s:disallowedClasses) {
-			disallowedClassCollection.add(s);
-		}		
-	}
-    public void setAllowedClasses (String[] newValue) {
-    	allowedClasses = newValue;
-//		String[] toArray = newValue.split(",");
-		for (String s:allowedClasses) {
-			allowedClassCollection.add(s);
+		for (String s:allowedCalls) {
+			allowedCallsCollection.add(s);
 		}		
 	}
     
@@ -152,24 +151,24 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 //			return false;
 //		return !disallowedMethodCollection.contains(aLongMethodName);
 		String aCalledClass = aCallParts[0];
-		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, allowedClassCollection, aCalledMethod);
+		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, allowedCallsCollection, aCalledMethod);
 		if (aTypesMatch == null)
 			return null;
 		if (!aTypesMatch)
 			return false;
-		Boolean aMethodsMatch =  methodCallContainedInSpecifications(aCallParts, disallowedMethodCollection, aCalledMethod);
+		Boolean aMethodsMatch =  methodCallContainedInSpecifications(aCallParts, exceptionCallsCollection, aCalledMethod);
 		if (aMethodsMatch == null)
 			return null;
 		return !aMethodsMatch;
 	}
 	protected Boolean checkDisallowedClassAllowedMethods(DetailAST aCalledMethod, String[] aCallParts, String aLongMethodName) {		
 		String aCalledClass = aCallParts[0];
-		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, disallowedClassCollection, aCalledMethod);
+		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, disallowedCallsCollection, aCalledMethod);
 		if (aTypesMatch == null)
 			return null;
 		if (!aTypesMatch)
 			return true;
-		Boolean aMethodsMatch =  methodCallContainedInSpecifications(aCallParts, allowedMethodCollection, aCalledMethod);
+		Boolean aMethodsMatch =  methodCallContainedInSpecifications(aCallParts, exceptionCallsCollection, aCalledMethod);
 		if (aMethodsMatch == null)
 			return null;
 		return aMethodsMatch;
@@ -182,6 +181,8 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 
 	@Override
 	protected Boolean check(DetailAST aCalledMethodAST, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
+		if (!checkTagsOfCurrentType())
+			return true;
 		String[] aNormalizedCallParts = aCallParts;
 		if (aCallParts.length > 2) { // cannot dissect it into a class 
 //		     return checkAtomic(aCalledMethodAST, aLongMethodName);
@@ -190,7 +191,7 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 		}
 		
 		// give precedence to disallowed
-		if (disallowedClassCollection.size() > 0) {
+		if (disallowedCallsCollection.size() > 0) {
 			return checkDisallowedClassAllowedMethods(aCalledMethodAST, aNormalizedCallParts, aLongMethodName);			
 		} else {
 			//if (allowedClassCollection.size() > 0) {

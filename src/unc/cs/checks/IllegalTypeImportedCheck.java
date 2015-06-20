@@ -74,7 +74,7 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
     }
     
 	 @Override
-	    public void checkedVisitToken(DetailAST ast) {
+	    public void doVisitToken(DetailAST ast) {
 //	        final FullIdent imp;
 //	        if (ast.getType() == TokenTypes.IMPORT) {
 //	            imp = FullIdent.createFullIdentBelow(ast);
@@ -93,7 +93,7 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 		 if (ast.getType() == TokenTypes.IMPORT || ast.getType() == TokenTypes.STATIC_IMPORT)
 			 maybeAddToPendingTypeChecks(ast);
 		 else
-			 super.checkedVisitToken(ast);
+			 super.doVisitToken(ast);
 	    }
 	 protected boolean isLocalPackage(String importText) {
 		 for (String aPrefix:legalPrefixes) {

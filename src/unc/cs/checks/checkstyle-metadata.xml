@@ -85,5 +85,15 @@
 			<alternative-name internal-name="unc.cs.checks.IllegalComponentInstantiationCheck" />
 			<description>%IllegalComponentInstantiation.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%StatiVariable.name"
+			internal-name="StatiVariable" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.StatiVariableCheck" />
+			<description>%StatiVariable.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%FunctionAssignsGlobal.name"
+			internal-name="FunctionAssignsGlobal" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.FunctionAssignsGlobal" />
+			<description>%FunctionAssignsGlobal.desc</description>
+		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

@@ -6,6 +6,7 @@ import java.util.Map;
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public abstract class UNCCheck extends Check{
 
@@ -14,11 +15,11 @@ public abstract class UNCCheck extends Check{
         log(line, key, args);
     }
 	
-	public abstract void checkedVisitToken(DetailAST ast);
+	public abstract void doVisitToken(DetailAST ast);
 	
 	public void visitToken(DetailAST ast) {
 		try {
-			checkedVisitToken(ast);
+			doVisitToken(ast);
 			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -36,5 +37,24 @@ public abstract class UNCCheck extends Check{
         log(lineNo, colNo, key, args);
     }
     protected  abstract String msgKey();
+    public static boolean isPublicAndInstance(DetailAST methodOrVariableDef) {
+		return isPublic(methodOrVariableDef) 
+				&& ! isStatic(methodOrVariableDef);
+	}
+	public static boolean isPublic(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PUBLIC);
+				
+	}
+	public static boolean isStatic(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_STATIC);
+				
+	}
+	public static boolean isFinal(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.FINAL);				
+	}
+	public static boolean isStaticAndNotFinal(DetailAST methodOrVariableDef) {
+		return isStatic (methodOrVariableDef)
+				&& ! isFinal(methodOrVariableDef);
+	}
 
 }

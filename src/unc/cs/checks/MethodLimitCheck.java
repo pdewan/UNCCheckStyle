@@ -22,7 +22,7 @@ public class MethodLimitCheck extends UNCCheck {
         max = limit;
     }
 
-    public void checkedVisitToken(DetailAST ast) {
+    public void doVisitToken(DetailAST ast) {
     	System.out.println("Check called:" + msgKey());
         // find the OBJBLOCK node below the CLASS_DEF/INTERFACE_DEF
         DetailAST objBlock = ast.findFirstToken(TokenTypes.OBJBLOCK);
