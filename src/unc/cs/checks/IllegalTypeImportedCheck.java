@@ -115,6 +115,8 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 //		 return false;
 //	 }
 	 protected Boolean isIllegalImport(String importText, String myClassName) {
+		 if (importText.endsWith("Tags")) // to allow bootstrapping
+			 return false;
 		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
 			 return isPrefix(importText, illegalPrefixes, myClassName);
 		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 

@@ -2,10 +2,12 @@ package unc.cs.symbolTable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.TagBasedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
@@ -83,8 +85,8 @@ public class AnSTType extends AnSTNameable implements STType {
 		List<STMethod> retVal = new ArrayList();
 		addToList(retVal, getDeclaredMethods());
 		STNameable aSuperType = getSuperClass();
-		if (aSuperType != null && !"Object".equals(aSuperType.getName()) &&
-				!ComprehensiveVisitCheck.isExternalImport(aSuperType.getName())) {
+		if (aSuperType != null &&
+				!TagBasedCheck.isExternalClass(aSuperType.getName())) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperType.getName());
 			if (anSTType == null)
 				return null;
@@ -128,21 +130,25 @@ public class AnSTType extends AnSTNameable implements STType {
 	public STNameable[] getDeclaredPropertyNames() {
 		return declaredPropertyNames;
 	}
+	// recursion is safer
 	@Override
 	public STNameable[] getPropertyNames() {
 		List<STNameable> result = new ArrayList<>();
-		STNameable[] aPropertyNames = getDeclaredPropertyNames();
+//		STNameable[] aPropertyNames = getDeclaredPropertyNames();
+		STNameable[] aPropertyNames;
+
+		STType anSTClass = this;
 		while (true) {
+			aPropertyNames = anSTClass.getDeclaredPropertyNames();
 			for (STNameable aNameable:aPropertyNames) {
 				result.add(aNameable);
 			}
-			STNameable aSuperClass = getSuperClass();
-			if (aSuperClass == null || aSuperClass.getName().endsWith("Object"))
+			STNameable aSuperClass = anSTClass.getSuperClass();
+			if (aSuperClass == null || TagBasedCheck.isExternalClass(aSuperClass.getName()))
 			     break;
-			STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperClass.getName());
+			 anSTClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperClass.getName());
 			if (anSTClass == null)
 				return null; // assume that we are only inheriting our own types
-			aPropertyNames = anSTClass.getDeclaredPropertyNames();
 			
 		}
 		return  result.toArray(new STNameable[0]);
@@ -177,20 +183,21 @@ public class AnSTType extends AnSTNameable implements STType {
 //	public void initStructurePatternName(STNameable structurePatternName) {
 //		this.structurePatternName = structurePatternName;
 //	}
-	public  static final String GET = "get";
-	public  static final String SET = "set";
-	public static final String INIT = "init";
-	public static boolean isInit(STMethod anSTMethod) {
-		return isInit(anSTMethod.getName());
-	}
-	public static boolean isInit(String aMethodName) {
-		return aMethodName.startsWith(INIT);
-	}
+//	public  static final String GET = "get";
+//	public  static final String SET = "set";
+//	public static final String INIT = "init";
+//	public static boolean isInit(STMethod anSTMethod) {
+//		return isInit(anSTMethod.getName());
+//	}
+//	public static boolean isInit(String aMethodName) {
+//		return aMethodName.startsWith(INIT);
+//	}
 	void maybeProcessInit(STMethod anSTMethod) {
 //		if (!anSTMethod.getName().startsWith(INIT))  return;
-		if (isInit(anSTMethod)) return;
+//		if (isInit(anSTMethod)) return;
+		if (anSTMethod.isInit()) return;
 
-		String aPropertyName = anSTMethod.getName().substring(GET.length()).toLowerCase();
+		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.GET.length()).toLowerCase();
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
@@ -199,19 +206,21 @@ public class AnSTType extends AnSTNameable implements STType {
 		}			
 		aPropertyInfo.setGetter(anSTMethod);
 	}
-	public static boolean isGetter(STMethod anSTMethod) {
-		return anSTMethod.getName().startsWith(GET) &&
-				anSTMethod.isPublic() &&
-				anSTMethod.getParameterTypes().length == 0;
-	}
+//	public static boolean isGetter(STMethod anSTMethod) {
+//		return anSTMethod.getName().startsWith(GET) &&
+//				anSTMethod.isPublic() &&
+//				anSTMethod.getParameterTypes().length == 0;
+//	}
 
 	void maybeProcessGetter(STMethod anSTMethod) {
-		if (!isGetter(anSTMethod))
+//		if (!isGetter(anSTMethod))
+//			return;
+		if (!anSTMethod.isGetter())
 			return;
 //		if (!anSTMethod.getName().startsWith(GET) ||
 //				!anSTMethod.isPublic() ||
 //				anSTMethod.getParameterTypes().length != 0) return;
-		String aPropertyName = anSTMethod.getName().substring(GET.length()).toLowerCase();
+		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.GET.length()).toLowerCase();
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
@@ -223,19 +232,21 @@ public class AnSTType extends AnSTNameable implements STType {
 	public STNameable[] getDeclaredFields() {
 		return declaredFields;
 	}
-	public static boolean isSetter(STMethod anSTMethod) {
-		return anSTMethod.getName().startsWith(SET) &&
-				anSTMethod.isPublic() &&
-				anSTMethod.getParameterTypes().length != 1 &&
-				"void".equals(anSTMethod.getReturnType());
-	}
+//	public static boolean isSetter(STMethod anSTMethod) {
+//		return anSTMethod.getName().startsWith(SET) &&
+//				anSTMethod.isPublic() &&
+//				anSTMethod.getParameterTypes().length != 1 &&
+//				"void".equals(anSTMethod.getReturnType());
+//	}
 	void maybeProcessSetter(STMethod anSTMethod) {
 //		if (!anSTMethod.getName().startsWith(SET) ||
 //		!anSTMethod.isPublic() ||
 //		anSTMethod.getParameterTypes().length != 1) return;
-		if (!isSetter(anSTMethod)) 
-			return;			
-		String aPropertyName = anSTMethod.getName().substring(SET.length()).toLowerCase();
+//		if (!isSetter(anSTMethod)) 
+//			return;	
+		if (!anSTMethod.isSetter()) 
+			return;
+		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.SET.length()).toLowerCase();
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
@@ -255,21 +266,23 @@ public class AnSTType extends AnSTNameable implements STType {
 	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 		return actualPropertyInfo;
 	}
+	// should use recursion actually
 	@Override
 	public Map<String, PropertyInfo> getPropertyInfos() {
 		Map<String, PropertyInfo> result = new HashMap<>();
-		Map<String, PropertyInfo> aPropertyInfos = getDeclaredPropertyInfos();
+		Map<String, PropertyInfo> aPropertyInfos = new HashMap();
+		STType anSTClass = this;
 		while (true) {
+			aPropertyInfos = anSTClass.getDeclaredPropertyInfos();	
 			for (String aPropertyName:aPropertyInfos.keySet()) {
 				result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
 			}
-			STNameable aSuperClass = getSuperClass();
-			if (aSuperClass == null || aSuperClass.getName().endsWith("Object"))
+			STNameable aSuperClass = anSTClass.getSuperClass();
+			if (aSuperClass == null || TagBasedCheck.isExternalClass(aSuperClass.getName()))
 			     break;
-			STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperClass.getName());
+			anSTClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperClass.getName());
 			if (anSTClass == null)
 				return null; // assume that we are only inheriting our own types
-			aPropertyInfos = anSTClass.getDeclaredPropertyInfos();			
 		}
 		return result;
 	}

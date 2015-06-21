@@ -47,7 +47,7 @@ ContinuationProcessor{
 
 	protected boolean currentMethodIsVisible;;
 	protected List<String> currentMethodParameterTypes = new ArrayList();
-	protected List<STNameable> imports = new ArrayList();
+//	protected List<STNameable> imports = new ArrayList();
 //	protected static Set<String> externalImports = new HashSet();
 //	protected static Set<String> javaLangClassesSet;
 	protected List<STNameable> propertyNames;
@@ -440,28 +440,28 @@ ContinuationProcessor{
 	    	interfaces = getSuperTypes(ast);
 			isInterface = true;
 	 }
-	 public static boolean isProjectImport(String aFullName) {
-		 for (String aPrefix:STBuilderCheck.geProjectPackagePrefixes())
-			 if (aFullName.startsWith(aPrefix)) return true;
-		 return false;
-	 }
-	 public void visitImport(DetailAST ast) {
-		 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
-		 String aLongClassName = anImport.getText();
-		 String aShortClassName = getLastDescendent(ast).getText();
-	
-		 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
-		 imports.add(anSTNameable);
-		 if (!isProjectImport(aLongClassName))
-			 externalImports.add(aShortClassName);
-	 }
-	 public void visitStaticImport(DetailAST ast) {
-		 DetailAST anImportAST = ast.getFirstChild().getNextSibling();
-		 FullIdent anImport = FullIdent.createFullIdent(
-	                anImportAST);
-		 STNameable anSTNameable = new AnSTNameable(ast, anImport.getText());
-		 imports.add(anSTNameable);
-	 }
+//	 public static boolean isProjectImport(String aFullName) {
+//		 for (String aPrefix:STBuilderCheck.geProjectPackagePrefixes())
+//			 if (aFullName.startsWith(aPrefix)) return true;
+//		 return false;
+//	 }
+//	 public void visitImport(DetailAST ast) {
+//		 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
+//		 String aLongClassName = anImport.getText();
+//		 String aShortClassName = getLastDescendent(ast).getText();
+//	
+//		 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
+//		 imports.add(anSTNameable);
+//		 if (!isProjectImport(aLongClassName))
+//			 externalImports.add(aShortClassName);
+//	 }
+//	 public void visitStaticImport(DetailAST ast) {
+//		 DetailAST anImportAST = ast.getFirstChild().getNextSibling();
+//		 FullIdent anImport = FullIdent.createFullIdent(
+//	                anImportAST);
+//		 STNameable anSTNameable = new AnSTNameable(ast, anImport.getText());
+//		 imports.add(anSTNameable);
+//	 }
 	 
 	 public void visitLCurly(DetailAST ast) {
 		 
@@ -670,6 +670,7 @@ ContinuationProcessor{
 
 	    @Override
 	    public void finishTree(DetailAST ast) {
+	    	System.out.println ("finish tree called:" + ast + " " + getFileContents().getFilename());
 	    	if (currentMethodName != null)
 	    	processPreviousMethodData();
 	    	processMethodAndClassData();
@@ -677,6 +678,8 @@ ContinuationProcessor{
 	    	processDeferredChecks(); 
 //	    	ContinuationNotifierFactory.getOrCreateSingleton()
 //			.notifyContinuationProcessors();
+	    	System.out.println ("finish tree ended:" + ast + " " + getFileContents().getFilename());
+
 	    }
 	    
 		public void processDeferredChecks() {
@@ -974,12 +977,12 @@ ContinuationProcessor{
 			 }
 			 return false;
 		 }
-	    public static DetailAST getLastDescendent(DetailAST ast) {
-	    	DetailAST result = ast.getFirstChild();
-	    	while (result.getChildCount() > 0)
-	    		result = result.getLastChild();    	
-	    	return result;    	
-	    }
+//	    public static DetailAST getLastDescendent(DetailAST ast) {
+//	    	DetailAST result = ast.getFirstChild();
+//	    	while (result.getChildCount() > 0)
+//	    		result = result.getLastChild();    	
+//	    	return result;    	
+//	    }
 	    public static String maybeReturnInstantiatedType(DetailAST ast) {
 			DetailAST aNewAST = ast.findFirstToken(TokenTypes.LITERAL_NEW);
 			if (aNewAST != null) {

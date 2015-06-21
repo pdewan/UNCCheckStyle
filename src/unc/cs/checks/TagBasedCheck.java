@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import unc.cs.symbolTable.AnSTNameable;
@@ -44,6 +45,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	 static List<STNameable> emptyList = new ArrayList();
 
 	protected static Set<String> externalImports = new HashSet();
+	protected List<STNameable> imports = new ArrayList();
+
 	protected static Set<String> javaLangClassesSet;
 	public void setIncludeTags(String[] newVal) {
 		this.includeTags = new HashSet(Arrays.asList(newVal));		
@@ -159,6 +162,10 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  public static boolean isExternalImport(String aShortClassName) {
 	 return externalImports.contains(aShortClassName);
  }
+ 
+ public static boolean isExternalClass(String aShortClassName) {
+	 return aShortClassName.equals("Object") || isExternalImport(aShortClassName) || isJavaLangClass(aShortClassName);
+ }
  public List<STNameable> getTags(String aShortClassName)  {
 	List<STNameable> aTags = emptyList;
 
@@ -272,6 +279,34 @@ public void maybeVisitMethodTags(DetailAST ast) {
 		return;
 	}
 	currentMethodTags = getArrayLiterals(annotationAST);
+}
+public void visitImport(DetailAST ast) {
+	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
+	 String aLongClassName = anImport.getText();
+	 String aShortClassName = getLastDescendent(ast).getText();
+
+	 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
+	 imports.add(anSTNameable);
+	 if (!isProjectImport(aLongClassName))
+		 externalImports.add(aShortClassName);
+}
+public static boolean isProjectImport(String aFullName) {
+	 for (String aPrefix:STBuilderCheck.geProjectPackagePrefixes())
+		 if (aFullName.startsWith(aPrefix)) return true;
+	 return false;
+}
+public static DetailAST getLastDescendent(DetailAST ast) {
+	DetailAST result = ast.getFirstChild();
+	while (result.getChildCount() > 0)
+		result = result.getLastChild();    	
+	return result;    	
+}
+public void visitStaticImport(DetailAST ast) {
+	 DetailAST anImportAST = ast.getFirstChild().getNextSibling();
+	 FullIdent anImport = FullIdent.createFullIdent(
+               anImportAST);
+	 STNameable anSTNameable = new AnSTNameable(ast, anImport.getText());
+	 imports.add(anSTNameable);
 }
 public static boolean isArray(String aShortClassName) {
 	 return aShortClassName.endsWith("[]");

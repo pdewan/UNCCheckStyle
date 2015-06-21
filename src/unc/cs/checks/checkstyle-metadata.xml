@@ -95,5 +95,10 @@
 			<alternative-name internal-name="unc.cs.checks.FunctionAssignsGlobal" />
 			<description>%FunctionAssignsGlobal.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%SetterAssignsGlobal.name"
+			internal-name="SetterAssignsGlobal" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.SetterAssignsGlobal" />
+			<description>%FunctionAssignsGlobal.desc</description>
+		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

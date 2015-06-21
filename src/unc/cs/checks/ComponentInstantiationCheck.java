@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
@@ -108,7 +109,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	// fail if instantiate a componnet in a method other than init or
 	// constructor
 	public Boolean inConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
-		return (currentMethodIsConstructor || AnSTType.isInit(currentMethodName));
+		return (currentMethodIsConstructor || AnSTMethod.isInit(currentMethodName));
 ////		DetailAST aTypeAST = ast.getFirstChild();
 //		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
 //		String anInstantiatedTypeName = anIdentifierType.getText();

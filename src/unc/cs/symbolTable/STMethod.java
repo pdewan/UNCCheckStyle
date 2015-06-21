@@ -10,4 +10,8 @@ public interface STMethod extends STNameable{
 	STNameable[] getTags();
 	boolean assignsToGlobal();
 	String[][] methodsCalled();
+	boolean isProcedure();
+	boolean isSetter();
+	boolean isGetter();
+	boolean isInit();
 }

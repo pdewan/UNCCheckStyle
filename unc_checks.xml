@@ -89,6 +89,10 @@
 			<property name="excludeTags"
 				value="Tag4" />
 		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="excludeTags"
+				value="Tag4" />
+		</module>
 		<!-- <module name="LineLength"> <property name="max" value="${maxLineLength}"/> 
 			</module> -->
 		<module name="PackageDeclaration" />

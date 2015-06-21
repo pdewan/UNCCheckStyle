@@ -27,7 +27,7 @@ public class LegalComponentInstantiationCheck extends ComponentInstantiationChec
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
 	 */
-	public static final String MSG_KEY = "LegalComponentInstantiation";
+	public static final String MSG_KEY = "legalComponentInstantiation";
 //	Map<DetailAST, List<DetailAST>> astToPendingTypeInstantiations = new HashMap();
 
 //	public IllegalComponentInstantiationCheck() {
