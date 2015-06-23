@@ -969,7 +969,9 @@ ContinuationProcessor{
 	    protected boolean containedInClasses (String aTarget, List<String> aList, String aSourceClassName) {
 			 for (String aMember:aList) {
 				 String[] aMemberParts = aMember.split(">");
-				 if ((aMemberParts.length == 2) && !matchesMyType(aMemberParts[0], aSourceClassName))
+//				 if ((aMemberParts.length == 2) && !matchesMyType(aMemberParts[0], aSourceClassName))
+
+				 if ((aMemberParts.length == 2) && !matchesType(aMemberParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTrueMember = aMemberParts.length == 2?aMemberParts[1]:aMember;
 				 if (aTarget.equals(aTrueMember))

@@ -136,6 +136,14 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  	}
  	return false;
  }
+ // could return a list also
+ public  String findMatchingType (Set<String> aSpecifiedTypes, STType anSTType) {
+		for (String aSpecifiedType:aSpecifiedTypes) {
+				if (matchesType(aSpecifiedType, anSTType.getName()))
+					return aSpecifiedType; 
+		}
+		return null;
+	}
  
  public static String maybeStripQuotes(String aString) {
  	if (aString.indexOf("\"") != -1) // quote rather than named constant
@@ -146,16 +154,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  		return maybeStripQuotes(aStoredTag).equals(maybeStripQuotes(aDescriptor));
  	
  }
- public  Boolean matchesMyType( String aDescriptor,  String aShort) {
- 	String aClassName = shortTypeName;
- 	if (aDescriptor == null || aDescriptor.length() == 0)
- 		return true;
- 	if (aDescriptor.startsWith("@")) {
- 		String aTag = aDescriptor.substring(1);
- 		return contains(typeTags(), aTag);	    		
- 	}
-		return aClassName.equals(aDescriptor);
-	 }
+ 
  public static boolean isJavaLangClass(String aShortClassName) {
 	 return javaLangClassesSet.contains(aShortClassName);
  }
@@ -195,6 +194,16 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 	return aTags;
 	
 }
+ public  Boolean matchesMyType( String aDescriptor) {
+	 	String aClassName = shortTypeName;
+	 	if (aDescriptor == null || aDescriptor.length() == 0)
+	 		return true;
+	 	if (aDescriptor.startsWith("@")) {
+	 		String aTag = aDescriptor.substring(1);
+	 		return contains(typeTags(), aTag);	    		
+	 	}
+			return aClassName.equals(aDescriptor);
+		 }
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0)
 		return true;
