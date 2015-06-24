@@ -93,6 +93,10 @@
 			<property name="excludeTags"
 				value="Tag4" />
 		</module>
+			<module name="BeanProperties">
+			<property name="expectedProperties"
+				value="@Tag1> P1:int | P2:int" />
+		</module>
 		<!-- <module name="LineLength"> <property name="max" value="${maxLineLength}"/> 
 			</module> -->
 		<module name="PackageDeclaration" />

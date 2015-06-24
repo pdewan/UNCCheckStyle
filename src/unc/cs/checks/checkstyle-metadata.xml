@@ -92,13 +92,18 @@
 		</rule-metadata>
 		<rule-metadata name="%FunctionAssignsGlobal.name"
 			internal-name="FunctionAssignsGlobal" parent="TreeWalker">
-			<alternative-name internal-name="unc.cs.checks.FunctionAssignsGlobal" />
+			<alternative-name internal-name="unc.cs.checks.FunctionAssignsGlobalCheck" />
 			<description>%FunctionAssignsGlobal.desc</description>
 		</rule-metadata>
 		<rule-metadata name="%SetterAssignsGlobal.name"
 			internal-name="SetterAssignsGlobal" parent="TreeWalker">
-			<alternative-name internal-name="unc.cs.checks.SetterAssignsGlobal" />
-			<description>%FunctionAssignsGlobal.desc</description>
+			<alternative-name internal-name="unc.cs.checks.SetterAssignsGlobalCheck" />
+			<description>%SetterAssignsGlobal.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%BeanProperties.name"
+			internal-name="SetterAssignsGlobal" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.SetterAssignsGlobalCheck" />
+			<description>%BeanProperties.desc</description>
 		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

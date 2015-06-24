@@ -19,12 +19,12 @@ public abstract class UNCCheck extends Check{
 	
 	public void visitToken(DetailAST ast) {
 		try {
-			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
-			if (ast.getType() == TokenTypes.LITERAL_NEW) {
-				System.out.println ("found new");
-			}
+//			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			if (ast.getType() == TokenTypes.LITERAL_NEW) {
+//				System.out.println ("found new");
+//			}
 			doVisitToken(ast);
-			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 
 			
 		} catch (RuntimeException e) {

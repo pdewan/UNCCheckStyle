@@ -87,7 +87,7 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	}
 	@Override
 	public boolean isGetter() {
-		return isSetter;
+		return isGetter;
 	}
 	
 	 boolean computeIsSetter() {

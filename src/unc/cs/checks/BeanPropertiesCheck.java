@@ -40,16 +40,19 @@ public class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 	
     public void setExpectedPropertiesOfType (String aPattern) {
     	String[] extractTypeAndProperties = aPattern.split(">") ;
-		String aType = extractTypeAndProperties[0];
-		String[] aProperties = extractTypeAndProperties[1].split("|");
+		String aType = extractTypeAndProperties[0].trim();
+		String[] aProperties = extractTypeAndProperties[1].split("\\|");
 		typeToProperty.put(aType, aProperties);
 	}  
 	
 	/*
-	 * @StructurePatternNames.LinePattern> int X | int Y | int Width |int Height, 
-	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int | Height: int
+	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int |Height:int, 
+	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
 	 */
-	public void setExpectedProperties (String[] aPattern) {
+	public void setExpectedProperties (String[] aPatterns) {
+		for (String aPattern:aPatterns) {
+			setExpectedPropertiesOfType(aPattern);
+		}
 		
 	}
 //	public void visitType(DetailAST ast) {
@@ -78,13 +81,17 @@ public class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 //				checkTagsOfType(aSpecifiedType, anSTType);
 //		}
 //	}
-	public static Boolean matchProperties (String[] aSpecifiedProperties, Map<String, PropertyInfo>  aPropertyInfos) {
+	public  Boolean matchProperties (String[] aSpecifiedProperties, Map<String, PropertyInfo>  aPropertyInfos,  DetailAST aTreeAST) {
 		for (String aSpecifiedProperty: aSpecifiedProperties) {
-			String[] aPropertyAndType = aSpecifiedProperty.split(" *");
-			String aType = aPropertyAndType[0];
-			String aProperty = aPropertyAndType[1];
-			if (!matchProperty(aType, aProperty, aPropertyInfos))
+			String[] aPropertyAndType = aSpecifiedProperty.split(":");
+			String aType = aPropertyAndType[1].trim();
+			String aProperty = aPropertyAndType[0].trim();
+			if (!matchProperty(aType, aProperty, aPropertyInfos)) {
+				String aSourceName =
+						 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+				  
 				return false;
+			}
 		}
 		return true;
 	}
@@ -107,7 +114,7 @@ public class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 		 
 		 Map<String, PropertyInfo> aPropertyInfos =  anSTType.getPropertyInfos();
 		 String[] aSpecifiedProperties = typeToProperty.get(aSpecifiedType);
-		 return matchProperties(aSpecifiedProperties, aPropertyInfos);		 
+		 return matchProperties(aSpecifiedProperties, aPropertyInfos, aTree);		 
 	 }
 	@Override
 	protected String msgKey() {
