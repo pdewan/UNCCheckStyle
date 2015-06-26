@@ -5,6 +5,7 @@ import unc.cs.symbolTable.STType;
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 public abstract class TypeVisitedCheck extends UNCCheck {
 	public static final String MSG_KEY = "typeDefined";	
@@ -50,12 +51,19 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //		System.out.println("found package:" + packageName);	
 	}
 	protected void log(DetailAST ast) {
-	    log(ast.getLineNo(), msgKey(), fullTypeName);
+	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
     }
 	
 	public static String getName (DetailAST anAST) {
-		return anAST.findFirstToken(TokenTypes.IDENT).getText();
+//		return anAST.findFirstToken(TokenTypes.IDENT).getText();
+		return getNameAST(anAST).getText();
+
 	}
+	
+	public static DetailAST getNameAST (DetailAST anAST) {
+		return anAST.findFirstToken(TokenTypes.IDENT);
+	}
+
   
 	
 	

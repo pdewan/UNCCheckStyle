@@ -18,7 +18,7 @@ public class ClassDefinedCheck extends TypeVisitedCheck{
 	public void visitType(DetailAST ast) {  
 
     	super.visitType(ast);
-		log(ast.getLineNo(), msgKey(), fullTypeName);
+		log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
 
 
     }

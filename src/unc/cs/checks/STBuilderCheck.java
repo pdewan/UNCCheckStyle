@@ -99,7 +99,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    	anSTClass.introspect();
 	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 	    			fullTypeName, anSTClass);
-	    	log (typeAST.getLineNo(), msgKey(), fullTypeName);
+	    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }

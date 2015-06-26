@@ -37,10 +37,12 @@
 		<module name="VariableHasClassType">
 
 		</module>
+		<!--
 		<module name="MethodLimit">
 			<property name="max" value="4" />
 			<message key="methodlimit" value="Man, only {0} methods allowed." />
 		</module>
+		-->
 		<module name="NoDuplicateShortTypeName">
 			<message key="noDuplicateShortTypeName" value="Repeated short type name {0}" />
 		</module>
@@ -93,7 +95,11 @@
 			<property name="excludeTags"
 				value="Tag4" />
 		</module>
-			<module name="BeanProperties">
+			<module name="ExpectedGetters">
+			<property name="expectedProperties"
+				value="@Tag1> P1:int | P2:int" />
+		</module>
+		<module name="ExpectedSetters">
 			<property name="expectedProperties"
 				value="@Tag1> P1:int | P2:int" />
 		</module>

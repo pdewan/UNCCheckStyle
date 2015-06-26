@@ -26,6 +26,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	static STNameable[] emptyNameableArray = {};
  	static List<STNameable> emptyNameableList =new ArrayList();
 	protected DetailAST currentTree;
+	
 
 	@Override
 	public int[] getDefaultTokens() {
@@ -129,16 +130,19 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 }
  public boolean contains(List<STNameable> aTags, String aTag) {
  	for (STNameable aNameable:aTags) {
- 		if (matchesStoredTag(aNameable.getName(), aTag))
-
+ 		if (matchesStoredTag(aNameable.getName(), aTag)) {
+ 			matchedTypeOrTagAST = aNameable.getAST();
 // 		if (aNameable.getName().equals(aTag))
- 			return true;	    		
+ 			return true;
+ 		}
  	}
  	return false;
  }
+ 
  // could return a list also
  public  String findMatchingType (Set<String> aSpecifiedTypes, STType anSTType) {
 		for (String aSpecifiedType:aSpecifiedTypes) {
+			matchedTypeOrTagAST = anSTType.getAST();
 				if (matchesType(aSpecifiedType, anSTType.getName()))
 					return aSpecifiedType; 
 		}
@@ -204,6 +208,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 	 	}
 			return aClassName.equals(aDescriptor);
 		 }
+ protected DetailAST matchedTypeOrTagAST;
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0)
 		return true;
