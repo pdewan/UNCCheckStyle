@@ -106,9 +106,10 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 		for (String aSpecifiedProperty : aSpecifiedProperties) {
 			String[] aPropertyAndType = aSpecifiedProperty.split(":");
 			String aType = aPropertyAndType[1].trim();
-			String aProperty = aPropertyAndType[0].trim();
-			if (!matchProperty(aType, aProperty, aPropertyInfos)) {
-				logPropertyNotMatched(aTreeAST, aProperty, aType);
+			String aPropertySpecification = aPropertyAndType[0].trim();
+//			String[] aPropertiesPath = aPropertySpecification.split(".");			
+			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
+				logPropertyNotMatched(aTreeAST, aPropertySpecification, aType);
 				retVal = false;
 			}
 		}
@@ -141,9 +142,10 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 
 	public Boolean matchGetter(String aSpecifiedType, String aProperty,
 			Map<String, PropertyInfo> aPropertyInfos) {
-
-		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
+		return matchesType(aSpecifiedType, aPropertyInfos.get(aProperty)
 				.getGetter().getReturnType());
+//		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
+//				.getGetter().getReturnType());
 
 	}
 
@@ -156,7 +158,9 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 		STMethod aSetter = aPropertyInfos.get(aProperty)
 		.getSetter();		
 
-		return aSetter != null && aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
+		return aSetter != null && 
+//				aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
+				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
 
 	}
 

@@ -37,7 +37,11 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 						};
 	}
 
-	public static String[] javaLangClasses = {
+	public static String[] javaLangTypes = {
+		"int",
+		"double",
+		"char",
+		"boolean",
 		"Integer",
 		"Double",
 		"Character",
@@ -49,7 +53,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected static Set<String> externalImports = new HashSet();
 	protected List<STNameable> imports = new ArrayList();
 
-	protected static Set<String> javaLangClassesSet;
+	protected static Set<String> javaLangTypesSet;
 	public void setIncludeTags(String[] newVal) {
 		this.includeTags = new HashSet(Arrays.asList(newVal));		
 	}
@@ -161,7 +165,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  }
  
  public static boolean isJavaLangClass(String aShortClassName) {
-	 return javaLangClassesSet.contains(aShortClassName);
+	 return javaLangTypesSet.contains(aShortClassName);
  }
  public static boolean isExternalImport(String aShortClassName) {
 	 return externalImports.contains(aShortClassName);
@@ -390,8 +394,8 @@ public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aToke
 
 
  static {
- 	javaLangClassesSet = new HashSet();
- 	for (String aClass:javaLangClasses)
- 		javaLangClassesSet.add(aClass);
+ 	javaLangTypesSet = new HashSet();
+ 	for (String aClass:javaLangTypes)
+ 		javaLangTypesSet.add(aClass);
  }
 }

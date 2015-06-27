@@ -101,7 +101,7 @@
 		</module>
 		<module name="ExpectedSetters">
 			<property name="expectedProperties"
-				value="@Tag1> P1:int | P2:int" />
+				value="@Tag1> P1:int | P2:int | Foo:@Tag1"/>
 		</module>
 		<!-- <module name="LineLength"> <property name="max" value="${maxLineLength}"/> 
 			</module> -->
