@@ -22,6 +22,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected Set<String> includeTags;
 	protected boolean tagsInitialized;
 	protected List<STNameable> typeTags;
+	protected STNameable pattern;
 	protected List<STNameable> currentMethodTags;
 	static STNameable[] emptyNameableArray = {};
  	static List<STNameable> emptyNameableList =new ArrayList();
@@ -218,17 +219,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)
 		return null;
-//	List<STNameable> aTags = null;
-//	if (shortTypeName == null || // guaranteed to not be a pending check
-//			aShortClassName.equals(shortTypeName)) {
-//		aTags = typeTags();
-//	} else {
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(aShortClassName);
-//		if (anSTType == null)
-//			return null;
-//		aTags = Arrays.asList(anSTType.getTags());
-//	}
+
 	String aTag = aDescriptor.substring(1);
 
 	return contains(aTags, aTag);
@@ -257,6 +248,7 @@ protected List<STNameable> typeTags( ) {
 	}
 	return typeTags;
 }
+
 public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitializer) {
 	List<STNameable> result = new ArrayList<>();
 	 DetailAST arrayInit =
@@ -286,6 +278,17 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	}
 	typeTags = getArrayLiterals(annotationAST);
 }
+
+//public void maybeVisitPattern(DetailAST ast) { 
+//	if (patternInitialized) return;
+//	patternInitialized = true;
+//	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "StructurePattern");		
+//	if (annotationAST == null) {
+//		typeTags = emptyArrayList;
+//		return;
+//	}
+//	typeTags = getArrayLiterals(annotationAST);
+//}
 public void maybeVisitMethodTags(DetailAST ast) {  
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {

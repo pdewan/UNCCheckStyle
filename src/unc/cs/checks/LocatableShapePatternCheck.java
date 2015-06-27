@@ -15,15 +15,24 @@ import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public class LinePatternCheck extends BoundedShapePatternCheck {
+public abstract class LocatableShapePatternCheck extends BeanPatternCheck {
 //	public static final String MSG_KEY = "linePattern";
-//	public static final String LINE_PATTERN = "*> X:int | Y:int | Height:int | Width:int";
+	public static final String LOCATABLE_PATTERN = "*> X:int | Y:int";
+
+//@Override
+//public String composeProperties() {
+//	return LINE_PATTERN;
+//}
+	
+	protected String locatablePattern() {
+		return LOCATABLE_PATTERN ;
+	}
+	@Override
+	public String composeProperties() {
+		return locatablePattern();
+	}
 
 
-@Override
-public String composePatternName() {
-	return "StructurePatternNames.LINE_PATTERN";
-}	
 	
 //	public LinePatternCheck() {
 //		super.setExpectedPropertiesOfType(LINE_PATTERN);		

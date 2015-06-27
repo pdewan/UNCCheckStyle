@@ -107,6 +107,15 @@
 			</module> -->
 		<module name="PackageDeclaration" />
 		<module name="HiddenField" />
+		<module name="LinePattern" />
+		<module name="OvalPattern" />
+		<module name="RectanglePattern" />
+		<module name="StringShapePattern" />
+		<module name="PointPattern" />
+		<module name="ImagePattern" />
+		
+		
+		
 
 		<!-- <module name="Regexp"> <property name="format" value="(interface [a-zA-Z0-9 
 			&lt;&gt;,\./*?[\s]]* \{)|((@Immutable|@ThreadSafe|@NotThreadSafe)(.*[\n])*.*(class|enum) 

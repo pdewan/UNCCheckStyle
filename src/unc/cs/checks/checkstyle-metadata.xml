@@ -110,5 +110,30 @@
 			<alternative-name internal-name="unc.cs.checks.ExpectedSettersCheck" />
 			<description>%ExpectedSetters.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%LinePattern.name"
+			internal-name="LinePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.LinePatternCheck" />
+			<description>%LinePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%OvalPattern.name"
+			internal-name="OvalPattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.OvalPatternCheck" />
+			<description>%OvalPattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%RectanglePattern.name"
+			internal-name="RectanglePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.RectanglePatternCheck" />
+			<description>%RectanglePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%StringShapePattern.name"
+			internal-name="StringShapePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.StringShapePatternCheck" />
+			<description>%StringShapePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ImagePattern.name"
+			internal-name="ImagePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ImagePatternCheck" />
+			<description>%ImageShapePattern.desc</description>
+		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

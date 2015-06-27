@@ -11,26 +11,16 @@ import java.util.Set;
 
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public class ExpectedGettersCheck extends BeanPropertiesCheck {
-	public static final String MSG_KEY = "expectedGetters";
-	@Override
-	protected String msgKey() {
-		// TODO Auto-generated method stub
-		return MSG_KEY;
-	}
+public class PointPatternCheck extends LocatableShapePatternCheck {
 
-
-
-
-	public Boolean matchType(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos) {
-
-		return matchGetter(aSpecifiedType, aProperty, aPropertyInfos);
-
-	}
-
+@Override
+public String composePatternName() {
+	return "StructurePatternNames.POINT_PATTERN";
+}	
+	
 
 }

@@ -284,6 +284,8 @@ ContinuationProcessor{
     	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "StructurePattern");		
 		if (annotationAST == null)
 			return;
+//		if (structurePattern != null)
+//			return;
 		DetailAST expressionAST = annotationAST.findFirstToken(TokenTypes.EXPR);
 		DetailAST actualParamAST = expressionAST.getFirstChild();
 		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
@@ -333,6 +335,34 @@ ContinuationProcessor{
 		maybeVisitTypeTags(typeDef);
 //		FullIdent aFullIdent = CheckUtils.createFullType(ast);
 //		typeName = aFullIdent.getText();
+    }
+    public STNameable getPattern(String aShortClassName)  {
+//    	List<STNameable> aTags = emptyList;
+
+    	// these classes have no tags
+//    	if ( aShortClassName.endsWith("[]") ||
+//    			allKnownImports.contains(aShortClassName) || 
+//    			javaLangClassesSet.contains(aShortClassName) ) {
+//    		return emptyList;
+//    	}
+    	if ( isArray(aShortClassName) ||
+    			isJavaLangClass(aShortClassName) ) {
+    		return null;
+    	}
+    	if (shortTypeName == null || // guaranteed to not be a pending check
+    			aShortClassName.contains(shortTypeName)) {
+    		return structurePattern;
+    	} else {
+    		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+    				.getSTClassByShortName(aShortClassName);
+    		if (anSTType == null) {
+    			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
+    				return null;			
+    			return null;
+    		}
+    		return anSTType.getStructurePatternName();
+    	}
+    	
     }
   protected void processPreviousMethodData() {
 	  
