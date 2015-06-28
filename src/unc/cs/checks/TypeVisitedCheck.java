@@ -16,7 +16,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected DetailAST typeNameAST;
 	protected boolean isGeneric;
 	@Override
-    public void beginTree(DetailAST ast) {
+    public void doBeginTree(DetailAST ast) {
         packageName = DEFAULT_PACKAGE;
     } 
 //	@Override

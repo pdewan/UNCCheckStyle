@@ -216,7 +216,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  protected DetailAST matchedTypeOrTagAST;
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0)
-		return true;
+		return false;
 	if (!aDescriptor.startsWith("@")) {
 		return aShortClassName.equals(aDescriptor);
 	}
@@ -332,8 +332,8 @@ public void visitStaticImport(DetailAST ast) {
 public static boolean isArray(String aShortClassName) {
 	 return aShortClassName.endsWith("[]");
 }
-public void beginTree(DetailAST ast) {  
-	 super.beginTree(ast);
+public void doBeginTree(DetailAST ast) {  
+	 super.doBeginTree(ast);
 	 	
 	 	typeTags = emptyNameableList;
 //	 	typeScope.clear();

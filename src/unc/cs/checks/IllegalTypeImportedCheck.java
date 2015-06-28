@@ -52,7 +52,7 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
             imp = FullIdent.createFullIdent(
                 ast.getFirstChild().getNextSibling());
         }
-        String aMyClass = getEnclosingShortClassName(ast);
+        String aMyClass = getEnclosingShortTypeName(ast);
         Boolean isIllegal = isIllegalImport(imp.getText(), aMyClass);
         if (isIllegal == null)
         	return null;

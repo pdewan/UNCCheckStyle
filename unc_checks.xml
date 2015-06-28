@@ -112,8 +112,8 @@
 		<module name="RectanglePattern" />
 		<module name="StringShapePattern" />
 		<module name="PointPattern" />
-		<module name="ImagePattern" />
-		
+		<module name="ImagePattern" />		
+		<module name="DescendentProperties" />
 		
 		
 

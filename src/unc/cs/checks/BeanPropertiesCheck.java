@@ -27,6 +27,7 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 			visitPackage(ast);
 			return;
 		case TokenTypes.CLASS_DEF:
+		case TokenTypes.INTERFACE_DEF:
 			visitType(ast);
 			return;
 		default:
@@ -164,14 +165,11 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 
 	}
 
-	// public boolean match(String aSpecifiedType, String aSpecifiedPoperty,
-	// Map<String, PropertyInfo> aPropertyInfos) {
-	// return matchGetter(aSpecifiedType, aSpecifiedPoperty, aPropertyInfos);
-	// }
+
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(
-						getName(getEnclosingClassDeclaration(aTree)));
+						getName(getEnclosingTypeDeclaration(aTree)));
 		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)
@@ -188,14 +186,14 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 		return MSG_KEY;
 	}
 
-	public void finishTree(DetailAST ast) {
+	public void doFinishTree(DetailAST ast) {
 		// STType anSTType =
 		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		// for (STMethod aMethod: anSTType.getMethods()) {
 		// visitMethod(anSTType, aMethod);
 		// }
 		maybeAddToPendingTypeChecks(ast);
-		super.finishTree(ast);
+		super.doFinishTree(ast);
 
 	}
 }

@@ -271,7 +271,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 			String aDestinationTypeSpecification,
 			String anActualDestinationType, DetailAST aCallAST) {
 		String aSourceTypeName = this
-				.getName(getEnclosingClassDeclaration(aCallAST));
+				.getName(getEnclosingTypeDeclaration(aCallAST));
 		Boolean aSourceTypeMatches = matchesType(aSourceTypeSpecification,
 				aSourceTypeName);
 		if (aSourceTypeMatches == null) { // this should never occur
@@ -355,7 +355,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 			if (!aTypesMatch)
 				continue; // some other type may match
 			// return false;
-			String aCallingClass = getName(getEnclosingClassDeclaration(aCallAST));
+			String aCallingClass = getName(getEnclosingTypeDeclaration(aCallAST));
 			String aCalledClass = aCallParts[0];
 			String aCallingMethod = getName(getEnclosingMethodDeclaration(aCallAST));
 			String aCalledMethod = aCallParts[1];

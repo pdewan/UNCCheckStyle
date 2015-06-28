@@ -64,8 +64,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		
 		
 
-    public void beginTree(DetailAST ast) {  
- 		 super.beginTree(ast); 		 	
+    public void doBeginTree(DetailAST ast) {  
+ 		 super.doBeginTree(ast); 		 	
  		 	stMethods.clear();
  		 	stConstructors.clear();
  	    }

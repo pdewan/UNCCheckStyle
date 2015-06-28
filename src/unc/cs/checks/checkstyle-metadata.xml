@@ -135,5 +135,10 @@
 			<alternative-name internal-name="unc.cs.checks.ImagePatternCheck" />
 			<description>%ImageShapePattern.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%DescendentProperties.name"
+			internal-name="DescendentProperties" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.DescendentPropertiesCheck" />
+			<description>%DescendentProperties.desc</description>
+		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

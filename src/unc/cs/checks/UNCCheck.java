@@ -16,15 +16,58 @@ public abstract class UNCCheck extends Check{
     }
 	
 	public abstract void doVisitToken(DetailAST ast);
+	public void doFinishTree(DetailAST ast) {
+		
+	}
+    public void doBeginTree(DetailAST ast) {
+		
+	} 
+	
+    public void beginTree(DetailAST ast) {  
+    	try {
+			System.out.println ("begin tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			if (ast.getType() == TokenTypes.LITERAL_NEW) {
+//				System.out.println ("found new");
+//			}
+			doBeginTree(ast);
+			System.out.println ("Begin tree ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+			
+		}
+    	
+    }
+
+
+	public void finishTree(DetailAST ast) {
+		try {
+			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			if (ast.getType() == TokenTypes.LITERAL_NEW) {
+//				System.out.println ("found new");
+//			}
+			doFinishTree(ast);
+			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+
+			
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+			
+		}
+	}
+
 	
 	public void visitToken(DetailAST ast) {
 		try {
-//			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}
 			doVisitToken(ast);
-//			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 
 			
 		} catch (RuntimeException e) {

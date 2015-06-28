@@ -282,8 +282,10 @@ ContinuationProcessor{
     }
     public void maybeVisitStructurePattern(DetailAST ast) {  
     	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "StructurePattern");		
-		if (annotationAST == null)
+		if (annotationAST == null) {
+			structurePattern = null;
 			return;
+		}
 //		if (structurePattern != null)
 //			return;
 		DetailAST expressionAST = annotationAST.findFirstToken(TokenTypes.EXPR);
@@ -350,7 +352,7 @@ ContinuationProcessor{
     		return null;
     	}
     	if (shortTypeName == null || // guaranteed to not be a pending check
-    			aShortClassName.contains(shortTypeName)) {
+    			(aShortClassName.equals(shortTypeName) || aShortClassName.endsWith("." + shortTypeName))) {
     		return structurePattern;
     	} else {
     		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
@@ -672,8 +674,8 @@ ContinuationProcessor{
 		 
 	 }
 	 @Override
-	    public void beginTree(DetailAST ast) {  
-		 super.beginTree(ast);
+	    public void doBeginTree(DetailAST ast) {  
+		 super.doBeginTree(ast);
 		 	currentMethodName = null;
 		 	currentMethodAssignsToGlobalVariable = false;
 		 	currentMethodScope.clear();
@@ -699,7 +701,7 @@ ContinuationProcessor{
 
 
 	    @Override
-	    public void finishTree(DetailAST ast) {
+	    public void doFinishTree(DetailAST ast) {
 	    	System.out.println ("finish tree called:" + ast + " " + getFileContents().getFilename());
 	    	if (currentMethodName != null)
 	    	processPreviousMethodData();

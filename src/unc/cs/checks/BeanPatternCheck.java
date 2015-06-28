@@ -31,7 +31,7 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	public Boolean matchesType(String aDescriptor, String aShortClassName) {
 		STNameable aStructurePattern = getPattern(aShortClassName);
 		if (aStructurePattern == null)
-			return true;
+			return false;
 		return aStructurePattern.getName().equals(patternName);
 //		if (aDescriptor == null || aDescriptor.length() == 0)
 //			return true;

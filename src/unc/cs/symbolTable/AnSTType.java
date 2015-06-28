@@ -220,7 +220,8 @@ public class AnSTType extends AnSTNameable implements STType {
 //		if (!anSTMethod.getName().startsWith(GET) ||
 //				!anSTMethod.isPublic() ||
 //				anSTMethod.getParameterTypes().length != 0) return;
-		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.GET.length()).toLowerCase();
+//		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.GET.length()).toLowerCase();
+		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.GET.length());
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
@@ -246,7 +247,9 @@ public class AnSTType extends AnSTNameable implements STType {
 //			return;	
 		if (!anSTMethod.isSetter()) 
 			return;
-		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.SET.length()).toLowerCase();
+//		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.SET.length()).toLowerCase();
+		String aPropertyName = anSTMethod.getName().substring(AnSTMethod.SET.length());
+
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
