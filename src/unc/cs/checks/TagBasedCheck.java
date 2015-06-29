@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
@@ -27,6 +29,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	static STNameable[] emptyNameableArray = {};
  	static List<STNameable> emptyNameableList =new ArrayList();
 	protected DetailAST currentTree;
+	protected Map<String, Integer> typeToInt = new Hashtable<>();
+
 	
 
 	@Override
@@ -36,12 +40,20 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 						TokenTypes.INTERFACE_DEF, 
 						};
 	}
-
-	public static String[] javaLangTypes = {
+	
+	public static String[] primitiveTypes = {
 		"int",
 		"double",
 		"char",
 		"boolean",
+		
+};
+
+	public static String[] javaLangTypes = {
+//		"int",
+//		"double",
+//		"char",
+//		"boolean",
 		"Integer",
 		"Double",
 		"Character",
@@ -54,6 +66,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected List<STNameable> imports = new ArrayList();
 
 	protected static Set<String> javaLangTypesSet;
+	protected static Set<String> primitiveTypesSet;
+
 	public void setIncludeTags(String[] newVal) {
 		this.includeTags = new HashSet(Arrays.asList(newVal));		
 	}
@@ -62,11 +76,11 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	}
 	
 	public boolean hasExcludeTags() {
-		return excludeTags != null && excludeTags.size() > 1;
+		return excludeTags != null && excludeTags.size() > 0;
 	}
 	
 	public boolean hasIncludeTags() {
-		return includeTags != null && includeTags.size() > 1;
+		return includeTags != null && includeTags.size() > 0;
 	}
 	
 	public static boolean contains (Collection<String> aTags, String aTag) {
@@ -99,12 +113,19 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
     	}
     	return false;
     }
+	
+	protected int getInt(String aType) {
+		Integer retVal = typeToInt.get(aType);
+		if (retVal == null) return typeToInt.get("*"); // should not be exercised
+		return retVal;
+	}
 public boolean checkIncludeTagsOfCurrentType() {
 	if (!hasIncludeTags() && !hasExcludeTags())
 		return true; // all tags checked in this case
 	if (fullTypeName == null) {
-		System.err.println("Check called without type name being populated");
-		return true;
+//		System.err.println("Check called without type name being populated");
+		// could be the wrong type, class or interface, so we do nto have to check
+		return false;
 	}
 	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 	STNameable[] aCurrentTags = anSTType.getTags();
@@ -217,6 +238,8 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0)
 		return false;
+	if (aDescriptor.equals("*"))
+		return true;
 	if (!aDescriptor.startsWith("@")) {
 		return aShortClassName.equals(aDescriptor);
 	}
@@ -232,8 +255,8 @@ public boolean checkTagsOfCurrentType() {
 	if (!hasIncludeTags() && !hasExcludeTags())
 		return true; // all tags checked in this case
 	if (fullTypeName == null) {
-		System.err.println("Check called without type name being populated");
-		return true;
+//		System.err.println("Check called without type name being populated");
+		return false;
 	}
 //	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
 //	STNameable[] aCurrentTags = anSTType.getTags();
@@ -391,11 +414,42 @@ public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aToke
 	return getFirstRightSiblingTokenType(anAST.getNextSibling(), aTokenType);
 	
 }
+protected void setIntValueOfType(String newVal) {
+	String[] aTypeAndValue = newVal.split (">");
+	String aType = "*";
+	String aValueString = "";
+	if (aTypeAndValue.length == 1) {
+		aValueString = aTypeAndValue[0];
+		
+	} else if (aTypeAndValue.length == 2){
+		aType = aTypeAndValue[0];
+		aValueString = aTypeAndValue[1];			
+	}
+	try {				
+		int aValue = Integer.parseInt(aValueString);
+		typeToInt.put(aType, aValue);
 
+	} catch (Exception e) {
+		System.out.println ("Did not get int type value");
+		e.printStackTrace();
+	}	
+}
+public static boolean isPrimitive(List<String> aTypes) {
+	return aTypes.size() == 1 && isPrimitive(aTypes.get(0));
+}
+public static boolean isPrimitive(String aType) {
+	return primitiveTypesSet.contains(aType);
+}
 
  static {
  	javaLangTypesSet = new HashSet();
+ 	primitiveTypesSet = new HashSet();
  	for (String aClass:javaLangTypes)
  		javaLangTypesSet.add(aClass);
+ 	for (String aPrimitive:primitiveTypes)
+ 		primitiveTypesSet.add(aPrimitive);
+ 	javaLangTypesSet.addAll(primitiveTypesSet);
+// 	for (String aPrimitive:primitiveTypes)
+// 		javaLangTypesSet.add(aPrimitive);
  }
 }

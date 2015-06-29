@@ -16,5 +16,11 @@ public class APropertyInfo implements PropertyInfo {
 		this.setter = setter;
 	}
 	
+	@Override
+	public String getType() {
+		// TODO Auto-generated method stub
+		return getter != null?getter.getReturnType():setter.getParameterTypes()[0];
+	} 
+	
 
 }

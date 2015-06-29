@@ -14,7 +14,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public class ExpectedGettersCheck extends BeanPropertiesCheck {
+public class ExpectedGettersCheck extends BeanTypedPropertiesCheck {
 	public static final String MSG_KEY = "expectedGetters";
 	@Override
 	protected String msgKey() {

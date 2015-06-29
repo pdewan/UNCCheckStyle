@@ -810,7 +810,8 @@ ContinuationProcessor{
 			}
 		}
 		protected void maybeAddToPendingTypeChecks(DetailAST ast) {
-			
+			if (!checkTagsOfCurrentType())
+				return;
 			if (doPendingCheck(ast, currentTree) == null)
 				pendingChecks().add(ast);
 
@@ -893,6 +894,7 @@ ContinuationProcessor{
 	    public int columnNo(FullIdent aFullIdent, DetailAST aTreeAST) {
 	         return  aTreeAST == currentTree?aFullIdent.getColumnNo():0;
 	    }
+	    
 //	    public boolean contains(List<STNameable> aTags, String aTag) {
 //	    	for (STNameable aNameable:aTags) {
 //	    		if (matchesStoredTag(aNameable.getName(), aTag))

@@ -90,11 +90,13 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		STNameable[] anInterfaces = anInstantiatedSTClass.getInterfaces();
 		for (String aPropertyName : aPropertyInfos.keySet()) {
 			PropertyInfo aPropertyInfo = aPropertyInfos.get(aPropertyName);
-			STMethod aGetter = aPropertyInfo.getGetter();
-			if (aGetter == null) {
-				continue; // not a real property
-			}
-			String aPropertyType = aGetter.getReturnType();
+//			STMethod aGetter = aPropertyInfo.getGetter();
+//			if (aGetter == null) {
+//				continue; // not a real property
+//			}
+//			String aPropertyType = aGetter.getReturnType();
+			String aPropertyType = aPropertyInfo.getType();
+			
 			if (typesMatch(anInstantiatedTypeName, aPropertyType))
 				return true; // check failed
 			for (STNameable anInterface : anInterfaces) {
@@ -109,7 +111,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	// fail if instantiate a componnet in a method other than init or
 	// constructor
 	public Boolean inConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
-		return (currentMethodIsConstructor || AnSTMethod.isInit(currentMethodName));
+		return (aTreeAST == currentTree) && (currentMethodIsConstructor || AnSTMethod.isInit(currentMethodName));
 ////		DetailAST aTypeAST = ast.getFirstChild();
 //		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
 //		String anInstantiatedTypeName = anIdentifierType.getText();

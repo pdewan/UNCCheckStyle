@@ -5,5 +5,6 @@ public interface PropertyInfo {
 	public void setGetter(STMethod getter) ;
 	public STMethod getSetter();
 	public void setSetter(STMethod setter) ;
+	public String getType();
 
 }

@@ -140,5 +140,15 @@
 			<alternative-name internal-name="unc.cs.checks.DescendentPropertiesCheck" />
 			<description>%DescendentProperties.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%MinComponentObjects.name"
+			internal-name="MinComponentObjects" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MinComponentObjectsCheck" />			
+			<description>%MinComponentObjects.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%MinComponentDescendents.name"
+			internal-name="MinComponentDescendents" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MinComponentDescendentsCheck" />			
+			<description>%MinComponentDescendents.desc</description>
+		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

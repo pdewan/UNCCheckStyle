@@ -32,6 +32,7 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 			visitPackage(ast);
 			return;
 		case TokenTypes.CLASS_DEF:
+		case TokenTypes.INTERFACE_DEF:
 			visitType(ast);
 			return;
 		default:
@@ -113,10 +114,11 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 		for (String aKey:aPropertyInfos.keySet()) {
 			String aPropertyName = aPrefix + "." + aKey;
-			STMethod aGetter = aPropertyInfos.get(aKey).getGetter();
-			STMethod aSetter = aPropertyInfos.get(aKey).getSetter();
-			// either the getter or setter will be null
-			String aTypeName = aGetter != null?aGetter.getReturnType():aSetter.getParameterTypes()[0]; 
+//			STMethod aGetter = aPropertyInfos.get(aKey).getGetter();
+//			STMethod aSetter = aPropertyInfos.get(aKey).getSetter();
+//			// either the getter or setter will be null
+//			String aTypeName = aGetter != null?aGetter.getReturnType():aSetter.getParameterTypes()[0]; 
+			String aTypeName = aPropertyInfos.get(aKey).getType();
 			associate(aPropertyName, toShortTypeName(aTypeName));
 
 			if (isExternalClass(aTypeName)) continue;
