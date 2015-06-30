@@ -16,10 +16,11 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public class RectanglePatternCheck extends BoundedShapePatternCheck {
+public static final String RECTANGLE_PATTERN = "StructurePatternNames.RECTANGLE_PATTERN";
 
 @Override
 public String composePatternName() {
-	return "StructurePatternNames.RECTANGLE_PATTERN";
+	return RECTANGLE_PATTERN;
 }	
 	
 

@@ -437,6 +437,21 @@ protected void setIntValueOfType(String newVal) {
 public static boolean isPrimitive(List<String> aTypes) {
 	return aTypes.size() == 1 && isPrimitive(aTypes.get(0));
 }
+public static boolean isShape(String aType) {
+	return aType.equals(PointPatternCheck.POINT_PATTERN) ||
+			aType.equals(LinePatternCheck.LINE_PATTERN) ||
+			aType.equals(OvalPatternCheck.OVAL_PATTERN) ||
+			aType.equals(RectanglePatternCheck.RECTANGLE_PATTERN) ||
+			aType.equals(StringShapePatternCheck.STRING_PATTERN) ||
+			aType.equals(ImagePatternCheck.IMAGE_PATTERN);
+}
+public static boolean isShape(List<String> aTypes) {
+	if (isPrimitive(aTypes)) return false;
+	for (String aType:aTypes) {
+		if (isShape(aType)) return true;
+	}
+	return false;
+}
 public static boolean isPrimitive(String aType) {
 	return primitiveTypesSet.contains(aType);
 }

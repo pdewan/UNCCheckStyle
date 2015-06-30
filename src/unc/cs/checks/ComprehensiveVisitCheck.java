@@ -803,6 +803,7 @@ ContinuationProcessor{
 				List<DetailAST> aPendingTypeChecksCopy = new ArrayList(
 						aPendingChecks);
 				for (DetailAST aPendingCheck : aPendingTypeChecksCopy) {
+//					System.out.println ("Doing pending check: " + getName(getEnclosingTypeDeclaration(aPendingCheck)));
 					if (doPendingCheck(aPendingCheck, aPendingAST) != null)
 						aPendingChecks.remove(aPendingCheck);
 
@@ -812,8 +813,10 @@ ContinuationProcessor{
 		protected void maybeAddToPendingTypeChecks(DetailAST ast) {
 			if (!checkTagsOfCurrentType())
 				return;
-			if (doPendingCheck(ast, currentTree) == null)
+			if (doPendingCheck(ast, currentTree) == null) {
+//				System.out.println ("added to pending checks:" + getName(getEnclosingTypeDeclaration(ast)));
 				pendingChecks().add(ast);
+			}
 
 			// if (isMatchingClassName(ident.getText())) {
 			// log(ident.getLineNo(), ident.getColumnNo(), msgKey(),

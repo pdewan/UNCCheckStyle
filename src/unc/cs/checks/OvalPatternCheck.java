@@ -16,10 +16,12 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public class OvalPatternCheck extends BoundedShapePatternCheck {
+public static final String OVAL_PATTERN = "StructurePatternNames.OVAL_PATTERN";
+
 
 @Override
 public String composePatternName() {
-	return "StructurePatternNames.OVAL_PATTERN";
+	return OVAL_PATTERN;
 }	
 	
 

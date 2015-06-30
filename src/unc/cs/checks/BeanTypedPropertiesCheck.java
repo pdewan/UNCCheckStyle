@@ -176,6 +176,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 			return true; // the constraint does not apply to us
 
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
+		if (aPropertyInfos == null) 
+			return null;
 		String[] aSpecifiedProperties = typeToProperty.get(aSpecifiedType);
 		return matchProperties(aSpecifiedProperties, aPropertyInfos, aTree);
 	}

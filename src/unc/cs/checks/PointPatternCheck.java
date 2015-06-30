@@ -16,10 +16,11 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public class PointPatternCheck extends LocatableShapePatternCheck {
+public static final String POINT_PATTERN = "StructurePatternNames.POINT_PATTERN";
 
 @Override
 public String composePatternName() {
-	return "StructurePatternNames.POINT_PATTERN";
+	return POINT_PATTERN;
 }	
 	
 

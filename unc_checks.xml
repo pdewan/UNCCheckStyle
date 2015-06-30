@@ -113,13 +113,16 @@
 		<module name="StringShapePattern" />
 		<module name="PointPattern" />
 		<module name="ImagePattern" />		
-		<module name="DescendentProperties" />
 		<module name="MinComponentObjects">
 			<property name="minObjectComponents" value="@Composite>3" />
 			<property name="includeTags" value="Composite" />
 		</module>
 		<module name="MinDescendentObjects">
 			<property name="minObjectDescendents" value="@Composite>5" />
+			<property name="includeTags" value="Composite" />
+		</module>
+			<module name="MinDescendentShapes">
+			<property name="minShapeDescendents" value="@Composite>2" />
 			<property name="includeTags" value="Composite" />
 		</module>
 		

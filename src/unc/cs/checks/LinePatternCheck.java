@@ -18,11 +18,12 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public class LinePatternCheck extends BoundedShapePatternCheck {
 //	public static final String MSG_KEY = "linePattern";
 //	public static final String LINE_PATTERN = "*> X:int | Y:int | Height:int | Width:int";
+public static final String LINE_PATTERN = "StructurePatternNames.LINE_PATTERN";
 
 
 @Override
 public String composePatternName() {
-	return "StructurePatternNames.LINE_PATTERN";
+	return LINE_PATTERN;
 }	
 	
 //	public LinePatternCheck() {

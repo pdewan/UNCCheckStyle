@@ -19,7 +19,6 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "descendentProperties";
-
 	protected Map<String, List<String>> typeToProperties = new HashMap();
 	protected Map<String, List<String>> propertyToTypes = new HashMap();
 	protected Set<String> visitedTypes = new HashSet();
@@ -112,6 +111,8 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 		}
 		visitedTypes.add(aShortTypeName);
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
+		if (aPropertyInfos == null)
+			return null;
 		for (String aKey:aPropertyInfos.keySet()) {
 			String aPropertyName = aPrefix + "." + aKey;
 //			STMethod aGetter = aPropertyInfos.get(aKey).getGetter();
@@ -130,7 +131,8 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 			STNameable aPattern = aPropertySTType.getStructurePatternName();
 			associate (aPropertyName, aPattern);
 			associate(aPropertyName, aTags);
-			if (!addProperties(aPropertySTType, aTypeName, aPropertyName))
+			Boolean retVal = addProperties(aPropertySTType, aTypeName, aPropertyName);
+			if (retVal == null || !retVal)
 				return null;
 			
 			

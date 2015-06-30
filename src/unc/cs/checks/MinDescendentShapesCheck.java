@@ -11,11 +11,11 @@ import unc.cs.symbolTable.SymbolTableFactory;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class MinDescendentObjectsCheck extends DescendentPropertiesCheck {
-	public static final String MSG_KEY = "minDescendentObjects";
+public class MinDescendentShapesCheck extends DescendentPropertiesCheck {
+	public static final String MSG_KEY = "minDescendentShapes";
 //	protected Map<String, Integer> typeToInt = new Hashtable<>();
 
-	protected int minObjectDescendents = 1;
+	protected int minShapeDescendents = 1;
 	
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -98,7 +98,7 @@ public class MinDescendentObjectsCheck extends DescendentPropertiesCheck {
 	
 	
 	
-	public void setMinObjectDescendents(String[] newVal) {
+	public void setMinShapeDescendents(String[] newVal) {
 		for (String aString:newVal) {
 			setIntValueOfType(aString);
 		}
@@ -121,18 +121,19 @@ public class MinDescendentObjectsCheck extends DescendentPropertiesCheck {
 		if (aType != null)
 			aMinDescendents = getInt(aType);
 		else
-			aMinDescendents = minObjectDescendents;
+			aMinDescendents = minShapeDescendents;
 		Boolean aDescendentsBuilt = super.doPendingCheck(anAST, aTree);
 		if (aDescendentsBuilt == null)
 			return null;
 		int aNumDescendents = 0;
 		for (String aKey:propertyToTypes.keySet()) {
 			List<String> aTypes = propertyToTypes.get(aKey);
-			if (!isPrimitive(aTypes))
+			if (isShape(aTypes))
 				aNumDescendents++;
 		}
-		if (aNumDescendents >= minObjectDescendents) 
-			return true;		
+		if (aNumDescendents >= minShapeDescendents) 
+			return true;
+				
 		String aSourceName = shortFileName(astToFileContents.get(aTree)
 				.getFilename());
 		if (aTree == currentTree) {

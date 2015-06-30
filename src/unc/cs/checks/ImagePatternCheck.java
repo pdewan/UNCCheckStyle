@@ -17,9 +17,11 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public class ImagePatternCheck extends LocatableShapePatternCheck {
 	public static final String IMAGE_PROPERTIES = "ImageFileName: String";
+	public static final String IMAGE_PATTERN = "StructurePatternNames.IMAGE_PATTERN";
+
 	@Override
 	public String composePatternName() {
-		return "StructurePatternNames.IMAGE_PATTERN";
+		return IMAGE_PATTERN;
 	}
 	protected String imageShapePattern() {
 		return locatablePattern() + "|"  + imageProperties();
