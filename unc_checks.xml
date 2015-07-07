@@ -125,6 +125,7 @@
 			<property name="minShapeDescendents" value="@Composite>2" />
 			<property name="includeTags" value="Composite" />
 		</module>
+		<module name="ISATypes" />
 		
 		
 

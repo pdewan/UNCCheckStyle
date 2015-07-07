@@ -1,6 +1,7 @@
 package unc.cs.symbolTable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,5 +111,35 @@ public class ASymbolTable implements SymbolTable{
 	@Override
 	public Map<String, STType> getTypeNameToSTClass() {
 		return typeNameToSTClass;
+	}
+	@Override
+	public List<String> getAllTypeNames() {
+		return new ArrayList(typeNameToSTClass.keySet());
+	}
+	@Override
+	public List<String> getAllClassNames() {
+		List<String> aResult = new ArrayList();
+		for (String aTypeName: typeNameToSTClass.keySet() ) {
+			STType aType = typeNameToSTClass.get(aTypeName);
+			if (!aType.isInterface())
+				aResult.add(aTypeName);
+		}
+		return aResult;
+		
+	}
+	@Override
+	public List<String> getAllInterfaceNames() {
+		List<String> aResult = new ArrayList();
+		for (String aTypeName: typeNameToSTClass.keySet() ) {
+			STType aType = typeNameToSTClass.get(aTypeName);
+			if (aType.isInterface())
+				aResult.add(aTypeName);
+		}
+		return aResult;
+		
+	}
+	@Override
+	public List<STType> getAllSTTypes() {
+		return new ArrayList(typeNameToSTClass.values());
 	}
 }

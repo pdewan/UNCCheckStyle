@@ -20,6 +20,12 @@ public class AnSTNameable implements STNameable {
 	public DetailAST getAST() {
 		return ast;
 	}
+	public boolean equals(Object anObject) {
+		if (anObject instanceof STNameable) {
+			return ((STNameable) anObject).getName().equals(name);
+		} else 
+			return super.equals(anObject);
+	}
 
 	
 

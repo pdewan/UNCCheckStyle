@@ -1,13 +1,17 @@
 package unc.cs.symbolTable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
 import unc.cs.checks.TagBasedCheck;
+import unc.cs.checks.TypeVisitedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
@@ -68,6 +72,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	public STNameable[] getInterfaces() {
 		return interfaces;
 	}
+	
 	public String getPackage() {
 		return packageName;
 	}
@@ -288,5 +293,256 @@ public class AnSTType extends AnSTNameable implements STType {
 				return null; // assume that we are only inheriting our own types
 		}
 		return result;
+	}
+	public static List<STNameable> getAllTypes(STNameable aType) {
+		if (TagBasedCheck.isExternalClass(TypeVisitedCheck.toShortTypeName(aType.getName())))
+			return emptyList;
+		List<STNameable> result = new ArrayList();
+		result.add(aType);
+		STType anSTType =  SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType.getName());
+		if (anSTType == null) return null;
+		STNameable[] anInterfaces = anSTType.getInterfaces();
+		for (STNameable anInterface:anInterfaces) {
+			 List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
+			 if (anInterfaceTypes == null)
+				 return null;
+			 result.addAll(anInterfaceTypes);			 
+		}
+		if (anSTType.isInterface())
+			return result;
+		STNameable aSuperClass = anSTType.getSuperClass();
+		if (aSuperClass == null) 
+			return result;
+		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass());
+		if (aSuperTypes == null)
+			return null;
+		addAllNonDuplicates(result, aSuperTypes);
+//		result.addAll(aSuperType);
+		return result;		
+	}
+	public static void addAllNonDuplicates (List aList, List anAdditions ) {
+		for (Object anAddition:anAdditions) {
+			if (aList.contains(anAddition)) continue;
+			aList.add(anAddition);
+		}
+	}
+	public static List emptyList = new ArrayList();
+	public static List<STNameable> getSuperTypes(STNameable aType) {
+		if (TagBasedCheck.isExternalClass(TypeVisitedCheck.toShortTypeName(aType.getName())))
+			return emptyList;	
+		List<STNameable> result = new ArrayList();
+		result.add(aType);
+		
+		STType anSTType =  SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType.getName());
+		if (anSTType == null) return null;
+		if (anSTType.isInterface()) {
+		STNameable[] anInterfaces = anSTType.getInterfaces();
+		for (STNameable anInterface:anInterfaces) {
+			if (result.contains(anInterface)) // an interface may be extended by many
+				continue;
+			List<STNameable> anInterfaceTypes = getSuperTypes(anInterface);
+			 if (anInterfaceTypes == null)
+				 return null;
+//			 result.addAll(anInterfaceTypes);	
+			 addAllNonDuplicates(result, anInterfaceTypes);	
+		}
+		} else {
+			
+		
+		STNameable aSuperClass = anSTType.getSuperClass();
+		if (aSuperClass == null) 
+			return result;	
+		List<STNameable> aSuperTypes = getSuperTypes(anSTType.getSuperClass());
+		if (aSuperTypes == null)
+			return null;
+		result.addAll(aSuperTypes);
+//		addAllNonDuplicates(result, aSuperTypes);
+		}
+		return result;		
+	}
+	@Override
+	public List<STNameable> getAllTypes() {		
+		List<STNameable> result = new ArrayList();
+		return getAllTypes(this);	
+		
+	}
+	@Override
+	public List<String> getAllTypeNames() {
+		List<STNameable> allTypes = getAllTypes();
+		if (allTypes == null) return null;
+		return toNameList(allTypes);
+	}
+	@Override
+	public List<String> getSuperTypeNames() {
+		List<STNameable> aTypes = getSuperTypes();
+		if (aTypes == null) return null;
+		return toNameList(aTypes);
+	}
+	@Override
+	public List<STNameable> getSuperTypes() {		
+		List<STNameable> result = new ArrayList();
+		return getSuperTypes(this);	
+		
+	}
+	public static List<String> toNameList(List<STNameable> aNameableList) {
+		if (aNameableList == null) return null;
+		List<String> result = new ArrayList();
+		for (STNameable aNameable:aNameableList) {
+			String aShortName = TypeVisitedCheck.toShortTypeName(aNameable.getName());
+			if (!result.contains(aShortName))
+			     result.add(aShortName);
+		}
+		return result;
+	}
+	public static List<String> toNormalizedList(List<String> anOriginal) {
+		if (anOriginal ==null) return null;
+		List<String> result = new ArrayList();
+		for (String aNonNormalizedEntry:anOriginal) {
+			result.add(TypeVisitedCheck.toShortTypeName(aNonNormalizedEntry));
+		}
+		return result;
+	}
+	@Override
+	public List<String> getNonSuperTypes() {		
+		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
+		List<String> anAllTypes;
+		if (isInterface)
+			anAllTypes = aSymbolTable.getAllInterfaceNames();
+		else
+			anAllTypes = aSymbolTable.getAllClassNames();		
+		List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
+		List<String> anAllMyTypes = toNameList(getSuperTypes());
+		return difference(aNormalizedTypes, anAllMyTypes);		
+	}
+	@Override
+	public List<String> getSubTypes() {		
+//		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
+//		List<String> anAllTypes;
+//		if (isInterface)
+//			anAllTypes = aSymbolTable.getAllInterfaceNames();
+//		else
+//			anAllTypes = aSymbolTable.getAllClassNames();		
+//		List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
+//		List<String> anAllMyTypes = toNameList(getSuperTypes());
+		List<String>  aNonSuperTypes = getNonSuperTypes();
+		List<String> result = new ArrayList();
+		String myShortName = TypeVisitedCheck.toShortTypeName(name);
+		for (String aNonSuperType:aNonSuperTypes) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aNonSuperType);
+			if (anSTType == null) return null;
+			List<String> aSuperTypes = toNormalizedList(anSTType.getSuperTypeNames());
+			if (aSuperTypes == null)
+				return null;
+			if (aSuperTypes.contains(myShortName))
+				result.add(aNonSuperType);
+		}
+		return result;
+	}
+	@Override
+	public List<String> getPeerTypes() {
+		List<String>  aNonSuperTypes = toNormalizedList(getNonSuperTypes());
+		if (aNonSuperTypes == null)
+			return null;
+		List<String> aSubTypes = toNormalizedList(getSubTypes());
+		if (aSubTypes == null)
+			return null;
+		List<String> aResult = difference(aNonSuperTypes, aSubTypes);
+		return aResult;		
+	}
+	
+	@Override
+	public Boolean isNonType(String aTypeName) {
+		return getNonSuperTypes().contains(TypeVisitedCheck.toShortTypeName(aTypeName));
+	}
+	@Override
+	public Boolean isType(String aTypeName) {
+		List<STNameable> aTypes = getAllTypes();
+		if (aTypes == null) return null;
+		return toNameList(aTypes).contains(TypeVisitedCheck.toShortTypeName(aTypeName));
+	}
+	@Override
+	public Boolean hasPublicMethod(String aSignature) {
+		STMethod[] stMethods = getMethods();
+		if (stMethods == null) return null;
+		return Arrays.asList(stMethods).contains(aSignature);		
+	}
+	@Override
+	public Boolean hasDeclaredMethod(String aSignature) {
+		STMethod[] stMethods = getDeclaredMethods();
+		if (stMethods == null) return null;
+		return Arrays.asList(stMethods).contains(aSignature);		
+	}
+	public static List intersect(List aList1, List aList2) {
+		List aResult = new ArrayList();
+		for (Object anElement1:aList1) {
+			for (Object anElement2:aList2) {
+				if (anElement1.equals(anElement2)) {
+					aResult.add(anElement1);
+					break;
+				}					
+			}
+		}
+		return aResult;
+	}
+	public static List difference(List aList1, List aList2) {
+		List aResult = new ArrayList();
+			for (Object anElement:aList1) {
+				if (!aList2.contains(anElement))
+					aResult.add(anElement);
+			}
+		
+		return aResult;
+	}
+	public static List<STNameable> commonSuperTypes(String aType1, String aType2) {
+//		List<STNameable> result = new ArrayList();
+		STType anSTType1 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType1);
+		if (anSTType1 == null) return null;
+		STType anSTType2 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType2);
+		if (anSTType2 == null) return null;
+		List<STNameable> aSuperTypes1 = anSTType1.getSuperTypes();
+		if (aSuperTypes1 == null)
+			return null;
+		List<STNameable> aSuperTypes2 = anSTType2.getSuperTypes();
+		if (aSuperTypes2 == null)
+			return null;
+		return intersect (aSuperTypes1, aSuperTypes2);		
+	}
+	@Override
+	public List<String> getAllSignatures() {
+		List<String> result = new ArrayList();
+		STMethod[] anSTMethods = getMethods();
+		if (anSTMethods == null)
+			return null;
+		for (STMethod anSTMethod:anSTMethods) {
+			result.add(anSTMethod.getSignature());
+		}
+		return result;
+	}
+	public static List<String> commonSignatures(String aType1, String aType2) {
+		STType anSTType1 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType1);
+		if (anSTType1 == null) return null;
+		STType anSTType2 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType2);
+		if (anSTType2 == null) return null;
+		return commonSignatures(anSTType1, anSTType2);		
+//			
+	}
+	public static List<String> commonSignatures(STType aType1, STType aType2) {
+		List<String> aSignatures1 = aType1.getAllSignatures();
+		if (aSignatures1 == null) return null;
+		List<String> aSignatures2 = aType2.getAllSignatures();
+		if (aSignatures2 == null) return null;
+		return intersect(aSignatures1, aSignatures2);		
+//			
+	}
+	@Override
+	public List<String> signaturesCommonWith (STType aType) {
+		return commonSignatures(this, aType);
+	}
+	@Override
+	public List<String> signaturesCommonWith (String aTypeName) {
+		STType aPeerType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		if (aPeerType == null)
+			return null;
+		return commonSignatures(this, aPeerType);
 	}
 }

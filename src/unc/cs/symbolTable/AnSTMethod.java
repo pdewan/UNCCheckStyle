@@ -1,5 +1,8 @@
 package unc.cs.symbolTable;
 
+import unc.cs.checks.STTypeVisited;
+import unc.cs.checks.TypeVisitedCheck;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTMethod extends AnSTNameable implements STMethod {
@@ -12,6 +15,7 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	protected final boolean isGetter;
 	protected final boolean isSetter;
 	protected final boolean isInit;
+	protected final String signature;
 	final STNameable[] tags;
 	final boolean assignsToGlobal;
 	final String[][] methodsCalled;
@@ -40,6 +44,7 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 		isSetter = computeIsSetter();
 		isGetter = computeIsGetter();
 		isInit = computeIsInit();
+		signature = displayMethod();
 	}
 	String returnType;
 	
@@ -105,6 +110,26 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	 boolean computeIsInit() {
 		 return isInit(getName());
 	 }
+	 String displayParameterTypes() {
+		 StringBuilder result = new StringBuilder();
+		 for (int i = 0; i < parameterTypes.length; i++) {
+			 if (i > 0) {
+				 result.append(",");
+			 }
+			 result.append(parameterTypes[i]);
+		 }
+		 return result.toString();
+	 }
+	 String displayMethod() {
+		 StringBuilder result = new StringBuilder();
+		 result.append(name);
+		 result.append(":");
+		 result.append(displayParameterTypes());
+		 result.append("->");
+		 result.append(TypeVisitedCheck.toShortTypeName(returnType));
+		 return result.toString();
+
+	 }
 	 @Override
 	 public  boolean isInit() {
 			return isInit;
@@ -112,5 +137,11 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 		public static boolean isInit(String aMethodName) {
 			return aMethodName.startsWith(INIT);
 		}
-
+		public String toString() {
+			return signature;
+		}
+		@Override
+		public String getSignature() {
+			return signature;
+		}
 }

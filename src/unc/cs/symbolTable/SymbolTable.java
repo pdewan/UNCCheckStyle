@@ -1,7 +1,9 @@
 package unc.cs.symbolTable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -21,4 +23,8 @@ public interface SymbolTable {
 	STType getSTClassByShortName(String aTypeName);
 	List<String> matchingFullSTTypeNames(String aTypeName);
 	STType getSTClassByFullName(String aTypeName);
+	List<String> getAllTypeNames();
+	List<STType> getAllSTTypes();
+	List<String> getAllInterfaceNames();
+	List<String> getAllClassNames();
 }

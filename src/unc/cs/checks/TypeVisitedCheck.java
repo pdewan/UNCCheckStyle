@@ -63,7 +63,13 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	public static DetailAST getNameAST (DetailAST anAST) {
 		return anAST.findFirstToken(TokenTypes.IDENT);
 	}
-
+	public static String toShortTypeName (String aTypeName) {
+		int aDotIndex = aTypeName.lastIndexOf(".");
+		String aShortTypeName = aTypeName;
+		if (aDotIndex != -1)
+			aShortTypeName = aTypeName.substring(aDotIndex + 1);
+		return aShortTypeName;
+	}
   
 	
 	

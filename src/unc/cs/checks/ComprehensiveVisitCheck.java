@@ -469,6 +469,7 @@ ContinuationProcessor{
 	}
 	 public void visitInterface(DetailAST ast) {
 	    	visitType(ast);
+	    	superClass = null;
 	    	interfaces = getSuperTypes(ast);
 			isInterface = true;
 	 }
@@ -815,7 +816,10 @@ ContinuationProcessor{
 				return;
 			if (doPendingCheck(ast, currentTree) == null) {
 //				System.out.println ("added to pending checks:" + getName(getEnclosingTypeDeclaration(ast)));
-				pendingChecks().add(ast);
+				List<DetailAST> aPendingChecks = pendingChecks();
+				if (!aPendingChecks.contains(ast))
+					aPendingChecks.add(ast);
+//				pendingChecks().add(ast);
 			}
 
 			// if (isMatchingClassName(ident.getText())) {

@@ -1,5 +1,6 @@
 package unc.cs.symbolTable;
 
+import java.util.List;
 import java.util.Map;
 
 public interface STType extends STNameable{
@@ -25,4 +26,18 @@ public interface STType extends STNameable{
 	Map<String, PropertyInfo> getDeclaredPropertyInfos();
 	Map<String, PropertyInfo> getPropertyInfos();
 	STMethod[] getMethods(String aName);
+	List<STNameable> getAllTypes();
+	List<String> getNonSuperTypes();
+	Boolean isNonType(String aTypeName);
+	Boolean isType(String aTypeName);
+	Boolean hasPublicMethod(String aSignature);
+	Boolean hasDeclaredMethod(String aSignature);
+	List<STNameable> getSuperTypes();
+	List<String> getAllSignatures();
+	List<String> getAllTypeNames();
+	List<String> getSuperTypeNames();
+	List<String> signaturesCommonWith(STType aType);
+	List<String> signaturesCommonWith(String aTypeName);
+	List<String> getSubTypes();
+	List<String> getPeerTypes();
 }

@@ -14,4 +14,5 @@ public interface STMethod extends STNameable{
 	boolean isSetter();
 	boolean isGetter();
 	boolean isInit();
+	String getSignature();
 }

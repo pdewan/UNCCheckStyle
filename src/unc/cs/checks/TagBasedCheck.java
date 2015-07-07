@@ -31,8 +31,6 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected DetailAST currentTree;
 	protected Map<String, Integer> typeToInt = new Hashtable<>();
 
-	
-
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {						
@@ -60,7 +58,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		"String",
 		"Boolean",
 };
-	 static List<STNameable> emptyList = new ArrayList();
+	static List<STNameable> emptyList = new ArrayList();
 
 	protected static Set<String> externalImports = new HashSet();
 	protected List<STNameable> imports = new ArrayList();

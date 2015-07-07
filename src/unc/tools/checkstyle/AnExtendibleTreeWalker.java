@@ -27,6 +27,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.eclipse.core.resources.IWorkspace;
+
+
+import org.eclipse.core.resources.ResourcesPlugin;
+
 import sun.security.action.GetLongAction;
 import antlr.TokenStreamRecognitionException;
 
@@ -109,6 +114,10 @@ public  class AnExtendibleTreeWalker
 
 	@Override
 	protected void processFiltered(File file, List<String> lines) {
+		
+		
+	
+		
 		    // check if already checked and passed the file
 	        final String fileName = file.getPath();
 	        final long timestamp = file.lastModified();

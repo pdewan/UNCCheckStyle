@@ -45,13 +45,13 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 				TokenTypes.PACKAGE_DEF };
 	}
 	
-	public static String toShortTypeName (String aTypeName) {
-		int aDotIndex = aTypeName.lastIndexOf(".");
-		String aShortTypeName = aTypeName;
-		if (aDotIndex != -1)
-			aShortTypeName = aTypeName.substring(aDotIndex + 1);
-		return aShortTypeName;
-	}
+//	public static String toShortTypeName (String aTypeName) {
+//		int aDotIndex = aTypeName.lastIndexOf(".");
+//		String aShortTypeName = aTypeName;
+//		if (aDotIndex != -1)
+//			aShortTypeName = aTypeName.substring(aDotIndex + 1);
+//		return aShortTypeName;
+//	}
 	
 	protected void associate(String aPropertyName, String aTypeName) {
 		if (aTypeName == null || aPropertyName == null)
