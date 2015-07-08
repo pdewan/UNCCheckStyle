@@ -40,4 +40,11 @@ public interface STType extends STNameable{
 	List<String> signaturesCommonWith(String aTypeName);
 	List<String> getSubTypes();
 	List<String> getPeerTypes();
+	List<STNameable> superTypesInCommonWith(String anOtherType);
+	List<STNameable> superTypesInCommonWith(STType anOtherType);
+	List<String> namesOfSuperTypesInCommonWith(String anOtherType);
+	List<String> getSignatures();
+//	Boolean containsSignature(String aTypeName);
+//	Boolean containsSignature(STType aType);
+//	Boolean containsSignature(List<STType> aList);
 }

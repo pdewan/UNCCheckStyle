@@ -327,7 +327,7 @@ public class AnSTType extends AnSTNameable implements STType {
 		}
 	}
 	public static List emptyList = new ArrayList();
-	public static List<STNameable> getSuperTypes(STNameable aType) {
+	public static List<STNameable> getAllSuperTypes(STNameable aType) {
 		if (TagBasedCheck.isExternalClass(TypeVisitedCheck.toShortTypeName(aType.getName())))
 			return emptyList;	
 		List<STNameable> result = new ArrayList();
@@ -340,7 +340,7 @@ public class AnSTType extends AnSTNameable implements STType {
 		for (STNameable anInterface:anInterfaces) {
 			if (result.contains(anInterface)) // an interface may be extended by many
 				continue;
-			List<STNameable> anInterfaceTypes = getSuperTypes(anInterface);
+			List<STNameable> anInterfaceTypes = getAllSuperTypes(anInterface);
 			 if (anInterfaceTypes == null)
 				 return null;
 //			 result.addAll(anInterfaceTypes);	
@@ -352,7 +352,7 @@ public class AnSTType extends AnSTNameable implements STType {
 		STNameable aSuperClass = anSTType.getSuperClass();
 		if (aSuperClass == null) 
 			return result;	
-		List<STNameable> aSuperTypes = getSuperTypes(anSTType.getSuperClass());
+		List<STNameable> aSuperTypes = getAllSuperTypes(anSTType.getSuperClass());
 		if (aSuperTypes == null)
 			return null;
 		result.addAll(aSuperTypes);
@@ -381,7 +381,7 @@ public class AnSTType extends AnSTNameable implements STType {
 	@Override
 	public List<STNameable> getSuperTypes() {		
 		List<STNameable> result = new ArrayList();
-		return getSuperTypes(this);	
+		return getAllSuperTypes(this);	
 		
 	}
 	public static List<String> toNameList(List<STNameable> aNameableList) {
@@ -499,6 +499,17 @@ public class AnSTType extends AnSTNameable implements STType {
 		if (anSTType1 == null) return null;
 		STType anSTType2 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType2);
 		if (anSTType2 == null) return null;
+//		List<STNameable> aSuperTypes1 = anSTType1.getSuperTypes();
+//		if (aSuperTypes1 == null)
+//			return null;
+//		List<STNameable> aSuperTypes2 = anSTType2.getSuperTypes();
+//		if (aSuperTypes2 == null)
+//			return null;
+//		return intersect (aSuperTypes1, aSuperTypes2);	
+		return commonSuperTypes(anSTType1, anSTType2);
+	}
+	public static List<STNameable> commonSuperTypes(STType anSTType1, STType anSTType2) {
+//
 		List<STNameable> aSuperTypes1 = anSTType1.getSuperTypes();
 		if (aSuperTypes1 == null)
 			return null;
@@ -508,12 +519,36 @@ public class AnSTType extends AnSTNameable implements STType {
 		return intersect (aSuperTypes1, aSuperTypes2);		
 	}
 	@Override
+	public List<STNameable> superTypesInCommonWith (String anOtherType) {
+		return commonSuperTypes(this.getName(), anOtherType);
+	}
+	@Override
+	public List<String> namesOfSuperTypesInCommonWith (String anOtherType) {
+		return toNameList(superTypesInCommonWith(anOtherType));
+	}
+	@Override
+	public List<STNameable> superTypesInCommonWith (STType anOtherType) {
+		return commonSuperTypes(this, anOtherType);
+	}
+	@Override
 	public List<String> getAllSignatures() {
 		List<String> result = new ArrayList();
 		STMethod[] anSTMethods = getMethods();
 		if (anSTMethods == null)
 			return null;
 		for (STMethod anSTMethod:anSTMethods) {
+			result.add(anSTMethod.getSignature());
+		}
+		return result;
+	}
+	@Override
+	public List<String> getSignatures() {
+		List<String> result = new ArrayList();
+		STMethod[] anSTMethods = getMethods();
+		if (anSTMethods == null)
+			return null;
+		for (STMethod anSTMethod:anSTMethods) {
+			if (anSTMethod.isPublic() && anSTMethod.isInstance())
 			result.add(anSTMethod.getSignature());
 		}
 		return result;
@@ -527,9 +562,9 @@ public class AnSTType extends AnSTNameable implements STType {
 //			
 	}
 	public static List<String> commonSignatures(STType aType1, STType aType2) {
-		List<String> aSignatures1 = aType1.getAllSignatures();
+		List<String> aSignatures1 = aType1.getSignatures();
 		if (aSignatures1 == null) return null;
-		List<String> aSignatures2 = aType2.getAllSignatures();
+		List<String> aSignatures2 = aType2.getSignatures();
 		if (aSignatures2 == null) return null;
 		return intersect(aSignatures1, aSignatures2);		
 //			
@@ -544,5 +579,48 @@ public class AnSTType extends AnSTNameable implements STType {
 		if (aPeerType == null)
 			return null;
 		return commonSignatures(this, aPeerType);
+	}
+	public static Boolean containsSignature(String aTypeName, String aSignature) {
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		if (anSTType == null)
+			return null;
+		return containsSignature(anSTType, aSignature);		
+	}
+	public static Boolean  containsSignature(STType aType, String aSignature) {
+		List<String> aSignatures = aType.getSignatures();
+		if (aSignatures == null)
+			return null;
+		return aSignatures.contains(aSignature);		
+	}
+//	public static Boolean haveDelegateRelatonship (String aTypeName1, String aTypeName2) {
+//		STType aType1 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName1);
+//		if (aType1 == null) 
+//			return null;
+//		
+//		STType aType2 = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName1);
+//		
+//	}
+//	public static Boolean containsSignature (List<STType> aList) {
+//		Boolean retVal = false;
+//		for (STType aType:aList) {
+//			retVal = containsSignature(aType);
+//			if (retVal)
+//				return true;
+//		}
+//		return retVal;		
+//	}
+	public static Boolean containsSignature (List<String> aList, String aSignature) {
+		Boolean retVal = false;
+		for (String aType:aList) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType);
+			if (anSTType == null) {
+				retVal = null;
+				continue;
+			}
+			retVal = containsSignature(aType, aSignature);
+			if (retVal)
+				return true;
+		}
+		return retVal;		
 	}
 }

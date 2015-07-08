@@ -2,6 +2,7 @@ package unc.cs.checks;
 
 import java.util.List;
 
+import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -73,7 +74,18 @@ public class ISATypesCheck extends ComprehensiveVisitCheck{
 			List<String> aCommonSignatures = anSTType.signaturesCommonWith(aPeerType);
 			if (aCommonSignatures == null)
 				return null;
-			System.out.println (anSTType.getName() + " intersection " + aPeerType + " =" + aCommonSignatures);
+			System.out.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);
+			List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
+			if (aCommonSuperTypes == null)
+				return null;
+			System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
+			for (String aSignature:aCommonSignatures) {
+				Boolean aHasSignature =  AnSTType.containsSignature(aCommonSuperTypes, aSignature);
+				if (aHasSignature == null)
+					continue;
+				System.out.println ("Super types of " + anSTType.getName() + " and " + aPeerType + 
+						"  contain signature:" + aSignature + " is " + aHasSignature);
+			}			
 		}
 		return true;
 //		if (aTree == currentTree) {

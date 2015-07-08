@@ -62,6 +62,10 @@ public class AnSTMethod extends AnSTNameable implements STMethod {
 	public boolean isPublic() {
 		return isPublic;
 	}
+	@Override
+	public boolean isInstance() {
+		return isInstance;
+	}
 	
 	@Override
 	public boolean assignsToGlobal() {
