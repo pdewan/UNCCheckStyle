@@ -10,6 +10,7 @@ import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
+import unc.cs.symbolTable.AnSTTypeFromClass;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
@@ -27,7 +28,49 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected List<STMethod> stConstructors = new ArrayList();
 	public static final String MSG_KEY = "stBuilder";
 	static String[] projectPackagePrefixes = {"assignment", "project", "homework"};
+	protected static String[] existingClasses = {};
+	boolean importsAsExistingClasses = false;
 	
+//	public STBuilderCheck() {
+//		
+//	}
+	protected static void processExistingClasses() {
+		for (String aClassName:existingClasses) {
+			processExistingClass(aClassName);
+//			if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aClassName) != null)
+//				continue;
+//			try {
+//				Class aClass = Class.forName(aClassName);
+//				STType anSTType = new AnSTTypeFromClass(aClass);
+//				addSTType(anSTType);
+//			} catch (ClassNotFoundException e) {
+//				System.err.println ("Unknown class existing clas: " + aClassName);
+//				e.printStackTrace();
+//			}
+		}
+	}
+	
+	protected  void processImports() {
+		if (!getImportsAsExistingClasses())
+			return;
+		for (STNameable aClassName:imports) {
+			processExistingClass(aClassName.getName());			
+		}
+	}
+	
+	protected static void processExistingClass(String aClassName) {
+		if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aClassName) != null)
+			return;
+		try {
+			Class aClass = Class.forName(aClassName);
+			STType anSTType = new AnSTTypeFromClass(aClass);
+			addSTType(anSTType);
+		} catch (ClassNotFoundException e) {
+			System.err.println ("Could not make existing from: " + aClassName);
+//			e.printStackTrace();
+		}
+		
+	}
 
     
     protected void processPreviousMethodData() {
@@ -61,6 +104,22 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     public static String[] geProjectPackagePrefixes() {
     	return projectPackagePrefixes;
     }
+    public  void setExistingClasses(String[] aClasses) {
+    	existingClasses = aClasses;
+    	processExistingClasses();
+    }
+    
+    public boolean getImportsAsExistingClasses() {
+    	return importsAsExistingClasses;
+    }
+    
+    public  void setImportsAsExistingClasses(boolean aNewVal) {
+    	importsAsExistingClasses = aNewVal;
+    }
+    
+    public static String[] getExistingClasses() {
+    	return existingClasses;
+    }
 		
 		
 
@@ -71,8 +130,17 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
  	    }
 	STNameable[] dummyArray = new STNameable[0];
 
+	protected static void addSTType(STType anSTClass) {
+		anSTClass.introspect();
+    	anSTClass.findDelegateTypes();	    
+    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+    			anSTClass.getName(), anSTClass);
+//    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
+		
+	}
 	 
 	  protected void processMethodAndClassData() {
+		  processImports();
 		  STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
 		  STMethod[] aConstructors = stConstructors.toArray(new STMethod[0]);
 	    	STType anSTClass = new AnSTType(
@@ -91,18 +159,22 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			editablePropertyNames.toArray(dummyArray),
 	    			typeTags.toArray(dummyArray),
 	    			imports.toArray(dummyArray),
-	    			globalVariables.toArray(dummyArray));
-//	    	anSTClass.initDeclaredPropertyNames(propertyNames.toArray(dummyArray));
-//	    	anSTClass.initEditablePropertyNames(editablePropertyNames.toArray(dummyArray));
-//	    	anSTClass.initTags(tags.toArray(dummyArray));
-//	    	anSTClass.initStructurePatternName(structurePattern);
-	    	anSTClass.introspect();
-	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
-	    			fullTypeName, anSTClass);
+	    			globalVariables.toArray(dummyArray),
+	    			new HashMap<>(globalVariableToCall));
+
+//	    	anSTClass.introspect();
+//	    	anSTClass.findDelegateTypes();	    
+//	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+//	    			fullTypeName, anSTClass);
+	    	addSTType(anSTClass);
 	    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }
+		  
+	  }
+	  
+	  public static void addKnownClass (Class aClass) {
 		  
 	  }
 

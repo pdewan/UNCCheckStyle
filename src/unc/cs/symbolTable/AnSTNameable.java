@@ -6,6 +6,10 @@ public class AnSTNameable implements STNameable {
 	DetailAST ast;
 	String name;
 	Object data;
+	public AnSTNameable( String name) {
+		super();
+		this.name = name;
+	}
 	public AnSTNameable(DetailAST ast, String name) {
 		super();
 		this.ast = ast;

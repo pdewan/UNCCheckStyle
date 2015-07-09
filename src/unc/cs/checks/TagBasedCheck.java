@@ -191,7 +191,10 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  }
  
  public static boolean isExternalClass(String aShortClassName) {
-	 return aShortClassName.equals("Object") || isExternalImport(aShortClassName) || isJavaLangClass(aShortClassName);
+	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aShortClassName);
+	if (anSTType != null)
+		return false;
+	return aShortClassName.equals("Object") || isExternalImport(aShortClassName) || isJavaLangClass(aShortClassName);
  }
  public List<STNameable> getTags(String aShortClassName)  {
 	List<STNameable> aTags = emptyList;

@@ -27,9 +27,12 @@ public class ClassHasOneInterfaceCheck extends STClassVisited {
 //		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
 //	}  
 //	
-	protected boolean typeCheck(STType anSTClass) {
+	protected boolean typeCheck(STType anSTClass) {	
+		if (anSTClass.getInterfaces() == null) {
+			System.err.println(" null interfaces!");
+		}
 		// 0 is checked by ClassHasAtLeastOneInterface
-		return (anSTClass.getInterfaces().length <= 1);
+		return (anSTClass.isInterface() || anSTClass.getInterfaces().length <= 1);
 	}
 	
 //	protected void log(DetailAST ast) {

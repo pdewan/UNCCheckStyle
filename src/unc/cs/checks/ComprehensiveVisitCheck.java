@@ -616,12 +616,14 @@ ContinuationProcessor{
  				aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
  			}
  		}
+ 		if (aLeftMostMethodTargetAST != null) {
  		String aTargetName = aLeftMostMethodTargetAST.getText();
  		if (isGlobal(aTargetName)) {
  			List<CallWithoutArguments> aCalls = getVariableCalls(aTargetName);
  			CallWithoutArguments aCall = new ACallWithoutArguments(
  					currentMethodName, aNormalizedParts[0], aNormalizedParts[1]);
  			aCalls.add(aCall); 			
+ 		}
  		}
  		astToContinuationData.put(ast, aNormalizedParts);
 

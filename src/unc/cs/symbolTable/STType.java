@@ -2,6 +2,7 @@ package unc.cs.symbolTable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
@@ -28,7 +29,7 @@ public interface STType extends STNameable{
 	STMethod[] getMethods(String aName);
 	List<STNameable> getAllTypes();
 	List<String> getNonSuperTypes();
-	Boolean isNonType(String aTypeName);
+	Boolean isNonSuperType(String aTypeName);
 	Boolean isType(String aTypeName);
 	Boolean hasPublicMethod(String aSignature);
 	Boolean hasDeclaredMethod(String aSignature);
@@ -47,4 +48,10 @@ public interface STType extends STNameable{
 //	Boolean containsSignature(String aTypeName);
 //	Boolean containsSignature(STType aType);
 //	Boolean containsSignature(List<STType> aList);
+	void findDelegateTypes();
+	List<STNameable> getAllInterfaces();
+	Boolean isSubtypeOf(String aName);
+	Boolean isDelegate(String aName);
+	boolean isParsedClass();
+	Set<String> getDelegates();
 }

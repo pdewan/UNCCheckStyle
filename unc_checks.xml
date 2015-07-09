@@ -23,6 +23,9 @@
 
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="test" />
+			<property name="existingClasses" value="java.util.List, java.util.Vector, java.util.HashMap" />
+			<property name="importsAsExistingClasses" value= "true"/>
+			
 
 
 
