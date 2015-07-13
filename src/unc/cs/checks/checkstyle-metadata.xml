@@ -155,5 +155,10 @@
 			<alternative-name internal-name="unc.cs.checks.MinDescendentShapesCheck" />			
 			<description>%MinDescendentShapes.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%IllegalTypeDefined.name"
+			internal-name="IllegalTypeDefined" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalTypeDefinedCheck" />			
+			<description>%IllegalTypeDefined.desc</description>
+		</rule-metadata>
 	</rule-group-metadata>
 </checkstyle-metadata>

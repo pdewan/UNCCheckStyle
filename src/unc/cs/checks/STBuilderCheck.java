@@ -1,5 +1,7 @@
 package unc.cs.checks;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +31,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	public static final String MSG_KEY = "stBuilder";
 	static String[] projectPackagePrefixes = {"assignment", "project", "homework"};
 	protected static String[] existingClasses = {};
+	protected static Collection<String> existingClassesCollection = new HashSet();
 	boolean importsAsExistingClasses = false;
 	
 //	public STBuilderCheck() {
@@ -66,7 +69,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 			STType anSTType = new AnSTTypeFromClass(aClass);
 			addSTType(anSTType);
 		} catch (ClassNotFoundException e) {
-			System.err.println ("Could not make existing from: " + aClassName);
+			if  (existingClassesCollection.contains(aClassName))
+			System.err.println ("Could not make existing class from: " + aClassName);
 //			e.printStackTrace();
 		}
 		
@@ -106,6 +110,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     }
     public  void setExistingClasses(String[] aClasses) {
     	existingClasses = aClasses;
+    	existingClassesCollection = Arrays.asList(existingClasses);
     	processExistingClasses();
     }
     

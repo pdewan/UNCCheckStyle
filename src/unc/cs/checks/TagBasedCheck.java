@@ -106,7 +106,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
    } 
 	public static Boolean hasTag(STNameable[] aTags, String aTag) {
     	for (STNameable anSTNameable:aTags) {
-    		if (anSTNameable.getName().equals(aTag)) return true;
+    		if (matchesStoredTag(anSTNameable.getName(), aTag)) return true;
     		
     	}
     	return false;
@@ -238,7 +238,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  protected DetailAST matchedTypeOrTagAST;
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0)
-		return false;
+		return true;
 	if (aDescriptor.equals("*"))
 		return true;
 	if (!aDescriptor.startsWith("@")) {

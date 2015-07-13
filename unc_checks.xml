@@ -64,7 +64,7 @@
 
 			<property name="disallowedCalls" value="Scanner, @Tag1>String, @Tag1>@Tag2" />
 			<property name="exceptionCalls"
-				value="String.substring, String.charAt, @Tag1>String.length, Bar>Scanner.nextLine, @Tag1.@Tag3>@Tag2.@Tag4" />
+				value="String.substring, String.charAt, @Tag1>String.length, Bar.@NextLineCaller>Scanner.nextLine, @Tag1.@Tag3>@Tag2.@Tag4" />
 		</module>
 		<module name="LegalMethodCall">
 			<property name="severity" value="info" />
@@ -82,9 +82,12 @@
 			<property name="severity" value="info" />
 		</module>
 		<module name="IllegalTypeImported">
-			<message key="illegalTypeImported" value="Used illegal type {0}" />
 			<property name="legalPrefixes"
 				value="Foo>java.util, @Tag1>java.util, bus.uigen, Bar>util" />
+		</module>
+		<module name="IllegalTypeDefined">
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
 		</module>
 		<module name="StaticVariable">
 			<property name="includeTags"

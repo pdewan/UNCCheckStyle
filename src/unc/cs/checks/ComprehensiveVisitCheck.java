@@ -584,6 +584,22 @@ ContinuationProcessor{
     	 }
     	 return false;
      }
+     public static List<DetailAST> getEListComponents (DetailAST anEList) {
+    	 List<DetailAST> result = new ArrayList();
+    	 DetailAST aParameter = anEList.getFirstChild();
+    	 
+    	 while (true) {
+    		 if (aParameter == null)
+        		 return result;
+    		 else 
+    			 result.add(aParameter);
+    		 DetailAST aCommaAST = aParameter.getNextSibling();
+    		 if (aCommaAST == null)
+    			 return result;
+    		 aParameter = aCommaAST.getNextSibling();
+    	 }     	  
+    	 
+     }
      /*
       * Ouch, I am going to ad side effects
       */
@@ -591,6 +607,8 @@ ContinuationProcessor{
  		DetailAST aMethodNameAST = getLastDescendent(ast);
  		DetailAST aLeftMostMethodTargetAST = aMethodNameAST
  				.getPreviousSibling();
+ 		DetailAST aCallEList = ast.findFirstToken(TokenTypes.ELIST);
+ 		List<DetailAST> aCallParameters = getEListComponents(aCallEList);
  		
  		
  		String shortMethodName = aMethodNameAST.getText();

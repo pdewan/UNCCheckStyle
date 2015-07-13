@@ -116,16 +116,18 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
     public void setDisallowedCalls (String[] newValue) {
     	disallowedCalls = newValue;
 //		String[] toArray = newValue.split(",");
-		for (String s:disallowedCalls) {
-			disallowedCallsCollection.add(s);
-		}		
+//		for (String s:disallowedCalls) {
+//			disallowedCallsCollection.add(s);
+//		}	
+    	disallowedCallsCollection = Arrays.asList(disallowedCalls);
 	}
     public void setAllowedCalls (String[] newValue) {
     	allowedCalls = newValue;
 //		String[] toArray = newValue.split(",");
-		for (String s:allowedCalls) {
-			allowedCallsCollection.add(s);
-		}		
+//		for (String s:allowedCalls) {
+//			allowedCallsCollection.add(s);
+//		}	
+    	allowedCallsCollection = Arrays.asList(allowedCalls);
 	}
     
     
