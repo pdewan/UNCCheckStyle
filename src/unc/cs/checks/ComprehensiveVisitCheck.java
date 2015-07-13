@@ -10,11 +10,11 @@ import java.util.Set;
 
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import sun.reflect.generics.scope.MethodScope;
-import unc.cs.symbolTable.ACallWithoutArguments;
+import unc.cs.symbolTable.ACallInfo;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
-import unc.cs.symbolTable.CallWithoutArguments;
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
@@ -58,7 +58,7 @@ ContinuationProcessor{
 //	protected List<STNameable> currentMethodTags;
 	protected Map<String, String> typeScope = new HashMap();
 	protected List<STNameable> globalVariables = new ArrayList();
-	protected Map<String, List<CallWithoutArguments>> globalVariableToCall = new HashMap();
+	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> currentMethodScope = new HashMap();
 //	protected Set<String> excludeTags;
 //	protected Set<String> includeTags;
@@ -603,7 +603,7 @@ ContinuationProcessor{
      /*
       * Ouch, I am going to ad side effects
       */
- 	public String[] registerCallsAndtoNormalizedParts(DetailAST ast, DetailAST aTreeAST) {
+ 	public CallInfo registerCallsAndtoNormalizedParts(DetailAST ast, DetailAST aTreeAST) {
  		DetailAST aMethodNameAST = getLastDescendent(ast);
  		DetailAST aLeftMostMethodTargetAST = aMethodNameAST
  				.getPreviousSibling();
@@ -634,22 +634,25 @@ ContinuationProcessor{
  				aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
  			}
  		}
+ 		CallInfo result = new ACallInfo(
+				currentMethodName, aNormalizedParts[0], aNormalizedParts[1], aCallParameters, aNormalizedParts );
  		if (aLeftMostMethodTargetAST != null) {
  		String aTargetName = aLeftMostMethodTargetAST.getText();
+ 		
  		if (isGlobal(aTargetName)) {
- 			List<CallWithoutArguments> aCalls = getVariableCalls(aTargetName);
- 			CallWithoutArguments aCall = new ACallWithoutArguments(
- 					currentMethodName, aNormalizedParts[0], aNormalizedParts[1]);
- 			aCalls.add(aCall); 			
+ 			List<CallInfo> aCalls = getVariableCalls(aTargetName);
+// 			CallInfo aCall = new ACallInfo(
+// 					currentMethodName, aNormalizedParts[0], aNormalizedParts[1], aCallParameters, aNormalizedParts );
+ 			aCalls.add(result); 			
  		}
  		}
  		astToContinuationData.put(ast, aNormalizedParts);
 
- 		return aNormalizedParts;
+ 		return result;
 
  	}
- 	List<CallWithoutArguments> getVariableCalls(String aName) {
- 		List<CallWithoutArguments> aVariableCalls = globalVariableToCall.get(aName);
+ 	List<CallInfo> getVariableCalls(String aName) {
+ 		List<CallInfo> aVariableCalls = globalVariableToCall.get(aName);
  		if (aVariableCalls == null) {
  			aVariableCalls = new ArrayList();
  	 		globalVariableToCall.put(aName, aVariableCalls);
@@ -660,7 +663,7 @@ ContinuationProcessor{
  	}
      
      public void visitCall(DetailAST ast) {
-    	 String[] aNormalizedParts = registerCallsAndtoNormalizedParts(ast, currentTree);
+    	 String[] aNormalizedParts = registerCallsAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
  		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
      public void visitIdent(DetailAST anIdentAST) {

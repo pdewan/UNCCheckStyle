@@ -185,7 +185,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 //
 //		astToContinuationData.put(ast, aNormalizedParts);
 	
-		String[] aNormalizedParts = registerCallsAndtoNormalizedParts(ast, aTreeAST);
+		String[] aNormalizedParts = registerCallsAndtoNormalizedParts(ast, aTreeAST).getNotmalizedCall();
 
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 

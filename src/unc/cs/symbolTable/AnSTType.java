@@ -29,7 +29,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected STMethod[] inits;
 //	protected Map<String, PropertyInfo> actualPropertyInfo = new HashMap();
 //	protected List<STMethod> declaredInits = new ArrayList();
-	protected Map<String, List<CallWithoutArguments>> globalVariableToCall = new HashMap();
+	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 //	protected Set<String> delegates = new HashSet();
 	
 	
@@ -49,7 +49,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] aTags,
 			STNameable[] anImports,
 			STNameable[] aFields,
-			Map<String, List<CallWithoutArguments>> aGlobalVariableToCall
+			Map<String, List<CallInfo>> aGlobalVariableToCall
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
@@ -278,10 +278,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	}
 	@Override
 	public void findDelegateTypes() {
-		Collection<List<CallWithoutArguments>> aCalls = 
+		Collection<List<CallInfo>> aCalls = 
 				globalVariableToCall.values();
-		for (List<CallWithoutArguments> aCallList:aCalls){
-			for (CallWithoutArguments aCall:aCallList) {
+		for (List<CallInfo> aCallList:aCalls){
+			for (CallInfo aCall:aCallList) {
 				if (aCall.getCalleee().equals(aCall.getCaller())) {
 					delegates.add(aCall.getCalledType());
 				}
