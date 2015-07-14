@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -91,7 +92,7 @@ public  class LegalMethodCallCheck extends MethodCallVisitedCheck {
 	}
     // "fail" if method is in expected set
 	@Override
-	protected Boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
+	protected Boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
 		return !expectedMethodsSet.contains(aShortMethodName);
 	}
 

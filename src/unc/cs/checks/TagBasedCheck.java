@@ -253,6 +253,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	return contains(aTags, aTag);
 }
 public boolean checkTagsOfCurrentType() {
+	// this makes no sense to me
 	if (!hasIncludeTags() && !hasExcludeTags())
 		return true; // all tags checked in this case
 	if (fullTypeName == null) {
@@ -438,6 +439,7 @@ protected void setIntValueOfType(String newVal) {
 public static boolean isPrimitive(List<String> aTypes) {
 	return aTypes.size() == 1 && isPrimitive(aTypes.get(0));
 }
+
 public static boolean isShape(String aType) {
 	return aType.equals(PointPatternCheck.POINT_PATTERN) ||
 			aType.equals(LinePatternCheck.LINE_PATTERN) ||
@@ -455,6 +457,9 @@ public static boolean isShape(List<String> aTypes) {
 }
 public static boolean isPrimitive(String aType) {
 	return primitiveTypesSet.contains(aType);
+}
+public static boolean isOEAtomic(String aType) {
+	return aType.equals("String") || isPrimitive(aType);
 }
 
  static {

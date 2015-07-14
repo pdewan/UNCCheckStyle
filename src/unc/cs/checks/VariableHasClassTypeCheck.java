@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import unc.cs.symbolTable.AnSTTypeFromClass;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -189,6 +190,8 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 		String aTypeName = anIdentifierType.getText();
 		STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
 				getSTClassByShortName(aTypeName);
+		if (anSTClass instanceof AnSTTypeFromClass)
+			return true;
 		if (anSTClass == null)
 //		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
 			return null;

@@ -110,6 +110,11 @@
 			<alternative-name internal-name="unc.cs.checks.ExpectedSettersCheck" />
 			<description>%ExpectedSetters.desc</description>
 		</rule-metadata>
+		<rule-metadata name="%NoStructuredSetter.name"
+			internal-name="NoStructuredSetter" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.NoStructuredSetterCheck" />
+			<description>%NoStructuredSetter.desc</description>
+		</rule-metadata>
 		<rule-metadata name="%LinePattern.name"
 			internal-name="LinePattern" parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.LinePatternCheck" />
@@ -139,6 +144,11 @@
 			internal-name="DescendentProperties" parent="TreeWalker">
 			<alternative-name internal-name="unc.cs.checks.DescendentPropertiesCheck" />
 			<description>%DescendentProperties.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalPropertyNotification.name"
+			internal-name="IllegalPropertyNotification" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalPropertyNotificationCheck" />
+			<description>%IllegalPropertyNotification.desc</description>
 		</rule-metadata>
 		<rule-metadata name="%MinComponentObjects.name"
 			internal-name="MinComponentObjects" parent="TreeWalker">

@@ -7,20 +7,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-/**
- * Ensures there is a package declaration.
- * Rationale: Classes that live in the null package cannot be
- * imported. Many novice developers are not aware of this.
- *
- * @author <a href="mailto:simon@redhillconsulting.com.au">Simon Harris</a>
- * @author Oliver Burn
- */
+
 public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 
     /**
@@ -182,9 +176,11 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 
 
 	@Override
-	protected Boolean check(DetailAST aCalledMethodAST, String aShortMethodName, String aLongMethodName, String[] aCallParts) {
-		if (!checkTagsOfCurrentType())
-			return true;
+	protected Boolean check(DetailAST aCalledMethodAST, String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
+		// why do this check
+//		if (!checkTagsOfCurrentType())
+//			return true;
+		String[] aCallParts = aCallInfo.getNotmalizedCall();
 		String[] aNormalizedCallParts = aCallParts;
 		if (aCallParts.length > 2) { // cannot dissect it into a class 
 //		     return checkAtomic(aCalledMethodAST, aLongMethodName);

@@ -600,18 +600,47 @@ ContinuationProcessor{
     	 }     	  
     	 
      }
+     // ouch from subclass
+     public String toLongName(String[] aNormalizedName) {
+ 		StringBuffer retVal = new StringBuffer();
+ 		int index = 0;
+ 		while (true) {
+ 			if (index >= aNormalizedName.length) {
+ 				return retVal.toString();
+ 			}
+ 			if (index > 0)
+ 				retVal.append(".");
+ 			retVal.append(aNormalizedName[index]);
+ 			index++;
+ 		}
+ 	}
      /*
       * Ouch, I am going to ad side effects
       */
- 	public CallInfo registerCallsAndtoNormalizedParts(DetailAST ast, DetailAST aTreeAST) {
+ 	public CallInfo registerMethodCallAndtoNormalizedParts(DetailAST ast, DetailAST aTreeAST) {
+// 		DetailAST aLeftMostMethodTargetAST = null;
+// 		String shortMethodName = null;
+// 		if (ast.getType() == TokenTypes.METHOD_CALL) {
+// 		FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
  		DetailAST aMethodNameAST = getLastDescendent(ast);
+		String shortMethodName = aMethodNameAST.getText();
+
  		DetailAST aLeftMostMethodTargetAST = aMethodNameAST
  				.getPreviousSibling();
+// 		aLeftMostMethodTargetAST = aMethodNameAST
+// 				.getPreviousSibling();
+// 		} else if (ast.getType() == TokenTypes.LITERAL_NEW) { 			
+// 			final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
+// 			shortMethodName = toShortTypeName(anIdentifierType.getText());
+// 			aLeftMostMethodTargetAST = null;
+// 		}
  		DetailAST aCallEList = ast.findFirstToken(TokenTypes.ELIST);
  		List<DetailAST> aCallParameters = getEListComponents(aCallEList);
  		
  		
- 		String shortMethodName = aMethodNameAST.getText();
+// 		String shortMethodName = aMethodNameAST.getText();
+// 		 shortMethodName = aMethodNameAST.getText();
+
  		String[] aNormalizedParts = null;
  		if (currentTree != aTreeAST) {
  			aNormalizedParts = (String[]) astToContinuationData.get(ast);
@@ -634,8 +663,10 @@ ContinuationProcessor{
  				aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
  			}
  		}
+ 		String aNormalizedLongName = toLongName(aNormalizedParts);
+		String aCallee = toShortTypeName(aNormalizedLongName);
  		CallInfo result = new ACallInfo(
-				currentMethodName, aNormalizedParts[0], aNormalizedParts[1], aCallParameters, aNormalizedParts );
+				currentMethodName, aNormalizedParts[0], aCallee, aCallParameters, aNormalizedParts );
  		if (aLeftMostMethodTargetAST != null) {
  		String aTargetName = aLeftMostMethodTargetAST.getText();
  		
@@ -651,6 +682,43 @@ ContinuationProcessor{
  		return result;
 
  	}
+ 	// do nto really need this, the register method call works just fine!
+ 	public CallInfo registerConstructorCallAndtoNormalizedParts(DetailAST ast, DetailAST aTreeAST) {
+ 		
+ 			final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
+ 			String shortMethodName = toShortTypeName(anIdentifierType.getText());
+ 		
+ 		DetailAST aCallEList = ast.findFirstToken(TokenTypes.ELIST);
+ 		List<DetailAST> aCallParameters = getEListComponents(aCallEList);
+ 		
+ 		
+// 		String shortMethodName = aMethodNameAST.getText();
+// 		 shortMethodName = aMethodNameAST.getText();
+
+ 		String[] aNormalizedParts = null;
+ 		if (currentTree != aTreeAST) {
+ 			aNormalizedParts = (String[]) astToContinuationData.get(ast);
+ 			if (aNormalizedParts == null) {
+ 				System.err.println("Normalizedname not saved");
+ 			}
+ 			// } else if (aLeftMostMethodTargetAST.getType() ==
+ 			// TokenTypes.STRING_LITERAL) {
+ 		} else {
+ 			
+
+ 				aNormalizedParts = new String[] {shortMethodName, shortMethodName};
+ 			}
+ 		
+ 		CallInfo result = new ACallInfo(
+				currentMethodName, aNormalizedParts[0], aNormalizedParts[1], aCallParameters, aNormalizedParts );
+ 		
+ 		
+ 		astToContinuationData.put(ast, aNormalizedParts);
+
+
+ 		return result;
+
+ 	}
  	List<CallInfo> getVariableCalls(String aName) {
  		List<CallInfo> aVariableCalls = globalVariableToCall.get(aName);
  		if (aVariableCalls == null) {
@@ -662,8 +730,13 @@ ContinuationProcessor{
  		
  	}
      
-     public void visitCall(DetailAST ast) {
-    	 String[] aNormalizedParts = registerCallsAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
+     public void visitMethodCall(DetailAST ast) {
+    	 String[] aNormalizedParts = registerMethodCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
+ 		methodsCalledByCurrentMethod.add(aNormalizedParts);
+     }
+     
+     public void visitConsrtuctorCall(DetailAST ast) {
+    	 String[] aNormalizedParts = registerConstructorCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
  		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
      public void visitIdent(DetailAST anIdentAST) {
@@ -717,6 +790,18 @@ ContinuationProcessor{
 
 		}
 		return result;
+	}
+	protected String getShortFileName(DetailAST aTreeAST) {
+		return shortFileName(astToFileContents.get(aTreeAST)
+				.getFilename());
+//		String aFileName;
+//		if (aTreeAST == currentTree) {
+//			aFileName = getFileContents().getFilename();
+//		} else {			
+//			aFileName = astToFileContents.get(aTreeAST)
+//				.getFilename();
+//		}
+//		return shortFileName(aFileName);
 	}
 	 protected void maybeCleanUpPendingChecks(DetailAST aNewTree) {
 		 String aFileName = getFileContents().getFilename();
@@ -1081,6 +1166,9 @@ ContinuationProcessor{
 //	    		result = result.getLastChild();    	
 //	    	return result;    	
 //	    }
+	    /*
+	     * checking if the target of call is an instantiated type
+	     */
 	    public static String maybeReturnInstantiatedType(DetailAST ast) {
 			DetailAST aNewAST = ast.findFirstToken(TokenTypes.LITERAL_NEW);
 			if (aNewAST != null) {
@@ -1169,8 +1257,11 @@ ContinuationProcessor{
 			case TokenTypes.VARIABLE_DEF:
 				visitVariableDef(ast);
 				return;
+			case TokenTypes.LITERAL_NEW:
+				visitConsrtuctorCall(ast);
+				return;
 			case TokenTypes.METHOD_CALL:
-				visitCall(ast);
+				visitMethodCall(ast);
 				return;
 			case TokenTypes.IDENT:
 				visitIdent(ast);

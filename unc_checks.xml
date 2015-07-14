@@ -83,7 +83,7 @@
 		</module>
 		<module name="IllegalTypeImported">
 			<property name="legalPrefixes"
-				value="Foo>java.util, @Tag1>java.util, bus.uigen, Bar>util" />
+				value="Foo>java.util, @Tag1>java.util, bus.uigen, util" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
@@ -132,6 +132,11 @@
 			<property name="includeTags" value="Composite" />
 		</module>
 		<module name="ISATypes" />
+		<module name="NoStructuredSetter" />
+		<module name="IllegalPropertyNotification" />
+		<module name="MissingActualProperty" />
+		<module name="MissingActualEditableProperty" />
+		
 		
 		
 
@@ -142,7 +147,8 @@
 			name="illegalPattern" value="false" /> </module> -->
 		<module name="ClassDefined">
 			<property name="severity" value="info" />
-			<message key="classDefined" value="Class {0} defined." />
+			<property name="expectedClasses" value="Factorial, @Tag1" />
+			
 		</module>
 		<module name="InterfaceDefined">
 			<property name="severity" value="info" />

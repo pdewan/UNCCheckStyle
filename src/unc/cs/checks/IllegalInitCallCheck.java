@@ -7,6 +7,7 @@ import java.util.Set;
 
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTType;
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -49,7 +50,7 @@ public class IllegalInitCallCheck extends InitCallCheck {
 	@Override
 	// succeeds if an init call in an init call
 	protected Boolean check(DetailAST ast, String aShortMethodName,
-			String aLongMethodName, String[] aCallParts) {
+			String aLongMethodName, CallInfo aCallnfo) {
 		return (
 				!AnSTMethod.isInit(aShortMethodName)
 				|| currentMethodIsConstructor // any call allowed from constructor

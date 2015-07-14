@@ -294,6 +294,35 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 		return actualPropertyInfo;
 	}
+	public static PropertyInfo getPropertyInfo(String aName, Map<String, PropertyInfo> aPropertyInfos ) {
+		if (aPropertyInfos == null)
+			return null;
+		Set<String> aPropertyNames = aPropertyInfos.keySet();
+		for (String aPropertyName:aPropertyNames) {
+			if (aPropertyName.equalsIgnoreCase(aName))
+					return aPropertyInfos.get(aPropertyName);
+		}
+		return null;
+	}
+	@Override
+	public Boolean hasActualProperty(String aName) {
+		Map<String, PropertyInfo> aPropertyInfos = getPropertyInfos();
+		if (aPropertyInfos == null)
+			return null;
+		
+		PropertyInfo aPropertyInfo = getPropertyInfo(aName, aPropertyInfos);
+		return aPropertyInfo != null && aPropertyInfo.getGetter() != null;
+	}
+	@Override
+	public Boolean hasActualEditableProperty(String aName) {
+		Map<String, PropertyInfo> aPropertyInfos = getPropertyInfos();
+		if (aPropertyInfos == null)
+			return null;		
+		PropertyInfo aPropertyInfo = getPropertyInfo(aName, aPropertyInfos);
+		if (aPropertyInfo == null) return false;
+		return (aPropertyInfo.getSetter() != null);
+	
+	}
 //	// should use recursion actually
 	@Override
 	public Map<String, PropertyInfo> getPropertyInfos() {

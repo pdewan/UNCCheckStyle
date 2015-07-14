@@ -54,4 +54,6 @@ public interface STType extends STNameable{
 	Boolean isDelegate(String aName);
 	boolean isParsedClass();
 	Set<String> getDelegates();
+	Boolean hasActualProperty(String aName);
+	Boolean hasActualEditableProperty(String aName);
 }
