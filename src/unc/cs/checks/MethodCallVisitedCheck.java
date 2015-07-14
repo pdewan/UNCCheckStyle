@@ -304,10 +304,12 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 	// assume classes have been matched
 	protected Boolean matchMethod(String aMethodSpecification,
 			String aShortMethodClassName, String aShortMethodName) {
-		if (aMethodSpecification == null)
+		if (aMethodSpecification == null || aMethodSpecification.equals("*"))
 			return true;
 		if (aMethodSpecification.indexOf("@") == -1)
-			return aMethodSpecification.equals(aShortMethodName);
+//			return aMethodSpecification.equals(aShortMethodName);
+			return matchesNameOrVariable(aMethodSpecification, aShortMethodName);
+		
 		String aSpecificationTag = aMethodSpecification.substring(1);
 		STType aTypeST = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aShortMethodClassName);

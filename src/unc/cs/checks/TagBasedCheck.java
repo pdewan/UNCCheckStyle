@@ -30,7 +30,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  	static List<STNameable> emptyNameableList =new ArrayList();
 	protected DetailAST currentTree;
 	protected Map<String, Integer> typeToInt = new Hashtable<>();
-
+	protected Map<String, String> specificationVariablesToUnifiedValues = new Hashtable<>();
+	
+	protected List<String> variablesAdded = new ArrayList(); //should be cleared by a matcher
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {						
@@ -225,24 +227,66 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 	return aTags;
 	
 }
- public  Boolean matchesMyType( String aDescriptor) {
-	 	String aClassName = shortTypeName;
-	 	if (aDescriptor == null || aDescriptor.length() == 0)
-	 		return true;
-	 	if (aDescriptor.startsWith("@")) {
-	 		String aTag = aDescriptor.substring(1);
-	 		return contains(typeTags(), aTag);	    		
-	 	}
-			return aClassName.equals(aDescriptor);
-		 }
+ public Boolean matchesNameOrVariable(String aDescriptor, String aName) {
+	 if (aDescriptor.startsWith("$")) {
+			String aUnifiedValue = specificationVariablesToUnifiedValues
+					.get(aDescriptor);
+			if (aUnifiedValue == null) {
+				specificationVariablesToUnifiedValues.put(aDescriptor,
+						aUnifiedValue);
+				variablesAdded.add(aDescriptor);
+				return true;
+			} else {
+				return aName.equals(aUnifiedValue);
+			}
+		} else {
+			return aName.equals(aDescriptor);
+		}
+	 
+ }
+ protected void backTrackUnification() {
+	 for (String aVariable:variablesAdded) {
+		 specificationVariablesToUnifiedValues.remove(aVariable);
+	 }
+	 variablesAdded.clear();
+ }
+//for some reason this is not supposed to call matchedMyType with clas name
+	public Boolean matchesMyType(String aDescriptor) {
+		String aClassName = shortTypeName;
+		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*"))
+			return true;
+		if (aDescriptor.startsWith("@")) {
+			String aTag = aDescriptor.substring(1);
+			return contains(typeTags(), aTag);
+		} else {
+			return matchesNameOrVariable(aDescriptor, aClassName);
+		}
+			
+//		} else if (aDescriptor.startsWith("$")) {
+//			String aUnifiedValue = specificationVariablesToUnifiedValues
+//					.get(aDescriptor);
+//			if (aUnifiedValue == null) {
+//				specificationVariablesToUnifiedValues.put(aDescriptor,
+//						aUnifiedValue);
+//				return true;
+//			} else {
+//				return aClassName.equals(aUnifiedValue);
+//			}
+//		} else {
+//			return aClassName.equals(aDescriptor);
+//		}
+	}
  protected DetailAST matchedTypeOrTagAST;
+ 
+
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
-	if (aDescriptor == null || aDescriptor.length() == 0)
+	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*" ))
 		return true;
-	if (aDescriptor.equals("*"))
-		return true;
+//	if (aDescriptor.equals("*"))
+//		return true;
 	if (!aDescriptor.startsWith("@")) {
-		return aShortClassName.equals(aDescriptor);
+//		return aShortClassName.equals(aDescriptor);
+		return matchesNameOrVariable(aDescriptor, aShortClassName);
 	}
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)

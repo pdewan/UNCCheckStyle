@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
@@ -57,32 +58,79 @@ public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
 	}
 
 	public Boolean matchSignatures(String[] aSpecifications,
-			List<String> aSignatures, DetailAST aTreeAST) {
+			STMethod[] aMethods, DetailAST aTreeAST) {
 		boolean retVal = true;
 		for (String aSpecification : aSpecifications) {
 		
 //			String[] aPropertiesPath = aPropertySpecification.split(".");			
-			if (!matchSignature(aSpecification, aSignatures)) {
+			if (!matchSignature(aSpecification, aMethods)) {
 				logSignatureNotMatched(aTreeAST, aSpecification);
 				retVal = false;
 			}
 		}
 		return retVal;
 	}
+	
+	public STMethod signatureToMethod(String aSignature) {
+		String[] aNameAndRest = aSignature.split(":");
+		if (aNameAndRest.length != 2) {
+			System.err.print("Illegal signature, missing :" + aSignature);
+			return null;
+		}
+		String aName = aNameAndRest[0].trim();
+		String[] aReturnTypeAndParameters = aNameAndRest[1].split("->");
+		if (aReturnTypeAndParameters.length != 2) {
+			System.err.print("Illegal signature, missing ->" + aSignature);
+			return null;
+		}
+		String aReturnType = aReturnTypeAndParameters[0];
+		String[] aParameterTypes = aReturnTypeAndParameters[0].split(",");
+		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, aReturnType, true, null, false, null);
+		
+	}
 
 	public Boolean matchSignature(
-			String aSpecification, List<String> aSignatures) {
-		for (String aSignature : aSignatures) {
-			if (aSpecification.equals(aSignature))
+			String aSpecification, STMethod[] aMethods) {
+		for (STMethod aMethod : aMethods) {
+			if (matchSignature(aSpecification, aMethod))
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
 				return true;
 
-			else
+			else 
 				continue;
 		}
 		return false;
 	}
+	public Boolean matchSignature(
+			String aSpecification, STMethod aMethod) {
+		return matchSignature(signatureToMethod(aSpecification), aMethod);
+		
+	}
+	public Boolean matchSignature(
+			STMethod aSpecification, STMethod aMethod) {
+		variablesAdded.clear();
+		Boolean retVal  = 
+				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
+				matchesNameOrVariable(aSpecification.getName(), aMethod.getName()) &&
+				matchesNameOrVariable(aSpecification.getReturnType(), aMethod.getReturnType());
+				
+		if (!retVal) {
+			backTrackUnification();
+			return false;
+		}
+		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
+		String[] aMethodParameterTypes = aMethod.getParameterTypes();
+		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
+			if (!matchesNameOrVariable(aSpecificationParameterTypes[i], aMethodParameterTypes[i])) {
+				backTrackUnification();
+				return false;
+			}
+		}
+		return true;		
+		
+	}
+	
 
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
@@ -94,12 +142,13 @@ public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
 		
-		List<String> aSignatures = anSTType.getAllSignatures();
+//		List<String> aSignatures = anSTType.getAllSignatures();
+		STMethod[] aMethods = anSTType.getMethods();
 
-		if (aSignatures == null) 
+		if (aMethods == null) 
 			return null;
 		String[] aSpecifiedSignatures = typeToSignature.get(aSpecifiedType);
-		return matchSignatures(aSpecifiedSignatures, aSignatures, aTree);
+		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
 	}
 
 	@Override
