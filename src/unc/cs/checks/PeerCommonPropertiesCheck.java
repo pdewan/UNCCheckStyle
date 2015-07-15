@@ -32,9 +32,13 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 //		}
 //	}
 	
-	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {  };
+		return new int[] { 
+				TokenTypes.PACKAGE_DEF,
+				TokenTypes.CLASS_DEF,
+				TokenTypes.INTERFACE_DEF
+				
+		};
 	}
 	
 	@Override
@@ -106,7 +110,7 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 //		if (aSubTypes == null) 
 //			return null;
 //		System.out.println("SubTypes" + aSubTypes);
-		List<String> aPeerTypes = anSTType.getPeerTypes();
+		List<String> aPeerTypes = filterTypes(anSTType.getPeerTypes(), aTypeName);
 		if (aPeerTypes == null) 
 			return null;
 		System.out.println("Peer Types" + aPeerTypes);

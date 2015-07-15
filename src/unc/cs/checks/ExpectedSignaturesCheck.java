@@ -26,7 +26,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public void setExpectedSignaturesOfType(String aPattern) {
 		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSignatures[0].trim();
-		String[] aSignatures = extractTypeAndSignatures[1].split("\\|");
+		String[] aSignatures = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
 		typeToSignature.put(aType, aSignatures);
 	}
 

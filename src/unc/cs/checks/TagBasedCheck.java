@@ -21,7 +21,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final String TYPE_SEPARATOR = "=";
-	public static final String SET_MEMBER_SEPARATOR = "|";
+	public static final String SET_MEMBER_SEPARATOR = "\\|";
 
 
 	protected Set<String> excludeTags;
@@ -80,14 +80,14 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	 * T1 | @T2 | T3,  T3 | T4  *
 	 */
 	public void addIncludeSet(String newVal) {
-		String[] aTypes = newVal.split("|");
+		String[] aTypes = newVal.split(SET_MEMBER_SEPARATOR);
 		for (int i = 0; i < aTypes.length; i++) {
 			aTypes[i] = aTypes[i].trim();
 		}
 		includeSets.add(Arrays.asList(aTypes));		
 	}
 	public void addExcludeSet(String newVal) {
-		String[] aTypes = newVal.split("|");
+		String[] aTypes = newVal.split(SET_MEMBER_SEPARATOR);
 		for (int i = 0; i < aTypes.length; i++) {
 			aTypes[i] = aTypes[i].trim();
 		}
@@ -376,6 +376,8 @@ public  Set<String> excludeSetOf(String aType) {
 	return setOf(aType, includeSets);
 }
 protected List<String> filterTypes(List<String> aTypes, String aTypeName) {
+	if (aTypes == null)
+		return null;
 	if (includeSets.size() > 0) {
 		return filterTypesByIncludeSets(aTypes, aTypeName);
 		
@@ -385,6 +387,8 @@ protected List<String> filterTypes(List<String> aTypes, String aTypeName) {
 		return aTypes;
 }
 protected List<String> filterTypesByIncludeSets(List<String> aTypes, String aTypeName) {
+	if (aTypes == null)
+		return null;
 	Set<String> anIncludeSet = includeSetOf(aTypeName);
 	List<String> result = new ArrayList();
 	for (String aType:aTypes) {
@@ -395,6 +399,8 @@ protected List<String> filterTypesByIncludeSets(List<String> aTypes, String aTyp
 		
 }
 protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTypeName) {
+	if (aTypes == null)
+		return null;
 	Set<String> anExcludeSet = excludeSetOf(aTypeName);
 	List<String> result = new ArrayList();
 	for (String aType:aTypes) {
