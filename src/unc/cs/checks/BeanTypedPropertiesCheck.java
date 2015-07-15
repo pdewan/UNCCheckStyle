@@ -18,7 +18,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	public static final String MSG_KEY = "beanProperties";
 
 	protected Map<String, String[]> typeToProperty = new HashMap<>();
-	public static final String SEPARATOR = ">";
+//	public static final String SEPARATOR = ">";
 
 //	public void doVisitToken(DetailAST ast) {
 //		// System.out.println("Check called:" + MSG_KEY);
@@ -42,7 +42,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //	}
 
 	public void setExpectedPropertiesOfType(String aPattern) {
-		String[] extractTypeAndProperties = aPattern.split(">");
+		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndProperties[0].trim();
 		String[] aProperties = extractTypeAndProperties[1].split("\\|");
 		typeToProperty.put(aType, aProperties);
@@ -143,7 +143,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 
 	public Boolean matchGetter(String aSpecifiedType, String aProperty,
 			Map<String, PropertyInfo> aPropertyInfos) {
-		return matchesType(aSpecifiedType, aPropertyInfos.get(aProperty)
+		// yuk, sometimes using a different method
+		return super.matchesType(aSpecifiedType, aPropertyInfos.get(aProperty)
 				.getGetter().getReturnType());
 //		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
 //				.getGetter().getReturnType());

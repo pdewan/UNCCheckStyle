@@ -15,16 +15,16 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
-	public static final String MSG_KEY = "methodSignatures";
+public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
+	public static final String MSG_KEY = "expectedSignatures";
 
 	protected Map<String, String[]> typeToSignature = new HashMap<>();
-	public static final String SEPARATOR = ">";
+//	public static final String SEPARATOR = ">";
 
 
 
 	public void setExpectedSignaturesOfType(String aPattern) {
-		String[] extractTypeAndSignatures = aPattern.split(">");
+		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSignatures[0].trim();
 		String[] aSignatures = extractTypeAndSignatures[1].split("\\|");
 		typeToSignature.put(aType, aSignatures);
@@ -47,12 +47,13 @@ public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
 	protected void logSignatureNotMatched(DetailAST aTreeAST, String aSignature) {
 		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 				.getFilename());
+		String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
 		if (aTreeAST == currentTree) {
 			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
 
-			log(aLoggedAST.getLineNo(), aLoggedAST.getColumnNo(), msgKey(), aSignature, aSourceName);
+			log(aLoggedAST.getLineNo(), aLoggedAST.getColumnNo(), msgKey(), aSignature, aTypeName, aSourceName);
 		} else {
-			log(0, msgKey(), aSignature, aSourceName);
+			log(0, msgKey(), aSignature, aTypeName, aSourceName);
 		}
 
 	}
@@ -83,8 +84,13 @@ public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
 			System.err.print("Illegal signature, missing ->" + aSignature);
 			return null;
 		}
-		String aReturnType = aReturnTypeAndParameters[0];
-		String[] aParameterTypes = aReturnTypeAndParameters[0].split(",");
+		String aReturnType = aReturnTypeAndParameters[1].trim();
+		String aParametersString = aReturnTypeAndParameters[0];
+		String[] aParameterTypes = aParametersString.equals("")?new String[0]:  aParametersString.split(STMethod.PARAMETER_SEPARATOR);
+		for (int i = 0; i < aParameterTypes.length; i++) {
+			aParameterTypes[i] = aParameterTypes[i].trim();
+			
+		}
 		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, aReturnType, true, null, false, null);
 		
 	}
@@ -131,8 +137,37 @@ public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
 		
 	}
 	
+	public Boolean matchSignatures(STType anSTType, String[] aSpecifiedSignatures, DetailAST aTree) {
+		STMethod[] aMethods = anSTType.getMethods();
 
+		if (aMethods == null) 
+			return null;
+		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
+	}
+	public Boolean matchSignatures(String aTypeName, String[] aSpecifiedSignatures, DetailAST aTree) {
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(
+						getName(getEnclosingTypeDeclaration(aTree)));
+		return matchSignatures(anSTType, aSpecifiedSignatures, aTree);
+	}
 
+//	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(
+//						getName(getEnclosingTypeDeclaration(aTree)));
+//		String aSpecifiedType = findMatchingType(typeToSignature.keySet(),
+//				anSTType);
+//		if (aSpecifiedType == null)
+//			return true; // the constraint does not apply to us
+//		
+////		List<String> aSignatures = anSTType.getAllSignatures();
+//		STMethod[] aMethods = anSTType.getMethods();
+//
+//		if (aMethods == null) 
+//			return null;
+//		String[] aSpecifiedSignatures = typeToSignature.get(aSpecifiedType);
+//		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
+//	}
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(
@@ -141,20 +176,31 @@ public  class MethodSignaturesCheck extends ComprehensiveVisitCheck {
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
-		
-//		List<String> aSignatures = anSTType.getAllSignatures();
-		STMethod[] aMethods = anSTType.getMethods();
-
-		if (aMethods == null) 
-			return null;
 		String[] aSpecifiedSignatures = typeToSignature.get(aSpecifiedType);
-		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
+		return matchSignatures(anSTType, aSpecifiedSignatures, aTree);
+		
+////		List<String> aSignatures = anSTType.getAllSignatures();
+//		STMethod[] aMethods = anSTType.getMethods();
+//
+//		if (aMethods == null) 
+//			return null;
+//		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
 	}
 
 	@Override
 	protected String msgKey() {
 		// TODO Auto-generated method stub
 		return MSG_KEY;
+	}
+	public void doFinishTree(DetailAST ast) {
+		// STType anSTType =
+		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		// for (STMethod aMethod: anSTType.getMethods()) {
+		// visitMethod(anSTType, aMethod);
+		// }
+		maybeAddToPendingTypeChecks(ast);
+		super.doFinishTree(ast);
+
 	}
 
 

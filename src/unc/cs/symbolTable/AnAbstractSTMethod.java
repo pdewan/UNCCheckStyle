@@ -23,6 +23,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	public  static final String SET = "set";
 	public static final String INIT = "init";
 	
+	
 	public AnAbstractSTMethod(DetailAST ast, String name) {
 		super(ast, name);		
 //		isSetter = computeIsSetter();
@@ -107,7 +108,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		 StringBuilder result = new StringBuilder();
 		 for (int i = 0; i < getParameterTypes().length; i++) {
 			 if (i > 0) {
-				 result.append(",");
+				 result.append(PARAMETER_SEPARATOR);
 			 }
 			 result.append(getParameterTypes()[i]);
 		 }

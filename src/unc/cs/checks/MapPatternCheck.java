@@ -17,17 +17,17 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 
-public  class ListPatternCheck extends ExpectedSignaturesCheck {
+public  class MapPatternCheck extends ExpectedSignaturesCheck {
 	
-	public static final String LIST_SPECIFICATION = "@LIST_PATTERN" + TYPE_SEPARATOR + "get:int->$T | size:->int ";
+	public static final String MAP_SPECIFICATION = "@MAP_PATTERN" + TYPE_SEPARATOR + "get:$K->$V | put:$K;$V->* ";
     /**
      * A key is pointing to the warning message text in "messages.properties"
      * file.
      */
 //    public static final String MSG_KEY = "listPattern";
    
-    public ListPatternCheck() {
-		super.setExpectedSignaturesOfType(LIST_SPECIFICATION);
+    public MapPatternCheck() {
+		super.setExpectedSignaturesOfType(MAP_SPECIFICATION);
 	}
     
 //	@Override

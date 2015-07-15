@@ -20,8 +20,14 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class TagBasedCheck extends TypeVisitedCheck{
+	public static final String TYPE_SEPARATOR = "=";
+	public static final String SET_MEMBER_SEPARATOR = "|";
+
+
 	protected Set<String> excludeTags;
 	protected Set<String> includeTags;
+	protected List<List<String>> includeSets = new ArrayList();
+	protected List<List<String>> excludeSets = new ArrayList();
 	protected boolean tagsInitialized;
 	protected List<STNameable> typeTags;
 	protected STNameable pattern;
@@ -31,6 +37,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected DetailAST currentTree;
 	protected Map<String, Integer> typeToInt = new Hashtable<>();
 	protected Map<String, String> specificationVariablesToUnifiedValues = new Hashtable<>();
+	protected STNameable structurePattern;
+
 	
 	protected List<String> variablesAdded = new ArrayList(); //should be cleared by a matcher
 	@Override
@@ -68,6 +76,16 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected static Set<String> javaLangTypesSet;
 	protected static Set<String> primitiveTypesSet;
 
+	/*
+	 * T1 | @T2 | T3,  T3 | T4  *
+	 */
+	public void addIncludeSets(String[] newVal) {
+		
+	}
+
+	public void setExcludeSets(String[] newVal) {
+		this.excludeTags = new HashSet(Arrays.asList(newVal));		
+	}
 	public void setIncludeTags(String[] newVal) {
 		this.includeTags = new HashSet(Arrays.asList(newVal));		
 	}
@@ -82,6 +100,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public boolean hasIncludeTags() {
 		return includeTags != null && includeTags.size() > 0;
 	}
+	
 	
 	public static boolean contains (Collection<String> aTags, String aTag) {
 		for (String aStoredTag:aTags) {
@@ -154,7 +173,35 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 	return false;
 	
 }
- public boolean contains(List<STNameable> aTags, String aTag) {
+ public STNameable getPattern(String aShortClassName)  {
+// 	List<STNameable> aTags = emptyList;
+
+ 	// these classes have no tags
+// 	if ( aShortClassName.endsWith("[]") ||
+// 			allKnownImports.contains(aShortClassName) || 
+// 			javaLangClassesSet.contains(aShortClassName) ) {
+// 		return emptyList;
+// 	}
+ 	if ( isArray(aShortClassName) ||
+ 			isJavaLangClass(aShortClassName) ) {
+ 		return null;
+ 	}
+ 	if (shortTypeName == null || // guaranteed to not be a pending check
+ 			(aShortClassName.equals(shortTypeName) || aShortClassName.endsWith("." + shortTypeName))) {
+ 		return structurePattern;
+ 	} else {
+ 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+ 				.getSTClassByShortName(aShortClassName);
+ 		if (anSTType == null) {
+ 			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
+ 				return null;			
+ 			return null;
+ 		}
+ 		return anSTType.getStructurePatternName();
+ 	}
+ 	
+ }
+ public boolean contains(List<STNameable> aTags, String aTag, String aTypeName) {	 
  	for (STNameable aNameable:aTags) {
  		if (matchesStoredTag(aNameable.getName(), aTag)) {
  			matchedTypeOrTagAST = aNameable.getAST();
@@ -162,7 +209,15 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  			return true;
  		}
  	}
- 	return false;
+ 	return matchesPattern(aTag, aTypeName);
+ }
+ 
+ public boolean matchesPattern (String aPatternName, String aTypeName) {
+	 STNameable aStructurePattern = getPattern(aTypeName);
+		if (aStructurePattern == null)
+			return false;
+		return aStructurePattern.getName().equals(aPatternName) || 
+				aStructurePattern.getName().equals("StructurePatternNames." + aPatternName);
  }
  
  // could return a list also
@@ -228,12 +283,14 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 	
 }
  public Boolean matchesNameOrVariable(String aDescriptor, String aName) {
-	 if (aDescriptor.startsWith("$")) {
+	 if (aDescriptor.equals("*")) {
+	 	 return true;
+	 } else if (aDescriptor.startsWith("$")) {
 			String aUnifiedValue = specificationVariablesToUnifiedValues
 					.get(aDescriptor);
 			if (aUnifiedValue == null) {
 				specificationVariablesToUnifiedValues.put(aDescriptor,
-						aUnifiedValue);
+						aName);
 				variablesAdded.add(aDescriptor);
 				return true;
 			} else {
@@ -257,7 +314,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 			return true;
 		if (aDescriptor.startsWith("@")) {
 			String aTag = aDescriptor.substring(1);
-			return contains(typeTags(), aTag);
+			return contains(typeTags(), aTag, shortTypeName);
 		} else {
 			return matchesNameOrVariable(aDescriptor, aClassName);
 		}
@@ -294,7 +351,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 
 	String aTag = aDescriptor.substring(1);
 
-	return contains(aTags, aTag);
+	return contains(aTags, aTag, aShortClassName);
 }
 public boolean checkTagsOfCurrentType() {
 	// this makes no sense to me
@@ -461,7 +518,7 @@ public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aToke
 	
 }
 protected void setIntValueOfType(String newVal) {
-	String[] aTypeAndValue = newVal.split (">");
+	String[] aTypeAndValue = newVal.split (TYPE_SEPARATOR);
 	String aType = "*";
 	String aValueString = "";
 	if (aTypeAndValue.length == 1) {

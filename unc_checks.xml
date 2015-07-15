@@ -83,7 +83,7 @@
 		</module>
 		<module name="IllegalTypeImported">
 			<property name="legalPrefixes"
-				value="Foo>java.util, @Tag1>java.util, bus.uigen, util" />
+				value="Foo=java.util, @Tag1=java.util, bus.uigen, util" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
@@ -103,11 +103,15 @@
 		</module>
 			<module name="ExpectedGetters">
 			<property name="expectedProperties"
-				value="@Tag1> P1:int | P2:int" />
+				value="@Tag1= P1:int | P2:int" />
 		</module>
 		<module name="ExpectedSetters">
 			<property name="expectedProperties"
-				value="@Tag1> P1:int | P2:int | Foo:@Tag1"/>
+				value="@Tag1 = P1:int | P2:int | Foo:@Tag1"/>
+		</module>
+		<module name="ExpectedSignatures">
+			<property name="expectedSignatures" 
+				value="@Vector = elementAt:int->$T | setElementAt:int; $T->void | size:->int " />
 		</module>
 		<!-- <module name="LineLength"> <property name="max" value="${maxLineLength}"/> 
 			</module> -->
@@ -118,24 +122,30 @@
 		<module name="RectanglePattern" />
 		<module name="StringShapePattern" />
 		<module name="PointPattern" />
-		<module name="ImagePattern" />		
+		<module name="ImagePattern" />	
+		<module name="VectorPattern" />	
+		<module name="ListPattern" />	
+		<module name="MapPattern" />		
 		<module name="MinComponentObjects">
-			<property name="minObjectComponents" value="@Composite>3" />
+			<property name="minObjectComponents" value="@Composite=3" />
 			<property name="includeTags" value="Composite" />
 		</module>
 		<module name="MinDescendentObjects">
-			<property name="minObjectDescendents" value="@Composite>5" />
+			<property name="minObjectDescendents" value="@Composite=5" />
 			<property name="includeTags" value="Composite" />
 		</module>
 			<module name="MinDescendentShapes">
-			<property name="minShapeDescendents" value="@Composite>2" />
+			<property name="minShapeDescendents" value="@Composite=2" />
 			<property name="includeTags" value="Composite" />
 		</module>
 		<module name="ISATypes" />
+		<module name="PeerCommonSignatures" />
+		<module name="PeerCommonProperties" />		
 		<module name="NoStructuredSetter" />
 		<module name="IllegalPropertyNotification" />
 		<module name="MissingActualProperty" />
 		<module name="MissingActualEditableProperty" />
+		
 		
 		
 		

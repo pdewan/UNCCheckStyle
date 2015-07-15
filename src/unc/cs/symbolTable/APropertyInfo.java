@@ -15,12 +15,32 @@ public class APropertyInfo implements PropertyInfo {
 	public void setSetter(STMethod setter) {
 		this.setter = setter;
 	}
+	@Override
+	public String getName() {
+		return  getter != null?getter.getName():setter.getName();
+	}
 	
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
 		return getter != null?getter.getReturnType():setter.getParameterTypes()[0];
 	} 
+	
+	public String toString() {
+		return getName() + ":" + getType();
+	}
+	
+	public boolean equals(Object anOther) {
+		if (anOther instanceof PropertyInfo) {
+			PropertyInfo anotherPropertyInfo = (PropertyInfo) anOther;
+			return getName().equals(anotherPropertyInfo.getName()) && 
+					getType().equals(anotherPropertyInfo.getType());
+			
+		} else {
+			return super.equals(anOther);
+		}
+	}
+	
 	
 
 }

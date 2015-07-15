@@ -17,7 +17,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class LocatableShapePatternCheck extends BeanPatternCheck {
 //	public static final String MSG_KEY = "linePattern";
-	public static final String LOCATABLE_PATTERN = "*> X:int | Y:int";
+//	public  final String LOCATABLE_PATTERN = "@" +composePatternName() + TYPE_SEPARATOR + "X:int | Y:int";
 
 //@Override
 //public String composeProperties() {
@@ -25,7 +25,8 @@ public abstract class LocatableShapePatternCheck extends BeanPatternCheck {
 //}
 	
 	protected String locatablePattern() {
-		return LOCATABLE_PATTERN ;
+//		return LOCATABLE_PATTERN ;
+		return "@" +composePatternName() + TYPE_SEPARATOR + "X:int | Y:int";
 	}
 	@Override
 	public String composeProperties() {

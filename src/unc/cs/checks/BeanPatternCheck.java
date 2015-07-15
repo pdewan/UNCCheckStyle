@@ -32,23 +32,13 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	// // TODO Auto-generated method stub
 	// return MSG_KEY;
 	// }
-	public Boolean matchesType(String aDescriptor, String aShortClassName) {
-		STNameable aStructurePattern = getPattern(aShortClassName);
-		if (aStructurePattern == null)
-			return false;
-		return aStructurePattern.getName().equals(patternName);
-		// if (aDescriptor == null || aDescriptor.length() == 0)
-		// return true;
-		// if (!aDescriptor.startsWith("@")) {
-		// return aShortClassName.equals(aDescriptor);
-		// }
-		// List<STNameable> aTags = getTags(aShortClassName);
-		// if (aTags == null)
-		// return null;
-		//
-		// String aTag = aDescriptor.substring(1);
-		//
-		// return contains(aTags, aTag);
-	}
+//	@Override
+//	public Boolean matchesType(String aDescriptor, String aShortClassName) {
+//		STNameable aStructurePattern = getPattern(aShortClassName);
+//		if (aStructurePattern == null)
+//			return false;
+//		return aStructurePattern.getName().equals(patternName);
+//		
+//	}
 
 }

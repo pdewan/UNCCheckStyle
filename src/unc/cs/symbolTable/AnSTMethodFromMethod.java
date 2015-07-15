@@ -10,7 +10,8 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 	
 	public AnSTMethodFromMethod(Method aMethod) {
 		super(null, aMethod.getName());
-		method = aMethod;		
+		method = aMethod;	
+		introspect();
 	}
 	@Override
 	public boolean isParsedMethod() {

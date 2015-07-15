@@ -44,6 +44,8 @@ public void doFinishTree(DetailAST ast) {
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
+		if (aPropertyInfos == null)
+			return null;
 		Boolean retVal = true;
 		for (String aPropertyName:aPropertyInfos.keySet()) {
 			PropertyInfo aPropertyInfo = aPropertyInfos.get(aPropertyName);

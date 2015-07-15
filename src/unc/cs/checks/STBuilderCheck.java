@@ -172,7 +172,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 //	    			fullTypeName, anSTClass);
 	    	addSTType(anSTClass);
-	    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
+//	    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 //	        if (!defined) {
 ////	            log(ast.getLineNo(), MSG_KEY);
 //	        }

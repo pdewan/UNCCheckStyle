@@ -56,4 +56,6 @@ public interface STType extends STNameable{
 	Set<String> getDelegates();
 	Boolean hasActualProperty(String aName);
 	Boolean hasActualEditableProperty(String aName);
+	List<PropertyInfo> propertiesCommonWith(STType aType);
+	List<PropertyInfo> propertiesCommonWith(String aTypeName);
 }

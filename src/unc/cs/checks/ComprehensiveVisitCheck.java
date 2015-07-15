@@ -33,7 +33,6 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 ContinuationProcessor{
 	
 //	public static final String MSG_KEY = "stBuilder";
-	
 	protected boolean isInterface;
 	protected boolean isElaboration;
 	protected STNameable superClass;
@@ -75,7 +74,7 @@ ContinuationProcessor{
 	
 
 
-	protected STNameable structurePattern;
+//	protected STNameable structurePattern;
 	Map<DetailAST, List<DetailAST>> astToPendingChecks = new HashMap();
 	Map<DetailAST, Object> astToContinuationData = new HashMap();
 
@@ -944,6 +943,7 @@ ContinuationProcessor{
 				List<DetailAST> aPendingTypeChecksCopy = new ArrayList(
 						aPendingChecks);
 				for (DetailAST aPendingCheck : aPendingTypeChecksCopy) {
+					specificationVariablesToUnifiedValues.clear();
 //					System.out.println ("Doing pending check: " + getName(getEnclosingTypeDeclaration(aPendingCheck)));
 					if (doPendingCheck(aPendingCheck, aPendingAST) != null)
 						aPendingChecks.remove(aPendingCheck);
@@ -954,6 +954,7 @@ ContinuationProcessor{
 		protected void maybeAddToPendingTypeChecks(DetailAST ast) {
 			if (!checkTagsOfCurrentType())
 				return;
+			specificationVariablesToUnifiedValues.clear();
 			if (doPendingCheck(ast, currentTree) == null) {
 //				System.out.println ("added to pending checks:" + getName(getEnclosingTypeDeclaration(ast)));
 				List<DetailAST> aPendingChecks = pendingChecks();
@@ -1138,7 +1139,7 @@ ContinuationProcessor{
 //	}
 	    protected boolean isPrefix (String aTarget, List<String> aPrefixes, String aSourceClassName) {
 			 for (String aPrefix:aPrefixes) {
-				 String[] aPrefixParts = aPrefix.split(">");
+				 String[] aPrefixParts = aPrefix.split(TYPE_SEPARATOR);
 				 if ((aPrefixParts.length == 2) && !matchesType(aPrefixParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTruePrefix = aPrefixParts.length == 2?aPrefixParts[1]:aPrefix;
@@ -1149,7 +1150,7 @@ ContinuationProcessor{
 		 }
 	    protected boolean containedInClasses (String aTarget, List<String> aList, String aSourceClassName) {
 			 for (String aMember:aList) {
-				 String[] aMemberParts = aMember.split(">");
+				 String[] aMemberParts = aMember.split(TYPE_SEPARATOR);
 //				 if ((aMemberParts.length == 2) && !matchesMyType(aMemberParts[0], aSourceClassName))
 
 				 if ((aMemberParts.length == 2) && !matchesType(aMemberParts[0], aSourceClassName))

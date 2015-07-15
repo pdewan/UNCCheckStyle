@@ -6,7 +6,7 @@ public class ASourceAndDestination implements SourceAndDestination {
 	String destination;
 	
     public ASourceAndDestination(String aSpecification) {
-    	 String[] aSourceAndDestination = aSpecification.split(">");
+    	 String[] aSourceAndDestination = aSpecification.split(ComprehensiveVisitCheck.TYPE_SEPARATOR);
 		 
 		 if (aSourceAndDestination.length == 2) {
 			 source = aSourceAndDestination[0];
@@ -27,7 +27,7 @@ public class ASourceAndDestination implements SourceAndDestination {
 		return destination;
 	}
 	public String toString() {
-		return source + ">" + destination;
+		return source + ComprehensiveVisitCheck.TYPE_SEPARATOR + destination;
 	}
 	
 	

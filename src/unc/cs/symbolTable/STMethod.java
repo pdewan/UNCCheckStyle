@@ -1,6 +1,7 @@
 package unc.cs.symbolTable;
 
 public interface STMethod extends STNameable{
+	String PARAMETER_SEPARATOR = ";";
 	String getDeclaringClass();
 	String getName();
 	String[] getParameterTypes();
