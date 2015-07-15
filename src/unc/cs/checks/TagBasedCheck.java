@@ -79,12 +79,30 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	/*
 	 * T1 | @T2 | T3,  T3 | T4  *
 	 */
-	public void addIncludeSets(String[] newVal) {
-		
+	public void addIncludeSet(String newVal) {
+		String[] aTypes = newVal.split("|");
+		for (int i = 0; i < aTypes.length; i++) {
+			aTypes[i] = aTypes[i].trim();
+		}
+		includeSets.add(Arrays.asList(aTypes));		
+	}
+	public void addExcludeSet(String newVal) {
+		String[] aTypes = newVal.split("|");
+		for (int i = 0; i < aTypes.length; i++) {
+			aTypes[i] = aTypes[i].trim();
+		}
+		excludeSets.add(Arrays.asList(aTypes));		
 	}
 
 	public void setExcludeSets(String[] newVal) {
-		this.excludeTags = new HashSet(Arrays.asList(newVal));		
+		for (String aString:newVal)	 {
+			addExcludeSet(aString);
+		}
+	}
+	public void setIncludeSets(String[] newVal) {
+		for (String aString:newVal)	 {
+			addIncludeSet(aString);
+		}
 	}
 	public void setIncludeTags(String[] newVal) {
 		this.includeTags = new HashSet(Arrays.asList(newVal));		
@@ -335,7 +353,57 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 	}
  protected DetailAST matchedTypeOrTagAST;
  
-
+public Boolean matchesType(Collection<String> aDescriptors, String aShortClassName) {
+	for (String aDescriptor:aDescriptors) {
+		if (matchesType(aDescriptor, aShortClassName))
+			return true;
+	}
+	return false;
+}
+public  Set<String> setOf(String aType, List<List<String>> aLists) {
+	Set<String> result = new HashSet();
+	for (List<String> aSet:aLists) {
+		if (matchesType(aSet, aType)) {
+			result.addAll(aSet);
+		}
+	}
+	return result;
+}
+public  Set<String> includeSetOf(String aType) {
+	return setOf(aType, includeSets);
+}
+public  Set<String> excludeSetOf(String aType) {
+	return setOf(aType, includeSets);
+}
+protected List<String> filterTypes(List<String> aTypes, String aTypeName) {
+	if (includeSets.size() > 0) {
+		return filterTypesByIncludeSets(aTypes, aTypeName);
+		
+	} else if (excludeSets.size() > 0) {
+		return filterTypesByExcludeSets(aTypes, aTypeName);
+	} else
+		return aTypes;
+}
+protected List<String> filterTypesByIncludeSets(List<String> aTypes, String aTypeName) {
+	Set<String> anIncludeSet = includeSetOf(aTypeName);
+	List<String> result = new ArrayList();
+	for (String aType:aTypes) {
+		if (matchesType(anIncludeSet, aType))
+			result.add(aType);
+	}
+	return result;
+		
+}
+protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTypeName) {
+	Set<String> anExcludeSet = excludeSetOf(aTypeName);
+	List<String> result = new ArrayList();
+	for (String aType:aTypes) {
+		if (!matchesType(anExcludeSet, aType))
+			result.add(aType);
+	}
+	return result;
+		
+}
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*" ))
 		return true;
