@@ -4,6 +4,9 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -116,16 +119,78 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		}
 		return retVal;
 	}
+	public Boolean matchProperties(String[] aSpecifiedProperties,
+			Collection <PropertyInfo> aPropertyInfos, DetailAST aTreeAST) {
+		boolean retVal = true;
+		for (String aSpecifiedProperty : aSpecifiedProperties) {
+			String[] aPropertyAndType = aSpecifiedProperty.split(":");
+			String aType = aPropertyAndType[1].trim();
+			String aPropertySpecification = aPropertyAndType[0].trim();
+//			String[] aPropertiesPath = aPropertySpecification.split(".");			
+			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
+				logPropertyNotMatched(aTreeAST, aPropertySpecification, aType);
+				retVal = false;
+			}
+		}
+		return retVal;
+	}
+	public List<PropertyInfo> matchedOrUnMatchedProperties(List<String> aSpecifiedProperties,
+			Collection <PropertyInfo> aPropertyInfos, boolean aDoMatch) {
+		List<PropertyInfo> retVal = new ArrayList();
+		for (PropertyInfo aProperty : aPropertyInfos) {
+		
+//			String[] aPropertiesPath = aPropertySpecification.split(".");	
+			Boolean aMatched = matchProperty(aSpecifiedProperties, aProperty);
+			if (aMatched && aDoMatch || !aMatched && !aDoMatch) {
+				retVal.add(aProperty);
+			}
+		}
+		return retVal;
+	}
 
 	public Boolean matchProperty(String aSpecifiedType,
-			String aSpecifiedPoperty, Map<String, PropertyInfo> aPropertyInfos) {
+			String aSpecifiedProperty, Map<String, PropertyInfo> aPropertyInfos) {
 		for (String aProperty : aPropertyInfos.keySet()) {
-			if (aSpecifiedPoperty.equalsIgnoreCase(aProperty))
+			if (aSpecifiedProperty.equalsIgnoreCase(aProperty))
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
 				return matchType(aSpecifiedType, aProperty, aPropertyInfos);
 
 			else
+				continue;
+		}
+		return false;
+	}
+	public Boolean matchProperty(String aSpecifiedType,
+			String aSpecifiedProperty, Collection<PropertyInfo> aPropertyInfos) {
+		for (PropertyInfo aProperty : aPropertyInfos) {
+			if (matchesNameOrVariable(aSpecifiedProperty, aProperty.getName()))
+				// return
+				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
+				return matchType(aSpecifiedType, aProperty);
+
+			else
+				continue;
+		}
+		return false;
+	}
+	public Boolean matchProperty (String aSpecification, PropertyInfo aProperty) {
+		String[] aPropertyAndType = aSpecification.split(":");
+		String aTypeSpecification = aPropertyAndType[1].trim();
+		String aPropertySpecification = aPropertyAndType[0].trim();
+		return matchesNameOrVariable(aTypeSpecification, aProperty.getType()) &&
+				matchesNameOrVariable(aPropertySpecification, aProperty.getName());
+	}
+	public Boolean matchProperty(
+			List<String> aSpecifications, PropertyInfo aProperty) {
+		for (String aSpecification : aSpecifications) {
+			
+			if (matchProperty(aSpecification, aProperty))
+				// return
+				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
+				return true;
+
+			else 
 				continue;
 		}
 		return false;
@@ -138,13 +203,28 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //
 //	}
 	
-	public abstract Boolean matchType(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos);
+	public  Boolean matchType(String aSpecifiedType, String aProperty,
+			Map<String, PropertyInfo> aPropertyInfos) {
+		return matchType(aSpecifiedType, aPropertyInfos.get(aProperty) );
+	}
+	public   Boolean matchType(String aSpecifiedType, PropertyInfo aProperty) {
+		return matchesNameOrVariable(aSpecifiedType, aProperty.getName());
+	}
+		
+	
 
 	public Boolean matchGetter(String aSpecifiedType, String aProperty,
 			Map<String, PropertyInfo> aPropertyInfos) {
 		// yuk, sometimes using a different method
 		return super.matchesType(aSpecifiedType, aPropertyInfos.get(aProperty)
+				.getGetter().getReturnType());
+//		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
+//				.getGetter().getReturnType());
+
+	}
+	public Boolean matchGetter(String aSpecifiedType, PropertyInfo aProperty) {
+		// yuk, sometimes using a different method
+		return super.matchesType(aSpecifiedType, aProperty
 				.getGetter().getReturnType());
 //		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
 //				.getGetter().getReturnType());
@@ -158,6 +238,15 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	public Boolean matchSetter(String aSpecifiedType, String aProperty,
 			Map<String, PropertyInfo> aPropertyInfos) {
 		STMethod aSetter = aPropertyInfos.get(aProperty)
+		.getSetter();		
+
+		return aSetter != null && 
+//				aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
+				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
+
+	}
+	public Boolean matchSetter(String aSpecifiedType, PropertyInfo aProperty) {
+		STMethod aSetter = aProperty
 		.getSetter();		
 
 		return aSetter != null && 

@@ -39,7 +39,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		super(ast, name);
 
 	}
-	protected boolean waitForSuperTypeToBeBuilt() {
+	@Override
+	public boolean waitForSuperTypeToBeBuilt() {
 		return true;
 	}
 
@@ -152,16 +153,17 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			if (aSuperClass == null
 					|| TagBasedCheck.isExternalClass(aSuperClass.getName()))
 				break;
-			anSTClass = SymbolTableFactory.getOrCreateSymbolTable()
+			STType anSTSuperClass = SymbolTableFactory.getOrCreateSymbolTable()
 					.getSTClassByShortName(aSuperClass.getName());
-			if (anSTClass == null) {
-				if (waitForSuperTypeToBeBuilt())
+			if (anSTSuperClass == null) {
+				if (anSTClass.waitForSuperTypeToBeBuilt())
 					return null;
 				else
 					break;
 				// return null; // assume that we are only inheriting our own
 				// types
 			}
+			anSTClass = anSTSuperClass;
 
 		}
 		return result.toArray(new STNameable[0]);
@@ -206,22 +208,22 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// public static boolean isInit(String aMethodName) {
 	// return aMethodName.startsWith(INIT);
 	// }
-	protected void maybeProcessInit(STMethod anSTMethod) {
-		// if (!anSTMethod.getName().startsWith(INIT)) return;
-		// if (isInit(anSTMethod)) return;
-		if (anSTMethod.isInit())
-			return;
-
-		String aPropertyName = anSTMethod.getName()
-				.substring(AnSTMethod.GET.length()).toLowerCase();
-		String aPropertyType = anSTMethod.getReturnType();
-		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
-		if (aPropertyInfo == null) {
-			aPropertyInfo = new APropertyInfo();
-			actualPropertyInfo.put(aPropertyName, aPropertyInfo);
-		}
-		aPropertyInfo.setGetter(anSTMethod);
-	}
+//	protected void maybeProcessInit(STMethod anSTMethod) {
+//		// if (!anSTMethod.getName().startsWith(INIT)) return;
+//		// if (isInit(anSTMethod)) return;
+//		if (anSTMethod.isInit())
+//			return;
+//
+//		String aPropertyName = anSTMethod.getName()
+//				.substring(AnSTMethod.GET.length()).toLowerCase();
+//		String aPropertyType = anSTMethod.getReturnType();
+//		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
+//		if (aPropertyInfo == null) {
+//			aPropertyInfo = new APropertyInfo(aPropertyName, aPropertyType);
+//			actualPropertyInfo.put(aPropertyName, aPropertyInfo);
+//		}
+//		aPropertyInfo.setGetter(anSTMethod);
+//	}
 
 	// public static boolean isGetter(STMethod anSTMethod) {
 	// return anSTMethod.getName().startsWith(GET) &&
@@ -244,7 +246,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
-			aPropertyInfo = new APropertyInfo();
+			aPropertyInfo = new APropertyInfo(aPropertyName, aPropertyType);
 			actualPropertyInfo.put(aPropertyName, aPropertyInfo);
 		}
 		aPropertyInfo.setGetter(anSTMethod);
@@ -272,10 +274,10 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		String aPropertyName = anSTMethod.getName().substring(
 				AnSTMethod.SET.length());
 
-		String aPropertyType = anSTMethod.getReturnType();
+		String aPropertyType = anSTMethod.getParameterTypes()[0];
 		PropertyInfo aPropertyInfo = actualPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
-			aPropertyInfo = new APropertyInfo();
+			aPropertyInfo = new APropertyInfo(aPropertyName, aPropertyType);
 			actualPropertyInfo.put(aPropertyName, aPropertyInfo);
 		}
 		aPropertyInfo.setSetter(anSTMethod);
@@ -405,10 +407,17 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			if (aSuperClass == null
 					|| TagBasedCheck.isExternalClass(aSuperClass.getName()))
 				break;
-			anSTClass = SymbolTableFactory.getOrCreateSymbolTable()
+			STType aSuperClassSTType = SymbolTableFactory.getOrCreateSymbolTable()
 					.getSTClassByShortName(aSuperClass.getName());
-			if (anSTClass == null)
+			if (aSuperClassSTType == null) {
+				if (anSTClass.waitForSuperTypeToBeBuilt()) {
 				return null; // assume that we are only inheriting our own types
+				} else {
+					break;
+				}
+					
+			}
+			anSTClass = aSuperClassSTType;
 		}
 		return result;
 	}
@@ -427,7 +436,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		for (STNameable anInterface : anInterfaces) {
 			List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
 			if (anInterfaceTypes == null) {
-				if (anSTType instanceof AnSTType)
+				if (anSTType.waitForSuperTypeToBeBuilt())
 					return null;
 				else
 					continue;
@@ -441,7 +450,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			return result;
 		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass());
 		if (aSuperTypes == null) {
-			if (anSTType instanceof AnSTType)
+			if (anSTType.waitForSuperTypeToBeBuilt())
 				return null;
 			else
 				return result;
@@ -459,7 +468,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aType.getName());
 		if (anSTType == null)
-			if (anSTType instanceof AnSTType)
+			if (anSTType.waitForSuperTypeToBeBuilt())
 				return null;
 			else
 				return result;
@@ -472,7 +481,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		for (STNameable anInterface : anInterfaces) {
 			List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
 			if (anInterfaceTypes == null) {
-				if (anSTType instanceof AnSTType)
+				if (anSTType.waitForSuperTypeToBeBuilt())
 					return null;
 				else
 					continue;
@@ -511,7 +520,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 					continue;
 				List<STNameable> anInterfaceTypes = getAllSuperTypes(anInterface);
 				if (anInterfaceTypes == null)
-					if (anSTType instanceof AnSTType)
+					if (anSTType.waitForSuperTypeToBeBuilt())
 						return null;
 					else
 						continue;
@@ -525,7 +534,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				return result;
 			List<STNameable> aSuperTypes = getAllSuperTypes(aSuperClass);
 			if (aSuperTypes == null) {
-				if (anSTType instanceof AnSTType)
+				if (anSTType.waitForSuperTypeToBeBuilt())
 					return null; // not made completely
 				else
 					return result;
@@ -636,7 +645,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		for (String aNonSuperType : aNonSuperTypes) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 					.getSTClassByShortName(aNonSuperType);
-			if (anSTType instanceof AnSTTypeFromClass)
+			if (!anSTType.waitForSuperTypeToBeBuilt())
 				continue;
 			if (anSTType == null)
 				return null;
@@ -860,7 +869,18 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		return commonSignatures(anSTType1, anSTType2);
 		//
 	}
-	
+	public static List<STMethod> commonMethods(String aType1, String aType2) {
+		STType anSTType1 = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aType1);
+		if (anSTType1 == null)
+			return null;
+		STType anSTType2 = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aType2);
+		if (anSTType2 == null)
+			return null;
+		return commonMethods(anSTType1, anSTType2);
+		//
+	}
 
 	public static List<String> commonSignatures(STType aType1, STType aType2) {
 		List<String> aSignatures1 = aType1.getSignatures();
@@ -870,6 +890,16 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (aSignatures2 == null)
 			return null;
 		return intersect(aSignatures1, aSignatures2);
+		//
+	}
+	public static List<STMethod> commonMethods(STType aType1, STType aType2) {
+		STMethod[] aMethods1 = aType1.getMethods();
+		if (aMethods1 == null)
+			return null;
+		STMethod[] aMethods2 = aType2.getMethods();
+		if (aMethods2 == null)
+			return null;
+		return intersect(Arrays.asList(aMethods1), Arrays.asList(aMethods2));
 		//
 	}
 	public static List<PropertyInfo> commonProperties(String aType1, String aType2) {
@@ -904,6 +934,11 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 	
 	@Override
+	public List<STMethod> methodsCommonWith(STType aType) {
+		return commonMethods(this, aType);
+	}
+	
+	@Override
 	public List<PropertyInfo> propertiesCommonWith(STType aType) {
 		return commonProperties(this, aType);
 	}
@@ -915,6 +950,14 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (aPeerType == null)
 			return null;
 		return commonSignatures(this, aPeerType);
+	}
+	@Override
+	public List<STMethod> methodsCommonWith(String aTypeName) {
+		STType aPeerType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aTypeName);
+		if (aPeerType == null)
+			return null;
+		return methodsCommonWith(aPeerType);
 	}
 	@Override
 	public List<PropertyInfo> propertiesCommonWith(String aTypeName) {
@@ -932,6 +975,13 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			return null;
 		return containsSignature(anSTType, aSignature);
 	}
+	public static Boolean containsMethod(String aTypeName, STMethod aMethod) {
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aTypeName);
+		if (anSTType == null)
+			return null;
+		return containsMethod(anSTType, aMethod);
+	}
 	public static Boolean containsProperty(String aTypeName, PropertyInfo aProperty) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aTypeName);
@@ -945,6 +995,12 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (aSignatures == null)
 			return null;
 		return aSignatures.contains(aSignature);
+	}
+	public static Boolean containsMethod(STType aType, STMethod aMethod) {
+		List<STMethod> aMethods = Arrays.asList(aType.getMethods());
+		if (aMethods == null)
+			return null;
+		return aMethods.contains(aMethod);
 	}
 	public static Boolean containsProperty(STType aType, PropertyInfo aProperty) {
 		Collection<PropertyInfo> aProperties = aType.getPropertyInfos().values();
@@ -984,6 +1040,22 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				continue;
 			}
 			retVal = containsSignature(aType, aSignature);
+			if (retVal)
+				return true;
+		}
+		return retVal;
+	}
+	public static Boolean containsMethod(List<String> aList,
+			STMethod aMethod) {
+		Boolean retVal = false;
+		for (String aType : aList) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+					.getSTClassByShortName(aType);
+			if (anSTType == null) {
+				retVal = null;
+				continue;
+			}
+			retVal = containsMethod(aType, aMethod);
 			if (retVal)
 				return true;
 		}

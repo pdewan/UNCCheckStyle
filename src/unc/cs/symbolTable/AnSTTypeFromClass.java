@@ -216,8 +216,8 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		// TODO Auto-generated method stub
 		return emptySet;
 	}
-@Override
-	protected boolean waitForSuperTypeToBeBuilt() {
+    @Override
+	public boolean waitForSuperTypeToBeBuilt() {
 		return false;
 	}
 

@@ -42,11 +42,17 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 		}
 	}
 	
-	 protected boolean visitRootMethod(STMethod aMethod) {
+	 protected Boolean visitRootMethod(STMethod aMethod) {
 		 methodsVisited.clear();
 		 if (!shouldVisitRootMethod(aMethod))
-			 return true;		
-		if (!checkRootMethod(aMethod)) {
+			 return true;	
+		 Boolean checkRoot = checkRootMethod(aMethod);
+		 if (checkRoot ==null) {
+			 return null;
+		 }
+//		if (!checkRootMethod(aMethod)) {
+		if (!checkRoot) {
+
 			log(aMethod.getAST().getLineNo(), msgKey(), aMethod.getName());
 			return  false;
 		} 
@@ -69,7 +75,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //			return checkRootMethod(aMethod) ;
 //	    }
 	 
-	protected boolean checkRootMethod(STMethod aMethod) {
+	protected Boolean checkRootMethod(STMethod aMethod) {
 		 	if (methodsVisited.contains(aMethod))
 		 		return true; // it must have been ok
 		 	methodsVisited.add(aMethod);
@@ -87,7 +93,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	 protected abstract boolean methodEffectCheck(STMethod anSTMethod) ;
 	 protected abstract boolean stopOnFailure(); // vs. stop on success
 	 
-	 protected boolean checkCalledMethod (STMethod aPossibleCalledMethod) {
+	 protected Boolean checkCalledMethod (STMethod aPossibleCalledMethod) {
 //		 if (!shouldVisitCalledMethod(aPossibleCalledMethod))
 //			 // we want to continue, so if we are going to stopOnFailure, return true
 //			 // if we are going to stopOnSuccess, return false
@@ -110,7 +116,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 		 
 	 }
 	 // get rid of aClass as we are foing global checks
-	 protected boolean checkCalledMethodsOf (STMethod aMethod) {	
+	 protected Boolean checkCalledMethodsOf (STMethod aMethod) {	
 		 if (!shouldTraverseVisitedMethod(aMethod))
 				return true;
 			String[][] aCalledMethods = aMethod.methodsCalled();
@@ -121,11 +127,21 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 				if (aCalledMethodClassName == null || isExternalClass(aCalledMethodClassName))
 					continue;
 				STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
+				if (aCalledMethodClass == null) {
+//					System.err.println("Null called method class:" + aCalledMethodClassName);
+					return null;
+				}
 				STMethod[] allOverloadedMethods = aCalledMethodClass.getMethods(aCalledMethodName);
 				for (STMethod aPossibleCalledMethod: allOverloadedMethods) {
 					if (!shouldVisitCalledMethod(aPossibleCalledMethod))
 						continue;
-					if (!checkCalledMethod(aPossibleCalledMethod)) {
+					Boolean checkCalled = checkCalledMethod(aPossibleCalledMethod);
+					if (checkCalled == null) {
+						return null;
+					}
+//					if (!checkCalledMethod(aPossibleCalledMethod)) {
+					if (!checkCalled) {
+
 						if (stopOnFailure()) {
 							return false; // one failed no point continuing
 						}
@@ -151,7 +167,10 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 		 if (aMethods == null)
 			 return null;
 			for (STMethod aMethod: anSTType.getMethods()) {
-				retVal &= visitRootMethod(aMethod); // no short circuit
+				Boolean visitRoot =  visitRootMethod(aMethod);
+				if (visitRoot == null)
+					return null;
+				retVal &= visitRoot; // no short circuit
 			}
 		 return retVal;
 	 }

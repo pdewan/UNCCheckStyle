@@ -2,11 +2,14 @@ package unc.cs.checks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.PropertyInfo;
+import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -14,8 +17,10 @@ import unc.cs.symbolTable.SymbolTableFactory;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 // not really using methods of superclass
-public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
+public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 	public static final String MSG_KEY = "peerCommonProperties";
+	String[] includeProperties = {};
+	String[] excludeProperties = {};
 	
 //	public void doVisitToken(DetailAST ast) {
 //		// System.out.println("Check called:" + MSG_KEY);
@@ -45,6 +50,12 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 	protected String msgKey() {
 		return MSG_KEY;
 	}
+	public void setIncludeProperties(String[] aProperties) {
+		includeProperties = aProperties;
+	}
+	public void setExcludeProperties(String[] aProperties) {
+		excludeProperties = aProperties;
+	}
     public void doFinishTree(DetailAST ast) {
 		
 		maybeAddToPendingTypeChecks(ast);
@@ -56,9 +67,9 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 				.getFilename());
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
 		if (aTreeAST == currentTree) {
-			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+//			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
 
-			log(aLoggedAST.getLineNo(), aLoggedAST.getColumnNo(), msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
+			log(aTreeAST.getLineNo(), msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
 		} else {
 			log(0, msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
 		}
@@ -66,7 +77,7 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 	}
     public Boolean compareCommonProperties(STType anSTType, String aPeerType, DetailAST aTree) {
     	Boolean result = true;
-    	List<PropertyInfo> aCommonProperties = anSTType.propertiesCommonWith(aPeerType);
+    	Collection<PropertyInfo> aCommonProperties = filterByIncludeAndExcludeProperties(anSTType.propertiesCommonWith(aPeerType));
 		if (aCommonProperties == null)
 			return null;
 		System.out.println (anSTType.getName() + " common properties " + aPeerType + " = " + aCommonProperties);
@@ -86,7 +97,19 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 		}	
 		return result;    	
     }
-    
+    public Collection<PropertyInfo> filterByIncludeAndExcludeProperties(Collection<PropertyInfo> aPropertyInfos) {
+    	if (aPropertyInfos == null)
+    		return null;
+    	Collection<PropertyInfo> result = aPropertyInfos;
+    	
+    	if (includeProperties.length > 0) {
+    		result = matchedOrUnMatchedProperties(Arrays.asList(includeProperties), result, true);
+    	}
+    	if (excludeProperties.length > 0) {
+    		result = matchedOrUnMatchedProperties(Arrays.asList(excludeProperties), result, false);
+    	}
+    	return result;    	
+    }
     public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
@@ -116,10 +139,11 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 		System.out.println("Peer Types" + aPeerTypes);
 		
 		for (String aPeerType:aPeerTypes) {
-			List<PropertyInfo> aCommonProperties = anSTType.propertiesCommonWith(aPeerType);
-			if (aCommonProperties == null)
+//			List<PropertyInfo> aCommonProperties = anSTType.propertiesCommonWith(aPeerType);
+//			if (aCommonProperties == null)
+//				return null;
+			if (compareCommonProperties(anSTType, aPeerType, aTree) == null)
 				return null;
-			compareCommonProperties(anSTType, aPeerType, aTree);
 //			System.out.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);
 //			List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 //			if (aCommonSuperTypes == null)
@@ -146,5 +170,21 @@ public class PeerCommonPropertiesCheck extends ExpectedSignaturesCheck{
 
     	
     }
+
+//	@Override
+//	public Boolean matchType(String aSpecifiedType, String aProperty,
+//			Map<String, PropertyInfo> aPropertyInfos) {
+//		PropertyInfo aPropertyInfo = aPropertyInfos.get(aProperty);
+//		return matchType(aSpecifiedType, aPropertyInfo, aPropertyInfos);
+//	}
+
+//	@Override
+//	public Boolean matchType(String aSpecifiedType, PropertyInfo aProperty,
+//			Collection<PropertyInfo> aPropertyInfos) {
+//		
+//		
+//	}
+
+
 
 }

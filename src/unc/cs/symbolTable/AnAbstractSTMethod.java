@@ -91,12 +91,14 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	
 	protected boolean computeIsSetter() {
 		return getName().startsWith(SET) &&
+				getName().length() > SET.length() &
 				isPublic() &&
 				getParameterTypes().length == 1 &&
 				isProcedure();
 	}
 	protected boolean computeIsGetter() {
 		return getName().startsWith(GET) &&
+				getName().length() > GET.length() &&
 				isPublic() &&
 				getParameterTypes().length == 0 &&
 				!isProcedure();
@@ -137,6 +139,13 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		@Override
 		public String getSignature() {
 			return signature;
+		}
+		public boolean equals (Object anotherObject) {
+			if (anotherObject instanceof STMethod) {
+				STMethod anotherSTMethod = (STMethod) anotherObject;
+				return getSignature().equals(anotherSTMethod.getSignature());
+			}
+			return super.equals(anotherObject);
 		}
 
 //		@Override

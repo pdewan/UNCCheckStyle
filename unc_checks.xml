@@ -134,8 +134,11 @@
 		<module name="ISATypes" />
 		<module name="PeerCommonSignatures">
 			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />
+			<property name="excludeSignatures" value="*:->Foo" />
 		</module>
-		<module name="PeerCommonProperties" />
+		<module name="PeerCommonProperties">
+		    <property name="excludeProperties" value="*:int" />
+		  </module>
 		<module name="NoStructuredSetter" />
 		<module name="IllegalPropertyNotification" />
 		<module name="MissingActualProperty" />

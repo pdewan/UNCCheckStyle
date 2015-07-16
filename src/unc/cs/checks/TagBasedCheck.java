@@ -128,12 +128,25 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return false;
 	}
 	
+//	public boolean checkTagOfCurrentType(String aTag) {
+//		if (hasIncludeTags()) {
+//			return contains(includeTags, aTag);
+//		} else { // we know it has exclude tags
+//			return !contains(excludeTags, aTag);
+//		}
+//	}
+	/*
+	 * do not have to check hasInclude and hasExcludeTags now
+	 */
 	public boolean checkTagOfCurrentType(String aTag) {
+		Boolean retVal = true;
 		if (hasIncludeTags()) {
-			return contains(includeTags, aTag);
-		} else { // we know it has exclude tags
+			 retVal  = contains(includeTags, aTag);
+		}
+		if (retVal && hasExcludeTags()) { 
 			return !contains(excludeTags, aTag);
 		}
+		return retVal;
 	}
 	public boolean checkIncludeTagOfCurrentType(String aTag) {
 			return includeTags.contains(aTag);
@@ -378,13 +391,14 @@ public  Set<String> excludeSetOf(String aType) {
 protected List<String> filterTypes(List<String> aTypes, String aTypeName) {
 	if (aTypes == null)
 		return null;
+	List<String> result = aTypes;
 	if (includeSets.size() > 0) {
-		return filterTypesByIncludeSets(aTypes, aTypeName);
-		
-	} else if (excludeSets.size() > 0) {
-		return filterTypesByExcludeSets(aTypes, aTypeName);
-	} else
-		return aTypes;
+		result = filterTypesByIncludeSets(result, aTypeName);
+	}
+	if (excludeSets.size() > 0) {
+		aTypes = filterTypesByExcludeSets(result, aTypeName);
+	} 
+	return result;
 }
 protected List<String> filterTypesByIncludeSets(List<String> aTypes, String aTypeName) {
 	if (aTypes == null)
@@ -428,7 +442,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	return contains(aTags, aTag, aShortClassName);
 }
 public boolean checkTagsOfCurrentType() {
-	// this makes no sense to me
+//	// this makes no sense to me
 	if (!hasIncludeTags() && !hasExcludeTags())
 		return true; // all tags checked in this case
 	if (fullTypeName == null) {

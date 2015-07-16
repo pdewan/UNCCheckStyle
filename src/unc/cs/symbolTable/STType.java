@@ -58,4 +58,7 @@ public interface STType extends STNameable{
 	Boolean hasActualEditableProperty(String aName);
 	List<PropertyInfo> propertiesCommonWith(STType aType);
 	List<PropertyInfo> propertiesCommonWith(String aTypeName);
+	List<STMethod> methodsCommonWith(STType aType);
+	List<STMethod> methodsCommonWith(String aTypeName);
+	boolean waitForSuperTypeToBeBuilt();
 }

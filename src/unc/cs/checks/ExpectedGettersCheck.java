@@ -25,11 +25,20 @@ public class ExpectedGettersCheck extends BeanTypedPropertiesCheck {
 
 
 
-	public Boolean matchType(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos) {
+//	public Boolean matchType(String aSpecifiedType, String aProperty,
+//			Map<String, PropertyInfo> aPropertyInfos) {
+//
+//		return matchGetter(aSpecifiedType, aProperty, aPropertyInfos);
+//
+//	}
 
-		return matchGetter(aSpecifiedType, aProperty, aPropertyInfos);
 
+
+
+	@Override
+	public Boolean matchType(String aSpecifiedType, PropertyInfo aProperty) {
+		// TODO Auto-generated method stub
+		return matchGetter(aSpecifiedType, aProperty);
 	}
 
 

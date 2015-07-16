@@ -4,6 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +24,19 @@ public class ExpectedSettersCheck extends BeanTypedPropertiesCheck {
 
 
 
-	public Boolean matchType(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos) {
+//	public Boolean matchType(String aSpecifiedType, String aProperty,
+//			Map<String, PropertyInfo> aPropertyInfos) {
+//
+//		return matchSetter(aSpecifiedType, aProperty, aPropertyInfos);
+//
+//	}
 
-		return matchSetter(aSpecifiedType, aProperty, aPropertyInfos);
 
+
+	@Override
+	public Boolean matchType(String aSpecifiedType, PropertyInfo aProperty) {
+		// TODO Auto-generated method stub
+		return matchSetter(aSpecifiedType, aProperty);
 	}
 
 }

@@ -3,6 +3,12 @@ package unc.cs.symbolTable;
 public class APropertyInfo implements PropertyInfo {
 	STMethod getter;
 	STMethod setter;
+	String name;
+	String type;
+	public APropertyInfo(String aPropertyName, String aPropertyType) {
+		name = aPropertyName;
+		type = aPropertyType;
+	}
 	public STMethod getGetter() {
 		return getter;
 	}
@@ -17,13 +23,13 @@ public class APropertyInfo implements PropertyInfo {
 	}
 	@Override
 	public String getName() {
-		return  getter != null?getter.getName():setter.getName();
+		return  name;
 	}
 	
 	@Override
 	public String getType() {
 		// TODO Auto-generated method stub
-		return getter != null?getter.getReturnType():setter.getParameterTypes()[0];
+		return type;
 	} 
 	
 	public String toString() {
