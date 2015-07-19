@@ -328,7 +328,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 				return aName.equals(aUnifiedValue);
 			}
 		} else {
-			return aName.equals(aDescriptor);
+			return aName.matches(aDescriptor); // allow regex
 		}
 	 
  }
