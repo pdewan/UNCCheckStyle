@@ -35,7 +35,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		isSetter = computeIsSetter();
 		isGetter = computeIsGetter();
 		isInit = computeIsInit();
-		signature = displayMethod();
+		signature = toStringMethod();
 	}
 	
 //	public String getDeclaringClass() {
@@ -106,7 +106,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	protected boolean computeIsInit() {
 		 return isInit(getName());
 	 }
-	 String displayParameterTypes() {
+	 String toStringyParameterTypes() {
 		 StringBuilder result = new StringBuilder();
 		 for (int i = 0; i < getParameterTypes().length; i++) {
 			 if (i > 0) {
@@ -116,11 +116,11 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		 }
 		 return result.toString();
 	 }
-	 String displayMethod() {
+	 String toStringMethod() {
 		 StringBuilder result = new StringBuilder();
 		 result.append(name);
 		 result.append(":");
-		 result.append(displayParameterTypes());
+		 result.append(toStringyParameterTypes());
 		 result.append("->");
 		 result.append(TypeVisitedCheck.toShortTypeName(getReturnType()));
 		 return result.toString();
