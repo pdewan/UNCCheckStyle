@@ -77,6 +77,8 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		
 		STType anInstantiatingSTClass = SymbolTableFactory
 				.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		if (anInstantiatingSTClass.isEnum() || anInstantiatingSTClass.isInterface())
+			return true;
 		if (anInstantiatingSTClass == null)
 			return null; // this should never happen
 		Map<String, PropertyInfo> aPropertyInfos = anInstantiatingSTClass

@@ -60,6 +60,8 @@ public abstract  class AbstractActualPropertyCheck extends ComprehensiveVisitChe
     public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
     	String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		if (anSTType.isEnum())
+			return true;
 		Boolean retVal = true;
 		if (anSTType == null)
 			return null;

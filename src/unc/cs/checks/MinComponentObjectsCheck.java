@@ -111,6 +111,8 @@ public class MinComponentObjectsCheck extends ComprehensiveVisitCheck {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(
 						getName(getEnclosingTypeDeclaration(aTree)));
+		if (anSTType.isEnum())
+			return true;
 		String aType = findMatchingType(typeToInt.keySet(), anSTType);
 		Integer aMinComponents;
 		if (aType != null)

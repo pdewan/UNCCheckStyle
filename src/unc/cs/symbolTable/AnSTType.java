@@ -23,7 +23,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected final STNameable[] interfaces;
 //	protected final STNameable[] declaredFields;
 //	protected final String packageName;
-	protected final boolean isInterface, isGeneric, isElaboration;
+	protected final boolean isInterface, isGeneric, isElaboration, isEnum;
 //	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
 //	protected STMethod[] inits;
@@ -43,6 +43,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			String packageName, boolean isInterface,
 			boolean anIsGeneric,
 			boolean anIsElaboration,
+			boolean anIsEnum,
 			STNameable aStructurePatternName,
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
@@ -60,6 +61,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		this.isInterface = isInterface;
 		isGeneric = anIsGeneric;
 		isElaboration = anIsElaboration;
+		isEnum = anIsEnum;
 		structurePatternName = aStructurePatternName;
 		declaredPropertyNames = aDeclaredEditablePropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
@@ -730,5 +732,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public Set<String> getDelegates() {
 		return delegates;
+	}
+	@Override
+	public boolean isEnum() {
+		return isEnum;
 	}
 }

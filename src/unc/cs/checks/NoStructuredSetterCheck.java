@@ -20,6 +20,7 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 		return new int[] { TokenTypes.PACKAGE_DEF, 
 				TokenTypes.CLASS_DEF,
 				 TokenTypes.INTERFACE_DEF,
+				 TokenTypes.ENUM_DEF
 				
 		};
 	}
@@ -43,6 +44,10 @@ public void doFinishTree(DetailAST ast) {
 	@Override
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		if (anSTType == null) // we did not  visit the type
+			return true;
+		if (anSTType.isEnum())
+			return true;
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 		if (aPropertyInfos == null)
 			return null;

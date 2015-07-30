@@ -11,6 +11,7 @@ public interface STType extends STNameable{
 	STMethod getMethod(String aName, String[] aParameterTypes);
 	String getPackage();
 	boolean isInterface();
+	boolean isEnum();
 	STNameable getSuperClass();
 //	void initDeclaredPropertyNames(STNameable[] aPropertyNames);
 //	void initEditablePropertyNames(STNameable[] anEditablePropertyNames);

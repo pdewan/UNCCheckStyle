@@ -120,7 +120,16 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	}
 	
 	
-	public static boolean contains (Collection<String> aTags, String aTag) {
+	public static boolean containsAndedTags (Collection<String> aTags, String aTag) {
+		String[] anAndedTags = aTag.split("&");
+		for (String anAndedTag:anAndedTags) {
+			if (!containsSpecificTag(aTags, anAndedTag))
+				return false;
+		}
+		return true;
+	}
+	
+	public static boolean containsSpecificTag (Collection<String> aTags, String aTag) {
 		for (String aStoredTag:aTags) {
 			if (matchesStoredTag(aStoredTag, aTag))
 				return true;		
@@ -141,10 +150,10 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public boolean checkTagOfCurrentType(String aTag) {
 		Boolean retVal = true;
 		if (hasIncludeTags()) {
-			 retVal  = contains(includeTags, aTag);
+			 retVal  = containsAndedTags(includeTags, aTag);
 		}
 		if (retVal && hasExcludeTags()) { 
-			return !contains(excludeTags, aTag);
+			return !containsAndedTags(excludeTags, aTag);
 		}
 		return retVal;
 	}
@@ -573,12 +582,36 @@ public static DetailAST getEnclosingClassDeclaration(DetailAST anAST) {
 public static DetailAST getEnclosingInterfaceDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.INTERFACE_DEF);
 }
+public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
+	DetailAST root = anAST;
+	while (true) {
+
+		DetailAST aParent = root.getParent();
+		if (aParent == null)
+			break;
+		root = aParent;
+	}
+	return root.getNextSibling().getFirstChild().getNextSibling();
+//	return getEnumNameAST(anEnumAST);
+}
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
-	DetailAST aClassDef = getEnclosingClassDeclaration(anAST);
-	if (aClassDef == null)
-		return getEnclosingInterfaceDeclaration(anAST);
-	else
-		return aClassDef;
+	DetailAST result = getEnclosingClassDeclaration(anAST);
+	if (result != null)
+		return result;
+	result = getEnclosingInterfaceDeclaration(anAST);
+	if (result != null)
+		return result;
+	result = getEnclosingEnumDeclaration(anAST);
+	if (result != null)
+		return result;
+	System.err.println(" could not find a type declaration for:" + anAST);
+	return result;
+	
+//		return aClassDef;
+//	if (aClassDef == null)
+//		return getEnclosingInterfaceDeclaration(anAST);
+//	else
+//		return aClassDef;
 }
 public static String getEnclosingShortClassName(DetailAST anAST) {
 	return getName(getEnclosingClassDeclaration(anAST));
@@ -662,4 +695,8 @@ public static boolean isOEAtomic(String aType) {
 // 	for (String aPrimitive:primitiveTypes)
 // 		javaLangTypesSet.add(aPrimitive);
  }
+ 
+// public static void main (String[] args) {
+//	 String[] aTags = "Tag1&Tag2&Tag3".split("&");
+// }
 }

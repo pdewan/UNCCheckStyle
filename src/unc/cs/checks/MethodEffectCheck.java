@@ -127,6 +127,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 				if (aCalledMethodClassName == null || isExternalClass(aCalledMethodClassName))
 					continue;
 				STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
+				
 				if (aCalledMethodClass == null) {
 //					System.err.println("Null called method class:" + aCalledMethodClassName);
 					return null;

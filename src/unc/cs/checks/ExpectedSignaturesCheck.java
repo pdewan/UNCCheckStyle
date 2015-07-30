@@ -243,6 +243,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(
 						getName(getEnclosingTypeDeclaration(aTree)));
+		if (anSTType.isEnum())
+			return true;
+		
 		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)

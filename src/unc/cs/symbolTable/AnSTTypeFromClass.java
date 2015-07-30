@@ -222,6 +222,14 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 
 
+
+
+	@Override
+	public boolean isEnum() {
+		return reflectedClass.isEnum();
+	}
+
+
 //	@Override
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;

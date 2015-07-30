@@ -54,7 +54,7 @@ public class ASymbolTable implements SymbolTable{
 	@Override
 	public boolean isClass (String aTypeName) {
 		STType aClass = getSTClassByShortName(aTypeName);
-		return aClass != null && !aClass.isInterface();
+		return aClass != null && !aClass.isInterface() && !aClass.isEnum();
 //		return matchingFullClassNames(aTypeName).size() >= 1;
 	}
 //	@Override

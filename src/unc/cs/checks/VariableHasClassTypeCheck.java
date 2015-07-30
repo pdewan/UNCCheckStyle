@@ -190,6 +190,8 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 		String aTypeName = anIdentifierType.getText();
 		STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
 				getSTClassByShortName(aTypeName);
+		if (anSTClass.isEnum())
+			return true;
 		if (anSTClass instanceof AnSTTypeFromClass)
 			return true;
 		if (anSTClass == null)

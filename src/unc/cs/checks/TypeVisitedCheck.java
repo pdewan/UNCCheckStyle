@@ -4,6 +4,7 @@ import unc.cs.symbolTable.STType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
@@ -45,20 +46,52 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 			 fullTypeName = packageName + "." + shortTypeName;
 //			aFullTypeName = aFullName;
 	 }
+//	 public void visitEnum(DetailAST ast) {  
+////	    	
+////			maybeVisitPackage(ast);
+//	    	typeAST = ast;
+//	    	typeNameAST = ast.getNextSibling();
+//	    	
+//			 fullTypeName = packageName + "." + shortTypeName;
+////			aFullTypeName = aFullName;
+//	 }
+	 protected static String getEnumName(DetailAST anEnumDef) {
+	    	return getEnumNameAST(anEnumDef).toString();
+	    }
+	    protected static DetailAST getEnumNameAST(DetailAST anEnumDef) {
+	    	return anEnumDef.getNextSibling();
+	    }
 	public void visitPackage(DetailAST ast) {
-		packageName = getName(ast);
+		FullIdent aFullIdent = FullIdent.createFullIdent(ast.getFirstChild().getNextSibling());
+//		DetailAST anEnclosingType = TagBasedCheck.getEnclosingTypeDeclaration(ast);
+//		packageName = getName(ast);
+		packageName = aFullIdent.getText();
 //		packageName = ast.findFirstToken(TokenTypes.IDENT).getText();
 //		System.out.println("found package:" + packageName);	
 	}
 	protected void log(DetailAST ast) {
 	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
     }
-	
+	// not a full name I assume
 	public static String getName (DetailAST anAST) {
 //		return anAST.findFirstToken(TokenTypes.IDENT).getText();
-		return getNameAST(anAST).getText();
+		if (anAST.getType() == TokenTypes.ENUM)
+			return getEnumName(anAST);
+			
+		DetailAST aNameAST = anAST.findFirstToken(TokenTypes.IDENT);
+//		if (aNameAST == null) {
+//			System.err.println("no ident!");
+//			return null;
+//		}
+		return aNameAST.getText();
+		
+//		return getNameAST(anAST).getText();
 
 	}
+//	  protected static String getEnumName(DetailAST anEnumDef) {
+//	    	return anEnumDef.getNextSibling().toString();
+//	    }
+//	    
 	
 	public static DetailAST getNameAST (DetailAST anAST) {
 		return anAST.findFirstToken(TokenTypes.IDENT);

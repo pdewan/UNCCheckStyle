@@ -260,6 +260,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(
 						getName(getEnclosingTypeDeclaration(aTree)));
+		if (anSTType.isEnum())
+			return true;
 		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)

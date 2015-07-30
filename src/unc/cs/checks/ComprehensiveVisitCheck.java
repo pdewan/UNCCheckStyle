@@ -33,6 +33,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 ContinuationProcessor{
 	
 //	public static final String MSG_KEY = "stBuilder";
+	protected boolean isEnum;
 	protected boolean isInterface;
 	protected boolean isElaboration;
 	protected STNameable superClass;
@@ -99,6 +100,7 @@ ContinuationProcessor{
 						TokenTypes.RCURLY,
 						TokenTypes.METHOD_CALL,
 						TokenTypes.IDENT,
+						TokenTypes.ENUM
 						};
 	}
 	
@@ -331,6 +333,28 @@ ContinuationProcessor{
 //		currentMethodTags = getArrayLiterals(annotationAST);
 //    }
     
+    public void visitEnum(DetailAST anEnumDef) {
+    	isEnum = true;
+    	shortTypeName = getEnumName(anEnumDef);
+		fullTypeName = packageName + "." + shortTypeName;
+    	typeAST = anEnumDef;
+
+
+//    	shortTypeName = anEnumDef.getNextSibling().toString();
+//    	DetailAST anEnumIdent = anEnumDef.getNextSibling().findFirstToken(TokenTypes.IDENT);
+//    	if (anEnumIdent == null) {
+//    		System.out.println("null enum ident");
+//    	}
+//    	shortTypeName = anEnumIdent.getText();
+    }
+    
+//    protected static String getEnumName(DetailAST anEnumDef) {
+//    	return getEnumAST(anEnumDef).toString();
+//    }
+//    protected static DetailAST getEnumAST(DetailAST anEnumDef) {
+//    	return anEnumDef.getNextSibling();
+//    }
+    
     public void visitType(DetailAST typeDef) {  
     	super.visitType(typeDef);
 		maybeVisitStructurePattern(typeDef);
@@ -359,6 +383,8 @@ ContinuationProcessor{
     	} else {
     		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
     				.getSTClassByShortName(aShortClassName);
+    		if (anSTType.isEnum())
+    			return null;
     		if (anSTType == null) {
     			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
     				return null;			
@@ -823,6 +849,7 @@ ContinuationProcessor{
 		 	typeScope.clear();
 		 	fullTypeName = null;
 		 	isInterface = false;
+		 	isEnum = false;
 		 	isGeneric = false;
 		 	isElaboration = false;
 //		 	stMethods.clear();
@@ -831,6 +858,8 @@ ContinuationProcessor{
 		 	globalVariableToCall.clear();
 		 	currentTree = ast;
 		 	tagsInitialized = false;
+			propertyNames = emptyArrayList;
+			editablePropertyNames = emptyArrayList;
 		 	maybeCleanUpPendingChecks(ast);
 //			pendingChecks().clear();
 	    }
@@ -1266,6 +1295,9 @@ ContinuationProcessor{
 				return;
 			case TokenTypes.IDENT:
 				visitIdent(ast);
+				return;
+			case TokenTypes.ENUM:
+				visitEnum(ast);
 				return;
 				
 			default:

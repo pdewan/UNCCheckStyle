@@ -136,10 +136,19 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	STNameable[] dummyArray = new STNameable[0];
 
 	protected static void addSTType(STType anSTClass) {
+		if (!anSTClass.isEnum()) {
 		anSTClass.introspect();
-    	anSTClass.findDelegateTypes();	    
+    	anSTClass.findDelegateTypes();
+		}
+    	String aName = anSTClass.getName();
+    	if (aName == null) {
+    		System.err.println(" null name!");
+    		return;
+    	}
+//    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+//    			anSTClass.getName(), anSTClass);
     	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
-    			anSTClass.getName(), anSTClass);
+    			aName, anSTClass);
 //    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 		
 	}
@@ -159,6 +168,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			isInterface,
 	    			isGeneric,
 	    			isElaboration,
+	    			isEnum,
 	    			structurePattern,
 	    			propertyNames.toArray(dummyArray),
 	    			editablePropertyNames.toArray(dummyArray),

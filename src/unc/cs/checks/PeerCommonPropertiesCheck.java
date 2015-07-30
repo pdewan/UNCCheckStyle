@@ -113,6 +113,8 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
     public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		if (anSTType.isEnum())
+			return true;
 //		List<String> aTypes = anSTType.getAllTypeNames();
 //		if (aTypes == null) 
 //			return null;
