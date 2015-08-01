@@ -13,7 +13,7 @@ import com.puppycrawl.tools.checkstyle.checks.imports.IllegalImportCheck;
 
 
 public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
-	public static final String MSG_KEY = "illegalClassImported";
+	public static final String MSG_KEY = "illegalTypeImported";
 	
 //    List<String>  legalClasses = new ArrayList();
     List<String>  illegalPrefixes;
@@ -33,6 +33,7 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
     }
     public void setLegalPrefixes(String... from) {
     	legalPrefixes = Arrays.asList(from);
+//    	legalPrefixes.addAll(Arrays.asList(STBuilderCheck.getProjectPackagePrefixes()));
 //    	for (String aClass:from) {
 //    		legalPrefixes.add(aClass);
 //    	}
@@ -114,15 +115,27 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 //		 }
 //		 return false;
 //	 }
+	 protected Boolean inIllegalPrefixes(String importText, String myClassName) {
+		 return illegalPrefixes != null && illegalPrefixes.size() > 0 && isPrefix(importText, illegalPrefixes, myClassName);
+	 }
+	 protected Boolean inLegalPrefixes(String importText, String myClassName) {
+		 return legalPrefixes != null && legalPrefixes.size() > 0 && isPrefix(importText, legalPrefixes, myClassName);
+	 }
+
 	 protected Boolean isIllegalImport(String importText, String myClassName) {
-		 if (importText.endsWith("Tags")) // to allow bootstrapping
-			 return false;
-		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
-			 return isPrefix(importText, illegalPrefixes, myClassName);
-		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 
-			 return !isPrefix(importText, legalPrefixes, myClassName);
-		 else
-			 return false;
+		 return !(STBuilderCheck.isProjectImport(importText)
+				|| importText.endsWith("Tags") // to allow bootstrapping for tag annotations
+		        || !inIllegalPrefixes(importText, myClassName)
+		        || inLegalPrefixes(importText, myClassName));
+			 		
+		 
+			 
+//		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
+//			 return isPrefix(importText, illegalPrefixes, myClassName);
+//		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 
+//			 return !isPrefix(importText, legalPrefixes, myClassName);
+//		 else
+//			 return false;
 			 
 		 			 
 	  }

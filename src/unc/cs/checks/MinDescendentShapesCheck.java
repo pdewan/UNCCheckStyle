@@ -113,9 +113,11 @@ public class MinDescendentShapesCheck extends DescendentPropertiesCheck {
 	}
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(
-						getName(getEnclosingTypeDeclaration(aTree)));
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(
+//						getName(getEnclosingTypeDeclaration(aTree)));
+		STType anSTType = getSTType(aTree);
+
 		if (anSTType.isEnum())
 			return true;
 		String aType = findMatchingType(typeToInt.keySet(), anSTType);

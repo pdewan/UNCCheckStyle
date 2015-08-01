@@ -3,6 +3,7 @@ package unc.cs.checks;
 import java.util.List;
 import java.util.Map;
 
+import unc.cs.symbolTable.AnSTMethodFromMethod;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
@@ -20,7 +21,7 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 		return new int[] { TokenTypes.PACKAGE_DEF, 
 				TokenTypes.CLASS_DEF,
 				 TokenTypes.INTERFACE_DEF,
-				 TokenTypes.ENUM_DEF
+//				 TokenTypes.ENUM_DEF
 				
 		};
 	}
@@ -56,6 +57,7 @@ public void doFinishTree(DetailAST ast) {
 			PropertyInfo aPropertyInfo = aPropertyInfos.get(aPropertyName);
 			String aType = aPropertyInfo.getType();
 			STNameable aSetter = aPropertyInfo.getSetter();
+			if (aSetter instanceof AnSTMethodFromMethod) continue;// external class
 			if (isOEAtomic(aType) || aSetter == null) continue;
 			DetailAST aSetterAST = aSetter.getAST();
 			log(aSetterAST.getLineNo(), msgKey(), aPropertyName, aType);

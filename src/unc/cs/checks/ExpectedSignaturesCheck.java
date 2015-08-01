@@ -240,9 +240,11 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(
-						getName(getEnclosingTypeDeclaration(aTree)));
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(
+//						getName(getEnclosingTypeDeclaration(aTree)));
+		STType anSTType = getSTType(aTree);
+
 		if (anSTType.isEnum())
 			return true;
 		

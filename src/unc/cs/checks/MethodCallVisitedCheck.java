@@ -369,6 +369,8 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 				continue; // some other type may match
 			// return false;
 			String aCallingClass = getName(getEnclosingTypeDeclaration(aCallAST));
+//			STType aCallingC;lass = getSTType(aCallAST);
+
 			String aCalledClass = aCallParts[0];
 			String aCallingMethod = getName(getEnclosingMethodDeclaration(aCallAST));
 			String aCalledMethod = aCallParts[1];

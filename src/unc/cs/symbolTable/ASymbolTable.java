@@ -99,8 +99,14 @@ public class ASymbolTable implements SymbolTable{
 	@Override
 	public STType getSTClassByShortName(String aTypeName) {
 		List<String> aFullNames =  matchingFullSTTypeNames(aTypeName);
-		if (aFullNames.size() != 1)
+		if (aFullNames.size() == 0) {
+//			System.err.println("No full type name with short name" + aTypeName);
 			return null;
+		}
+		if (aFullNames.size()> 1) {
+//			System.err.println("Ambiguous short type names in " + aFullNames + ", returning null:" + aTypeName);
+			return null;
+		}
 		return getSTClassByFullName(aFullNames.get(0));
 	}
 	@Override

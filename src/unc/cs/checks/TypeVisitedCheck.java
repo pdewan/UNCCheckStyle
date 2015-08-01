@@ -61,13 +61,17 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	    protected static DetailAST getEnumNameAST(DetailAST anEnumDef) {
 	    	return anEnumDef.getNextSibling();
 	    }
+	    public static String getPackageName (DetailAST ast) {
+	    	FullIdent aFullIdent = FullIdent.createFullIdent(ast.getFirstChild().getNextSibling());
+//			DetailAST anEnclosingType = TagBasedCheck.getEnclosingTypeDeclaration(ast);
+//			packageName = getName(ast);
+			return aFullIdent.getText();
+	    }
 	public void visitPackage(DetailAST ast) {
-		FullIdent aFullIdent = FullIdent.createFullIdent(ast.getFirstChild().getNextSibling());
-//		DetailAST anEnclosingType = TagBasedCheck.getEnclosingTypeDeclaration(ast);
-//		packageName = getName(ast);
-		packageName = aFullIdent.getText();
-//		packageName = ast.findFirstToken(TokenTypes.IDENT).getText();
-//		System.out.println("found package:" + packageName);	
+//		FullIdent aFullIdent = FullIdent.createFullIdent(ast.getFirstChild().getNextSibling());
+//		packageName = aFullIdent.getText();
+		packageName = getPackageName(ast);
+
 	}
 	protected void log(DetailAST ast) {
 	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);

@@ -105,7 +105,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     	projectPackagePrefixes = aPrefixes;
     }
     
-    public static String[] geProjectPackagePrefixes() {
+    public static String[] getProjectPackagePrefixes() {
     	return projectPackagePrefixes;
     }
     public  void setExistingClasses(String[] aClasses) {
@@ -152,6 +152,60 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //    	log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 		
 	}
+	Object[] emptyArray = {};
+	STMethod[] emptyMethods = {};
+	STType[] emptyTypes = {};
+	public void visitEnum(DetailAST anEnumDef) {
+		DetailAST aTypeAST = getEnclosingTypeDeclaration(anEnumDef);
+		if (aTypeAST == anEnumDef) { // top-level enum
+			super.visitEnum(anEnumDef);
+			return;
+		}
+//		isEnum = true;
+    	String anEnumName = getEnumName(anEnumDef);
+    	String aFullName = packageName + "." + anEnumName;
+	    	STType anSTClass = 
+	    	new AnSTType(
+	    			anEnumDef, 
+	    			anEnumName, 
+	    			emptyMethods, 
+	    			emptyMethods,
+	    			emptyTypes, 
+	    			null, 
+	    			packageName, 
+	    			false,
+	    			false,
+	    			false,
+	    			true,
+	    			null,
+	    			dummyArray,
+	    			dummyArray,
+	    			dummyArray,
+	    			dummyArray,
+	    			dummyArray,
+	    			new HashMap());
+
+//	    	anSTClass.introspect();
+//	    	anSTClass.findDelegateTypes();	    
+//	    	SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+//	    			fullTypeName, anSTClass);
+	    	addSTType(anSTClass);
+
+
+//    	shortTypeName = anEnumDef.getNextSibling().toString();
+//    	DetailAST anEnumIdent = anEnumDef.getNextSibling().findFirstToken(TokenTypes.IDENT);
+//    	if (anEnumIdent == null) {
+//    		System.out.println("null enum ident");
+//    	}
+//    	shortTypeName = anEnumIdent.getText();
+    }
+    
+//    protected static String getEnumName(DetailAST anEnumDef) {
+//    	return getEnumAST(anEnumDef).toString();
+//    }
+//    protected static DetailAST getEnumAST(DetailAST anEnumDef) {
+//    	return anEnumDef.getNextSibling();
+//    }
 	 
 	  protected void processMethodAndClassData() {
 		  processImports();

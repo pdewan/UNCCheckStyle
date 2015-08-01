@@ -153,9 +153,11 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		initializeTables();
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(
-						aTypeName);
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(
+//						aTypeName);
+		STType anSTType = getSTType(aTree);
+
 		return addProperties(anSTType, aTypeName, aTypeName);
 		
 	}

@@ -187,6 +187,8 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 //	}
 
 	public void doFinishTree(DetailAST ast) {
+		if (isEnum)
+			return;
 		// STType anSTType =
 		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		// for (STMethod aMethod: anSTType.getMethods()) {

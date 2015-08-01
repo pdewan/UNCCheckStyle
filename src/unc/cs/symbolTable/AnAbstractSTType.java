@@ -87,7 +87,12 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				else
 					return retVal.toArray(emptyMethods);
 			}
-			addToList(retVal, anSTType.getMethods());
+			STMethod[] superTypeMethods = anSTType.getMethods();
+			if (superTypeMethods == null) // some supertype not compiled
+				return null;
+//			addToList(retVal, anSTType.getMethods());
+			addToList(retVal, superTypeMethods);
+
 		}
 		return retVal.toArray(emptyMethods);
 	}
@@ -339,7 +344,16 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				else
 					continue;
 			}
-			if (anSTType.isSubtypeOf(aDelegateType))
+			
+			Boolean isSubType = anSTType.isSubtypeOf(aDelegateType);
+			if (isSubType == null)
+				if (waitForSuperTypeToBeBuilt())
+					return null;
+				else
+					continue;
+//			if (anSTType.isSubtypeOf(aDelegateType))
+			if (isSubType)
+
 				return true;
 		}
 		return false;
@@ -645,10 +659,16 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		for (String aNonSuperType : aNonSuperTypes) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 					.getSTClassByShortName(aNonSuperType);
-			if (!anSTType.waitForSuperTypeToBeBuilt())
-				continue;
+//			if (anSTType == null) {
+//				System.err.println("nul st type");
+//			}
 			if (anSTType == null)
 				return null;
+			if (!anSTType.waitForSuperTypeToBeBuilt())
+				continue;
+			// makes sense to move it up
+//			if (anSTType == null)
+//				return null;
 			List<String> aSuperTypes = toNormalizedList(anSTType
 					.getSuperTypeNames());
 			if (aSuperTypes == null)
@@ -845,7 +865,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 
 	@Override
-	public List<String> getSignatures() {
+	public List<String> getPublicInstanceSignatures() {
 		List<String> result = new ArrayList();
 		STMethod[] anSTMethods = getMethods();
 		if (anSTMethods == null)
@@ -883,10 +903,10 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 
 	public static List<String> commonSignatures(STType aType1, STType aType2) {
-		List<String> aSignatures1 = aType1.getSignatures();
+		List<String> aSignatures1 = aType1.getPublicInstanceSignatures();
 		if (aSignatures1 == null)
 			return null;
-		List<String> aSignatures2 = aType2.getSignatures();
+		List<String> aSignatures2 = aType2.getPublicInstanceSignatures();
 		if (aSignatures2 == null)
 			return null;
 		return intersect(aSignatures1, aSignatures2);
@@ -991,7 +1011,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 
 	public static Boolean containsSignature(STType aType, String aSignature) {
-		List<String> aSignatures = aType.getSignatures();
+		List<String> aSignatures = aType.getPublicInstanceSignatures();
 		if (aSignatures == null)
 			return null;
 		return aSignatures.contains(aSignature);

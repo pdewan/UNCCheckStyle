@@ -12,7 +12,9 @@ public abstract class STClassVisited extends STTypeVisited {
 	public STClassVisited() {
 
 	}
-
+	public int[] getDefaultTokens() {
+		return new int[] {TokenTypes.CLASS_DEF,  TokenTypes.PACKAGE_DEF};
+	} 
 	public void doVisitToken(DetailAST ast) {		
 		switch (ast.getType()) {
 		case TokenTypes.PACKAGE_DEF: 

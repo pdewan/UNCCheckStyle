@@ -43,8 +43,13 @@ public class ISATypesCheck extends ComprehensiveVisitCheck{
 	}
     
     public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+//		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		STType anSTType = getSTType(aTree);
+
+		if (anSTType == null) {
+			System.err.println("Null sttype");
+		}
 		if (anSTType.isEnum())
 			return true;
 		List<String> aTypes = anSTType.getAllTypeNames();

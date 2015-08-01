@@ -224,10 +224,10 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	}
 	public Boolean matchGetter(String aSpecifiedType, PropertyInfo aProperty) {
 		// yuk, sometimes using a different method
-		return super.matchesType(aSpecifiedType, aProperty
-				.getGetter().getReturnType());
-//		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
+//		return super.matchesType(aSpecifiedType, aProperty
 //				.getGetter().getReturnType());
+		return super.matchesType(aSpecifiedType, aProperty.getType());
+
 
 	}
 
@@ -257,9 +257,10 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(
-						getName(getEnclosingTypeDeclaration(aTree)));
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(
+//						getName(getEnclosingTypeDeclaration(aTree)));
+		STType anSTType = getSTType(aTree);
 		if (anSTType.isEnum())
 			return true;
 		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),

@@ -1,5 +1,7 @@
 package unc.cs.checks;
 
+import java.util.List;
+
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -7,7 +9,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
-public class ClassHasOneInterfaceCheck extends STClassVisited {
+public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
@@ -27,12 +29,25 @@ public class ClassHasOneInterfaceCheck extends STClassVisited {
 //		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
 //	}  
 //	
-	protected boolean typeCheck(STType anSTClass) {	
-		if (anSTClass.getInterfaces() == null) {
-			System.err.println(" null interfaces!");
-		}
-		// 0 is checked by ClassHasAtLeastOneInterface
-		return (anSTClass.isInterface() || anSTClass.getInterfaces().length <= 1);
+//	protected boolean typeCheck(STType anSTClass) {	
+//		if (anSTClass.getInterfaces() == null) {
+//			System.err.println(" null interfaces!");
+//		}
+//		// 0 is checked by ClassHasAtLeastOneInterface
+//		return (anSTClass.isInterface() || anSTClass.getInterfaces().length <= 1);
+//	}
+	protected Boolean typeCheck(STType anSTClass) {
+//		if (anSTClass.isInterface())
+//			return true;
+		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
+		if (aSignatures == null)
+			return null;
+		if (aSignatures.size() == 0)
+			return true;
+//		return anSTClass.getInterfaces().length != 0; 
+//		return (anSTClass.isInterface() || 
+		return	anSTClass.getInterfaces().length <= 1;
+
 	}
 	
 //	protected void log(DetailAST ast) {

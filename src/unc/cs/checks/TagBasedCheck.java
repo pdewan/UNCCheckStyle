@@ -535,7 +535,7 @@ public void visitImport(DetailAST ast) {
 		 externalImports.add(aShortClassName);
 }
 public static boolean isProjectImport(String aFullName) {
-	 for (String aPrefix:STBuilderCheck.geProjectPackagePrefixes())
+	 for (String aPrefix:STBuilderCheck.getProjectPackagePrefixes())
 		 if (aFullName.startsWith(aPrefix)) return true;
 	 return false;
 }
@@ -579,20 +579,37 @@ public static DetailAST getEnclosingMethodDeclaration(DetailAST anAST) {
 public static DetailAST getEnclosingClassDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.CLASS_DEF);
 }
+public static DetailAST getEnclosingPackageDeclaration(DetailAST anAST) {
+	return getEnclosingTokenType(anAST, TokenTypes.PACKAGE_DEF);
+}
 public static DetailAST getEnclosingInterfaceDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.INTERFACE_DEF);
 }
 public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 	DetailAST root = anAST;
 	while (true) {
-
+		if (root.getType() == TokenTypes.ENUM)
+			return anAST;
 		DetailAST aParent = root.getParent();
 		if (aParent == null)
 			break;
 		root = aParent;
 	}
+	DetailAST result = root.findFirstToken(TokenTypes.ENUM);
 	return root.getNextSibling().getFirstChild().getNextSibling();
 //	return getEnumNameAST(anEnumAST);
+}
+public static String getFullTypeName(DetailAST aTree) {
+	String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
+	DetailAST aPackageAST = getEnclosingPackageDeclaration(aTree);
+	String aPackageName = DEFAULT_PACKAGE;
+	if (aPackageAST != null)
+		 aPackageName = getPackageName(aPackageAST);
+	return aPackageName + "." + aTypeName;
+}
+public static STType getSTType(DetailAST aTreeAST) {
+	String aFullName = getFullTypeName(aTreeAST);
+	return SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 }
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 	DetailAST result = getEnclosingClassDeclaration(anAST);

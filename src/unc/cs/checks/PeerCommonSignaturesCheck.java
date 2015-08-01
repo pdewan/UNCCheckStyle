@@ -168,7 +168,10 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
 //    }
     public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+		STType anSTType = getSTType(aTree);
+
 		if (anSTType.isEnum())
 			return true;
 

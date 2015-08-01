@@ -9,6 +9,7 @@ import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public abstract class UNCCheck extends Check{
+	protected boolean isPackageInfo = false;
 
 	public final void extendibleLog(int line, String key, Object... args) {
 		System.out.println("key:" + key);
@@ -25,6 +26,12 @@ public abstract class UNCCheck extends Check{
 	
     public void beginTree(DetailAST ast) {  
     	try {
+    		isPackageInfo = false;
+    		String aFileName = getFileContents().getFilename();
+    		if (aFileName.endsWith("package-info.java")) {
+    			isPackageInfo = true;
+    			return;
+    		}
 			System.out.println ("begin tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
@@ -48,6 +55,8 @@ public abstract class UNCCheck extends Check{
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}
+			if (isPackageInfo)
+				return;
 			doFinishTree(ast);
 			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 
@@ -62,6 +71,8 @@ public abstract class UNCCheck extends Check{
 	
 	public void visitToken(DetailAST ast) {
 		try {
+			if (isPackageInfo)
+				return;
 			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");

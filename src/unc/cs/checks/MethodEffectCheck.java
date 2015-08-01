@@ -161,8 +161,10 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	 }
 	 
 	 public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-		 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName (
-				 getName(getEnclosingTypeDeclaration(aTree)));
+//		 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName (
+//				 getName(getEnclosingTypeDeclaration(aTree)));
+			STType anSTType = getSTType(aTree);
+
 		 STMethod[] aMethods = anSTType.getMethods();
 		 Boolean retVal = true;
 		 if (aMethods == null)

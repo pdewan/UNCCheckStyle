@@ -23,7 +23,7 @@
 		<module name="STBuilder">
 
 			<property name="severity" value="info" />
-			<property name="projectPackagePrefixes" value="test" />
+			<property name="projectPackagePrefixes" value="test,lectures" />
 			<property name="existingClasses"
 				value="java.util.List, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
@@ -80,8 +80,9 @@
 			<property name="severity" value="info" />
 		</module>
 		<module name="IllegalTypeImported">
+		    <property name="illegalPrefixes" value="*" />
 			<property name="legalPrefixes"
-				value="Foo=java.util, @Tag1=java.util, bus.uigen, util" />
+				value="Foo=java.util, @Tag1=java.util, bus.uigen, util, shapes, java.beans" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
@@ -131,12 +132,13 @@
 			<property name="minShapeDescendents" value="@Composite=2" />
 			<property name="includeTags" value="Composite" />
 		</module>
-		<module name="ISATypes" />
+		<!-- <module name="ISATypes" /> -->
 		<module name="PeerCommonSignatures">
 			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />
 			<property name="excludeSignatures" value="*:->Foo" />
 		</module>
 		<module name="PeerCommonProperties">
+			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />		
 		    <property name="excludeProperties" value="*:int" />
 		  </module>
 		<module name="NoStructuredSetter" />

@@ -1172,7 +1172,7 @@ ContinuationProcessor{
 				 if ((aPrefixParts.length == 2) && !matchesType(aPrefixParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTruePrefix = aPrefixParts.length == 2?aPrefixParts[1]:aPrefix;
-				 if (aTarget.startsWith(aTruePrefix))
+				 if (aTarget.startsWith(aTruePrefix) || aTruePrefix.equals("*"))
 					 return true;
 			 }
 			 return false;
@@ -1288,7 +1288,10 @@ ContinuationProcessor{
 				visitVariableDef(ast);
 				return;
 			case TokenTypes.LITERAL_NEW:
+				if (ast.findFirstToken(TokenTypes.ELIST) != null)
 				visitConsrtuctorCall(ast);
+				else if (ast.findFirstToken(TokenTypes.ARRAY_DECLARATOR) != null)
+					System.out.println ("array declaration");
 				return;
 			case TokenTypes.METHOD_CALL:
 				visitMethodCall(ast);

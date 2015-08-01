@@ -1,5 +1,7 @@
 package unc.cs.checks;
 
+import java.util.List;
+
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -9,7 +11,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.org.apache.bcel.internal.util.Class2HTML;
 
 
-public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisited {
+public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensively {
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
@@ -22,7 +24,34 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisited {
 	public  ClassHasAtLeastOneInterfaceCheck () {
 		
 	}
-	protected boolean typeCheck(STType anSTClass) {
+//	@Override
+//	public int[] getDefaultTokens() {
+//		return new int[] { TokenTypes.CLASS_DEF };
+//	}
+//	@Override
+//    public void visitClass(DetailAST typeDef) { 
+//		super.visitClass(typeDef);
+//    	
+//		STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
+//    			getSTClassByFullName(fullTypeName);
+//    	if (!typeCheck(anSTClass))
+//    		log(typeDef);
+//
+//    }
+//	
+//	protected void log(DetailAST ast) {
+//	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
+//    }
+
+
+	protected Boolean typeCheck(STType anSTClass) {
+//		if (anSTClass.isInterface())
+//			return true;
+		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
+		if (aSignatures == null)
+			return null;
+		if (aSignatures.size() == 0)
+			return true;
 		return anSTClass.getInterfaces().length != 0; 
 	}
 //	protected void log(DetailAST ast) {
