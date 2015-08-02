@@ -129,9 +129,15 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 			if (anSTType.isEnum())
 				return true;
 			if (aPropertySTType == null) return null;
-			STNameable[] aTags = aPropertySTType.getTags();
+//			STNameable[] aTags = aPropertySTType.getTags();
+//			STNameable[] aTags = aPropertySTType.getAllComputedTags();
+			STNameable[] aTags = aPropertySTType.getComputedTags();
+
+			if (aTags == null)
+				return null;
+
 			STNameable aPattern = aPropertySTType.getStructurePatternName();
-			associate (aPropertyName, aPattern);
+			associate (aPropertyName, aPattern); // we do not need this now I think
 			associate(aPropertyName, aTags);
 			Boolean retVal = addProperties(aPropertySTType, aTypeName, aPropertyName);
 			if (retVal == null || !retVal)

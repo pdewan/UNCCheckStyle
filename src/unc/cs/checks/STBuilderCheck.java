@@ -155,15 +155,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	Object[] emptyArray = {};
 	STMethod[] emptyMethods = {};
 	STType[] emptyTypes = {};
-	public void visitEnum(DetailAST anEnumDef) {
+	@Override
+	public void visitEnumDef(DetailAST anEnumDef) {
 		DetailAST aTypeAST = getEnclosingTypeDeclaration(anEnumDef);
 		if (aTypeAST == anEnumDef) { // top-level enum
-			super.visitEnum(anEnumDef);
+			super.visitEnumDef(anEnumDef);
 			return;
 		}
 //		isEnum = true;
     	String anEnumName = getEnumName(anEnumDef);
-    	String aFullName = packageName + "." + anEnumName;
+    	String aFullName = packageName + "." + shortTypeName + "." + anEnumName;
 	    	STType anSTClass = 
 	    	new AnSTType(
 	    			anEnumDef, 

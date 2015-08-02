@@ -38,7 +38,10 @@ public class ClassDefinedCheck extends ComprehensiveVisitCheck{
 	public void visitType(DetailAST ast) {  
 
     	super.visitType(ast);
-    	if (!checkIncludeExcludeTagsOfCurrentType())
+    	Boolean check = checkIncludeExcludeTagsOfCurrentType();
+    	if (check == null)
+    		return;
+    	if (!check)
     		return;
     	List<String> checkTags = new ArrayList( overlappingTags?expectedClasses:unmatchedClasses);
     	

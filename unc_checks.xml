@@ -142,7 +142,10 @@
 			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />		
 		    <property name="excludeProperties" value="*:int" />
 		  </module>
-		<module name="NoStructuredSetter" />
+		<module name="NoStructuredSetter">
+					<property name="excludeStructuredTypes" value="@Tag1+@Tag2, Factorial, @POINT_PATTERN" />		
+		
+		 </module>
 		<module name="IllegalPropertyNotification" />
 		<module name="MissingActualProperty" />
 		<module name="MissingActualEditableProperty" />

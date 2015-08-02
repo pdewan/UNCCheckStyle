@@ -333,7 +333,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	 return aString;
  }
  public static Boolean matchesStoredTag(String aStoredTag, String aDescriptor) {
- 		return maybeStripQuotes(aStoredTag).equals(maybeStripAt(maybeStripQuotes(aDescriptor)));
+ 		return maybeStripQuotes(aStoredTag).matches(maybeStripAt(maybeStripQuotes(aDescriptor)));
  	
  }
 
@@ -354,19 +354,18 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public List<STNameable> getTags(String aShortClassName)  {
 	List<STNameable> aTags = emptyList;
 
-	// these classes have no tags
-//	if ( aShortClassName.endsWith("[]") ||
-//			allKnownImports.contains(aShortClassName) || 
-//			javaLangClassesSet.contains(aShortClassName) ) {
-//		return emptyList;
-//	}
+
 	if ( isArray(aShortClassName) ||
 			isJavaLangClass(aShortClassName) ) {
 		return emptyList;
 	}
+	/*
+	 * why shortcircuit current one, there was a reason, I forget now
+	 */
 	if (shortTypeName == null || // guaranteed to not be a pending check
 			aShortClassName.equals(shortTypeName)) {
-		aTags = typeTags();
+//		aTags = typeTags();
+		aTags = computedTypeTags();
 	} else {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aShortClassName);
@@ -376,6 +375,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			return null;
 		}
 		aTags = Arrays.asList(anSTType.getComputedTags());
+//		aTags = Arrays.asList(anSTType.getAllComputedTags());
+
 	}
 	return aTags;
 	
@@ -411,9 +412,14 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*"))
 			return true;
 		if (aDescriptor.startsWith("@")) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+//			STNameable[] checkTags = anSTType.getAllComputedTags();
+			STNameable[] checkTags = anSTType.getComputedTags();
+
 //			String aTag = aDescriptor.substring(1);
-			
-			return contains(typeTags(), aDescriptor, shortTypeName);
+//			return contains(typeTags(), aDescriptor, shortTypeName);
+
+			return contains(Arrays.asList(checkTags), aDescriptor, shortTypeName);
 		} else {
 			return matchesNameOrVariable(aDescriptor, aClassName);
 		}
@@ -509,14 +515,14 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 
 	return contains(aTags, aTag, aShortClassName);
 }
-public boolean checkIncludeExcludeTagsOfCurrentType() {
+public Boolean checkIncludeExcludeTagsOfCurrentType() {
 	if (!hasIncludeTags() && !hasExcludeTags())
 		return true; // all tags checked in this case
 	if (fullTypeName == null) {
 //		System.err.println("Check called without type name being populated");
 		return false;
 	}
-
+	
 	return checkIncludeTagsOfCurrentType()	&& checkExcludeTagsOfCurrentType();
 //	List<STNameable> aStoredTags = computedTypeTags();
 //	for (STNameable aStoredTag:aStoredTags) {
@@ -602,9 +608,10 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {
 		typeTags = emptyArrayList;		
-		return;
-	}
+//		return;
+	} else {
 	typeTags = getArrayLiterals(annotationAST);
+	}
 	computedTypeTags = new ArrayList(typeTags);
 	if (structurePattern != null) {
 		computedTypeTags.add(structurePattern);
@@ -701,8 +708,15 @@ public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 			break;
 		root = aParent;
 	}
-	DetailAST result = root.findFirstToken(TokenTypes.ENUM);
-	return root.getNextSibling().getFirstChild().getNextSibling();
+//	DetailAST result = root.findFirstToken(TokenTypes.ENUM);
+	DetailAST anEnumDef = root;
+	while (true)  {
+		if (anEnumDef.getType() == TokenTypes.ENUM_DEF) 
+			break;
+		anEnumDef = anEnumDef.getNextSibling();
+	}
+	return anEnumDef;
+//	return anEnumDef.getFirstChild().getNextSibling();
 //	return getEnumNameAST(anEnumAST);
 }
 public static String getFullTypeName(DetailAST aTree) {

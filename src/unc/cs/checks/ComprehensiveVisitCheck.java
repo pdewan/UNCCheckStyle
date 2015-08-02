@@ -100,7 +100,7 @@ ContinuationProcessor{
 						TokenTypes.RCURLY,
 						TokenTypes.METHOD_CALL,
 						TokenTypes.IDENT,
-						TokenTypes.ENUM
+						TokenTypes.ENUM_DEF
 						};
 	}
 	
@@ -333,11 +333,14 @@ ContinuationProcessor{
 //		currentMethodTags = getArrayLiterals(annotationAST);
 //    }
     
-    public void visitEnum(DetailAST anEnumDef) {
+    public void visitEnumDef(DetailAST anEnumDef) {
     	isEnum = true;
     	shortTypeName = getEnumName(anEnumDef);
 		fullTypeName = packageName + "." + shortTypeName;
     	typeAST = anEnumDef;
+    	superClass = null;
+    	interfaces = emptyNameableArray;
+		isInterface = false;
 
 
 //    	shortTypeName = anEnumDef.getNextSibling().toString();
@@ -847,6 +850,7 @@ ContinuationProcessor{
 		 	currentMethodScope.clear();
 		 	methodsCalledByCurrentMethod.clear();
 		 	typeTags = emptyNameableList;
+		 	computedTypeTags = emptyNameableList;
 		 	typeScope.clear();
 		 	fullTypeName = null;
 		 	isInterface = false;
@@ -1311,8 +1315,8 @@ ContinuationProcessor{
 			case TokenTypes.IDENT:
 				visitIdent(ast);
 				return;
-			case TokenTypes.ENUM:
-				visitEnum(ast);
+			case TokenTypes.ENUM_DEF:
+				visitEnumDef(ast);
 				return;
 			case TokenTypes.TYPE:
 				visitTypeUse(ast);

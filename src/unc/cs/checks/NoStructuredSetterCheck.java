@@ -72,8 +72,13 @@ public void doFinishTree(DetailAST ast) {
 				if (!aPropertyType.hasSetter())
 					continue; // immutable
 				STNameable[] aTags = aPropertyType.getComputedTags();
+//				STNameable[] aTags = aPropertyType.getAllComputedTags();
+				if (excludeStructuredTypes.size() > 0) {
+				if (aTags == null)
+					return null;
 				if (matchesSomeSpecificationTags(Arrays.asList(aTags), excludeStructuredTypes))
 					continue;
+				}
 				
 				
 			}

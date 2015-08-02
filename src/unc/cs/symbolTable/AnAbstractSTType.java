@@ -65,13 +65,14 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// public boolean isInterface() {
 	// return isInterface;
 	// }
-	public static void addToList(List<STMethod> aList, STMethod[] anAdditions) {
-		for (STMethod anAddition : anAdditions) {
+	public static void addToList(List aList, Object[] anAdditions) {
+		for (Object anAddition : anAdditions) {
 			aList.add(anAddition);
 		}
 	}
 
 	protected STMethod[] emptyMethods = new STMethod[0];
+	
 
 	@Override
 	public STMethod[] getMethods() {
@@ -96,6 +97,30 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 
 		}
 		return retVal.toArray(emptyMethods);
+	}
+	@Override
+	public STNameable[] getAllComputedTags() {
+		List<STNameable> retVal = new ArrayList();
+		addToList(retVal, getComputedTags());
+		STNameable aSuperType = getSuperClass();
+		if (aSuperType != null
+				&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+					.getSTClassByShortName(aSuperType.getName());
+			if (anSTType == null) {
+				if (waitForSuperTypeToBeBuilt())
+					return null;
+				else
+					return retVal.toArray(emptyMethods);
+			}
+			STNameable[] superTypeTags = anSTType.getAllComputedTags();
+			if (superTypeTags == null) // some supertype not compiled
+				return null;
+//			addToList(retVal, anSTType.getMethods());
+			addToList(retVal, superTypeTags);
+
+		}
+		return retVal.toArray(emptyNameables);
 	}
 
 	@Override
@@ -519,6 +544,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 
 	public static List emptyList = new ArrayList();
+	public static STNameable[] emptyNameables = new STNameable[0];
+
 
 	public static List<STNameable> getAllSuperTypes(STNameable aType) {
 		if (TagBasedCheck.isExternalClass(TypeVisitedCheck

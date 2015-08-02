@@ -55,11 +55,15 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //			 fullTypeName = packageName + "." + shortTypeName;
 ////			aFullTypeName = aFullName;
 //	 }
-	 protected static String getEnumName(DetailAST anEnumDef) {
-	    	return getEnumNameAST(anEnumDef).toString();
+	 protected static String getEnumName(DetailAST anEnum) {
+	    	return getEnumNameAST(anEnum).getText();
 	    }
+	 protected static DetailAST getEnum(DetailAST anEnumDef) {
+	    	return anEnumDef.getFirstChild().getNextSibling();
+
+	 }
 	    protected static DetailAST getEnumNameAST(DetailAST anEnumDef) {
-	    	return anEnumDef.getNextSibling();
+	    	return getEnum(anEnumDef).getNextSibling();
 	    }
 	    public static String getPackageName (DetailAST ast) {
 	    	FullIdent aFullIdent = FullIdent.createFullIdent(ast.getFirstChild().getNextSibling());

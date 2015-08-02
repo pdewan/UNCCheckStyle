@@ -64,4 +64,5 @@ public interface STType extends STNameable{
 	boolean waitForSuperTypeToBeBuilt();
 	STNameable[] getComputedTags();
 	boolean hasSetter();
+	STNameable[] getAllComputedTags();
 }
