@@ -2,6 +2,7 @@ package unc.cs.checks;
 
 import java.util.List;
 
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -46,7 +47,11 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 			return true;
 //		return anSTClass.getInterfaces().length != 0; 
 //		return (anSTClass.isInterface() || 
-		return	anSTClass.getInterfaces().length <= 1;
+		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
+		if (anAllInterfaces == null)
+			return null;
+		return anAllInterfaces. size() <= 1; 
+//		return	anSTClass.getAllInterfaces().size() <= 1;
 
 	}
 	

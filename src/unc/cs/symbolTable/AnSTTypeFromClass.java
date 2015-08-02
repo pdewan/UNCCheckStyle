@@ -230,6 +230,15 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 
 
+
+
+	@Override
+	public STNameable[] getComputedTags() {
+		// TODO Auto-generated method stub
+		return getTags();
+	}
+
+
 //	@Override
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;

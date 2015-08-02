@@ -28,19 +28,19 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	/*
 	 * Do notthing as we will assume the symbol table builder has done its job
 	 */
-	public void doVisitToken(DetailAST ast) {
-//    	System.out.println("Check called:" + MSG_KEY);
-		switch (ast.getType()) {
-		case TokenTypes.PACKAGE_DEF: 
-			visitPackage(ast);
-			return;
-		case TokenTypes.CLASS_DEF:
-			visitType(ast);
-			return;
-		default:
-			System.err.println("Unexpected token");
-		}
-	}
+//	public void doVisitToken(DetailAST ast) {
+////    	System.out.println("Check called:" + MSG_KEY);
+//		switch (ast.getType()) {
+//		case TokenTypes.PACKAGE_DEF: 
+//			visitPackage(ast);
+//			return;
+//		case TokenTypes.CLASS_DEF:
+//			visitType(ast);
+//			return;
+//		default:
+//			System.err.println("Unexpected token");
+//		}
+//	}
 	
 	 protected Boolean visitRootMethod(STMethod aMethod) {
 		 methodsVisited.clear();

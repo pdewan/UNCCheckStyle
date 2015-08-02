@@ -383,13 +383,14 @@ ContinuationProcessor{
     	} else {
     		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
     				.getSTClassByShortName(aShortClassName);
-    		if (anSTType.isEnum())
-    			return null;
+    	
     		if (anSTType == null) {
     			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
     				return null;			
     			return null;
     		}
+    		if (anSTType.isEnum())
+    			return null;
     		return anSTType.getStructurePatternName();
     	}
     	
@@ -760,7 +761,7 @@ ContinuationProcessor{
  		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
      
-     public void visitConsrtuctorCall(DetailAST ast) {
+     public void visitConstructorCall(DetailAST ast) {
     	 String[] aNormalizedParts = registerConstructorCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
  		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
@@ -981,7 +982,7 @@ ContinuationProcessor{
 			}
 		}
 		protected void maybeAddToPendingTypeChecks(DetailAST ast) {
-			if (!checkTagsOfCurrentType())
+			if (!checkIncludeExcludeTagsOfCurrentType())
 				return;
 			specificationVariablesToUnifiedValues.clear();
 			if (doPendingCheck(ast, currentTree) == null) {
@@ -1245,6 +1246,16 @@ ContinuationProcessor{
 //	    	for (String aClass:javaLangClasses)
 //	    		javaLangClassesSet.add(aClass);
 //	    }
+	    public void visitNew(DetailAST ast) {
+	    	if (ast.findFirstToken(TokenTypes.ELIST) != null)
+				visitConstructorCall(ast);
+				else if (ast.findFirstToken(TokenTypes.ARRAY_DECLARATOR) != null)
+					;
+//					System.out.println ("array declaration");
+	    }
+	    public void visitTypeUse(DetailAST ast) {
+	    	
+	    }
 	    public void doVisitToken(DetailAST ast) {
 //	    	System.out.println("Check called:" + MSG_KEY);
 			switch (ast.getType()) {
@@ -1288,10 +1299,11 @@ ContinuationProcessor{
 				visitVariableDef(ast);
 				return;
 			case TokenTypes.LITERAL_NEW:
-				if (ast.findFirstToken(TokenTypes.ELIST) != null)
-				visitConsrtuctorCall(ast);
-				else if (ast.findFirstToken(TokenTypes.ARRAY_DECLARATOR) != null)
-					System.out.println ("array declaration");
+//				if (ast.findFirstToken(TokenTypes.ELIST) != null)
+//				visitConstructorCall(ast);
+//				else if (ast.findFirstToken(TokenTypes.ARRAY_DECLARATOR) != null)
+//					System.out.println ("array declaration");
+				visitNew(ast);
 				return;
 			case TokenTypes.METHOD_CALL:
 				visitMethodCall(ast);
@@ -1301,6 +1313,9 @@ ContinuationProcessor{
 				return;
 			case TokenTypes.ENUM:
 				visitEnum(ast);
+				return;
+			case TokenTypes.TYPE:
+				visitTypeUse(ast);
 				return;
 				
 			default:

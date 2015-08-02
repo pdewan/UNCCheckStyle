@@ -13,9 +13,9 @@
 		<property name="headerFile" value="${config_loc}/java.header" />
 	</module>
 	-->
-
+<!--
 	<module name="JavadocPackage" />
-
+-->
 
 	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
 		<property name="severity" value="info" />
@@ -66,6 +66,7 @@
 		</module>
 		<module name="LegalMethodCall">
 			<property name="severity" value="info" />
+			<property name="includeTags" value="Tag1, Tag2, @Tag3+@Tag4" />			
 			<property name="expectedMethods" value="charAt, length, substring" />
 		</module>
 		<module name="IllegalInitCall">
@@ -155,15 +156,22 @@
 			[a-zA-Z0-9\s&lt;&gt;,\./*?]* \{)" /> <property name="message" value="Classes 
 			should be annotated with @Immutable, @ThreadSafe or @NotThreadSafe" /> <property 
 			name="illegalPattern" value="false" /> </module> -->
+		
 		<module name="ClassDefined">
+			<property name="includeTags" value="Tag1" />
+		
 			<property name="severity" value="info" />
-			<property name="expectedClasses" value="Factorial, @Tag1" />
+			<property name="expectedClasses" value="Factorial, @Tag1+@Tag2" />
 
 		</module>
+		
 		<module name="InterfaceDefined">
+			<property name="includeTags" value="Tag1" />
+		
 			<property name="severity" value="info" />
 			<message key="interfaceDefined" value="Interface {0} defined." />
 		</module>
+		
 	</module>
 </module>
 

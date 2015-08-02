@@ -17,7 +17,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public class AnSTType extends AnAbstractSTType implements STType {
-	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, imports;	
+	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, computedTags, imports;	
 //	protected final STMethod[] declaredMethods;
 //	protected final STMethod[] declaredConstructors;
 //	protected final STNameable[] interfaces;
@@ -48,6 +48,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
 			STNameable[] aTags,
+			STNameable[] aComputedTags,
 			STNameable[] anImports,
 			STNameable[] aFields,
 			Map<String, List<CallInfo>> aGlobalVariableToCall
@@ -69,7 +70,34 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		imports = anImports;
 		declaredFields = aFields;
 		globalVariableToCall = aGlobalVariableToCall;
+		computedTags = aComputedTags;
 	}
+//	public static STNameable toShortPatternName(STNameable aLongName) {
+//		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
+//		return  new AnSTNameable(aLongName.getAST(), aShortName);
+//	}
+	/*
+	 * How about adding class name to this?
+	 */
+	
+//	protected STNameable[] computeTags() {
+//		STNameable[] result;
+//		if (structurePatternName == null) {
+//			result = tags;
+//		} else {	
+//			
+//			List<STNameable> aComputedList = new ArrayList(Arrays.asList(tags));
+//			aComputedList.add(structurePatternName);
+//			aComputedList.add(toShortPatternName(structurePatternName));
+////			String aShortName = TypeVisitedCheck.toShortTypeName(structurePatternName.getName());
+////			STNameable aShortStructurePatternName = new AnSTNameable(structurePatternName.getAST(), aShortName);
+////			aComputedList.add(aShortStructurePatternName);
+//			result = aComputedList.toArray(new STNameable[0]);
+//		}
+//		return result;
+//		
+//		
+//	}
 //	public STMethod[] getDeclaredMethods() {
 //		return declaredMethods;
 //	}
@@ -180,6 +208,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public STNameable[] getTags() {
 		return tags;
+	}
+	@Override
+	public STNameable[] getComputedTags() {
+		return computedTags;
 	}
 	@Override
 	public STNameable[] getImports() {

@@ -7,7 +7,7 @@ import java.util.Set;
 public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
-	STNameable[] getInterfaces();
+	STNameable[] getDeclaredInterfaces();
 	STMethod getMethod(String aName, String[] aParameterTypes);
 	String getPackage();
 	boolean isInterface();
@@ -62,4 +62,6 @@ public interface STType extends STNameable{
 	List<STMethod> methodsCommonWith(STType aType);
 	List<STMethod> methodsCommonWith(String aTypeName);
 	boolean waitForSuperTypeToBeBuilt();
+	STNameable[] getComputedTags();
+	boolean hasSetter();
 }

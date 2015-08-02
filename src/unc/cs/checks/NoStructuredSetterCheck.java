@@ -1,7 +1,10 @@
 package unc.cs.checks;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import unc.cs.symbolTable.AnSTMethodFromMethod;
 import unc.cs.symbolTable.PropertyInfo;
@@ -14,6 +17,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "noStructuredSetter";
+	protected Set<String> excludeStructuredTypes = new HashSet();
 
 	
 	@Override
@@ -24,6 +28,10 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 //				 TokenTypes.ENUM_DEF
 				
 		};
+	}
+	
+	public void setExcludeStructuredTypes(String[] newVal) {
+		excludeStructuredTypes =  new HashSet(Arrays.asList(newVal));
 	}
 
 	@Override
@@ -59,6 +67,16 @@ public void doFinishTree(DetailAST ast) {
 			STNameable aSetter = aPropertyInfo.getSetter();
 			if (aSetter instanceof AnSTMethodFromMethod) continue;// external class
 			if (isOEAtomic(aType) || aSetter == null) continue;
+			STType aPropertyType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType);
+			if (aPropertyType != null) {
+				if (!aPropertyType.hasSetter())
+					continue; // immutable
+				STNameable[] aTags = aPropertyType.getComputedTags();
+				if (matchesSomeSpecificationTags(Arrays.asList(aTags), excludeStructuredTypes))
+					continue;
+				
+				
+			}
 			DetailAST aSetterAST = aSetter.getAST();
 			log(aSetterAST.getLineNo(), msgKey(), aPropertyName, aType);
 			retVal = false;

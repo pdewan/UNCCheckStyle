@@ -26,7 +26,7 @@ public class StaticVariableCheck extends TagBasedCheck {
 		return MSG_KEY;
 	}
 	public void visitVariableDef(DetailAST ast) {
-		if (!checkTagsOfCurrentType())
+		if (!checkIncludeExcludeTagsOfCurrentType())
 		return;
 		if (isStaticAndNotFinal(ast)) {
 			 log(ast.getLineNo(), ast.getColumnNo(),					 

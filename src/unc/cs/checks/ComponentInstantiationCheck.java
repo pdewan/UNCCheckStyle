@@ -39,6 +39,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] { TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,
+				TokenTypes.ANNOTATION,
 				// TokenTypes.INTERFACE_DEF,
 				TokenTypes.TYPE_ARGUMENTS,
 				// TokenTypes.TYPE_PARAMETERS,
@@ -93,7 +94,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 				.getOrCreateSymbolTable().getSTClassByShortName(anInstantiatedTypeName);
 		if (anInstantiatedSTClass == null)
 			return null; // have not built Symbol table for it
-		STNameable[] anInterfaces = anInstantiatedSTClass.getInterfaces();
+		STNameable[] anInterfaces = anInstantiatedSTClass.getDeclaredInterfaces();
 		for (String aPropertyName : aPropertyInfos.keySet()) {
 			PropertyInfo aPropertyInfo = aPropertyInfos.get(aPropertyName);
 //			STMethod aGetter = aPropertyInfo.getGetter();

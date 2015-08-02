@@ -15,6 +15,7 @@ import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import unc.cs.symbolTable.AnSTNameable;
+import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -22,6 +23,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final String TYPE_SEPARATOR = "=";
 	public static final String SET_MEMBER_SEPARATOR = "\\|";
+	public static final String AND_SYMBOL = "\\+";
 
 
 	protected Set<String> excludeTags;
@@ -30,6 +32,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected List<List<String>> excludeSets = new ArrayList();
 	protected boolean tagsInitialized;
 	protected List<STNameable> typeTags;
+	protected List<STNameable> computedTypeTags;
 	protected STNameable pattern;
 	protected List<STNameable> currentMethodTags;
 	static STNameable[] emptyNameableArray = {};
@@ -119,19 +122,61 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return includeTags != null && includeTags.size() > 0;
 	}
 	
-	
-	public static boolean containsAndedTags (Collection<String> aTags, String aTag) {
-		String[] anAndedTags = aTag.split("&");
-		for (String anAndedTag:anAndedTags) {
-			if (!containsSpecificTag(aTags, anAndedTag))
-				return false;
-		}
-		return true;
+	public  boolean matchesAllAndedSpecificationTag (Collection<STNameable> aStoredTags, String anAndedSpecification) {
+		String[] aSpecifications = anAndedSpecification.split(AND_SYMBOL);
+	for (String aSpecification:aSpecifications) {
+		if (! matchesSomeStoredTag(aStoredTags, aSpecification))
+			return false;
 	}
+	return true;
+   }
+	public  boolean matchesSomeSpecificationTags (Collection<STNameable> aStoredTags, Collection<String> aSpecifications) {
+		for (String aSpecificationTag:aSpecifications) {
+			if (matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
+				return true;
+		}
+		return false;
+	   }
 	
-	public static boolean containsSpecificTag (Collection<String> aTags, String aTag) {
-		for (String aStoredTag:aTags) {
-			if (matchesStoredTag(aStoredTag, aTag))
+	public  boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
+		for (STNameable aStoredTag:aStoredTags) {
+			if (matchesStoredTag(aStoredTag.getName(), aDescriptor)) {
+				matchedTypeOrTagAST = aStoredTag.getAST(); // very clumsy
+				return true;
+			}
+		}
+		return false;
+	   }
+	
+	
+//	public static boolean containsAndedTags (Collection<String> aSpecificationTags, String aStoredTag) {
+//		String[] anAndedTags = aStoredTag.split("&");
+//		for (String anAndedTag:anAndedTags) {
+//			if (!containsTag(aSpecificationTags, anAndedTag))
+//				return false;
+//		}
+//		return true;
+//	}
+//	public static Boolean matchesAndedTags(String aDescriptor, String aStoredTag) {
+//		String[] anAndedTags = aStoredTag.split("&");
+//		for (String anAndedTag:anAndedTags) {
+//			if (!matchesStoredTag(aStoredTag, anAndedTag))
+//				return false;
+//		}
+//		return true;	
+//    }
+//	public static boolean containsAndedTags (Collection<String> aStoredTags, STNameab aSpecificationTag) {
+//		String[] anAndedTags = aSpecificationTag.split("&");
+//		for (String anAndedTag:anAndedTags) {
+//			if (!containsSpecificTag(aStoredTags, anAndedTag))
+//				return false;
+//		}
+//		return true;
+//	}
+	
+	public static boolean containsTag (Collection<String> aSpecificationTags, String aStoredTag) {
+		for (String aSpecificationTag:aSpecificationTags) {
+			if (matchesStoredTag(aStoredTag, aSpecificationTag))
 				return true;		
 		}
 		return false;
@@ -147,30 +192,34 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	/*
 	 * do not have to check hasInclude and hasExcludeTags now
 	 */
-	public boolean checkTagOfCurrentType(String aTag) {
-		Boolean retVal = true;
-		if (hasIncludeTags()) {
-			 retVal  = containsAndedTags(includeTags, aTag);
-		}
-		if (retVal && hasExcludeTags()) { 
-			return !containsAndedTags(excludeTags, aTag);
-		}
-		return retVal;
-	}
-	public boolean checkIncludeTagOfCurrentType(String aTag) {
-			return includeTags.contains(aTag);
-		
-	}
-	public boolean checkExcludeTagOfCurrentType(String aTag) {
-		return !excludeTags.contains(aTag);
-	
-   } 
-	public static Boolean hasTag(STNameable[] aTags, String aTag) {
-    	for (STNameable anSTNameable:aTags) {
-    		if (matchesStoredTag(anSTNameable.getName(), aTag)) return true;
-    		
-    	}
-    	return false;
+//	public boolean checkTagOfCurrentType(String aStoredTag) {
+//		Boolean retVal = true;
+//		if (hasIncludeTags()) {
+//			 retVal  = containsTag(includeTags, aStoredTag);
+//		}
+//		if (retVal && hasExcludeTags()) { 
+//			return !containsTag(excludeTags, aStoredTag);
+//		}
+//		return retVal;
+//	}
+//	public boolean checkIncludeTagOfCurrentType(String aTag) {
+//			return includeTags.contains(aTag);
+//		
+//	}
+//	public boolean checkExcludeTagOfCurrentType(String aTag) {
+//		return !excludeTags.contains(aTag);
+//	
+//   } 
+	/*
+	 * looks like this is has some stored tag, should use anded stuff here also
+	 */
+	public  Boolean hasTag(STNameable[] aStoredTags, String aDescriptor) {
+		return matchesSomeStoredTag(Arrays.asList(aStoredTags), aDescriptor);
+//    	for (STNameable anSTNameable:aTags) {
+//    		if (matchesStoredTag(anSTNameable.getName(), aTag)) return true;
+//    		
+//    	}
+//    	return false;
     }
 	
 	protected int getInt(String aType) {
@@ -178,41 +227,41 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		if (retVal == null) return typeToInt.get("*"); // should not be exercised
 		return retVal;
 	}
-public boolean checkIncludeTagsOfCurrentType() {
-	if (!hasIncludeTags() && !hasExcludeTags())
-		return true; // all tags checked in this case
-	if (fullTypeName == null) {
-//		System.err.println("Check called without type name being populated");
-		// could be the wrong type, class or interface, so we do nto have to check
-		return false;
-	}
-	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
-	STNameable[] aCurrentTags = anSTType.getTags();
-	if (hasIncludeTags())
-		return checkIncludeTagsOfCurrentType(aCurrentTags);
-	else
-		return checkExcludeTagsOfCurrentType(aCurrentTags);		
-}
+//public boolean checkIncludeTagsOfCurrentType() {
+//	if (!hasIncludeTags() && !hasExcludeTags())
+//		return true; // all tags checked in this case
+//	if (fullTypeName == null) {
+////		System.err.println("Check called without type name being populated");
+//		// could be the wrong type, class or interface, so we do nto have to check
+//		return false;
+//	}
+//	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+//	STNameable[] aCurrentTags = anSTType.getComputedTags();
+//	if (hasIncludeTags())
+//		return checkIncludeTagsOfCurrentType(aCurrentTags);
+//	else
+//		return checkExcludeTagsOfCurrentType(aCurrentTags);		
+//}
 // if anyone says exclude, exclude
-public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
-	
-	for (STNameable aCurrentTag:aCurrentTags) {
-		if (checkExcludeTagOfCurrentType(aCurrentTag.getName()))
-				return true;
-	}
-	return false;
-	
-}
+//public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
+//	
+//	for (STNameable aCurrentTag:aCurrentTags) {
+//		if (checkExcludeTagOfCurrentType(aCurrentTag.getName()))
+//				return true;
+//	}
+//	return false;
+//	
+//}
 // if anyone says include, include
- public boolean checkIncludeTagsOfCurrentType(STNameable[] aCurrentTags) {
-	
-	for (STNameable aCurrentTag:aCurrentTags) {
-		if (checkIncludeTagOfCurrentType(aCurrentTag.getName()))
-				return true;
-	}
-	return false;
-	
-}
+// public boolean checkIncludeTagsOfCurrentType(STNameable[] aCurrentTags) {
+//	
+//	for (STNameable aCurrentTag:aCurrentTags) {
+//		if (checkIncludeTagOfCurrentType(aCurrentTag.getName()))
+//				return true;
+//	}
+//	return false;
+//	
+//}
  public STNameable getPattern(String aShortClassName)  {
 // 	List<STNameable> aTags = emptyList;
 
@@ -241,15 +290,17 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  	}
  	
  }
- public boolean contains(List<STNameable> aTags, String aTag, String aTypeName) {	 
- 	for (STNameable aNameable:aTags) {
- 		if (matchesStoredTag(aNameable.getName(), aTag)) {
- 			matchedTypeOrTagAST = aNameable.getAST();
-// 		if (aNameable.getName().equals(aTag))
- 			return true;
- 		}
- 	}
- 	return matchesPattern(aTag, aTypeName);
+ public boolean contains(List<STNameable> aTags, String aTag, String aTypeName) {
+	 return matchesAllAndedSpecificationTag(aTags, aTag) ||
+			 matchesPattern(aTag, aTypeName); // should not need this
+// 	for (STNameable aNameable:aTags) {
+// 		if (matchesStoredTag(aNameable.getName(), aTag)) {
+// 			matchedTypeOrTagAST = aNameable.getAST();
+//// 		if (aNameable.getName().equals(aTag))
+// 			return true;
+// 		}
+// 	}
+// 	return matchesPattern(aTag, aTypeName);
  }
  
  public boolean matchesPattern (String aPatternName, String aTypeName) {
@@ -275,10 +326,17 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
  		return aString.substring(1, aString.length() -1);
  	return aString;
  }
+ public static String maybeStripAt(String aString) {
+	 if (aString.startsWith("@")) {
+			return aString.substring(1);
+	 }
+	 return aString;
+ }
  public static Boolean matchesStoredTag(String aStoredTag, String aDescriptor) {
- 		return maybeStripQuotes(aStoredTag).equals(maybeStripQuotes(aDescriptor));
+ 		return maybeStripQuotes(aStoredTag).equals(maybeStripAt(maybeStripQuotes(aDescriptor)));
  	
  }
+
  
  public static boolean isJavaLangClass(String aShortClassName) {
 	 return javaLangTypesSet.contains(aShortClassName);
@@ -317,7 +375,7 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 				return emptyList;			
 			return null;
 		}
-		aTags = Arrays.asList(anSTType.getTags());
+		aTags = Arrays.asList(anSTType.getComputedTags());
 	}
 	return aTags;
 	
@@ -353,8 +411,9 @@ public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
 		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*"))
 			return true;
 		if (aDescriptor.startsWith("@")) {
-			String aTag = aDescriptor.substring(1);
-			return contains(typeTags(), aTag, shortTypeName);
+//			String aTag = aDescriptor.substring(1);
+			
+			return contains(typeTags(), aDescriptor, shortTypeName);
 		} else {
 			return matchesNameOrVariable(aDescriptor, aClassName);
 		}
@@ -450,30 +509,72 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 
 	return contains(aTags, aTag, aShortClassName);
 }
-public boolean checkTagsOfCurrentType() {
-//	// this makes no sense to me
+public boolean checkIncludeExcludeTagsOfCurrentType() {
 	if (!hasIncludeTags() && !hasExcludeTags())
 		return true; // all tags checked in this case
 	if (fullTypeName == null) {
 //		System.err.println("Check called without type name being populated");
 		return false;
 	}
-//	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
-//	STNameable[] aCurrentTags = anSTType.getTags();
-	List<STNameable> aCurrentTags = typeTags;
-	for (STNameable aCurrentTag:aCurrentTags) {
-		if (checkTagOfCurrentType(aCurrentTag.getName()))
-				return true;
-	}
-	return false;
+
+	return checkIncludeTagsOfCurrentType()	&& checkExcludeTagsOfCurrentType();
+//	List<STNameable> aStoredTags = computedTypeTags();
+//	for (STNameable aStoredTag:aStoredTags) {
+//		if (checkTagOfCurrentType(aStoredTag.getName()))
+//				return true;
+//	}
+//	return false;
 	
 }
+public boolean checkIncludeTagsOfCurrentType() {
+	if (!hasIncludeTags())
+		return false;
+//	return checkTags(includeTags, computedTypeTags());
+	return matchesSomeSpecificationTags(computedTypeTags(), includeTags);
+	
+}
+/*
+ * return true if type is not to be excluded, that is, checked
+ */
+public boolean checkExcludeTagsOfCurrentType() {
+	if (!hasExcludeTags())
+		return true;
+//	return !checkTags(excludeTags, computedTypeTags());
+	return !matchesSomeSpecificationTags(computedTypeTags(), excludeTags);
+
+	
+}
+
+
+//public boolean checkTags(Collection<String> aSpecifications, Collection<STNameable> aStoredTags ) {
+//	for (STNameable aStoredTag:aStoredTags) {
+//		if (checkTagOfCurrentType(aStoredTag.getName()))
+//				return true;
+//	}
+//	return false;
+//}
+//public boolean checkTags(String aDescription, Collection<STNameable> aStoredTags ) {
+//	for (STNameable aStoredTag:aStoredTags) {
+//		if (checkTagOfCurrentType(aStoredTag.getName()))
+//				return true;
+//	}
+//	return false;
+//}
 protected List<STNameable> typeTags( ) {
 	if (!tagsInitialized) {
 		DetailAST aTypeAST = getEnclosingTypeDeclaration(currentTree);
 		maybeVisitTypeTags(aTypeAST);
 	}
 	return typeTags;
+}
+public static STNameable toShortPatternName(STNameable aLongName) {
+	String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
+	return  new AnSTNameable(aLongName.getAST(), aShortName);
+}
+
+protected List<STNameable> computedTypeTags() {
+	typeTags();
+	return computedTypeTags;
 }
 
 public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitializer) {
@@ -500,10 +601,15 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	tagsInitialized = true;
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {
-		typeTags = emptyArrayList;
+		typeTags = emptyArrayList;		
 		return;
 	}
 	typeTags = getArrayLiterals(annotationAST);
+	computedTypeTags = new ArrayList(typeTags);
+	if (structurePattern != null) {
+		computedTypeTags.add(structurePattern);
+		computedTypeTags.add(toShortPatternName(structurePattern));
+	}
 }
 
 //public void maybeVisitPattern(DetailAST ast) { 

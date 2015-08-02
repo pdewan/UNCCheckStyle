@@ -30,6 +30,7 @@ public abstract class InitCallCheck extends MethodCallVisitedCheck {
 	public int[] getDefaultTokens() {
 		return new int[] {
 						TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
+						TokenTypes.ANNOTATION,
 //						TokenTypes.INTERFACE_DEF, 
 //						TokenTypes.TYPE_ARGUMENTS,
 //						TokenTypes.TYPE_PARAMETERS,

@@ -34,6 +34,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// protected Map<String, List<CallWithoutArguments>> globalVariableToCall =
 	// new HashMap();
 	protected Set<String> delegates = new HashSet();
+	protected boolean hasSetter = false;
 
 	public AnAbstractSTType(DetailAST ast, String name) {
 		super(ast, name);
@@ -53,7 +54,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		return declaredConstructors;
 	}
 
-	public STNameable[] getInterfaces() {
+	public STNameable[] getDeclaredInterfaces() {
 		return declaredInterfaces;
 	}
 
@@ -274,6 +275,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		// return;
 		if (!anSTMethod.isSetter())
 			return;
+		hasSetter = true;
 		// String aPropertyName =
 		// anSTMethod.getName().substring(AnSTMethod.SET.length()).toLowerCase();
 		String aPropertyName = anSTMethod.getName().substring(
@@ -287,7 +289,10 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		}
 		aPropertyInfo.setSetter(anSTMethod);
 	}
-
+	@Override
+	public boolean hasSetter() {
+		return hasSetter;
+	}
 	@Override
 	public void introspect() {
 		for (STMethod anSTMethod : getDeclaredMethods()) {
@@ -446,7 +451,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				.getSTClassByShortName(aType.getName());
 		if (anSTType == null)
 			return null;
-		STNameable[] anInterfaces = anSTType.getInterfaces();
+		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
 		for (STNameable anInterface : anInterfaces) {
 			List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
 			if (anInterfaceTypes == null) {
@@ -491,7 +496,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 					+ aType.getName());
 			return null;
 		}
-		STNameable[] anInterfaces = anSTType.getInterfaces();
+		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
 		for (STNameable anInterface : anInterfaces) {
 			List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
 			if (anInterfaceTypes == null) {
@@ -527,7 +532,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (anSTType == null)
 			return null;
 		if (anSTType.isInterface()) {
-			STNameable[] anInterfaces = anSTType.getInterfaces();
+			STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
 			for (STNameable anInterface : anInterfaces) {
 				if (result.contains(anInterface)) // an interface may be
 													// extended by many

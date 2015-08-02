@@ -18,7 +18,7 @@ public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
 	
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
+		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.ANNOTATION, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
 	}
 	
 	public void setIllegalTypeNames(String[] aNames) {

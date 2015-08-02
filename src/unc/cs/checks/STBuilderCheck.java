@@ -183,6 +183,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			dummyArray,
 	    			dummyArray,
 	    			dummyArray,
+	    			dummyArray,
 	    			new HashMap());
 
 //	    	anSTClass.introspect();
@@ -226,7 +227,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			structurePattern,
 	    			propertyNames.toArray(dummyArray),
 	    			editablePropertyNames.toArray(dummyArray),
-	    			typeTags.toArray(dummyArray),
+	    			typeTags().toArray(dummyArray),
+	    			computedTypeTags().toArray(dummyArray),
 	    			imports.toArray(dummyArray),
 	    			globalVariables.toArray(dummyArray),
 	    			new HashMap<>(globalVariableToCall));

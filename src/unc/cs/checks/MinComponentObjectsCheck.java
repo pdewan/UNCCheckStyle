@@ -21,6 +21,7 @@ public class MinComponentObjectsCheck extends ComprehensiveVisitCheck {
 						TokenTypes.PACKAGE_DEF, 
 						TokenTypes.CLASS_DEF,  
 						TokenTypes.INTERFACE_DEF, 
+						TokenTypes.ANNOTATION
 //						TokenTypes.TYPE_ARGUMENTS,
 //						TokenTypes.TYPE_PARAMETERS,
 //						TokenTypes.VARIABLE_DEF,

@@ -31,6 +31,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 		return new int[] {
 				 TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
+				TokenTypes.ANNOTATION,
 				// TokenTypes.INTERFACE_DEF,
 				// TokenTypes.TYPE_ARGUMENTS,
 				// TokenTypes.TYPE_PARAMETERS,
@@ -156,8 +157,8 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 //			return null;
 //	}
 	@Override
-	public void visitConsrtuctorCall(DetailAST ast) {
-		super.visitConsrtuctorCall(ast);
+	public void visitConstructorCall(DetailAST ast) {
+		super.visitConstructorCall(ast);
 		maybeAddToPendingTypeChecks(ast);
 		// // if (ast.getType() != TokenTypes.METHOD_CALL)
 		// // return;
@@ -296,7 +297,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 		return aDestinationTypeMatches;
 	}
 
-	public static Boolean hasTag(STMethod aMethod, String aTag) {
+	public  Boolean hasTag(STMethod aMethod, String aTag) {
 		STNameable[] aTags = aMethod.getTags();
 		return hasTag(aMethod.getTags(), aTag);
 	}
