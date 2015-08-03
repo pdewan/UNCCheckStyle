@@ -91,6 +91,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodType,
     				currentMethodIsVisible,
     				currentMethodTags.toArray(dummyArray),
+    				currentMethodComputedTags.toArray(dummyArray),
+    			
     				currentMethodAssignsToGlobalVariable,
     				methodsCalledByCurrentMethod.toArray(new String[0][0]));
     		if (currentMethodIsConstructor)

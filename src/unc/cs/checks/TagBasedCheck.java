@@ -26,15 +26,18 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final String AND_SYMBOL = "\\+";
 
 
-	protected Set<String> excludeTags;
-	protected Set<String> includeTags;
+	protected Set<String> excludeTypeTags;
+	protected Set<String> includeTypeTags;
+	protected Set<String> excludeMethodTags;
+	protected Set<String> includeMethodTags;
 	protected List<List<String>> includeSets = new ArrayList();
 	protected List<List<String>> excludeSets = new ArrayList();
-	protected boolean tagsInitialized;
+	protected boolean typeTagsInitialized;
 	protected List<STNameable> typeTags;
 	protected List<STNameable> computedTypeTags;
 	protected STNameable pattern;
 	protected List<STNameable> currentMethodTags;
+	protected List<STNameable> currentMethodComputedTags;
 	static STNameable[] emptyNameableArray = {};
  	static List<STNameable> emptyNameableList =new ArrayList();
 	protected DetailAST currentTree;
@@ -107,19 +110,32 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			addIncludeSet(aString);
 		}
 	}
-	public void setIncludeTags(String[] newVal) {
-		this.includeTags = new HashSet(Arrays.asList(newVal));		
+	public void setIncludeTypeTags(String[] newVal) {
+		this.includeTypeTags = new HashSet(Arrays.asList(newVal));		
 	}
-	public void setExcludeTags(String[] newVal) {
-		this.excludeTags = new HashSet(Arrays.asList(newVal));		
+	public void setExcludeTypeTags(String[] newVal) {
+		this.excludeTypeTags = new HashSet(Arrays.asList(newVal));		
+	}
+	public void setIncludeMethodTags(String[] newVal) {
+		this.includeMethodTags = new HashSet(Arrays.asList(newVal));		
+	}
+	public void setExcludeMethodTags(String[] newVal) {
+		this.excludeMethodTags = new HashSet(Arrays.asList(newVal));		
 	}
 	
-	public boolean hasExcludeTags() {
-		return excludeTags != null && excludeTags.size() > 0;
+	public boolean hasExcludeTypeTags() {
+		return excludeTypeTags != null && excludeTypeTags.size() > 0;
 	}
 	
-	public boolean hasIncludeTags() {
-		return includeTags != null && includeTags.size() > 0;
+	public boolean hasIncludeTypeTags() {
+		return includeTypeTags != null && includeTypeTags.size() > 0;
+	}
+	public boolean hasExcludeMethodTags() {
+		return excludeMethodTags != null && excludeMethodTags.size() > 0;
+	}
+	
+	public boolean hasIncludeMethodTags() {
+		return includeMethodTags != null && includeMethodTags.size() > 0;
 	}
 	
 	public  boolean matchesAllAndedSpecificationTag (Collection<STNameable> aStoredTags, String anAndedSpecification) {
@@ -517,7 +533,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	return contains(aTags, aTag, aShortClassName);
 }
 public Boolean checkIncludeExcludeTagsOfCurrentType() {
-	if (!hasIncludeTags() && !hasExcludeTags())
+	if (!hasIncludeTypeTags() && !hasExcludeTypeTags())
 //		return true; // all tags checked in this case
 		return false; // no tags checked in this case
 	
@@ -535,23 +551,57 @@ public Boolean checkIncludeExcludeTagsOfCurrentType() {
 //	return false;
 	
 }
+public Boolean checkIncludeExcludeTagsOfMethod(List<STNameable> aCurrentMethodComputedTags) {
+	if (!hasIncludeMethodTags() && !hasExcludeMethodTags())
+		return true; // all tags checked in this case
+//		return false; // no tags checked in this case
+	
+	if (aCurrentMethodComputedTags == null) {
+//		System.err.println("Check called without type name being populated");
+		return false;
+	}
+	
+	return checkIncludeTagsOfMethod(aCurrentMethodComputedTags)	&& checkExcludeTagsOfMethod(aCurrentMethodComputedTags);
+//	List<STNameable> aStoredTags = computedTypeTags();
+//	for (STNameable aStoredTag:aStoredTags) {
+//		if (checkTagOfCurrentType(aStoredTag.getName()))
+//				return true;
+//	}
+//	return false;
+	
+}
 public boolean checkIncludeTagsOfCurrentType() {
-	if (!hasIncludeTags())
+	if (!hasIncludeTypeTags())
 		return false;
 //	return checkTags(includeTags, computedTypeTags());
-	return matchesSomeSpecificationTags(computedTypeTags(), includeTags);
+	return matchesSomeSpecificationTags(computedTypeTags(), includeTypeTags);
 	
 }
 /*
  * return true if type is not to be excluded, that is, checked
  */
 public boolean checkExcludeTagsOfCurrentType() {
-	if (!hasExcludeTags())
+	if (!hasExcludeTypeTags())
 		return true;
 //	return !checkTags(excludeTags, computedTypeTags());
-	return !matchesSomeSpecificationTags(computedTypeTags(), excludeTags);
+	return !matchesSomeSpecificationTags(computedTypeTags(), excludeTypeTags);	
+}
 
-	
+/*
+ * return true if method is not to be excluded, that is, checked
+ */
+public boolean checkExcludeTagsOfMethod(List<STNameable> aCurrentMethodComputedTags) {
+	if (!hasExcludeMethodTags())
+		return true;
+//	return !checkTags(excludeTags, computedTypeTags());
+	return !matchesSomeSpecificationTags(aCurrentMethodComputedTags, excludeMethodTags);	
+}
+
+public boolean checkIncludeTagsOfMethod(List<STNameable> aCurrentMethodComputedTags) {
+	if (!hasIncludeMethodTags())
+		return true; // include all
+//	return checkTags(includeTags, computedTypeTags());
+	return matchesSomeSpecificationTags(aCurrentMethodComputedTags, includeMethodTags);	
 }
 
 
@@ -570,7 +620,7 @@ public boolean checkExcludeTagsOfCurrentType() {
 //	return false;
 //}
 protected List<STNameable> typeTags( ) {
-	if (!tagsInitialized) {
+	if (!typeTagsInitialized) {
 		DetailAST aTypeAST = getEnclosingTypeDeclaration(currentTree);
 		maybeVisitTypeTags(aTypeAST);
 	}
@@ -606,8 +656,8 @@ public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitiali
 protected List emptyArrayList = new ArrayList();
 
 public void maybeVisitTypeTags(DetailAST ast) { 
-	if (tagsInitialized) return;
-	tagsInitialized = true;
+	if (typeTagsInitialized) return;
+	typeTagsInitialized = true;
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {
 		typeTags = emptyArrayList;		
@@ -685,7 +735,7 @@ public void doBeginTree(DetailAST ast) {
 //	 	imports.clear();
 //	 	globalVariables.clear();
 	 	currentTree = ast;
-	 	tagsInitialized = false;
+	 	typeTagsInitialized = false;
 //	 	maybeCleanUpPendingChecks(ast);
 //		pendingChecks().clear();
    }

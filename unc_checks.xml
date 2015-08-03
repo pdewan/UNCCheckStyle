@@ -21,7 +21,7 @@
 		<property name="severity" value="info" />
 
 		<module name="STBuilder">
-			<property name="includeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />		
 
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="test,lectures" />
@@ -46,22 +46,22 @@
 		<!-- <module name="MethodLimit"> <property name="max" value="4" /> <message 
 			key="methodlimit" value="Man, only {0} methods allowed." /> </module> -->
 		<module name="NoDuplicateShortTypeName">
-			<property name="includeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />		
 		</module>
 		<module name="NoFullTypeName">
-			<property name="includeTags" value="*" />			
+			<property name="includeTypeTags" value="*" />			
 		
 		</module>
 		<module name="ClassHasOneInterface">
-			<property name="includeTags" value="*" />	
+			<property name="includeTypeTags" value="*" />	
 			
 		</module>
 		<module name="ClassHasAtLeastOneInterface">
-			<property name="includeTags" value="*" />			
+			<property name="includeTypeTags" value="*" />			
 		</module>
 		<module name="IllegalMethodCall">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />		
-			<property name="excludeTags" value="@Tag4" />
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />		
+			<property name="excludeTypeTags" value="@Tag4" />
 
 			<property name="disallowedCalls" value="Scanner, @Tag1>String, @Tag1>@Tag2" />
 			<property name="exceptionCalls"
@@ -69,26 +69,26 @@
 		</module>
 		<module name="LegalMethodCall">
 			<property name="severity" value="info" />
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="expectedMethods" value="charAt, length, substring" />
 		</module>
 		<module name="IllegalInitCall">
-			<property name="includeTags" value="*" />				
+			<property name="includeTypeTags" value="*" />				
 		</module>
 		<module name="LegalInitCall">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 		</module>
 		<module name="IllegalComponentInstantiation">
-			<property name="includeTags" value="*" />			
+			<property name="includeTypeTags" value="*" />			
 		
 		</module>
 		<module name="LegalComponentInstantiation">
 			<property name="severity" value="info" />
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />
 		</module>
 		<module name="IllegalTypeImported">
-			<property name="includeTags" value="*" />		
-			<property name="excludeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />		
+			<property name="includeTypeTags" value="*" />		
+			<property name="excludeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />		
 		    <property name="illegalPrefixes" value="*" />
 			<property name="legalPrefixes"
 				value="Foo=java.util, @Tag1=java.util, bus.uigen, util, shapes, java.beans" />
@@ -98,26 +98,28 @@
 				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
 		</module>
 		<module name="StaticVariable">
-			<property name="includeTags" value="*" />		
-			<property name="excludeTags" value="@StaticVariableDemo"/>		
+			<property name="includeTypeTags" value="*" />		
+			<property name="excludeTypeTags" value="@StaticVariableDemo"/>		
 		</module>
 		<module name="FunctionAssignsGlobal">
-			<property name="includeTags" value="*" />			
-			<property name="excludeTags" value="@Tag4" />
+			<property name="includeTypeTags" value="*" />			
+			<property name="excludeTypeTags" value="@Tag4" />
+			<property name="excludeMethodTags" value="next" />
+			
 		</module>
 		<module name="SetterAssignsGlobal">
-			<property name="includeTags" value="*" />			
+			<property name="includeTypeTags" value="*" />			
 		</module>
 		<module name="ExpectedGetters">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="expectedProperties" value="@Tag1= P1:int | P2:int" />
 		</module>
 		<module name="ExpectedSetters">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="expectedProperties" value="@Tag1 = P1:int | P2:int | Foo:@Tag1" />
 		</module>
 		<module name="ExpectedSignatures">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="expectedSignatures"
 				value="@Vector = elementAt:int->$T | setElementAt:int; $T->void | size:->int " />
 		</module>
@@ -125,74 +127,74 @@
 			</module> -->
 		<module name="PackageDeclaration" />
 		<module name="LinePattern">
-			<property name="includeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />		
 		</module>
 		<module name="OvalPattern">
-					<property name="includeTags" value="*" />			
+					<property name="includeTypeTags" value="*" />			
 		
 		</module>		
 		<module name="RectanglePattern">
-			<property name="includeTags" value="*"/>		
+			<property name="includeTypeTags" value="*"/>		
 		</module>
 		<module name="StringShapePattern">
-			<property name="includeTags" value="*"/>		
+			<property name="includeTypeTags" value="*"/>		
 		
 		</module>
 		<module name="PointPattern">
-				<property name="includeTags" value="*"/>		
+				<property name="includeTypeTags" value="*"/>		
 		
 		</module>		
 		<module name="ImagePattern">
-			<property name="includeTags" value="*"/>		
+			<property name="includeTypeTags" value="*"/>		
 		
 		</module>
 		<module name="VectorPattern">
-			<property name="includeTags" value="*"/>		
+			<property name="includeTypeTags" value="*"/>		
 		</module>
 		<module name="ListPattern">
-			<property name="includeTags" value="*"/>		
+			<property name="includeTypeTags" value="*"/>		
 		</module>
 		<module name="MapPattern">
-			<property name="includeTags" value="*"/>		
+			<property name="includeTypeTags" value="*"/>		
 		</module>
 		<module name="MinComponentObjects">
 			<property name="minObjectComponents" value="@Composite=3" />
-			<property name="includeTags" value="Composite" />
+			<property name="includeTypeTags" value="Composite" />
 		</module>
 		<module name="MinDescendentObjects">
 			<property name="minObjectDescendents" value="@Composite=5" />
-			<property name="includeTags" value="Composite" />
+			<property name="includeTypeTags" value="Composite" />
 		</module>
 		<module name="MinDescendentShapes">
 			<property name="minShapeDescendents" value="@Composite=2" />
-			<property name="includeTags" value="Composite" />
+			<property name="includeTypeTags" value="Composite" />
 		</module>
 		<!-- <module name="ISATypes" /> -->
 		<module name="PeerCommonSignatures">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />
 			<property name="excludeSignatures" value="*:->Foo" />
 		</module>
 		<module name="PeerCommonProperties">
-			<property name="includeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
+			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />		
 		    <property name="excludeProperties" value="*:int" />
 		  </module>
 		<module name="NoStructuredSetter">
-					<property name="includeTags" value="*" />		
+					<property name="includeTypeTags" value="*" />		
 					<property name="excludeStructuredTypes" value="@Tag1+@Tag2, Factorial, @POINT_PATTERN" />		
 		
 		 </module>
 		<module name="IllegalPropertyNotification">
-			<property name="includeTags" value="*" />			
+			<property name="includeTypeTags" value="*" />			
 		
 		</module>		
 		<module name="MissingActualProperty">
-					<property name="includeTags" value="*" />			
+					<property name="includeTypeTags" value="*" />			
 		
 		</module>	
 		<module name="MissingActualEditableProperty">
-				<property name="includeTags" value="*" />			
+				<property name="includeTypeTags" value="*" />			
 		
 		</module>	
 
@@ -207,14 +209,14 @@
 			name="illegalPattern" value="false" /> </module> -->
 		
 		<module name="ClassDefined">
-			<property name="includeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />		
 			<property name="severity" value="info" />
 			<property name="expectedClasses" value="Factorial, @Tag1+@Tag2" />
 
 		</module>
 		
 		<module name="InterfaceDefined">
-			<property name="includeTags" value="@Tag1+@Tag2" />
+			<property name="includeTypeTags" value="@Tag1+@Tag2" />
 		
 			<property name="severity" value="info" />
 			<message key="interfaceDefined" value="Interface {0} defined." />

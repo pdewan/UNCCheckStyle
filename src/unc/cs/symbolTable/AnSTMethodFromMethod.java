@@ -116,5 +116,11 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return true;
 	}
+	@Override
+	public STNameable[] getComputedTags() {
+		// TODO Auto-generated method stub
+		return getTags();
+	}
+
 
 }

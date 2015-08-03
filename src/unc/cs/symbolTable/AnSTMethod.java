@@ -17,6 +17,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 //	protected final boolean isInit;
 //	protected final String signature;
 	final STNameable[] tags;
+	final STNameable[] computedTags;
 	final boolean assignsToGlobal;
 	final String[][] methodsCalled;
 	public  static final String GET = "get";
@@ -26,7 +27,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public AnSTMethod(DetailAST ast, String name, 
 			String declaringClass, String[] parameterTypes,
 			boolean isPublic, boolean anIsInstance, String returnType,
-			boolean anIsVisible, STNameable[] aTags,
+			boolean anIsVisible, 
+			STNameable[] aTags,
+			STNameable[] aComputedTags,
 			boolean isAssignsToGlobal,
 			String[][] aMethodsCalled) {
 		super(ast, name);
@@ -42,6 +45,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 //			return true;
 		isVisible = anIsVisible;
 		tags = aTags;
+		computedTags = aComputedTags;
 		assignsToGlobal = isAssignsToGlobal;
 		methodsCalled = aMethodsCalled;
 		introspect();
@@ -94,6 +98,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public boolean isProcedure() {
 		return isProcedure;
 	}
+	
 //	@Override
 //	public boolean isSetter() {
 //		return isSetter;
@@ -152,6 +157,10 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 //		public String getSignature() {
 //			return signature;
 //		}
+		@Override
+		public STNameable[] getComputedTags() {
+		return computedTags;
+	}
 
 		@Override
 		public boolean isParsedMethod() {

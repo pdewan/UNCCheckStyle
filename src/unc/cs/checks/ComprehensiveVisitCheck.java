@@ -40,6 +40,7 @@ ContinuationProcessor{
 	protected STNameable[] interfaces;
 	protected boolean currentMethodIsConstructor;
 	protected String currentMethodName;
+	DetailAST currentMethodNameAST;
 	protected String currentMethodType;
 	protected DetailAST currentMethodAST;
 	protected boolean currentMethodIsPublic;
@@ -663,10 +664,10 @@ ContinuationProcessor{
 // 		String shortMethodName = null;
 // 		if (ast.getType() == TokenTypes.METHOD_CALL) {
 // 		FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
- 		DetailAST aMethodNameAST = getLastDescendent(ast);
-		String shortMethodName = aMethodNameAST.getText();
+ 		 currentMethodNameAST = getLastDescendent(ast);
+		String shortMethodName = currentMethodNameAST.getText();
 
- 		DetailAST aLeftMostMethodTargetAST = aMethodNameAST
+ 		DetailAST aLeftMostMethodTargetAST = currentMethodNameAST
  				.getPreviousSibling();
 // 		aLeftMostMethodTargetAST = aMethodNameAST
 // 				.getPreviousSibling();
@@ -730,6 +731,8 @@ ContinuationProcessor{
  			String shortMethodName = toShortTypeName(anIdentifierType.getText());
  		
  		DetailAST aCallEList = ast.findFirstToken(TokenTypes.ELIST);
+			currentMethodNameAST = aCallEList; // previous sibling?
+
  		List<DetailAST> aCallParameters = getEListComponents(aCallEList);
  		
  		
@@ -880,7 +883,7 @@ ContinuationProcessor{
 		 	globalVariables.clear();
 		 	globalVariableToCall.clear();
 		 	currentTree = ast;
-		 	tagsInitialized = false;
+		 	typeTagsInitialized = false;
 			propertyNames = emptyArrayList;
 			editablePropertyNames = emptyArrayList;
 		 	maybeCleanUpPendingChecks(ast);
@@ -1281,6 +1284,12 @@ ContinuationProcessor{
 	    }
 	    public void visitTypeUse(DetailAST ast) {
 	    	
+	    }
+	    public void maybeVisitMethodTags(DetailAST ast) {  
+	    	super.maybeVisitMethodTags(ast);
+	    	List<STNameable> aComputedList = new ArrayList(currentMethodTags);
+	    	aComputedList.add(new AnSTNameable(currentMethodNameAST, currentMethodName));
+	    	currentMethodComputedTags = aComputedList;
 	    }
 	    public void doVisitToken(DetailAST ast) {
 //	    	System.out.println("Check called:" + MSG_KEY);

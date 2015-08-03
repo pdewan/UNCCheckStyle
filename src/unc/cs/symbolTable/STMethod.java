@@ -18,4 +18,5 @@ public interface STMethod extends STNameable{
 	String getSignature();
 	boolean isInstance();
 	boolean isParsedMethod();
+	STNameable[] getComputedTags();
 }

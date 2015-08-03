@@ -1,5 +1,6 @@
 package unc.cs.checks;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,6 +45,8 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	
 	 protected Boolean visitRootMethod(STMethod aMethod, DetailAST aTreeAST) {
 		 methodsVisited.clear();
+		 if (!checkIncludeExcludeTagsOfMethod(Arrays.asList(aMethod.getComputedTags())))
+			 return true;
 		 if (!shouldVisitRootMethod(aMethod))
 			 return true;	
 		 Boolean checkRoot = checkRootMethod(aMethod);
