@@ -33,6 +33,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected static String[] existingClasses = {};
 	protected static Collection<String> existingClassesCollection = new HashSet();
 	boolean importsAsExistingClasses = false;
+	static DetailAST sTBuilderTree = null; // make it non static at some point
 	
 //	public STBuilderCheck() {
 //		
@@ -129,10 +130,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		
 
     public void doBeginTree(DetailAST ast) {  
- 		 super.doBeginTree(ast); 		 	
+ 		 super.doBeginTree(ast); 	
+// 		 System.out.println("Check" + checkAndFileDescription);
  		 	stMethods.clear();
  		 	stConstructors.clear();
+ 		 	sTBuilderTree = ast;
+ 		 	
  	    }
+	protected static DetailAST getSTBuilderTree() {
+		return sTBuilderTree;
+	}
 	STNameable[] dummyArray = new STNameable[0];
 
 	protected static void addSTType(STType anSTClass) {
@@ -256,4 +263,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 			// TODO Auto-generated method stub
 			return MSG_KEY;
 		}
+	    public void doVisitToken(DetailAST ast) {
+	    	super.doVisitToken(ast);
+	    }
+	    
+
 }

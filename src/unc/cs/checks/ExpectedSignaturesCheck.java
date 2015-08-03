@@ -54,9 +54,11 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 				.getFilename());
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
 		if (aTreeAST == currentTree) {
-			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+//			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+			DetailAST aLoggedAST = aTreeAST;
+//			log(aLoggedAST.getLineNo(), aLoggedAST.getColumnNo(), msgKey(), aSignature, aTypeName, aSourceName);
+			log(aLoggedAST.getLineNo(),  msgKey(), aSignature, aTypeName, aSourceName);
 
-			log(aLoggedAST.getLineNo(), aLoggedAST.getColumnNo(), msgKey(), aSignature, aTypeName, aSourceName);
 		} else {
 			log(0, msgKey(), aSignature, aTypeName, aSourceName);
 		}

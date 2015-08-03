@@ -1,5 +1,7 @@
 package unc.cs.checks;
 
+import unc.cs.symbolTable.AnSTNameable;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -15,6 +17,8 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected String fullTypeName, shortTypeName;
 	protected DetailAST typeAST;
 	protected DetailAST typeNameAST;
+	protected STNameable typeNameable;
+//	protected STNameable packageNameable;
 	protected boolean isGeneric;
 	@Override
     public void doBeginTree(DetailAST ast) {
@@ -44,6 +48,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	    	isGeneric =  (typeNameAST.getNextSibling().getType() == TokenTypes.TYPE_PARAMETERS);
 			 shortTypeName = typeNameAST.getText();
 			 fullTypeName = packageName + "." + shortTypeName;
+			 typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
 //			aFullTypeName = aFullName;
 	 }
 //	 public void visitEnum(DetailAST ast) {  

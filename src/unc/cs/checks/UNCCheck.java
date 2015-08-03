@@ -10,6 +10,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public abstract class UNCCheck extends Check{
 	protected boolean isPackageInfo = false;
+	protected String checkAndFileDescription = "";
 
 	public final void extendibleLog(int line, String key, Object... args) {
 		System.out.println("key:" + key);
@@ -23,6 +24,8 @@ public abstract class UNCCheck extends Check{
     public void doBeginTree(DetailAST ast) {
 		
 	} 
+    
+   
 	
     public void beginTree(DetailAST ast) {  
     	try {
@@ -32,12 +35,14 @@ public abstract class UNCCheck extends Check{
     			isPackageInfo = true;
     			return;
     		}
-			System.out.println ("begin tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+    
+    		checkAndFileDescription = "Check:" + this + " ast:" + ast + " " + getFileContents().getFilename();
+//			System.out.println ("begin tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}
 			doBeginTree(ast);
-			System.out.println ("Begin tree ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			System.out.println ("Begin tree ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 
 			
 		} catch (RuntimeException e) {
@@ -51,17 +56,20 @@ public abstract class UNCCheck extends Check{
 
 	public void finishTree(DetailAST ast) {
 		try {
-			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}
-			if (isPackageInfo)
+			if (isPackageInfo) {
+				isPackageInfo = false;
 				return;
+			}
 			doFinishTree(ast);
-			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 
 			
 		} catch (RuntimeException e) {
+			System.out.println("Description:" + checkAndFileDescription);
 			e.printStackTrace();
 			throw e;
 			
@@ -73,12 +81,12 @@ public abstract class UNCCheck extends Check{
 		try {
 			if (isPackageInfo)
 				return;
-			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			System.out.println ("Check called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}
 			doVisitToken(ast);
-			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+//			System.out.println ("Check ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 
 			
 		} catch (RuntimeException e) {
@@ -92,7 +100,7 @@ public abstract class UNCCheck extends Check{
 
     public final void extendibleLog(int lineNo, int colNo, String key,
             Object... args) {
-		System.out.println("key:" + key);
+//		System.out.println("key:" + key);
 
         log(lineNo, colNo, key, args);
     }

@@ -11,7 +11,9 @@ public class InterfaceDefinedCheck extends ComprehensiveVisitCheck{
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF, TokenTypes.ANNOTATION};
+		return new int[] {TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF, 
+//				TokenTypes.ANNOTATION
+				};
 	}
 	public void visitType(DetailAST ast) {  
 

@@ -21,7 +21,7 @@ public class ClassDefinedCheck extends ComprehensiveVisitCheck{
 		return new int[] {
 				TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
-				TokenTypes.ANNOTATION,
+//				TokenTypes.ANNOTATION,
 				};
 	}
 	public void setExpectedClasses(String[] anExpectedClasses) {

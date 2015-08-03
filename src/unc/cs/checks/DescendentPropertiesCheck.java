@@ -42,7 +42,9 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] { TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF,
-				TokenTypes.PACKAGE_DEF, TokenTypes.ANNOTATION };
+				TokenTypes.PACKAGE_DEF, 
+//				TokenTypes.ANNOTATION 
+				};
 	}
 	
 //	public static String toShortTypeName (String aTypeName) {

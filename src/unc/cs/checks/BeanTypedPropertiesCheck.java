@@ -95,9 +95,15 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 				.getFilename());
 		if (aTreeAST == currentTree) {
-			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+//			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+			DetailAST aLoggedAST = aTreeAST;
 
-			log(aLoggedAST.getLineNo(), aLoggedAST.getColumnNo(), msgKey(), aProperty, aType, aSourceName);
+			aLoggedAST = aTreeAST;
+//			int aLineNo = aLoggedAST.getLineNo();
+//			int aColumnNo = aLoggedAST.getColumnNo();
+//
+//			log(aLineNo, aColumnNo, msgKey(), aProperty, aType, aSourceName);
+			log (aLoggedAST.getLineNo(), msgKey(), aProperty, aType, aSourceName);
 		} else {
 			log(0, msgKey(), aProperty, aType, aSourceName);
 		}
@@ -261,6 +267,11 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(aTree);
+		if (anSTType == null) {
+			System.out.println("ST Type is null!");
+			System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+//			return true;
+		}
 		if (anSTType.isEnum())
 			return true;
 		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),

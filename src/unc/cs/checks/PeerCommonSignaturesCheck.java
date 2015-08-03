@@ -89,7 +89,7 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
 		List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 		if (aCommonSuperTypes == null)
 			return null;
-		System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
+//		System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
 		
 		for (String aSignature:aCommonSignatures) {
 			Boolean aHasSignature =  AnSTType.containsSignature(aCommonSuperTypes, aSignature);
@@ -129,11 +129,11 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
     	List<STMethod> aCommonMethods = filterByIncludeAndExcludeSignatures(anSTType.methodsCommonWith(aPeerType));
 		if (aCommonMethods == null)
 			return null;
-		System.out.println (anSTType.getName() + " common methods " + aPeerType + " = " + aCommonMethods);
+//		System.out.println (anSTType.getName() + " common methods " + aPeerType + " = " + aCommonMethods);
 		List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 		if (aCommonSuperTypes == null)
 			return null;
-		System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
+//		System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
 		
 		for (STMethod aMethod:aCommonMethods) {
 			Boolean aHasSignature =  AnSTType.containsMethod(aCommonSuperTypes, aMethod);

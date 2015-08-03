@@ -111,8 +111,13 @@ public class ASymbolTable implements SymbolTable{
 	}
 	@Override
 	public STType getSTClassByFullName(String aTypeName) {
-		
+		STType anSTType = typeNameToSTClass.get(aTypeName);
+//		if (anSTType == null) {
+//			System.out.println("Null ST Type:" + aTypeName);
+//		}
 		return typeNameToSTClass.get(aTypeName);
+//		return anSTType;
+
 	}
 	@Override
 	public Map<String, STType> getTypeNameToSTClass() {

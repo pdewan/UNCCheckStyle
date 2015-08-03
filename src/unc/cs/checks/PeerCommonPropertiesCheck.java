@@ -84,7 +84,7 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 		List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 		if (aCommonSuperTypes == null)
 			return null;
-		System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
+//		System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
 		
 		for (PropertyInfo aProperty:aCommonProperties) {
 			Boolean aHasProperty =  AnSTType.containsProperty(aCommonSuperTypes, aProperty);

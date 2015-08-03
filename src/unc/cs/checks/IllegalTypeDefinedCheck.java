@@ -18,7 +18,9 @@ public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
 	
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.ANNOTATION, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
+		return new int[] {TokenTypes.CLASS_DEF, 
+//				TokenTypes.ANNOTATION, 
+				TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
 	}
 	
 	public void setIllegalTypeNames(String[] aNames) {
@@ -27,7 +29,7 @@ public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
 	}
 	
 	public void visitType(DetailAST ast) {
-    	super.visitType(ast);
+    	super.visitType(ast);    	
     	if (illegalTypeNames.contains(this.shortTypeName))
 		   log(getNameAST(ast).getLineNo(), msgKey(), shortTypeName);
 
@@ -44,7 +46,7 @@ public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
 			return;
 		
 		default:
-			System.err.println("Unexpected token");
+			System.err.println(checkAndFileDescription + "Unexpected token");
 		}
 		
 	}

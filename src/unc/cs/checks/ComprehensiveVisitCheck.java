@@ -360,6 +360,8 @@ ContinuationProcessor{
     
     public void visitType(DetailAST typeDef) {  
     	super.visitType(typeDef);
+    	if (!checkIncludeExcludeTagsOfCurrentType())
+			return;
 		maybeVisitStructurePattern(typeDef);
 		maybeVisitPropertyNames(typeDef);
 		maybeVisitEditablePropertyNames(typeDef);
@@ -490,7 +492,9 @@ ContinuationProcessor{
 
     }
 	public void visitClass(DetailAST ast) {
-		visitType(ast);
+		visitType(ast);	
+		if (!checkIncludeExcludeTagsOfCurrentType())
+			return;
 		STNameable[] superTypes = getSuperTypes(ast);
 		if (superTypes.length == 0)
 			superClass = null;
@@ -501,6 +505,8 @@ ContinuationProcessor{
 	}
 	 public void visitInterface(DetailAST ast) {
 	    	visitType(ast);
+	    	if (!checkIncludeExcludeTagsOfCurrentType())
+				return;
 	    	superClass = null;
 	    	interfaces = getSuperTypes(ast);
 			isInterface = true;
@@ -537,6 +543,8 @@ ContinuationProcessor{
 	 }
      
      public void visitVariableOrParameterDef(DetailAST ast) {
+    		if (!checkIncludeExcludeTagsOfCurrentType())
+    			return;
     	 if (ScopeUtils.inCodeBlock(ast))
     		 addToMethodScope(ast);
     	 else
@@ -560,6 +568,8 @@ ContinuationProcessor{
      }
      
      public void visitVariableDef(DetailAST paramOrVarDef) {
+    		if (!checkIncludeExcludeTagsOfCurrentType())
+    			return;
     	 visitVariableOrParameterDef(paramOrVarDef);
     	 if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
     		 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
@@ -573,6 +583,8 @@ ContinuationProcessor{
 	 }
      
      public void visitParameterDef(DetailAST ast) {
+    		if (!checkIncludeExcludeTagsOfCurrentType())
+    			return;
     	 visitVariableOrParameterDef(ast);
 	 }	
      
@@ -760,15 +772,21 @@ ContinuationProcessor{
  	}
      
      public void visitMethodCall(DetailAST ast) {
+    		if (!checkIncludeExcludeTagsOfCurrentType())
+    			return;
     	 String[] aNormalizedParts = registerMethodCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
  		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
      
      public void visitConstructorCall(DetailAST ast) {
+    		if (!checkIncludeExcludeTagsOfCurrentType())
+    			return;
     	 String[] aNormalizedParts = registerConstructorCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
  		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
      public void visitIdent(DetailAST anIdentAST) {
+    		if (!checkIncludeExcludeTagsOfCurrentType())
+    			return;
     	 if (currentMethodName == null)
     		 return;
     	 if (currentMethodAssignsToGlobalVariable)
@@ -874,19 +892,23 @@ ContinuationProcessor{
 	 
 
 
-	    @Override
-	    public void doFinishTree(DetailAST ast) {
-	    	System.out.println ("finish tree called:" + ast + " " + getFileContents().getFilename());
-	    	if (currentMethodName != null)
-	    	processPreviousMethodData();
-	    	processMethodAndClassData();
-	    	// this is more efficient
-	    	processDeferredChecks(); 
-//	    	ContinuationNotifierFactory.getOrCreateSingleton()
-//			.notifyContinuationProcessors();
-	    	System.out.println ("finish tree ended:" + ast + " " + getFileContents().getFilename());
+	@Override
+	public void doFinishTree(DetailAST ast) {
+		if (checkIncludeExcludeTagsOfCurrentType()) {
+//			System.out.println("finish tree called:" + ast + " "
+//					+ getFileContents().getFilename());
+			if (currentMethodName != null)
+				processPreviousMethodData();
+			processMethodAndClassData();
+		}
+		// this is more efficient
+		processDeferredChecks();
+		// ContinuationNotifierFactory.getOrCreateSingleton()
+		// .notifyContinuationProcessors();
+		// System.out.println ("finish tree ended:" + ast + " " +
+		// getFileContents().getFilename());
 
-	    }
+	}
 	    
 		public void processDeferredChecks() {
 			doPendingChecks();
@@ -1323,7 +1345,7 @@ ContinuationProcessor{
 				return;
 				
 			default:
-				System.err.println("Unexpected token");
+				System.err.println(checkAndFileDescription + "Unexpected token");
 			}
 			
 		}

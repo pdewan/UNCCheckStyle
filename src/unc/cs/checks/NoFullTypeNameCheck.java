@@ -19,10 +19,13 @@ public class NoFullTypeNameCheck extends ComprehensiveVisitCheck {
 				TokenTypes.TYPE,
 				TokenTypes.LITERAL_NEW,
 				TokenTypes.CLASS_DEF,
-				TokenTypes.ANNOTATION
+				TokenTypes.PACKAGE_DEF,
+//				TokenTypes.ANNOTATION
 		};
 	}
 	public void visitTypeOrInstantiation(DetailAST ast) {
+		if (!checkIncludeExcludeTagsOfCurrentType())
+			return;
 		FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
 		String aTypeName = aFullIdent.getText();
 		if (aTypeName.indexOf(".") != -1) {
@@ -47,10 +50,10 @@ public class NoFullTypeNameCheck extends ComprehensiveVisitCheck {
 //					aTypeName);
 //		}
 //	}
-	public void doVisitToken(DetailAST ast) {
-		visitTypeOrInstantiation(ast);
-
-	}
+//	public void doVisitToken(DetailAST ast) {
+//		visitTypeOrInstantiation(ast);
+//
+//	}
 		
 
 }

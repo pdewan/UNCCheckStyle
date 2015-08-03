@@ -10,7 +10,9 @@ public class NoDuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "noDuplicateShortTypeName";
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF, TokenTypes.ANNOTATION};
+		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF, 
+//				TokenTypes.ANNOTATION
+				};
 	}
 //	public void doVisitToken(DetailAST ast) {
 ////    	System.out.println("Check called:" + msgKey());
@@ -44,7 +46,7 @@ public class NoDuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
 		String aFullTypeName = packageName + "." + aTypeName;
 		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
 		if (aSymbolTable.matchingFullSTTypeNames(aTypeName).size() > 1) {
-			System.out.println("dupliicateshortname:" + aFullTypeName);
+//			System.out.println("dupliicateshortname:" + aFullTypeName);
 			log(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), msgKey(),
 					aTypeNameAST.getText());
 		}			

@@ -4,7 +4,7 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class StaticVariableCheck extends TagBasedCheck {
+public class StaticVariableCheck extends ComprehensiveVisitCheck {
 	
 	public static final String MSG_KEY = "staticVariable";	
 
@@ -14,7 +14,7 @@ public class StaticVariableCheck extends TagBasedCheck {
     	
     }
     public int[] getDefaultTokens() {
-        return new int[] { TokenTypes.CLASS_DEF,
+        return new int[] { TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF,
         		TokenTypes.VARIABLE_DEF };
     }
 
@@ -25,6 +25,7 @@ public class StaticVariableCheck extends TagBasedCheck {
 		// TODO Auto-generated method stub
 		return MSG_KEY;
 	}
+    @Override
 	public void visitVariableDef(DetailAST ast) {
 		if (!checkIncludeExcludeTagsOfCurrentType())
 		return;
@@ -37,24 +38,24 @@ public class StaticVariableCheck extends TagBasedCheck {
 
     
     
-	@Override
-	public void doVisitToken(DetailAST ast) {
-//			System.out.println("Check called:" + MSG_KEY);
-			switch (ast.getType()) {
-			
-			case TokenTypes.CLASS_DEF:
-				visitType(ast);
-				return;
-			
-			
-			case TokenTypes.VARIABLE_DEF:
-				visitVariableDef(ast);
-				return;
-			
-			default:
-				System.err.println("Unexpected token");
-			}
-			
-		}
+//	@Override
+//	public void doVisitToken(DetailAST ast) {
+////			System.out.println("Check called:" + MSG_KEY);
+//			switch (ast.getType()) {
+//			
+//			case TokenTypes.CLASS_DEF:
+//				visitType(ast);
+//				return;
+//			
+//			
+//			case TokenTypes.VARIABLE_DEF:
+//				visitVariableDef(ast);
+//				return;
+//			
+//			default:
+//				System.err.println("Unexpected token");
+//			}
+//			
+//		}
 	
 }

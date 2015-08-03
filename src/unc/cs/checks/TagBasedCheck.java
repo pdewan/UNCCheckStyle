@@ -132,7 +132,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
    }
 	public  boolean matchesSomeSpecificationTags (Collection<STNameable> aStoredTags, Collection<String> aSpecifications) {
 		for (String aSpecificationTag:aSpecifications) {
-			if (matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
+			if (aSpecificationTag.equals("*") || matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
 				return true;
 		}
 		return false;
@@ -141,7 +141,6 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public  boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
 		for (STNameable aStoredTag:aStoredTags) {
 			if (matchesStoredTag(aStoredTag.getName(), aDescriptor)) {
-				matchedTypeOrTagAST = aStoredTag.getAST(); // very clumsy
 				return true;
 			}
 		}
@@ -333,7 +332,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	 return aString;
  }
  public static Boolean matchesStoredTag(String aStoredTag, String aDescriptor) {
- 		return maybeStripQuotes(aStoredTag).matches(maybeStripAt(maybeStripQuotes(aDescriptor)));
+ 		return 
+// 				aDescriptor.equals("*") || 
+ 				maybeStripQuotes(aStoredTag).matches(maybeStripAt(maybeStripQuotes(aDescriptor)));
  	
  }
 
@@ -517,7 +518,9 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 }
 public Boolean checkIncludeExcludeTagsOfCurrentType() {
 	if (!hasIncludeTags() && !hasExcludeTags())
-		return true; // all tags checked in this case
+//		return true; // all tags checked in this case
+		return false; // no tags checked in this case
+	
 	if (fullTypeName == null) {
 //		System.err.println("Check called without type name being populated");
 		return false;
@@ -613,9 +616,10 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	typeTags = getArrayLiterals(annotationAST);
 	}
 	computedTypeTags = new ArrayList(typeTags);
+	computedTypeTags.add(typeNameable);
 	if (structurePattern != null) {
 		computedTypeTags.add(structurePattern);
-		computedTypeTags.add(toShortPatternName(structurePattern));
+//		computedTypeTags.add(toShortPatternName(structurePattern));
 	}
 }
 
@@ -689,6 +693,8 @@ public static DetailAST getEnclosingMethodDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.METHOD_DEF);
 }
 
+
+
 public static DetailAST getEnclosingClassDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.CLASS_DEF);
 }
@@ -697,6 +703,22 @@ public static DetailAST getEnclosingPackageDeclaration(DetailAST anAST) {
 }
 public static DetailAST getEnclosingInterfaceDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.INTERFACE_DEF);
+}
+public static DetailAST getEnclosingTreeDeclaration(DetailAST anAST) {
+	DetailAST root = anAST;
+	while (true) {		
+		DetailAST aParent = root.getParent();
+		if (aParent == null)
+			break;
+		root = aParent;
+	}
+	while (true) {
+		DetailAST aLeftSibling = root.getPreviousSibling();
+		if (aLeftSibling == null)
+			break;
+		root = aLeftSibling;
+	}
+	return root;
 }
 public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 	DetailAST root = anAST;
@@ -729,6 +751,11 @@ public static String getFullTypeName(DetailAST aTree) {
 }
 public static STType getSTType(DetailAST aTreeAST) {
 	String aFullName = getFullTypeName(aTreeAST);
+//	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
+//	if (anSTType == null) {
+//		System.out.println("Null symbol table entry for:" + aFullName);
+//	}
+//	return anSTType;
 	return SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 }
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {

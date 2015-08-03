@@ -42,7 +42,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //		}
 //	}
 	
-	 protected Boolean visitRootMethod(STMethod aMethod) {
+	 protected Boolean visitRootMethod(STMethod aMethod, DetailAST aTreeAST) {
 		 methodsVisited.clear();
 		 if (!shouldVisitRootMethod(aMethod))
 			 return true;	
@@ -50,10 +50,19 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 		 if (checkRoot ==null) {
 			 return null;
 		 }
+		 
 //		if (!checkRootMethod(aMethod)) {
 		if (!checkRoot) {
-
-			log(aMethod.getAST().getLineNo(), msgKey(), aMethod.getName());
+			DetailAST anSTTreeAST = getEnclosingTreeDeclaration(aMethod.getAST());
+			String aLongFileName = anSTTreeAST == STBuilderCheck.getSTBuilderTree()?getFileContents().getFilename():
+					
+					astToFileContents.get(aTreeAST)
+					.getFilename();
+			log(aMethod.getAST().getLineNo(), 
+					msgKey(), 
+					aMethod.getName(),
+					shortFileName(aLongFileName)
+					);
 			return  false;
 		} 
 		return true;
@@ -124,7 +133,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //				if (!aCalledMethod[0].equals(fullTypeName)) break;
 				String aCalledMethodName = aCalledMethod[1];
 				String aCalledMethodClassName = aCalledMethod[0];
-				if (aCalledMethodClassName == null || isExternalClass(aCalledMethodClassName))
+				if (aCalledMethod.length > 2 || aCalledMethodClassName == null || isExternalClass(aCalledMethodClassName))
 					continue;
 				STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
 				
@@ -133,6 +142,10 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 					return null;
 				}
 				STMethod[] allOverloadedMethods = aCalledMethodClass.getMethods(aCalledMethodName);
+				if (allOverloadedMethods == null) {
+//					System.out.println ("Overloaded methods is null" + allOverloadedMethods);
+					return null; //return to pending check
+				}
 				for (STMethod aPossibleCalledMethod: allOverloadedMethods) {
 					if (!shouldVisitCalledMethod(aPossibleCalledMethod))
 						continue;
@@ -165,12 +178,12 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //				 getName(getEnclosingTypeDeclaration(aTree)));
 			STType anSTType = getSTType(aTree);
 
-		 STMethod[] aMethods = anSTType.getMethods();
+		 STMethod[] aMethods = anSTType.getDeclaredMethods();// we check only out methods
 		 Boolean retVal = true;
 		 if (aMethods == null)
 			 return null;
-			for (STMethod aMethod: anSTType.getMethods()) {
-				Boolean visitRoot =  visitRootMethod(aMethod);
+			for (STMethod aMethod: aMethods) {
+				Boolean visitRoot =  visitRootMethod(aMethod, aTree);
 				if (visitRoot == null)
 					return null;
 				retVal &= visitRoot; // no short circuit
