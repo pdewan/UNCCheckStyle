@@ -121,7 +121,7 @@ public class LegalComponentInstantiationCheck extends ComponentInstantiationChec
 		Boolean aComponentInstantiated = componentInstantiated(anInstantiatedTypeName, aTreeAST);
 		if (aComponentInstantiated == null)
 			return null;
-		if (!aComponentInstantiated || !inConstructorOrInit(ast, aTreeAST))
+		if (!aComponentInstantiated || !inConstructorOrInitOrStatic(ast, aTreeAST))
 			return true; // check succeeds, strangely
 
 		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)

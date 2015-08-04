@@ -117,7 +117,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	
 	// fail if instantiate a componnet in a method other than init or
 	// constructor or initializing variable declaration
-	public Boolean inConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
+	public Boolean inConstructorOrInitOrStatic(DetailAST ast, DetailAST aTreeAST) {
 		
 		return (aTreeAST == currentTree) && (
 				currentMethodName == null || //
