@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -131,9 +132,11 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	 protected Boolean checkCalledMethodsOf (STMethod aMethod) {	
 		 if (!shouldTraverseVisitedMethod(aMethod))
 				return true;
-			String[][] aCalledMethods = aMethod.methodsCalled();
-			for (String[] aCalledMethod: aCalledMethods) {
+//			String[][] aCalledMethods = aMethod.methodsCalled();
+			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			for (CallInfo aCallInfo: aCalledMethods) {
 //				if (!aCalledMethod[0].equals(fullTypeName)) break;
+				String[] aCalledMethod = aCallInfo.getNotmalizedCall();
 				String aCalledMethodName = aCalledMethod[1];
 				String aCalledMethodClassName = aCalledMethod[0];
 				if (aCalledMethod.length > 2 || aCalledMethodClassName == null || isExternalClass(aCalledMethodClassName))

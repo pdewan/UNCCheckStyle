@@ -19,7 +19,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	final STNameable[] tags;
 	final STNameable[] computedTags;
 	final boolean assignsToGlobal;
-	final String[][] methodsCalled;
+//	final String[][] methodsCalled;
+	final CallInfo[] methodsCalled;
+
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 	public static final String INIT = "init";
@@ -31,7 +33,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			STNameable[] aTags,
 			STNameable[] aComputedTags,
 			boolean isAssignsToGlobal,
-			String[][] aMethodsCalled) {
+//			String[][] aMethodsCalled
+			CallInfo[] aMethodsCalled
+			) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
@@ -79,8 +83,13 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public boolean assignsToGlobal() {
 		return assignsToGlobal;
 	}
+//	@Override
+//	public String[][] methodsCalled() {
+//		return methodsCalled;
+//	}
+	
 	@Override
-	public String[][] methodsCalled() {
+	public CallInfo[] methodsCalled() {
 		return methodsCalled;
 	}
 

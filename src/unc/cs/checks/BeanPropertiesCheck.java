@@ -26,6 +26,9 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 		case TokenTypes.PACKAGE_DEF:
 			visitPackage(ast);
 			return;
+		case TokenTypes.ENUM_DEF:
+			visitEnumDef(ast);
+			return;
 		case TokenTypes.CLASS_DEF:
 		case TokenTypes.INTERFACE_DEF:
 			visitType(ast);
@@ -37,7 +40,7 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF,
+		return new int[] { TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
 				TokenTypes.PACKAGE_DEF };
 	}
 

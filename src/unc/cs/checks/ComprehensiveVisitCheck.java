@@ -45,7 +45,9 @@ ContinuationProcessor{
 	protected DetailAST currentMethodAST;
 	protected boolean currentMethodIsPublic;
 	protected boolean currentMethodAssignsToGlobalVariable;
-	protected List<String[]> methodsCalledByCurrentMethod = new ArrayList();
+//	protected List<String[]> methodsCalledByCurrentMethod = new ArrayList();
+	protected List<CallInfo> methodsCalledByCurrentMethod = new ArrayList();
+
 	protected boolean currentMethodIsInstance;
 
 	protected boolean currentMethodIsVisible;;
@@ -336,12 +338,16 @@ ContinuationProcessor{
     
     public void visitEnumDef(DetailAST anEnumDef) {
     	isEnum = true;
-    	shortTypeName = getEnumName(anEnumDef);
+    	typeNameAST = getEnumNameAST(anEnumDef);
+//    	shortTypeName = getEnumName(anEnumDef);
+    	shortTypeName = typeNameAST.getText();
 		fullTypeName = packageName + "." + shortTypeName;
     	typeAST = anEnumDef;
     	superClass = null;
     	interfaces = emptyNameableArray;
 		isInterface = false;
+		typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
+
 
 
 //    	shortTypeName = anEnumDef.getNextSibling().toString();
@@ -425,12 +431,14 @@ ContinuationProcessor{
   	processPreviousMethodData();
   	currentMethodIsConstructor = false;
   	visitMethodOrConstructor(methodDef);
-  	maybeVisitMethodTags(methodDef);
+//  	maybeVisitMethodTags(methodDef);
   }
    public void visitConstructor(DetailAST methodDef) {
 	  	processPreviousMethodData();
 	  	currentMethodIsConstructor = true;
 	  	visitMethodOrConstructor(methodDef);
+//	  	maybeVisitMethodTags(methodDef); // shouls bw in visitMethodOr
+
    }
 
 		
@@ -453,6 +461,7 @@ ContinuationProcessor{
 	 	methodsCalledByCurrentMethod.clear();
 	 	currentMethodAssignsToGlobalVariable = false;
 	 	currentMethodTags = emptyNameableList;
+	 	currentMethodComputedTags = emptyNameableList;
 //    	DetailAST aMethodNameAST = methodDef.findFirstToken(TokenTypes.IDENT);
 //    	currentMethodName = aMethodNameAST.getText();
     	currentMethodName = getName(methodDef);
@@ -465,7 +474,9 @@ ContinuationProcessor{
     	currentMethodType = aTypeFullIdent.getText();
         }
     	currentMethodAST = methodDef;
-    	maybeVisitVisible(methodDef);    	
+    	maybeVisitVisible(methodDef);  
+      	maybeVisitMethodTags(methodDef);
+
 	}
     public void visitParamDef(DetailAST paramDef) {
     	final DetailAST grandParentAST = paramDef.getParent().getParent();
@@ -777,15 +788,20 @@ ContinuationProcessor{
      public void visitMethodCall(DetailAST ast) {
     		if (!checkIncludeExcludeTagsOfCurrentType())
     			return;
-    	 String[] aNormalizedParts = registerMethodCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
- 		methodsCalledByCurrentMethod.add(aNormalizedParts);
+       	 CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast, currentTree);
+    	 methodsCalledByCurrentMethod.add(aCallInfo);
+
+//    	 String[] aNormalizedParts = registerMethodCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
+// 		methodsCalledByCurrentMethod.add(aNormalizedParts);
      }
      
      public void visitConstructorCall(DetailAST ast) {
     		if (!checkIncludeExcludeTagsOfCurrentType())
     			return;
-    	 String[] aNormalizedParts = registerConstructorCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
- 		methodsCalledByCurrentMethod.add(aNormalizedParts);
+    		CallInfo aCallInfo = registerConstructorCallAndtoNormalizedParts(ast, currentTree);
+//    	 String[] aNormalizedParts = registerConstructorCallAndtoNormalizedParts(ast, currentTree).getNotmalizedCall();
+// 		methodsCalledByCurrentMethod.add(aNormalizedParts);
+    	 methodsCalledByCurrentMethod.add(aCallInfo);
      }
      public void visitIdent(DetailAST anIdentAST) {
     		if (!checkIncludeExcludeTagsOfCurrentType())

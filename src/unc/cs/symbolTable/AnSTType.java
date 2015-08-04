@@ -17,7 +17,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public class AnSTType extends AnAbstractSTType implements STType {
-	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, computedTags, imports;	
+	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, computedTags, imports;
 //	protected final STMethod[] declaredMethods;
 //	protected final STMethod[] declaredConstructors;
 //	protected final STNameable[] interfaces;

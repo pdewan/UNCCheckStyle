@@ -78,9 +78,10 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	}
 
 	@Override
-	public String[][] methodsCalled() {
+	public CallInfo[] methodsCalled() {
 		// TODO Auto-generated method stub
-		return new String[0][0];
+//		return new String[0][0];
+		return new CallInfo[0];
 	}
 
 	@Override

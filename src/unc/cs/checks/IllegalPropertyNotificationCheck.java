@@ -27,12 +27,16 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     public static final String MSG_KEY_2 = "illegalPropertySpecifier";
     public static final String PROPERTY_CHANGE = "PropertyChangeEvent";
     public static final String FIRE_PROPERTY = "firePropertyChange";
+    
+    List<String> excludeProperties = new ArrayList();
    
     @Override
 	public int[] getDefaultTokens() {
+    	// do we need all of this?
 		return new int[] {
 				 TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
+				TokenTypes.ENUM_DEF,
 //				TokenTypes.ANNOTATION,
 				// TokenTypes.INTERFACE_DEF,
 				// TokenTypes.TYPE_ARGUMENTS,
@@ -48,21 +52,44 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
 				TokenTypes.METHOD_CALL };
 
 	}
+    public void setExcludeProperties(String[] aProperties) {
+    	excludeProperties = Arrays.asList(aProperties);
+    }
     protected Boolean processPropertyChange(List<DetailAST> aParameters) {
     	if (aParameters.size() < 2)
-    		return false;
+    		return true;
     	DetailAST aPropertyExpression = aParameters.get(1);
     	DetailAST aPropertySpecifier = getLastDescendent(aPropertyExpression);
     	String aPropertySpecifierText = aPropertySpecifier.getText();
-
+    	DetailAST aTreeAST = getEnclosingTreeDeclaration(aPropertySpecifier);
+    	DetailAST aTypeAST = getEnclosingTypeDeclaration(aPropertySpecifier);
+    	String aTypeName = getName(aTypeAST);
+    	
+    	
     	if (aPropertySpecifier.getType() != TokenTypes.STRING_LITERAL) {
-    		log ( aPropertySpecifier.getLineNo(),MSG_KEY_2, aPropertySpecifierText);
+//    		log ( aPropertySpecifier.getLineNo(),MSG_KEY_2, aPropertySpecifierText);
+    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , MSG_KEY_2);
     		return true; // do not wnat super class to give error with msgKey();
     	}
     	String aPropertyName = maybeStripQuotes(aPropertySpecifierText);
-    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+    	if (excludeProperties.contains(aPropertyName))
+    			return true;
+//    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+
     	if (anSTType == null) return null;
-    	return anSTType.hasActualProperty(aPropertyName);    	
+    	Boolean hasProperty = anSTType.hasActualProperty(aPropertyName);
+    	if (hasProperty == null)
+    		return null;
+    	if (!hasProperty) {
+//    		log ( aPropertySpecifier.getLineNo(),MSG_KEY, aPropertySpecifierText);
+    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText );
+
+    		return true; // do not want super class to give message
+    	}
+//    	return anSTType.hasActualProperty(aPropertyName);   
+    	return true;
+    	
     }
 
 	@Override

@@ -13,6 +13,7 @@ import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.AnSTTypeFromClass;
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
@@ -94,7 +95,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodComputedTags.toArray(dummyArray),
     			
     				currentMethodAssignsToGlobalVariable,
-    				methodsCalledByCurrentMethod.toArray(new String[0][0]));
+//    				methodsCalledByCurrentMethod.toArray(new String[0][0]));
+			        methodsCalledByCurrentMethod.toArray(new CallInfo[0]));
+
     		if (currentMethodIsConstructor)
     			stConstructors.add(anSTMethod);
     		else

@@ -78,9 +78,11 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 	}
 
 	@Override
-	public String[][] methodsCalled() {
+	public CallInfo[] methodsCalled() {
 		// TODO Auto-generated method stub
-		return new String[0][0];
+//		return new String[0][0];
+		return new CallInfo[0];
+
 	}
 
 	@Override

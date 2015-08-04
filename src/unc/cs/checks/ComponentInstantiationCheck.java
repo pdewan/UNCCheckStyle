@@ -73,7 +73,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 
 	public Boolean componentInstantiated(String anInstantiatedTypeName, DetailAST aTreeAST) {
 		if (isInterface || isEnum)
-			return true;
+			return false;
 		DetailAST aClassDefAST = getClassDef(aTreeAST);
 		DetailAST aTypeAST = aClassDefAST.findFirstToken(TokenTypes.IDENT);
 		String aTypeName = FullIdent.createFullIdent(aTypeAST).getText();
@@ -81,9 +81,9 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		STType anInstantiatingSTClass = SymbolTableFactory
 				.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		if (anInstantiatingSTClass == null)
-			return true; // multiple classes with short name, just give up
+			return false; // multiple classes with short name, just give up
 		if (anInstantiatingSTClass.isEnum() || anInstantiatingSTClass.isInterface())
-			return true;
+			return false;
 		if (anInstantiatingSTClass == null)
 			return null; // this should never happen
 		Map<String, PropertyInfo> aPropertyInfos = anInstantiatingSTClass
@@ -119,8 +119,11 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	// constructor or initializing variable declaration
 	public Boolean inConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
 		
-		return (aTreeAST == currentTree) && (currentMethodName == null || //
-				currentMethodIsConstructor || AnSTMethod.isInit(currentMethodName));
+		return (aTreeAST == currentTree) && (
+				currentMethodName == null || //
+				currentMethodIsConstructor || 
+				AnSTMethod.isInit(currentMethodName) || 
+				!currentMethodIsInstance);
 ////		DetailAST aTypeAST = ast.getFirstChild();
 //		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
 //		String anInstantiatedTypeName = anIdentifierType.getText();

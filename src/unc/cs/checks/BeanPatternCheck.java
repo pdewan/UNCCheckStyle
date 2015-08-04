@@ -16,11 +16,21 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class BeanPatternCheck extends ExpectedGettersCheck {
-	String patternName;
+	String specifiedPatternName;
 
 	public BeanPatternCheck() {
 		super.setExpectedPropertiesOfType(composeProperties());
-		patternName = composePatternName();
+		specifiedPatternName = composePatternName();
+		
+	}
+	
+	public Boolean checkIncludeExcludeTagsOfCurrentType() {
+		STType anSTType = SymbolTableFactory.getSymbolTable().
+				getSTClassByFullName(fullTypeName);
+		STNameable aStructurePattern = anSTType.getStructurePatternName();
+		return super.checkIncludeExcludeTagsOfCurrentType() &&
+				aStructurePattern != null &&
+						aStructurePattern.getName().equals(specifiedPatternName);
 	}
 
 	public abstract String composeProperties();

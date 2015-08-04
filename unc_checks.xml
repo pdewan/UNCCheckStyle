@@ -186,7 +186,8 @@
 		
 		 </module>
 		<module name="IllegalPropertyNotification">
-			<property name="includeTypeTags" value="*" />			
+			<property name="includeTypeTags" value="*" />
+			<property name="excludeProperties" value="this" />			
 		
 		</module>		
 		<module name="MissingActualProperty">
