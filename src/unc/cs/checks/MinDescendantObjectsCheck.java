@@ -12,10 +12,10 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class MinDescendantObjectsCheck extends DescendentPropertiesCheck {
-	public static final String MSG_KEY = "minDescendentObjects";
+	public static final String MSG_KEY = "minDescendantObjects";
 //	protected Map<String, Integer> typeToInt = new Hashtable<>();
 
-	protected int minObjectDescendents = 1;
+	protected int minObjectDescendants = 1;
 	
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -98,7 +98,7 @@ public class MinDescendantObjectsCheck extends DescendentPropertiesCheck {
 	
 	
 	
-	public void setMinObjectDescendents(String[] newVal) {
+	public void setMinObjectDescendants(String[] newVal) {
 		for (String aString:newVal) {
 			setIntValueOfType(aString);
 		}
@@ -123,7 +123,7 @@ public class MinDescendantObjectsCheck extends DescendentPropertiesCheck {
 		if (aType != null)
 			aMinDescendents = getInt(aType);
 		else
-			aMinDescendents = minObjectDescendents;
+			aMinDescendents = minObjectDescendants;
 		Boolean aDescendentsBuilt = super.doPendingCheck(anAST, aTree);
 		if (aDescendentsBuilt == null)
 			return null;
@@ -133,7 +133,7 @@ public class MinDescendantObjectsCheck extends DescendentPropertiesCheck {
 			if (!isPrimitive(aTypes))
 				aNumDescendents++;
 		}
-		if (aNumDescendents >= minObjectDescendents) 
+		if (aNumDescendents >= minObjectDescendants) 
 			return true;		
 		String aSourceName = shortFileName(astToFileContents.get(aTree)
 				.getFilename());

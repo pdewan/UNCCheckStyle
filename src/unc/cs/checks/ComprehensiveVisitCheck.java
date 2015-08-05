@@ -1341,6 +1341,61 @@ ContinuationProcessor{
 			return null;
 				
 		}
+		// move this up to ComprehensiveVisitCheck
+		protected void log(DetailAST ast, DetailAST aTreeAST, String anExplanation) {
+//			String aSourceName =
+//					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+//			if (aTreeAST == currentTree) {
+//				log(ast.getLineNo(),
+//						 msgKey(),
+//						aMethodName, 
+//						aSourceName + ":" + ast.getLineNo());
+//			} else {
+//				log(0, msgKey(), aMethodName,
+//						aSourceName + ":"
+//								+ ast.getLineNo());
+//			}
+			log(ast, aTreeAST, anExplanation, msgKey());
+			
+
+		}
+		protected void log(DetailAST ast, DetailAST aTreeAST, String anExplanation, String aMessageKey) {
+			String aLongFileName = aTreeAST == currentTree?getFileContents().getFilename():
+				astToFileContents.get(aTreeAST).getFilename();
+			String aSourceName =
+					 shortFileName(aLongFileName);
+//			String aSourceName =
+//					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+			if (aTreeAST == currentTree) {
+				if (anExplanation != null) {
+				log(ast.getLineNo(),
+//						 msgKey(),
+						aMessageKey,
+						anExplanation, 
+						aSourceName + ":" + ast.getLineNo());
+				} else {
+					log(ast.getLineNo(),
+//							 msgKey(),
+							aMessageKey, 
+							aSourceName + ":" + ast.getLineNo());
+				}
+			} else {
+				if (anExplanation != null) {
+				log(0, 
+//						msgKey(), 
+						aMessageKey,
+						anExplanation,
+						aSourceName + ":"
+								+ ast.getLineNo());
+				} else {
+					log(0, 
+//							msgKey(), 
+							aMessageKey,
+							aSourceName + ":"
+									+ ast.getLineNo());
+				}
+			}
+		}
 	    public void doVisitToken(DetailAST ast) {
 //	    	System.out.println("Check called:" + MSG_KEY);
 			switch (ast.getType()) {

@@ -178,7 +178,7 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
 		List<String> aPeerTypes = filterTypes(anSTType.getPeerTypes(), aTypeName);
 		if (aPeerTypes == null) 
 			return null;
-		System.out.println("Peer Types" + aPeerTypes);
+//		System.out.println("Peer Types" + aPeerTypes);
 		
 		for (String aPeerType:aPeerTypes) {
 //			List<STMethod> aCommonMethods = filterByIncludeAndExcludeSignatiures(anSTType.methodsCommonWith(aPeerType));

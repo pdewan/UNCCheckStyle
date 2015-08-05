@@ -80,7 +80,7 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
     	Collection<PropertyInfo> aCommonProperties = filterByIncludeAndExcludeProperties(anSTType.propertiesCommonWith(aPeerType));
 		if (aCommonProperties == null)
 			return null;
-		System.out.println (anSTType.getName() + " common properties " + aPeerType + " = " + aCommonProperties);
+//		System.out.println (anSTType.getName() + " common properties " + aPeerType + " = " + aCommonProperties);
 		List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 		if (aCommonSuperTypes == null)
 			return null;
@@ -140,7 +140,7 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 		List<String> aPeerTypes = filterTypes(anSTType.getPeerTypes(), aTypeName);
 		if (aPeerTypes == null) 
 			return null;
-		System.out.println("Peer Types" + aPeerTypes);
+//		System.out.println("Peer Types" + aPeerTypes);
 		
 		for (String aPeerType:aPeerTypes) {
 //			List<PropertyInfo> aCommonProperties = anSTType.propertiesCommonWith(aPeerType);

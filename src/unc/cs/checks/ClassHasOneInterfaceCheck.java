@@ -50,7 +50,7 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
 		if (anAllInterfaces == null)
 			return null;
-		return anAllInterfaces. size() <= 1; 
+		return anAllInterfaces. size() <= 1; // 0 will be flagged by at least one interface check
 //		return	anSTClass.getAllInterfaces().size() <= 1;
 
 	}

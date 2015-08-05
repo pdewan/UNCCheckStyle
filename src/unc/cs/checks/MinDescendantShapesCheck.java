@@ -12,7 +12,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class MinDescendantShapesCheck extends DescendentPropertiesCheck {
-	public static final String MSG_KEY = "minDescendentShapes";
+	public static final String MSG_KEY = "minDescendantShapes";
 //	protected Map<String, Integer> typeToInt = new Hashtable<>();
 
 	protected int minShapeDescendents = 1;
@@ -98,7 +98,7 @@ public class MinDescendantShapesCheck extends DescendentPropertiesCheck {
 	
 	
 	
-	public void setMinShapeDescendents(String[] newVal) {
+	public void setMinShapeDescendants(String[] newVal) {
 		for (String aString:newVal) {
 			setIntValueOfType(aString);
 		}

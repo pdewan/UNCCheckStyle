@@ -50,44 +50,42 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 	// protected boolean typeCheck(STType anSTClass) {
 	// return true; // we probably will not flag the type
 	// }
-// move this up to ComprehensiveVisitCheck
-	protected void log(DetailAST ast, DetailAST aTreeAST, String aMethodName) {
+//// move this up to ComprehensiveVisitCheck
+//	protected void log(DetailAST ast, DetailAST aTreeAST, String anExplanation) {
+////		String aSourceName =
+////				 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+////		if (aTreeAST == currentTree) {
+////			log(ast.getLineNo(),
+////					 msgKey(),
+////					aMethodName, 
+////					aSourceName + ":" + ast.getLineNo());
+////		} else {
+////			log(0, msgKey(), aMethodName,
+////					aSourceName + ":"
+////							+ ast.getLineNo());
+////		}
+//		log(ast, aTreeAST, anExplanation, msgKey());
+//		
+//
+//	}
+//	protected void log(DetailAST ast, DetailAST aTreeAST, String anExplanation, String aMessageKey) {
 //		String aSourceName =
 //				 shortFileName(astToFileContents.get(aTreeAST).getFilename());
 //		if (aTreeAST == currentTree) {
 //			log(ast.getLineNo(),
-//					 msgKey(),
-//					aMethodName, 
+////					 msgKey(),
+//					aMessageKey,
+//					anExplanation, 
 //					aSourceName + ":" + ast.getLineNo());
 //		} else {
-//			log(0, msgKey(), aMethodName,
+//			log(0, 
+////					msgKey(), 
+//					aMessageKey,
+//					anExplanation,
 //					aSourceName + ":"
 //							+ ast.getLineNo());
 //		}
-		log(ast, aTreeAST, aMethodName, msgKey());
-		
-
-	}
-	protected void log(DetailAST ast, DetailAST aTreeAST, String aMethodName, String aMessageKey) {
-		String aSourceName =
-				 shortFileName(astToFileContents.get(aTreeAST).getFilename());
-		if (aTreeAST == currentTree) {
-			log(ast.getLineNo(),
-//					 msgKey(),
-					aMessageKey,
-					aMethodName, 
-					aSourceName + ":" + ast.getLineNo());
-		} else {
-			log(0, 
-//					msgKey(), 
-					aMessageKey,
-					aMethodName,
-					aSourceName + ":"
-							+ ast.getLineNo());
-		}
-		
-
-	}
+//	}
 
 	protected abstract Boolean check(DetailAST ast, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo);
