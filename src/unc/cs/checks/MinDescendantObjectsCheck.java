@@ -11,11 +11,11 @@ import unc.cs.symbolTable.SymbolTableFactory;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class MinDescendentShapesCheck extends DescendentPropertiesCheck {
-	public static final String MSG_KEY = "minDescendentShapes";
+public class MinDescendantObjectsCheck extends DescendentPropertiesCheck {
+	public static final String MSG_KEY = "minDescendentObjects";
 //	protected Map<String, Integer> typeToInt = new Hashtable<>();
 
-	protected int minShapeDescendents = 1;
+	protected int minObjectDescendents = 1;
 	
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -98,7 +98,7 @@ public class MinDescendentShapesCheck extends DescendentPropertiesCheck {
 	
 	
 	
-	public void setMinShapeDescendents(String[] newVal) {
+	public void setMinObjectDescendents(String[] newVal) {
 		for (String aString:newVal) {
 			setIntValueOfType(aString);
 		}
@@ -113,11 +113,9 @@ public class MinDescendentShapesCheck extends DescendentPropertiesCheck {
 	}
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(
-//						getName(getEnclosingTypeDeclaration(aTree)));
-		STType anSTType = getSTType(aTree);
-
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(
+						getName(getEnclosingTypeDeclaration(aTree)));
 		if (anSTType.isEnum())
 			return true;
 		String aType = findMatchingType(typeToInt.keySet(), anSTType);
@@ -125,19 +123,18 @@ public class MinDescendentShapesCheck extends DescendentPropertiesCheck {
 		if (aType != null)
 			aMinDescendents = getInt(aType);
 		else
-			aMinDescendents = minShapeDescendents;
+			aMinDescendents = minObjectDescendents;
 		Boolean aDescendentsBuilt = super.doPendingCheck(anAST, aTree);
 		if (aDescendentsBuilt == null)
 			return null;
 		int aNumDescendents = 0;
 		for (String aKey:propertyToTypes.keySet()) {
 			List<String> aTypes = propertyToTypes.get(aKey);
-			if (isShape(aTypes))
+			if (!isPrimitive(aTypes))
 				aNumDescendents++;
 		}
-		if (aNumDescendents >= minShapeDescendents) 
-			return true;
-				
+		if (aNumDescendents >= minObjectDescendents) 
+			return true;		
 		String aSourceName = shortFileName(astToFileContents.get(aTree)
 				.getFilename());
 		if (aTree == currentTree) {

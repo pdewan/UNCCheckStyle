@@ -161,12 +161,12 @@
 			<property name="minObjectComponents" value="@Composite=3" />
 			<property name="includeTypeTags" value="Composite" />
 		</module>
-		<module name="MinDescendentObjects">
-			<property name="minObjectDescendents" value="@Composite=5" />
+		<module name="MinDescendantObjects">
+			<property name="minObjectDescendants" value="@Composite=5" />
 			<property name="includeTypeTags" value="Composite" />
 		</module>
-		<module name="MinDescendentShapes">
-			<property name="minShapeDescendents" value="@Composite=2" />
+		<module name="MinDescendantShapes">
+			<property name="minShapeDescendants" value="@Composite=2" />
 			<property name="includeTypeTags" value="Composite" />
 		</module>
 		<!-- <module name="ISATypes" /> -->
