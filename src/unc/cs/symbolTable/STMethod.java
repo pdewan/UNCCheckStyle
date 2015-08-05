@@ -32,4 +32,5 @@ public interface STMethod extends STNameable{
 	Set<STMethod> getInternallyCallingMethods();
 	Boolean callsInternally(STMethod anSTMethod);
 	Boolean calls(STMethod anSTMethod);
+	boolean isConstructor();
 }

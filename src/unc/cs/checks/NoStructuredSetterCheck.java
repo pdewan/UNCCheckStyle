@@ -17,7 +17,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "noStructuredSetter";
-	protected Set<String> excludeStructuredTypes = new HashSet();
+//	protected Set<String> excludeStructuredTypes = new HashSet();
 
 	
 	@Override
@@ -30,9 +30,9 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 		};
 	}
 	
-	public void setExcludeStructuredTypes(String[] newVal) {
-		excludeStructuredTypes =  new HashSet(Arrays.asList(newVal));
-	}
+//	public void setExcludeStructuredTypes(String[] newVal) {
+//		excludeStructuredTypes =  new HashSet(Arrays.asList(newVal));
+//	}
 
 	@Override
 	protected String msgKey() {
@@ -50,6 +50,32 @@ public void doFinishTree(DetailAST ast) {
 		super.doFinishTree(ast);
 
 	}
+
+//	protected Boolean isStructuredProperty(PropertyInfo aPropertyInfo) {
+//		String aType = aPropertyInfo.getType();
+//		STNameable aSetter = aPropertyInfo.getSetter();
+//		if (aSetter instanceof AnSTMethodFromMethod) 
+//			return false;// external class
+//		if (isOEAtomic(aType) || aSetter == null) 
+//			return false;
+//		STType aPropertyType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType);
+//		if (aPropertyType != null) {
+//			if (!aPropertyType.hasSetter())
+//				return false; // immutable
+//			STNameable[] aTags = aPropertyType.getComputedTags();
+////			STNameable[] aTags = aPropertyType.getAllComputedTags();
+//			if (excludeStructuredTypes.size() > 0) {
+//			if (aTags == null)
+//				return null;
+//			if (matchesSomeSpecificationTags(Arrays.asList(aTags), excludeStructuredTypes))
+//				return false;
+//			}
+//			return true;
+//		}
+//		return null;
+//			
+//	}
+
 	@Override
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
@@ -65,23 +91,30 @@ public void doFinishTree(DetailAST ast) {
 			PropertyInfo aPropertyInfo = aPropertyInfos.get(aPropertyName);
 			String aType = aPropertyInfo.getType();
 			STNameable aSetter = aPropertyInfo.getSetter();
-			if (aSetter instanceof AnSTMethodFromMethod) continue;// external class
-			if (isOEAtomic(aType) || aSetter == null) continue;
-			STType aPropertyType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType);
-			if (aPropertyType != null) {
-				if (!aPropertyType.hasSetter())
-					continue; // immutable
-				STNameable[] aTags = aPropertyType.getComputedTags();
-//				STNameable[] aTags = aPropertyType.getAllComputedTags();
-				if (excludeStructuredTypes.size() > 0) {
-				if (aTags == null)
-					return null;
-				if (matchesSomeSpecificationTags(Arrays.asList(aTags), excludeStructuredTypes))
-					continue;
-				}
-				
-				
-			}
+			if (aSetter == null)
+				return true;
+//			if (aSetter instanceof AnSTMethodFromMethod) continue;// external class
+//			if (isOEAtomic(aType) || aSetter == null) continue;
+//			STType aPropertyType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType);
+//			if (aPropertyType != null) {
+//				if (!aPropertyType.hasSetter())
+//					continue; // immutable
+//				STNameable[] aTags = aPropertyType.getComputedTags();
+////				STNameable[] aTags = aPropertyType.getAllComputedTags();
+//				if (excludeStructuredTypes.size() > 0) {
+//				if (aTags == null)
+//					return null;
+//				if (matchesSomeSpecificationTags(Arrays.asList(aTags), excludeStructuredTypes))
+//					continue;
+//				}
+//				
+//				
+//			}
+			Boolean isStructuredType = isStructuredProperty(aPropertyInfo);
+			if (isStructuredType == null)
+				return null;
+			if (!isStructuredType)
+				continue;
 			DetailAST aSetterAST = aSetter.getAST();
 			log(aSetterAST.getLineNo(), msgKey(), aPropertyName, aType);
 			retVal = false;

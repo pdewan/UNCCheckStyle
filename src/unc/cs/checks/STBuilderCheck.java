@@ -90,6 +90,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				aParameterTypes, 
     				currentMethodIsPublic || isInterface,  
     				currentMethodIsInstance || isInterface,
+    				currentMethodIsConstructor,
     				currentMethodType,
     				currentMethodIsVisible,
     				currentMethodTags.toArray(dummyArray),

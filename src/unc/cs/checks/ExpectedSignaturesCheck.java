@@ -118,7 +118,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			aParameterTypes[i] = aParameterTypes[i].trim();
 			
 		}
-		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, aReturnType, true, null, null, false, null);
+		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, false, aReturnType, true, null, null, false, null);
 		
 	}
 

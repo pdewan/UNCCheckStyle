@@ -11,10 +11,12 @@ import java.util.Set;
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import sun.reflect.generics.scope.MethodScope;
 import unc.cs.symbolTable.ACallInfo;
+import unc.cs.symbolTable.AnSTMethodFromMethod;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.CallInfo;
+import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
@@ -84,6 +86,9 @@ ContinuationProcessor{
 
 	Map<DetailAST, FileContents> astToFileContents = new HashMap();
 	Map<String, DetailAST> fileNameToTree = new HashMap();
+	
+	protected Set<String> excludeStructuredTypes = new HashSet();
+
 
 	
 	@Override
@@ -1242,6 +1247,11 @@ ContinuationProcessor{
 //	    		result = result.getLastChild();    	
 //	    	return result;    	
 //	    }
+	    
+	    // to share with a couple of subclsases
+	    public void setExcludeStructuredTypes(String[] newVal) {
+			excludeStructuredTypes =  new HashSet(Arrays.asList(newVal));
+		}
 	    /*
 	     * checking if the target of call is an instantiated type
 	     */
@@ -1307,6 +1317,30 @@ ContinuationProcessor{
 	    	aComputedList.add(new AnSTNameable(currentMethodNameAST, currentMethodName));
 	    	currentMethodComputedTags = aComputedList;
 	    }
+		protected Boolean isStructuredProperty(PropertyInfo aPropertyInfo) {
+			String aType = aPropertyInfo.getType();
+			STNameable aSetter = aPropertyInfo.getSetter();
+			if (aSetter instanceof AnSTMethodFromMethod) 
+				return false;// external class
+			if (isOEAtomic(aType) || aSetter == null) 
+				return false;
+			STType aPropertyType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aType);
+			if (aPropertyType != null) {
+				if (!aPropertyType.hasSetter())
+					return false; // immutable
+				STNameable[] aTags = aPropertyType.getComputedTags();
+//				STNameable[] aTags = aPropertyType.getAllComputedTags();
+				if (excludeStructuredTypes.size() > 0) {
+				if (aTags == null)
+					return null;
+				if (matchesSomeSpecificationTags(Arrays.asList(aTags), excludeStructuredTypes))
+					return false;
+				}
+				return true;
+			}
+			return null;
+				
+		}
 	    public void doVisitToken(DetailAST ast) {
 //	    	System.out.println("Check called:" + MSG_KEY);
 			switch (ast.getType()) {

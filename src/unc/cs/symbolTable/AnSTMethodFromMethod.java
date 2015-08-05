@@ -123,6 +123,11 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return getTags();
 	}
+	@Override
+	public boolean isConstructor() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 
 
 }

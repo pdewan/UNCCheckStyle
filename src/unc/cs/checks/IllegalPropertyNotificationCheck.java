@@ -5,9 +5,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import unc.cs.symbolTable.AnAbstractSTType;
 import unc.cs.symbolTable.CallInfo;
+import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -23,12 +26,18 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
      * A key is pointing to the warning message text in "messages.properties"
      * file.
      */
-    public static final String MSG_KEY = "illegalPropertyNotification";
-    public static final String MSG_KEY_2 = "illegalPropertySpecifier";
+    public static final String INVALID_KEY = "invalidPropertyNotification";
+    public static final String MISSING_KEY = "missingPropertyNotification";
+    public static final String STRUCTURED_KEY = "structuredPropertyNotification";
     public static final String PROPERTY_CHANGE = "PropertyChangeEvent";
     public static final String FIRE_PROPERTY = "firePropertyChange";
     
+    
+    
     List<String> excludeProperties = new ArrayList();
+    
+	protected Set<String> excludeStructuredTypes = new HashSet();
+
    
     @Override
 	public int[] getDefaultTokens() {
@@ -68,7 +77,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	
     	if (aPropertySpecifier.getType() != TokenTypes.STRING_LITERAL) {
 //    		log ( aPropertySpecifier.getLineNo(),MSG_KEY_2, aPropertySpecifierText);
-    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , MSG_KEY_2);
+    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , INVALID_KEY);
     		return true; // do not wnat super class to give error with msgKey();
     	}
     	String aPropertyName = maybeStripQuotes(aPropertySpecifierText);
@@ -78,15 +87,35 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 
     	if (anSTType == null) return null;
-    	Boolean hasProperty = anSTType.hasActualProperty(aPropertyName);
-    	if (hasProperty == null)
-    		return null;
-    	if (!hasProperty) {
-//    		log ( aPropertySpecifier.getLineNo(),MSG_KEY, aPropertySpecifierText);
-    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText );
+    	Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
+		if (aPropertyInfos == null)
+			return null; // should not happen
+	
+		PropertyInfo aPropertyInfo = AnAbstractSTType.getPropertyInfo(aPropertyName, aPropertyInfos);
 
+		if (aPropertyInfo == null) {
+			log (aPropertySpecifier, aTreeAST, aPropertySpecifierText, MISSING_KEY );
     		return true; // do not want super class to give message
+    	
+		}
+    	Boolean isStructuredProperty = isStructuredProperty(aPropertyInfo);
+    	if (isStructuredProperty == null)
+    		return null;
+//    	Boolean hasProperty = anSTType.hasActualProperty(aPropertyName);
+//    	if (hasProperty == null)
+//    		return null;
+//    	if (!hasProperty) {
+////    		log ( aPropertySpecifier.getLineNo(),MSG_KEY, aPropertySpecifierText);
+//    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText );
+//
+//    		return true; // do not want super class to give message
+//    	}
+    	if (isStructuredProperty) {
+    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , STRUCTURED_KEY);
+    		return true;
+
     	}
+    	
 //    	return anSTType.hasActualProperty(aPropertyName);   
     	return true;
     	
@@ -104,7 +133,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
 	}
 	@Override
 	protected String msgKey() {
-		return MSG_KEY;
+		return INVALID_KEY;
 	}
 	
 	

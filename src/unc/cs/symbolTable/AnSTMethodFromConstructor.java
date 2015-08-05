@@ -122,5 +122,10 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		return getTags();
 	}
+	@Override
+	public boolean isConstructor() {
+		// TODO Auto-generated method stub
+		return true;
+	}
 
 }

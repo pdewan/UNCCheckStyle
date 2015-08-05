@@ -12,6 +12,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	final boolean isProcedure;
 	final boolean isInstance;
 	final boolean isVisible;
+	final boolean isConstructor;
 //	protected final boolean isGetter;
 //	protected final boolean isSetter;
 //	protected final boolean isInit;
@@ -28,7 +29,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	
 	public AnSTMethod(DetailAST ast, String name, 
 			String declaringClass, String[] parameterTypes,
-			boolean isPublic, boolean anIsInstance, String returnType,
+			boolean isPublic, boolean anIsInstance, 
+			boolean anIsConstructor,
+			String returnType,
 			boolean anIsVisible, 
 			STNameable[] aTags,
 			STNameable[] aComputedTags,
@@ -52,6 +55,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		computedTags = aComputedTags;
 		assignsToGlobal = isAssignsToGlobal;
 		methodsCalled = aMethodsCalled;
+		isConstructor = anIsConstructor;
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
@@ -177,5 +181,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		@Override
 		public boolean isParsedMethod() {
 			return true;
+		}
+		@Override
+		public boolean isConstructor() {
+			return isConstructor;
 		}
 }

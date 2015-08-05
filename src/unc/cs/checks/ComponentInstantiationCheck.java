@@ -129,19 +129,37 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	}
 	
 	public Boolean isCalledByConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
-		if (aTreeAST != currentTree) {
-			System.err.println("constructor check should not be pending check");
-			return true;
+//		if (aTreeAST != currentTree) {
+//			System.err.println("constructor check should not be pending check");
+//			return true;
+//		}
+		STType anSTType;
+		String aMethodName;
+		if (aTreeAST == currentTree) {
+			aMethodName = currentMethodName;
+			anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		} else {
+
+			aMethodName = getEnclosingMethodName(ast);
+			String aClassName = getEnclosingShortClassName(ast);
+			anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aClassName);
+			if (anSTType == null)
+				return true; //benefit of doubt with duplicate names
+		}
+		STMethod[] anSTMethods = anSTType.getDeclaredMethods(aMethodName);
+		for (STMethod anSTMethod:anSTMethods) {
+			if (anSTMethod.isInit() || !anSTMethod.isInstance() || anSTMethod.isConstructor())
+				return true;
 		}
 		
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		STMethod[] aConstructors = anSTType.getDeclaredConstructors();
 		STMethod[] anInits = anSTType.getDeclaredInitMethods();
 
 		
 		
 
-		STMethod[] anSTMethods = anSTType.getDeclaredMethods(currentMethodName);
+//		STMethod[] anSTMethods = anSTType.getDeclaredMethods(currentMethodName);
 		for (STMethod aCalledMethod:anSTMethods) {
 			if (isCalledInternallyBy(aConstructors, aCalledMethod) || 
 					isCalledInternallyBy(anInits, aCalledMethod)) {
@@ -206,8 +224,10 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	void visitInstantiation(DetailAST ast) {
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
-		if (doPendingCheck(ast, currentTree) == null)
+		if (doPendingCheck(ast, currentTree) == null) {
+//			System.err.println ("Component instantiation check returned null");
 				pendingChecks().add(ast);
+		}
 
 	}
 
