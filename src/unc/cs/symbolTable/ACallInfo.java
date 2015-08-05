@@ -46,7 +46,7 @@ public class ACallInfo implements CallInfo {
 		return actuals;
 	}
 	@Override
-	public String[] getNotmalizedCall() {
+	public String[] getNormalizedCall() {
 		return notmalizedCall;
 	}
 

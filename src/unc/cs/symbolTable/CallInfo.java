@@ -14,6 +14,6 @@ public interface CallInfo {
 
 	List<DetailAST> getActuals();
 
-	String[] getNotmalizedCall();
+	String[] getNormalizedCall();
 
 }

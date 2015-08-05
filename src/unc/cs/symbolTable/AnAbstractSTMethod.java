@@ -1,6 +1,13 @@
 package unc.cs.symbolTable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import unc.cs.checks.STTypeVisited;
+import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -12,6 +19,18 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //	final boolean isProcedure;
 //	final boolean isInstance;
 //	final boolean isVisible;
+	STType declaringSTType;
+	Set<STMethod> allCalledMethods;
+	Set<STMethod> allInternallyCalledMethods;
+	
+	// to avoid duplicates, set
+	Set<STMethod> allCallingMethods;
+	Set<STMethod> allInternallyCallingMethods;
+	Set<STMethod> callingMethods;
+	Set<STMethod> internallyCallingMethods;
+
+
+
 	protected  boolean isGetter;
 	protected  boolean isSetter;
 	protected  boolean isInit;
@@ -147,6 +166,150 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			}
 			return super.equals(anotherObject);
 		}
+		
+		@Override
+		public STType getDeclaringSTType() {
+			if (declaringSTType == null) {
+				declaringSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(getDeclaringClass());
+			}
+			return declaringSTType;
+			
+		}
+		static STMethod[] emptySTMethods = {};
+		
+		public static STMethod[] toSTMethods (CallInfo aCallInfo) {
+			
+			String[] aCalledMethod = aCallInfo.getNormalizedCall();
+			String aCalledMethodName = aCalledMethod[1];
+			String aCalledMethodClassName = aCalledMethod[0];
+			if (aCalledMethod.length > 2 || aCalledMethodClassName == null || TagBasedCheck.isExternalClass(aCalledMethodClassName))
+				return emptySTMethods;
+			STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
+			if (aCalledMethodClass == null) {
+//				System.err.println("Null called method class:" + aCalledMethodClassName);
+				return null;
+			}
+			return aCalledMethodClass.getDeclaredMethods(aCalledMethodName);			
+		}
+		@Override
+		public Set<STMethod> getAllCalledMethods() {
+			if (allCalledMethods == null)
+				allCalledMethods = computeAllCalledMethods(this);
+			if (allCalledMethods != null)
+				setCalledMethods(this, allCalledMethods);
+			return allCalledMethods;
+		}
+		
+		@Override
+		public Set<STMethod> getAllCallingMethods() {
+			return allCallingMethods;
+		}
+		@Override
+		public Set<STMethod> getCallingMethods() {
+			return callingMethods;
+		}
+		@Override
+		public Set<STMethod> getInternallyCallingMethods() {
+			if (allInternallyCalledMethods == null)
+				allInternallyCalledMethods = computeAllInternallyCalledMethods(this);
+			if (allInternallyCalledMethods != null)
+				setCalledMethods(this, allInternallyCalledMethods);
+			return internallyCallingMethods;
+		}
+		@Override
+		public Set<STMethod> getAllInternallyCalledMethods() {
+			if (allInternallyCalledMethods == null)
+				allInternallyCalledMethods = computeAllInternallyCalledMethods(this);
+			return allInternallyCalledMethods;
+		}
+		@Override
+		public Set<STMethod> getAllInternallyCallingMethods() {
+			return allInternallyCallingMethods;
+		}
+		
+
+		public void addCaller(STMethod aMethod) {
+			if (callingMethods == null)
+				callingMethods = new HashSet();
+			callingMethods.add(aMethod);
+			if (aMethod.getDeclaringClass().equals(getDeclaringClass()))
+				internallyCallingMethods.add(aMethod);
+		}
+		
+		public static void setCalledMethods(STMethod aCallingMethod, Set<STMethod> aCalledMethods) {
+			for (STMethod aCalledMethod:aCalledMethods) {
+				aCalledMethod.addCaller(aCallingMethod);
+			}
+		}
+
+		public static Set<STMethod> computeAllCalledMethods (STMethod aMethod) {
+			Set<STMethod> result = new HashSet();
+//			STType aDeclaringType = aMethod.getDeclaringSTType();
+//			if (aDeclaringType == null) {
+//				System.err.println("Declaring type should not be null");
+//				return null;
+//			}
+			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			for (CallInfo aCallInfo:aCalledMethods) {
+				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+				if (anAllDirectlyCalledMethods == null)
+					return null;
+				result.addAll(Arrays.asList(anAllDirectlyCalledMethods));
+				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+//					aDirectlyCalledMethod.addCaller(aMethod);
+					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllCalledMethods();
+					if (anAllIndirectlyCalledMethods == null) {
+						return null;
+					}
+					result.addAll(anAllIndirectlyCalledMethods);
+				}
+			}
+			return result;			
+		}
+		
+		public static Set<STMethod> computeAllInternallyCalledMethods (STMethod aMethod) {
+			Set<STMethod> result = new HashSet();
+//			STType aDeclaringType = aMethod.getDeclaringSTType();
+//			if (aDeclaringType == null) {
+//				System.err.println("Declaring type should not be null");
+//				return null;
+//			}
+			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			for (CallInfo aCallInfo:aCalledMethods) {
+				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
+						continue;
+				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+				if (anAllDirectlyCalledMethods == null) {
+					System.err.println ("directly called methods should not be null");
+					return null;
+				}
+				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
+				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyCalledMethods();
+					if (anAllIndirectlyCalledMethods == null) {
+						return null;
+					}
+					result.addAll(anAllIndirectlyCalledMethods);
+				}
+			}
+			return result;
+			
+			
+		}
+		@Override
+		public Boolean callsInternally(STMethod anSTMethod) {
+			if (getAllInternallyCalledMethods() == null)
+				return null;
+			return getAllInternallyCalledMethods().contains(anSTMethod);
+			
+		}
+		@Override
+		public Boolean calls(STMethod anSTMethod) {
+			if (getAllCalledMethods() == null)
+				return null;
+			return getAllCalledMethods().contains(anSTMethod);			
+		}
+		
 
 //		@Override
 //		public boolean isParsedMethod() {

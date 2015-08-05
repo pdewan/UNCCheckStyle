@@ -180,7 +180,7 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 		// why do this check
 //		if (!checkTagsOfCurrentType())
 //			return true;
-		String[] aCallParts = aCallInfo.getNotmalizedCall();
+		String[] aCallParts = aCallInfo.getNormalizedCall();
 		String[] aNormalizedCallParts = aCallParts;
 		if (aCallParts.length > 2) { // cannot dissect it into a class 
 //		     return checkAtomic(aCalledMethodAST, aLongMethodName);

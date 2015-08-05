@@ -20,6 +20,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// protected STNameable[] declaredPropertyNames,
 	// declaredEditablePropertyNames;
 	// protected final STNameable[] imports;
+	protected STMethod[] initMethods;
+
 	protected STMethod[] declaredMethods; // initialized by subclass
 	protected STMethod[] methods; // initialized on demand
 	protected STNameable[] allComputedTags; // initialized on demand
@@ -131,6 +133,55 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		return retVal.toArray(emptyMethods);
 	}
 	
+	
+//	static STMethod[] emptySTMethods = {};
+//	
+//	public static STMethod[] toSTMethods (CallInfo aCallInfo) {
+//		
+//		String[] aCalledMethod = aCallInfo.getNormalizedCall();
+//		String aCalledMethodName = aCalledMethod[1];
+//		String aCalledMethodClassName = aCalledMethod[0];
+//		if (aCalledMethod.length > 2 || aCalledMethodClassName == null || TagBasedCheck.isExternalClass(aCalledMethodClassName))
+//			return emptySTMethods;
+//		STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
+//		if (aCalledMethodClass == null) {
+////			System.err.println("Null called method class:" + aCalledMethodClassName);
+//			return null;
+//		}
+//		return aCalledMethodClass.getMethods(aCalledMethodName);	
+//		
+//		
+//	}
+//
+//	public static STMethod[] initAllCalledAndCallingMethods (STMethod aMethod) {
+//		List<STMethod> result = new ArrayList();
+////		STType aDeclaringType = aMethod.getDeclaringSTType();
+////		if (aDeclaringType == null) {
+////			System.err.println("Declaring type should not be null");
+////			return null;
+////		}
+//		CallInfo[] aCalledMethods = aMethod.methodsCalled();
+//		for (CallInfo aCallInfo:aCalledMethods) {
+//			STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+//			if (anAllDirectlyCalledMethods == null)
+//				return null;
+//			result.addAll(Arrays.asList(anAllDirectlyCalledMethods));
+//			for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+//				STMethod[] anAllIndirectlyCalledMethods = initAllCalledAndCallingMethods(aDirectlyCalledMethod);
+//				if (anAllIndirectlyCalledMethods == null) {
+//					return null;
+//				}
+//				result.addAll(Arrays.asList(anAllIndirectlyCalledMethods));
+//			}
+//		}
+//		return result.toArray(emptySTMethods);
+//		
+//		
+//	}
+	
+	
+
+	
 	public STNameable[] computeAllComputedTags() {
 		List<STNameable> retVal = new ArrayList();
 		addToList(retVal, getComputedTags());
@@ -183,7 +234,19 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 
 	@Override
 	public STMethod getMethod(String aName, String[] aParameterTypes) {
-		STMethod[] aMethods = getMethods();
+//		STMethod[] aMethods = getMethods();
+//		if (aMethods == null) {
+//			return null;
+//		}
+		return getMethod(getMethods(), aName, aParameterTypes);
+//		for (STMethod aMethod : aMethods) {
+//			if (aMethod.getName().equals(aName)
+//					&& aMethod.getParameterTypes().equals(aParameterTypes))
+//				return aMethod;
+//		}
+//		return null;
+	}
+	public static STMethod getMethod(STMethod[] aMethods, String aName, String[] aParameterTypes) {
 		if (aMethods == null) {
 			return null;
 		}
@@ -193,6 +256,11 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				return aMethod;
 		}
 		return null;
+	}
+	@Override
+	public STMethod getDeclaredMethod(String aName, String[] aParameterTypes) {
+		return getMethod(getDeclaredMethods(), aName, aParameterTypes);
+
 	}
 
 	protected STMethod[] emptyMethodArray = new STMethod[0];
@@ -224,6 +292,24 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			else
 				aMethods = getDeclaredMethods();
 		}
+		for (STMethod aMethod : aMethods) {
+			if (aMethod.getName().equals(aName))
+				resultList.add(aMethod);
+		}
+		return resultList.toArray(emptyMethodArray);
+
+	}
+	@Override
+	public STMethod[] getDeclaredMethods(String aName) {
+		List<STMethod> resultList = new ArrayList();
+		STMethod[] aMethods = getDeclaredMethods();
+
+//		if (aMethods == null) {
+//			if (waitForSuperTypeToBeBuilt())
+//				return null;
+//			else
+//				aMethods = getDeclaredMethods();
+//		}
 		for (STMethod aMethod : aMethods) {
 			if (aMethod.getName().equals(aName))
 				resultList.add(aMethod);
@@ -1191,7 +1277,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	@Override
 	public List<String> getPublicInstanceSignatures() {
 		if (publicInstanceSignatures == null)
-		   publicInstanceSignatures = getPublicInstanceSignatures();
+		   publicInstanceSignatures = computePublicInstanceSignatures();
 		return publicInstanceSignatures;
 		
 //		List<String> result = new ArrayList();
@@ -1424,6 +1510,24 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				return true;
 		}
 		return retVal;
+	}
+	
+	static STMethod[] emptySTMethods = {};
+
+	public static STMethod[] computeInitMethods(STMethod[] aMethods) {
+		List<STMethod> result = new ArrayList();
+		for (STMethod aMethod: aMethods) {
+			if (aMethod.isInit())
+				result.add(aMethod);
+		}
+		return result.toArray(emptySTMethods);
+		
+	}
+	@Override
+	public STMethod[] getDeclaredInitMethods() {
+		if (initMethods == null)
+			initMethods = computeInitMethods(getDeclaredMethods());
+		return initMethods;
 	}
 	
 	// @Override

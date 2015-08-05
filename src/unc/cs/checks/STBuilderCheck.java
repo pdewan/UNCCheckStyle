@@ -27,6 +27,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class STBuilderCheck extends ComprehensiveVisitCheck{
+	protected STType currentSTType;
 	protected List<STMethod> stMethods = new ArrayList();
 	protected List<STMethod> stConstructors = new ArrayList();
 	public static final String MSG_KEY = "stBuilder";
@@ -137,6 +138,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     public void doBeginTree(DetailAST ast) {  
  		 super.doBeginTree(ast); 	
 // 		 System.out.println("Check" + checkAndFileDescription);
+ 		 	currentSTType = null;
  		 	stMethods.clear();
  		 	stConstructors.clear();
  		 	sTBuilderTree = ast;

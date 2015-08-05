@@ -216,7 +216,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
 		CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast, aTreeAST);
 //		String aNormalizedLongName = toLongName(aNormalizedParts);
-		String aNormalizedLongName = toLongName(aCallInfo.getNotmalizedCall());
+		String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 		String shortMethodName = toShortTypeName(aNormalizedLongName);
 
 

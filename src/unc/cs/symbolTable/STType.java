@@ -65,4 +65,7 @@ public interface STType extends STNameable{
 	STNameable[] getComputedTags();
 	boolean hasSetter();
 	STNameable[] getAllComputedTags();
+	STMethod[] getDeclaredInitMethods();
+	STMethod getDeclaredMethod(String aName, String[] aParameterTypes);
+	STMethod[] getDeclaredMethods(String aName);
 }

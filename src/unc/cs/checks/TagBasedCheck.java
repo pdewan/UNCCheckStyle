@@ -534,8 +534,8 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 }
 public Boolean checkIncludeExcludeTagsOfCurrentType() {
 	if (!hasIncludeTypeTags() && !hasExcludeTypeTags())
-//		return true; // all tags checked in this case
-		return false; // no tags checked in this case
+		return true; // all tags checked in this case
+//		return false; // no tags checked in this case
 	
 	if (fullTypeName == null) {
 //		System.err.println("Check called without type name being populated");

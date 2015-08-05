@@ -136,7 +136,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 			CallInfo[] aCalledMethods = aMethod.methodsCalled();
 			for (CallInfo aCallInfo: aCalledMethods) {
 //				if (!aCalledMethod[0].equals(fullTypeName)) break;
-				String[] aCalledMethod = aCallInfo.getNotmalizedCall();
+				String[] aCalledMethod = aCallInfo.getNormalizedCall();
 				String aCalledMethodName = aCalledMethod[1];
 				String aCalledMethodClassName = aCalledMethod[0];
 				if (aCalledMethod.length > 2 || aCalledMethodClassName == null || isExternalClass(aCalledMethodClassName))

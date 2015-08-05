@@ -108,6 +108,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		return isProcedure;
 	}
 	
+	
+	
+	
 //	@Override
 //	public boolean isSetter() {
 //		return isSetter;

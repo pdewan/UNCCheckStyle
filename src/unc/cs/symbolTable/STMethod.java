@@ -1,5 +1,7 @@
 package unc.cs.symbolTable;
 
+import java.util.Set;
+
 public interface STMethod extends STNameable{
 	String PARAMETER_SEPARATOR = ";";
 	String getDeclaringClass();
@@ -20,4 +22,14 @@ public interface STMethod extends STNameable{
 	boolean isInstance();
 	boolean isParsedMethod();
 	STNameable[] getComputedTags();
+	STType getDeclaringSTType();
+	void addCaller(STMethod aMethod);
+	public Set<STMethod> getAllCalledMethods();
+	public Set<STMethod> getAllCallingMethods() ;
+	public Set<STMethod> getAllInternallyCalledMethods() ;
+	public Set<STMethod> getAllInternallyCallingMethods() ;
+	Set<STMethod> getCallingMethods();
+	Set<STMethod> getInternallyCallingMethods();
+	Boolean callsInternally(STMethod anSTMethod);
+	Boolean calls(STMethod anSTMethod);
 }

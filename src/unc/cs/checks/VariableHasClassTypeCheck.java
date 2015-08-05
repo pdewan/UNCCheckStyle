@@ -13,6 +13,7 @@ import com.puppycrawl.tools.checkstyle.checks.AbstractFormatCheck;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -27,11 +28,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck implements
 		ContinuationProcessor {
 
-	public VariableHasClassTypeCheck() {
-		ContinuationNotifierFactory.getOrCreateSingleton()
-				.addContinuationProcessor(this);
-	}
-
+	
 	/**
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
@@ -45,38 +42,55 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * Actually ignored types not ncessary with deferred processing but reduces
 	 * size of pending checkables
 	 */
-	static final String[] IGNORED_TYPES = { "void", "int", "double", "float",
+	static final String[] PREDEFINED_IGNORED_TYPES = { "void", "int", "double", "float",
 			"boolean", "short", "char", "Integer", "Double", "Float",
 			"Boolean", "Short", "Character", "String", "Scanner", "List",
 			"HashSet", "Set" };
 
-	final static Set<String> ignoreTypesSet = new HashSet();
+	final  Set<String> ignoreTypesSet = new HashSet();
+	
+	
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF,
+		return new int[] { TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF, 
+				TokenTypes.PACKAGE_DEF, 
+				TokenTypes.CLASS_DEF,
 				TokenTypes.METHOD_DEF };
 	}
-
-	@Override
-	public void doVisitToken(DetailAST ast) {
-//		System.out.println("Check called:" + MSG_KEY);
-
-		switch (ast.getType()) {
-		case TokenTypes.METHOD_DEF:
-			visitMethodDef(ast);
-			break;
-		case TokenTypes.VARIABLE_DEF:
-			visitVariableDef(ast);
-			break;
-		case TokenTypes.PARAMETER_DEF:
-			visitParameterDef(ast);
-			break;
-
-		default:
-			throw new IllegalStateException(ast.toString());
-		}
+	
+	public VariableHasClassTypeCheck() {
+		ContinuationNotifierFactory.getOrCreateSingleton()
+				.addContinuationProcessor(this);
+		ignoreTypesSet.addAll(Arrays.asList(PREDEFINED_IGNORED_TYPES));
+		
 	}
+
+	
+	public void setIgnoredTypes(String[] anIgnoredClasses) {
+		ignoreTypesSet.addAll(Arrays.asList(anIgnoredClasses));
+	
+	}
+
+//	@Override
+//	public void doVisitToken(DetailAST ast) {
+////		System.out.println("Check called:" + MSG_KEY);
+//
+//		switch (ast.getType()) {
+//		case TokenTypes.METHOD_DEF:
+//			visitMethod(ast);
+//			break;
+//		case TokenTypes.VARIABLE_DEF:
+//			visitVariableDef(ast);
+//			break;
+//		case TokenTypes.PARAMETER_DEF:
+//			visitParameterDef(ast);
+//			break;
+//
+//		default:
+//			throw new IllegalStateException(ast.toString());
+//		}
+//	}
 
 	@Override
 	protected String msgKey() {
@@ -90,7 +104,8 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * @param methodDef
 	 *            method for check.
 	 */
-	private void visitMethodDef(DetailAST methodDef) {
+	@Override
+	public void visitMethod(DetailAST methodDef) {
 		// if (isCheckedMethod(methodDef)) {
 		maybeAddToPendingTypeChecks(methodDef);
 		// }
@@ -102,6 +117,7 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * @param paradef
 	 *            parameter list for check.
 	 */
+	@Override
 	public void visitParameterDef(DetailAST paradef) {
 		final DetailAST grandParentAST = paradef.getParent().getParent();
 
@@ -304,10 +320,10 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 //	}
 //	
 
-	static {
-		for (String aType : IGNORED_TYPES) {
-			ignoreTypesSet.add(aType);
-		}
-	}
+//	static {
+//		for (String aType : PREDEFINED_IGNORED_TYPES) {
+//			ignoreTypesSet.add(aType);
+//		}
+//	}
 
 }

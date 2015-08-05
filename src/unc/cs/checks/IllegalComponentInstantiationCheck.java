@@ -111,7 +111,8 @@ public class IllegalComponentInstantiationCheck extends ComponentInstantiationCh
 	// fail if instantiate a componnet in a method other than init or
 	// constructor
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
-		if ( inConstructorOrInitOrStatic(ast, aTreeAST)) // if not in constructor then will not become pending
+		if ( inConstructorOrInitOrStatic(ast, aTreeAST) 
+				|| isCalledByConstructorOrInit(ast, aTreeAST)) // if not in constructor then will not become pending
 			return true;
 //		if (currentMethodIsConstructor || AnSTType.isInit(currentMethodName))
 //			return true;

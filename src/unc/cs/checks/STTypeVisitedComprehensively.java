@@ -23,7 +23,7 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 	protected abstract  Boolean typeCheck(STType anSTClass) ;
 	@Override
 	public void visitType(DetailAST ast) {
-//    	super.visitType(ast);
+    	super.visitType(ast); // need this to get full type name
     	maybeAddToPendingTypeChecks(ast);
 //    	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
 //    			getSTClassByFullName(fullTypeName);

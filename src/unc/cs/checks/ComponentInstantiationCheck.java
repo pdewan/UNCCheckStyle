@@ -70,6 +70,10 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		
 		return getClassDef(aTreeAST.getNextSibling());
 	}
+	
+	protected boolean checkInstantiatedClass(STType anSTType) {
+		return !anSTType.hasSetter();
+	}
 
 	public Boolean componentInstantiated(String anInstantiatedTypeName, DetailAST aTreeAST) {
 		if (isInterface || isEnum)
@@ -94,9 +98,12 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 				.getOrCreateSymbolTable().getSTClassByShortName(anInstantiatedTypeName);
 		if (anInstantiatedSTClass == null)
 			return null; // have not built Symbol table for it
+		if (checkInstantiatedClass(anInstantiatedSTClass)) // this should be in an abstract class
+			return false; // check succeded
 		STNameable[] anInterfaces = anInstantiatedSTClass.getDeclaredInterfaces();
 		for (String aPropertyName : aPropertyInfos.keySet()) {
 			PropertyInfo aPropertyInfo = aPropertyInfos.get(aPropertyName);
+			
 //			STMethod aGetter = aPropertyInfo.getGetter();
 //			if (aGetter == null) {
 //				continue; // not a real property
@@ -113,6 +120,39 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		}
 		return false;
 	}
+	public Boolean isCalledInternallyBy (STMethod[] aMethods, STMethod aMethod) {
+		for (STMethod aCaller: aMethods) {
+			if (aCaller.callsInternally(aMethod))
+				return true;
+		}
+		return false;
+	}
+	
+	public Boolean isCalledByConstructorOrInit(DetailAST ast, DetailAST aTreeAST) {
+		if (aTreeAST != currentTree) {
+			System.err.println("constructor check should not be pending check");
+			return true;
+		}
+		
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		STMethod[] aConstructors = anSTType.getDeclaredConstructors();
+		STMethod[] anInits = anSTType.getDeclaredInitMethods();
+
+		
+		
+
+		STMethod[] anSTMethods = anSTType.getDeclaredMethods(currentMethodName);
+		for (STMethod aCalledMethod:anSTMethods) {
+			if (isCalledInternallyBy(aConstructors, aCalledMethod) || 
+					isCalledInternallyBy(anInits, aCalledMethod)) {
+				return true;
+			}
+		}
+		return false;
+		
+		
+	}
+	
 	
 	
 	// fail if instantiate a componnet in a method other than init or
