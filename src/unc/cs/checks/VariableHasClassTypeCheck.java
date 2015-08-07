@@ -218,19 +218,20 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 		if (anSTClass.isEnum() || anSTClass.isInterface())
 			return true;
 		if (!checkType(anSTClass)) {
-			 String aSourceName =
-			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
-//			String aSourceName = toTypeName(aTreeAST);
-			if (aTreeAST == currentTree) {
-				log(anIdentifierType.getLineNo(),
-						anIdentifierType.getColumnNo(), msgKey(),
-						anIdentifierType.getText(), anIdentifier.getText(),
-						aSourceName + ":" + anIdentifier.getLineNo());
-			} else {
-				log(0, msgKey(), anIdentifierType.getText(),
-						anIdentifier.getText(), aSourceName + ":"
-								+ anIdentifier.getLineNo());
-			}
+//			 String aSourceName =
+//			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+//			if (aTreeAST == currentTree) {
+//				log(anIdentifierType.getLineNo(),
+//						anIdentifierType.getColumnNo(), msgKey(),
+//						anIdentifierType.getText(), anIdentifier.getText(),
+//						aSourceName + ":" + anIdentifier.getLineNo());
+//			} else {
+//				log(0, msgKey(), anIdentifierType.getText(),
+//						anIdentifier.getText(), aSourceName + ":"
+//								+ anIdentifier.getLineNo());
+//			}
+			log (anIdentifierType, aTreeAST, anIdentifierType.getText(),
+					anIdentifier.getText());
 			  
 //			if (aTreeAST == currentTree) {
 //			 int aLineNo = lineNo(anIdentifierType, aTreeAST);

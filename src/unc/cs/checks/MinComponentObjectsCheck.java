@@ -137,17 +137,18 @@ public class MinComponentObjectsCheck extends ComprehensiveVisitCheck {
 		}
 		
 		
-		String aSourceName = shortFileName(astToFileContents.get(aTree)
-				.getFilename());
-		if (aTree == currentTree) {
-			DetailAST aTypeTree = getEnclosingTypeDeclaration(aTree);
-			DetailAST aNameAST = getNameAST(aTypeTree);
-			
-
-			log (aNameAST.getLineNo(), msgKey(), aNumObjectComponents, aMinComponents, aSourceName );
-		} else {
-			log (0, msgKey(), aNumObjectComponents, aMinComponents, aSourceName );
-		}
+//		String aSourceName = shortFileName(astToFileContents.get(aTree)
+//				.getFilename());
+//		if (aTree == currentTree) {
+//			DetailAST aTypeTree = getEnclosingTypeDeclaration(aTree);
+//			DetailAST aNameAST = getNameAST(aTypeTree);
+//			
+//
+//			log (aNameAST.getLineNo(), msgKey(), aNumObjectComponents, aMinComponents, aSourceName );
+//		} else {
+//			log (0, msgKey(), aNumObjectComponents, aMinComponents, aSourceName );
+//		}
+		log(anAST, aTree, aNumObjectComponents, aMinComponents);
 		
 		return false;
 		

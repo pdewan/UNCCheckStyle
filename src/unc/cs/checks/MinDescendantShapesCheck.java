@@ -138,20 +138,19 @@ public class MinDescendantShapesCheck extends DescendentPropertiesCheck {
 		if (aNumDescendents >= minShapeDescendents) 
 			return true;
 				
-		String aSourceName = shortFileName(astToFileContents.get(aTree)
-				.getFilename());
-		if (aTree == currentTree) {
-			DetailAST aTypeTree = getEnclosingTypeDeclaration(aTree);
-			DetailAST aNameAST = getNameAST(aTypeTree);
-			
-
-			log (aNameAST.getLineNo(), msgKey(), aNumDescendents, aMinDescendents, aSourceName );
-		} else {
-			log (0, msgKey(), aNumDescendents, aMinDescendents, aSourceName );
-		}
-		
-		return false;
-		
+//		String aSourceName = shortFileName(astToFileContents.get(aTree)
+//				.getFilename());
+//		if (aTree == currentTree) {
+//			DetailAST aTypeTree = getEnclosingTypeDeclaration(aTree);
+//			DetailAST aNameAST = getNameAST(aTypeTree);
+//			
+//
+//			log (aNameAST.getLineNo(), msgKey(), aNumDescendents, aMinDescendents, aSourceName );
+//		} else {
+//			log (0, msgKey(), aNumDescendents, aMinDescendents, aSourceName );
+//		}
+		super.log(anAST, aTree,  aNumDescendents, aMinDescendents);		
+		return false;		
 		
 	}
 

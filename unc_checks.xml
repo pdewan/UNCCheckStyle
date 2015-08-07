@@ -212,7 +212,7 @@
 		<module name="ClassDefined">
 			<property name="includeTypeTags" value="*" />		
 			<property name="severity" value="info" />
-			<property name="expectedClasses" value="Factorial, @Tag1+@Tag2" />
+			<property name="expectedTypes" value="Factorial, @Tag1+@Tag2" />
 
 		</module>
 		

@@ -127,15 +127,16 @@ public class LegalComponentInstantiationCheck extends ComponentInstantiationChec
 		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 				.getFilename());
 		// String aSourceName = toTypeName(aTreeAST);
-		if (aTreeAST == currentTree) {
-		log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
-				msgKey(),  anInstantiatedTypeName,
-				aSourceName );
-		} else {
-			log(0,
-					msgKey(),  anInstantiatedTypeName,
-					aSourceName + ":" + anIdentifierType.getLineNo());
-		}
+//		if (aTreeAST == currentTree) {
+//		log(anIdentifierType.getLineNo(), anIdentifierType.getColumnNo(),
+//				msgKey(),  anInstantiatedTypeName,
+//				aSourceName );
+//		} else {
+//			log(0,
+//					msgKey(),  anInstantiatedTypeName,
+//					aSourceName + ":" + anIdentifierType.getLineNo());
+//		}
+		super.log(anIdentifierType, aTreeAST, anInstantiatedTypeName);
 		return false;
 
 	}

@@ -45,13 +45,28 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 			return null;
 		if (aSignatures.size() == 0)
 			return true;
+		
 //		return anSTClass.getInterfaces().length != 0; 
 //		return (anSTClass.isInterface() || 
-		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
-		if (anAllInterfaces == null)
+//		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
+//		if (anAllInterfaces == null)
+//			return null;
+//		return anAllInterfaces. size() <= 1; // 0 will be flagged by at least one interface check
+		STNameable[] anInterfaces = anSTClass.getDeclaredInterfaces();
+		if (anInterfaces == null)
 			return null;
-		return anAllInterfaces. size() <= 1; // 0 will be flagged by at least one interface check
-//		return	anSTClass.getAllInterfaces().size() <= 1;
+//		if (anInterfaces.length <= 1)
+//			return true;
+//		STNameable aSuperTypename = anSTClass.getSuperClass();
+//		STType aSuperSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperTypename.getName());
+//		if (aSuperSTType == null) {
+//			return null;
+//		}
+//		List<String> aSuperSignatures = aSuperSTType.getPublicInstanceSignatures();
+//		if (aSuperSignatures == null)
+//			return null;
+//		return aSuperSignatures.size() == aSignatures.size();
+		return anInterfaces.length <= 1; // 0 will be flagged by at least one interface check
 
 	}
 	

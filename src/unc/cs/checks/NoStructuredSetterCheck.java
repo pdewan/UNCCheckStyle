@@ -78,7 +78,10 @@ public void doFinishTree(DetailAST ast) {
 
 	@Override
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		String aTypeName = getEnclosingShortTypeName(anAST);
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+
 		if (anSTType == null) // we did not  visit the type
 			return true;
 		if (anSTType.isEnum())
@@ -116,7 +119,8 @@ public void doFinishTree(DetailAST ast) {
 			if (!isStructuredType)
 				continue;
 			DetailAST aSetterAST = aSetter.getAST();
-			log(aSetterAST.getLineNo(), msgKey(), aPropertyName, aType);
+//			log(aSetterAST.getLineNo(), msgKey(), aPropertyName, aType);
+			log(aSetterAST, aPropertyName, aType);
 			retVal = false;
 		}
 		return retVal;		

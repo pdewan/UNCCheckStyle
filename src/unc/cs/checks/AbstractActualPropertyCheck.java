@@ -47,13 +47,14 @@ public abstract  class AbstractActualPropertyCheck extends ComprehensiveVisitChe
 
 	}
     protected void logPropertyNotFound(DetailAST aTreeAST, DetailAST anErroneousAST, String aProperty) {
-		String aSourceName = getShortFileName(aTreeAST);
-		 if (aTreeAST == currentTree) {
-
-			log(anErroneousAST.getLineNo(), anErroneousAST.getColumnNo(), msgKey(), aProperty, aSourceName);
-		} else {
-			log(0, msgKey(), aProperty,aSourceName);
-		}
+//		String aSourceName = getShortFileName(aTreeAST);
+//		 if (aTreeAST == currentTree) {
+//
+//			log(anErroneousAST.getLineNo(), anErroneousAST.getColumnNo(), msgKey(), aProperty, aSourceName);
+//		} else {
+//			log(0, msgKey(), aProperty,aSourceName);
+//		}
+    	super.log(anErroneousAST, aTreeAST, aProperty);
 
 	}
     public abstract Boolean checkActualProperty (STType anSTType, String aDeclarePropertyName ) ;

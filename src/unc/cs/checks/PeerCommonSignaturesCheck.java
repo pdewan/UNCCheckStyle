@@ -71,13 +71,15 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
 		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 				.getFilename());
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
-		if (aTreeAST == currentTree) {
-//			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
-
-			log(aTreeAST.getLineNo(),  msgKey(), aSignature, aTypeName, aRemoteTypeName, aSourceName);
-		} else {
-			log(0, msgKey(), aSignature, aTypeName, aRemoteTypeName, aSourceName);
-		}
+		log(aTreeAST, aSignature, aTypeName, aRemoteTypeName);
+		
+//		if (aTreeAST == currentTree) {
+////			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+//
+//			log(aTreeAST.getLineNo(),  msgKey(), aSignature, aTypeName, aRemoteTypeName, aSourceName);
+//		} else {
+//			log(0, msgKey(), aSignature, aTypeName, aRemoteTypeName, aSourceName);
+//		}
 
 	}
     public Boolean compareCommonSignatures(STType anSTType, String aPeerType, DetailAST aTree) {

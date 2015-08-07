@@ -53,10 +53,37 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 			return null;
 		if (aSignatures.size() == 0)
 			return true;
-		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
-		if (anAllInterfaces == null)
+//		if (anSTClass.getName().contains("Vertical") || anSTClass.getName().contains("Anim")) {
+//			System.out.println(" Let us check all interfaces");
+//		}
+		STNameable[] anInterfaces = anSTClass.getDeclaredInterfaces();
+
+		if (anInterfaces.length >= 1)
+			return true;
+		STNameable aSuperTypename = anSTClass.getSuperClass();
+		if (aSuperTypename == null)
+			return false; // no super type that implements interfaces
+		STType aSuperSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperTypename.getName());
+		if (aSuperSTType == null) {
+			return null; // later
+		}
+		List<String> aSuperSignatures = aSuperSTType.getPublicInstanceSignatures();
+		if (aSuperSignatures == null)
 			return null;
-		return anAllInterfaces. size() != 0; 
+		return aSuperSignatures.size() == aSignatures.size(); // no new method, let super type worry about implementing interfaces
+
+//		List<STNameable> anInterfaces = anSTClass.getAllInterfaces();
+//		
+//		if (anInterfaces == null)
+//			return null;
+////		boolean result = anAllInterfaces. size() >= 1;
+//////		if (!result && anSTClass.getName().contains("Vertical") || anSTClass.getName().contains("Anim")) {
+//////			System.out.println("failed at least one interface checK " + anSTClass.getName());
+//////		}
+////		if (!result) {
+////			System.out.println("failed at least one interface checK " + anSTClass.getName());
+////		}
+//		return anInterfaces. size() >= 1; 
 
 //		return anSTClass.getAllInterfaces().size() != 0; 
 	}

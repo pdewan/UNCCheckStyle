@@ -238,7 +238,11 @@ ContinuationProcessor{
     }
     
     
-    public static STNameable[] getSuperTypes(DetailAST aClassDef) {
+    protected Map<DetailAST, FileContents> getAstToFileContents() {
+		return astToFileContents;
+	}
+
+	public static STNameable[] getSuperTypes(DetailAST aClassDef) {
     	List<STNameable> aSuperTypes = new ArrayList();
     	STNameable[] emptyArray = {};
     	int numInterfaces = 0;
@@ -1341,8 +1345,8 @@ ContinuationProcessor{
 			return null;
 				
 		}
-		// move this up to ComprehensiveVisitCheck
-		protected void log(DetailAST ast, DetailAST aTreeAST, String anExplanation) {
+		protected void log(DetailAST ast, String... anExplanations) {
+			DetailAST aTreeAST = getEnclosingTreeDeclaration(ast);
 //			String aSourceName =
 //					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
 //			if (aTreeAST == currentTree) {
@@ -1355,47 +1359,294 @@ ContinuationProcessor{
 //						aSourceName + ":"
 //								+ ast.getLineNo());
 //			}
-			log(ast, aTreeAST, anExplanation, msgKey());
-			
+			log(msgKey(), ast, aTreeAST, anExplanations);			
 
 		}
-		protected void log(DetailAST ast, DetailAST aTreeAST, String anExplanation, String aMessageKey) {
-			String aLongFileName = aTreeAST == currentTree?getFileContents().getFilename():
-				astToFileContents.get(aTreeAST).getFilename();
+		// move this up to ComprehensiveVisitCheck
+		protected void log(DetailAST ast, DetailAST aTreeAST, Object... anExplanations) {
+//			String aSourceName =
+//					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+//			if (aTreeAST == currentTree) {
+//				log(ast.getLineNo(),
+//						 msgKey(),
+//						aMethodName, 
+//						aSourceName + ":" + ast.getLineNo());
+//			} else {
+//				log(0, msgKey(), aMethodName,
+//						aSourceName + ":"
+//								+ ast.getLineNo());
+//			}
+			log(msgKey(), ast, aTreeAST, anExplanations);			
+
+		}
+		// move this up to ComprehensiveVisitCheck
+		protected void log(FullIdent ast, DetailAST aTreeAST, Object... anExplanations) {
+//			String aSourceName =
+//					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+//			if (aTreeAST == currentTree) {
+//				log(ast.getLineNo(),
+//						 msgKey(),
+//						aMethodName, 
+//						aSourceName + ":" + ast.getLineNo());
+//			} else {
+//				log(0, msgKey(), aMethodName,
+//						aSourceName + ":"
+//								+ ast.getLineNo());
+//			}
+			log(msgKey(), ast, aTreeAST, anExplanations);			
+
+		}
+		protected String getLongFileName (DetailAST aTreeAST) {
+			if (aTreeAST == currentTree)
+				return getFileContents().getFilename();
+			FileContents aFileContents = astToFileContents.get(aTreeAST);
+			if (aFileContents != null) {
+				return aFileContents.getFilename();
+			}
+			aFileContents = STBuilderCheck.getSingleton().getAstToFileContents().get(aTreeAST);
+			if (aFileContents != null) {
+				return aFileContents.getFilename();
+			}
+			return "";
+		}
+//		protected String composeSourceName (String aFileName, int aLineNo) {
+//			return "(" + aFileName + anAST.getLineNo() + ")";
+//		}
+		protected String composeSourceName (String aFileName, int aLineNo) {
+			return "(" + aFileName + ":" + aLineNo + ")";
+		}
+		
+		protected String composeMessageKey (String aMessageKey) {
+			return aMessageKey + ":";
+		}
+		
+		protected Object[] composeArgs(String aMessageKey, DetailAST aTreeAST, int aLineNo, Object ... anExplanations) {
+			String aLongFileName = getLongFileName(aTreeAST);
+//			
+//				
+//			if (aTreeAST == currentTree)
+//			String aLongFileName = aTreeAST == currentTree?getFileContents().getFilename():
+//				astToFileContents.get(aTreeAST).getFilename();
 			String aSourceName =
 					 shortFileName(aLongFileName);
+			Object[] anArgs = new String[anExplanations.length + 2];
+			anArgs[0] = composeMessageKey(aMessageKey);
+			anArgs[1] = composeSourceName(aSourceName, aLineNo);
+			for (int i = 2; i < anArgs.length; i++) {
+//				String anExplanation = anExplanations[i-2].toString();
+//				if (anExplanation.contains("issingArgument")) {
+//					System.out.println("Missing argument arg");
+//				}
+//						
+//				System.out.println("an explnation " + anExplanations[i-2].toString());
+				anArgs[i] = anExplanations[i-2].toString();
+			}
+			return anArgs;
+		}
+		
+		protected void log(String aMessageKey, DetailAST ast, DetailAST aTreeAST, Object ... anExplanations) {
+//			if (!checkRoot) {
+//				DetailAST anSTTreeAST = getEnclosingTreeDeclaration(aMethod.getAST());
+//				String aLongFileName = anSTTreeAST == STBuilderCheck.getSTBuilderTree()?getFileContents().getFilename():
+//						
+//						astToFileContents.get(aTreeAST)
+//						.getFilename();
+//				// make this conform to the superclass logs
+//				log(aMethod.getAST().getLineNo(), 
+//						msgKey(), 
+//						aMethod.getName(),
+//						shortFileName(aLongFileName)
+//						);
+////				super.log(aMethod, aMethod.getName());
+//				return  false;
+//			}
+//			String aLongFileName = "";
+//			if (aTreeAST == currentTree)
+//				aLongFileName = getFileContents().getFilename();
+//			else if (aTreeAST == STBuilderCheck.getSingleton().getSTBuilderTree()) {
+//				 aLongFileName = STBuilderCheck.getSingleton().getAstToFileContents().get(aTreeAST).getFilename();
+//			} else {
+//				astToFileContents.get(aTreeAST).getFilename();
+//			}
+//			String aLongFileName = getLongFileName(aTreeAST);
+////			
+////				
+////			if (aTreeAST == currentTree)
+////			String aLongFileName = aTreeAST == currentTree?getFileContents().getFilename():
+////				astToFileContents.get(aTreeAST).getFilename();
+//			String aSourceName =
+//					 shortFileName(aLongFileName);
+//			Object[] anArgs = new String[anExplanations.length + 2];
+//			anArgs[0] = composeMessageKey(aMessageKey);
+//			anArgs[1] = composeSourceName(aSourceName, ast.getLineNo());
+//			for (int i = 2; i < anArgs.length; i++) {
+//				System.out.println("an explnation " + anExplanations[i-2]);
+//				anArgs[i] = anExplanations[i-2].toString();
+//			}
+			Object[] anArgs = composeArgs(aMessageKey, aTreeAST, ast.getLineNo(), anExplanations);
+			
 //			String aSourceName =
 //					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
 			if (aTreeAST == currentTree) {
-				if (anExplanation != null) {
-				log(ast.getLineNo(),
+//				if (anExplanation != null) {
+				extendibleLog(ast.getLineNo(),
+//						ast.getColumnNo(),
 //						 msgKey(),
 						aMessageKey,
-						anExplanation, 
-						aSourceName + ":" + ast.getLineNo());
-				} else {
-					log(ast.getLineNo(),
-//							 msgKey(),
-							aMessageKey, 
-							aSourceName + ":" + ast.getLineNo());
-				}
+						anArgs
+//						aMessageKey,
+////						aSourceName + ":" + ast.getLineNo(),
+//						composeSourceName(aSourceName, ast),
+//						anExplanations 
+						);
+//				} else {
+//					log(ast.getLineNo(),
+////							 msgKey(),
+//							aMessageKey, 
+//							aSourceName + ":" + ast.getLineNo());
+//				}
 			} else {
-				if (anExplanation != null) {
-				log(0, 
+//				if (anExplanation != null) {
+				extendibleLog(0, 
+//						aSourceName + ":" + ast.getLineNo(),
 //						msgKey(), 
 						aMessageKey,
-						anExplanation,
-						aSourceName + ":"
-								+ ast.getLineNo());
-				} else {
-					log(0, 
-//							msgKey(), 
-							aMessageKey,
-							aSourceName + ":"
-									+ ast.getLineNo());
-				}
+						anArgs
+//						aMessageKey,
+//						composeSourceName(aSourceName, ast),
+//						anExplanations
+						);
+//				} else {
+//					log(0, 
+////							msgKey(), 
+//							aMessageKey,
+//							aSourceName + ":"
+//									+ ast.getLineNo());
+//				}
 			}
 		}
+		protected void log(String aMessageKey, FullIdent ast, DetailAST aTreeAST, Object ... anExplanations) {
+//			if (!checkRoot) {
+//				DetailAST anSTTreeAST = getEnclosingTreeDeclaration(aMethod.getAST());
+//				String aLongFileName = anSTTreeAST == STBuilderCheck.getSTBuilderTree()?getFileContents().getFilename():
+//						
+//						astToFileContents.get(aTreeAST)
+//						.getFilename();
+//				// make this conform to the superclass logs
+//				log(aMethod.getAST().getLineNo(), 
+//						msgKey(), 
+//						aMethod.getName(),
+//						shortFileName(aLongFileName)
+//						);
+////				super.log(aMethod, aMethod.getName());
+//				return  false;
+//			}
+//			String aLongFileName = "";
+//			if (aTreeAST == currentTree)
+//				aLongFileName = getFileContents().getFilename();
+//			else if (aTreeAST == STBuilderCheck.getSingleton().getSTBuilderTree()) {
+//				 aLongFileName = STBuilderCheck.getSingleton().getAstToFileContents().get(aTreeAST).getFilename();
+//			} else {
+//				astToFileContents.get(aTreeAST).getFilename();
+//			}
+//			String aLongFileName = getLongFileName(aTreeAST);
+////			
+////				
+////			if (aTreeAST == currentTree)
+////			String aLongFileName = aTreeAST == currentTree?getFileContents().getFilename():
+////				astToFileContents.get(aTreeAST).getFilename();
+//			String aSourceName =
+//					 shortFileName(aLongFileName);
+//			Object[] anArgs = new String[anExplanations.length + 2];
+//			anArgs[0] = aMessageKey;
+//			anArgs[1] = composeSourceName(aSourceName, ast);
+//			for (int i = 2; i < anArgs.length; i++) {
+//				System.out.println("an explnation " + anExplanations[i-2]);
+//				anArgs[i] = anExplanations[i-2].toString();
+//			}
+			Object[] anArgs = composeArgs(aMessageKey, aTreeAST, ast.getLineNo(), anExplanations);
+
+			
+//			String aSourceName =
+//					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+			if (aTreeAST == currentTree) {
+//				if (anExplanation != null) {
+				extendibleLog(ast.getLineNo(),
+//						ast.getColumnNo(),
+//						 msgKey(),
+						aMessageKey,
+						anArgs
+//						aMessageKey,
+////						aSourceName + ":" + ast.getLineNo(),
+//						composeSourceName(aSourceName, ast),
+//						anExplanations 
+						);
+//				} else {
+//					log(ast.getLineNo(),
+////							 msgKey(),
+//							aMessageKey, 
+//							aSourceName + ":" + ast.getLineNo());
+//				}
+			} else {
+//				if (anExplanation != null) {
+				extendibleLog(0, 
+//						aSourceName + ":" + ast.getLineNo(),
+//						msgKey(), 
+						aMessageKey,
+						anArgs
+//						aMessageKey,
+//						composeSourceName(aSourceName, ast),
+//						anExplanations
+						);
+//				} else {
+//					log(0, 
+////							msgKey(), 
+//							aMessageKey,
+//							aSourceName + ":"
+//									+ ast.getLineNo());
+//				}
+			}
+		}
+//		protected void log(String aMessageKey, FullIdent ast, DetailAST aTreeAST, Object ... anExplanations) {
+//			String aLongFileName = aTreeAST == currentTree?getFileContents().getFilename():
+//				astToFileContents.get(aTreeAST).getFilename();
+//			String aSourceName =
+//					 shortFileName(aLongFileName);
+////			String aSourceName =
+////					 shortFileName(astToFileContents.get(aTreeAST).getFilename());
+//			if (aTreeAST == currentTree) {
+////				if (anExplanation != null) {
+//				log(ast.getLineNo(),
+//						ast.getColumnNo(),
+////						 msgKey(),
+//						aMessageKey,
+//						aSourceName + ":" + ast.getLineNo(),
+//						anExplanations 
+//						);
+////				} else {
+////					log(ast.getLineNo(),
+//////							 msgKey(),
+////							aMessageKey, 
+////							aSourceName + ":" + ast.getLineNo());
+////				}
+//			} else {
+////				if (anExplanation != null) {
+//				log(0, 
+//						aSourceName + ":"
+//								+ ast.getLineNo(),
+////						msgKey(), 
+//						aMessageKey,
+//						anExplanations
+//						);
+////				} else {
+////					log(0, 
+//////							msgKey(), 
+////							aMessageKey,
+////							aSourceName + ":"
+////									+ ast.getLineNo());
+////				}
+//			}
+//		}
 	    public void doVisitToken(DetailAST ast) {
 //	    	System.out.println("Check called:" + MSG_KEY);
 			switch (ast.getType()) {

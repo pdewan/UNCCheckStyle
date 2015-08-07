@@ -63,16 +63,17 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 
 	}
     protected void logPeerPropertyNotMatched(DetailAST aTreeAST, PropertyInfo aPropertyInfo, String aRemoteTypeName) {
-		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
-				.getFilename());
+//		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
+//				.getFilename());
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
-		if (aTreeAST == currentTree) {
-//			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
-
-			log(aTreeAST.getLineNo(), msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
-		} else {
-			log(0, msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
-		}
+//		if (aTreeAST == currentTree) {
+////			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
+//
+//			log(aTreeAST.getLineNo(), msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
+//		} else {
+//			log(0, msgKey(), aPropertyInfo, aTypeName, aRemoteTypeName, aSourceName);
+//		}
+		super.log (aTreeAST, aTreeAST, aPropertyInfo, aTypeName, aRemoteTypeName);
 
 	}
     public Boolean compareCommonProperties(STType anSTType, String aPeerType, DetailAST aTree) {

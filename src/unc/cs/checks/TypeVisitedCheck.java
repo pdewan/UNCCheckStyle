@@ -83,7 +83,9 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 
 	}
 	protected void log(DetailAST ast) {
-	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
+//	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
+	    log(getNameAST(ast), fullTypeName);
+
     }
 	// not a full name I assume
 	public static String getName (DetailAST anAST) {

@@ -35,11 +35,13 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected static String[] existingClasses = {};
 	protected static Collection<String> existingClassesCollection = new HashSet();
 	boolean importsAsExistingClasses = false;
-	static DetailAST sTBuilderTree = null; // make it non static at some point
+	 DetailAST sTBuilderTree = null; // make it non static at some point
+	protected static STBuilderCheck singleton;
 	
-//	public STBuilderCheck() {
-//		
-//	}
+	
+	public STBuilderCheck() {
+		singleton =this;
+	}
 	protected static void processExistingClasses() {
 		for (String aClassName:existingClasses) {
 			processExistingClass(aClassName);
@@ -54,6 +56,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //				e.printStackTrace();
 //			}
 		}
+	}
+	protected static STBuilderCheck getSingleton() {
+		return singleton;
 	}
 	
 	protected  void processImports() {
@@ -137,7 +142,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		
 
     public void doBeginTree(DetailAST ast) {  
- 		 super.doBeginTree(ast); 	
+ 		 super.doBeginTree(ast); 
+ 		 astToFileContents.put(ast, getFileContents());
 // 		 System.out.println("Check" + checkAndFileDescription);
  		 	currentSTType = null;
  		 	stMethods.clear();
@@ -145,7 +151,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
  		 	sTBuilderTree = ast;
  		 	
  	    }
-	protected static DetailAST getSTBuilderTree() {
+	public DetailAST getSTBuilderTree() {
 		return sTBuilderTree;
 	}
 	STNameable[] dummyArray = new STNameable[0];

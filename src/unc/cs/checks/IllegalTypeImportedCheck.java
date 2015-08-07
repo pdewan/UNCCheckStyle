@@ -58,17 +58,19 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
         if (isIllegal == null)
         	return null;
         if (isIllegal) {
-        	if (currentTree == aTreeAST) {
-        
-            log(imp.getLineNo(), imp.getColumnNo(),
-                MSG_KEY,
-                imp.getText(), aMyClass);
-        	} 
-        	else {
-        		log(0,
-                        MSG_KEY,
-                        imp.getText(), aMyClass);
-        	}
+        	super.log (imp, aTreeAST, imp.getText(), aMyClass);
+//        	if (currentTree == aTreeAST) {
+//        
+//            log(imp.getLineNo(), imp.getColumnNo(),
+//                MSG_KEY,
+//                imp.getText(), aMyClass);
+//            
+//        	} 
+//        	else {
+//        		log(0,
+//                        MSG_KEY,
+//                        imp.getText(), aMyClass);
+//        	}
         }
         	
        return isIllegal;

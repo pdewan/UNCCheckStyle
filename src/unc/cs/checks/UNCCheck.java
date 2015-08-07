@@ -13,7 +13,7 @@ public abstract class UNCCheck extends Check{
 	protected String checkAndFileDescription = "";
 
 	public final void extendibleLog(int line, String key, Object... args) {
-		System.out.println("key:" + key);
+//		System.out.println("key:" + key);
         log(line, key, args);
     }
 	

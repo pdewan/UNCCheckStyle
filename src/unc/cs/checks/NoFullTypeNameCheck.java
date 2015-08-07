@@ -29,8 +29,9 @@ public class NoFullTypeNameCheck extends ComprehensiveVisitCheck {
 		FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
 		String aTypeName = aFullIdent.getText();
 		if (aTypeName.indexOf(".") != -1) {
-			log(ast.getLineNo(), ast.getColumnNo(), msgKey(),
-					aTypeName);
+//			log(ast.getLineNo(), ast.getColumnNo(), msgKey(),
+//					aTypeName);
+			log(ast, aTypeName);
 		}
 	}
 	@Override

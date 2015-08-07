@@ -57,16 +57,19 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 		 
 //		if (!checkRootMethod(aMethod)) {
 		if (!checkRoot) {
-			DetailAST anSTTreeAST = getEnclosingTreeDeclaration(aMethod.getAST());
-			String aLongFileName = anSTTreeAST == STBuilderCheck.getSTBuilderTree()?getFileContents().getFilename():
-					
-					astToFileContents.get(aTreeAST)
-					.getFilename();
-			log(aMethod.getAST().getLineNo(), 
-					msgKey(), 
-					aMethod.getName(),
-					shortFileName(aLongFileName)
-					);
+//			DetailAST anSTTreeAST = getEnclosingTreeDeclaration(aMethod.getAST());
+//			String aLongFileName = anSTTreeAST == STBuilderCheck.getSingleton().getSTBuilderTree()?getFileContents().getFilename():
+//					
+//					astToFileContents.get(aTreeAST)
+//					.getFilename();
+//			// make this conform to the superclass logs
+//			log(aMethod.getAST().getLineNo(), 
+//					msgKey(), 
+//					aMethod.getName(),
+//					shortFileName(aLongFileName)
+//					);
+//			super.log(aMethod, aMethod.getName());
+			super.log(aMethod.getAST(), aMethod.getName());
 			return  false;
 		} 
 		return true;

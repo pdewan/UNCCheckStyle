@@ -92,21 +92,18 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	// }
 	protected void logPropertyNotMatched(DetailAST aTreeAST, String aProperty,
 			String aType) {
-		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
-				.getFilename());
-		if (aTreeAST == currentTree) {
-//			DetailAST aLoggedAST = matchedTypeOrTagAST == null?aTreeAST:matchedTypeOrTagAST;
-			DetailAST aLoggedAST = aTreeAST;
-
-			aLoggedAST = aTreeAST;
-//			int aLineNo = aLoggedAST.getLineNo();
-//			int aColumnNo = aLoggedAST.getColumnNo();
+		log (aTreeAST, aTreeAST, aProperty, aType);
+//		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
+//				.getFilename());
+//		if (aTreeAST == currentTree) {
+//			DetailAST aLoggedAST = aTreeAST;
 //
-//			log(aLineNo, aColumnNo, msgKey(), aProperty, aType, aSourceName);
-			log (aLoggedAST.getLineNo(), msgKey(), aProperty, aType, aSourceName);
-		} else {
-			log(0, msgKey(), aProperty, aType, aSourceName);
-		}
+//			aLoggedAST = aTreeAST;
+//
+//			log (aLoggedAST.getLineNo(), msgKey(), aProperty, aType, aSourceName);
+//		} else {
+//			log(0, msgKey(), aProperty, aType, aSourceName);
+//		}
 
 	}
 

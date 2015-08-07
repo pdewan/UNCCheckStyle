@@ -10,7 +10,9 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
+//public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
+	public class IllegalTypeDefinedCheck extends ComprehensiveVisitCheck{
+
 	
 	public static final String MSG_KEY = "illegalTypeDefined";
 	Collection<String> illegalTypeNames = new HashSet();
@@ -31,7 +33,9 @@ public class IllegalTypeDefinedCheck extends TypeVisitedCheck{
 	public void visitType(DetailAST ast) {
     	super.visitType(ast);    	
     	if (illegalTypeNames.contains(this.shortTypeName))
-		   log(getNameAST(ast).getLineNo(), msgKey(), shortTypeName);
+//		   log(getNameAST(ast).getLineNo(), msgKey(), shortTypeName);
+		   super.log(getNameAST(ast), shortTypeName);
+
 
     }
 	public void doVisitToken(DetailAST ast) {

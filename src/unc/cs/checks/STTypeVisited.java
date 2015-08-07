@@ -24,7 +24,7 @@ public abstract class STTypeVisited extends TypeVisitedCheck {
     	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
     			getSTClassByFullName(fullTypeName);
     	if (!typeCheck(anSTClass))
-    		log(ast);
+    		super.log(ast);
 
     }
 

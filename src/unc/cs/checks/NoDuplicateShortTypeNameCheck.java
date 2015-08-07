@@ -47,7 +47,10 @@ public class NoDuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
 		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
 		if (aSymbolTable.matchingFullSTTypeNames(aTypeName).size() > 1) {
 //			System.out.println("dupliicateshortname:" + aFullTypeName);
-			log(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), msgKey(),
+//			log(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), msgKey(),
+//					aTypeNameAST.getText());
+//			System.out.println("dupliicateshortname:" + aFullTypeName);
+			log(aTypeNameAST,
 					aTypeNameAST.getText());
 		}			
 //		SymbolTableFactory.getOrCreateSymbolTable().getInterfaceNameToAST().put(packageName + "." + aTypeName, ast);

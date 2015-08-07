@@ -30,8 +30,9 @@ public class StaticVariableCheck extends ComprehensiveVisitCheck {
 		if (!checkIncludeExcludeTagsOfCurrentType())
 		return;
 		if (isStaticAndNotFinal(ast)) {
-			 log(ast.getLineNo(), ast.getColumnNo(),					 
-					 msgKey(), getName(ast));
+//			 log(ast.getLineNo(), ast.getColumnNo(),					 
+//					 msgKey(), getName(ast));
+			 log(ast, getName(ast));
 		}
 		
 	}

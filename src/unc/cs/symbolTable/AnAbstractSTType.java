@@ -671,20 +671,49 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 //		}
 //		return result;
 	}
+	public static List<STNameable> getAllTypes(STNameable aParentType, STType anOriginalType) {
+		STType aParentSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aParentType.getName());
+				if (aParentSTType == null) {
+					if (anOriginalType.waitForSuperTypeToBeBuilt())
+						return null;
+					else
+						return emptyList;
+				} else {
+					return getAllTypes(aParentSTType);
+				}		
+		
+	}
+	public static List<STNameable> getAllInterfaces(STNameable aParentType, STType anOriginalType) {
+		STType aParentSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aParentType.getName());
+				if (aParentSTType == null) {
+					if (anOriginalType.waitForSuperTypeToBeBuilt())
+						return null;
+					else
+						return emptyList;
+				} else {
+					return getAllInterfaces(aParentSTType);
+				}		
+		
+	}
 
-	public static List<STNameable> getAllTypes(STNameable aType) {
+	public static List<STNameable> getAllTypes(STType anSTType) {
 		if (TagBasedCheck.isExternalClass(TypeVisitedCheck
-				.toShortTypeName(aType.getName())))
+				.toShortTypeName(anSTType.getName())))
 			return emptyList;
 		List<STNameable> result = new ArrayList();
-		result.add(aType);
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(aType.getName());
-		if (anSTType == null)
-			return null;
+		result.add(anSTType);
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(aType.getName());
+//		if (anSTType == null)
+//			return null;
+//		if (anSTType.getName().contains("Anim") || anSTType.getName().contains("ert")) {
+//			System.out.println ("Found anim");
+//		}
 		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
 		for (STNameable anInterface : anInterfaces) {
-			List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
+			List<STNameable> anInterfaceTypes = getAllTypes(anInterface, anSTType);
 			if (anInterfaceTypes == null) {
 				if (anSTType.waitForSuperTypeToBeBuilt())
 					return null;
@@ -698,7 +727,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		STNameable aSuperClass = anSTType.getSuperClass();
 		if (aSuperClass == null)
 			return result;
-		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass());
+		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass(), anSTType);
 		if (aSuperTypes == null) {
 			if (anSTType.waitForSuperTypeToBeBuilt())
 				return null;
@@ -710,26 +739,36 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		return result;
 	}
 
-	public static List<STNameable> getAllInterfaces(STNameable aType) {
+	public static List<STNameable> getAllInterfaces(STType anSTType) {
 		if (TagBasedCheck.isExternalClass(TypeVisitedCheck
-				.toShortTypeName(aType.getName())))
+				.toShortTypeName(anSTType.getName())))
 			return emptyList;
 		List<STNameable> result = new ArrayList();
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(aType.getName());
-		if (anSTType == null)
-			if (anSTType.waitForSuperTypeToBeBuilt())
-				return null;
-			else
-				return result;
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//				.getSTClassByShortName(aType.getName());
+//		if (anSTType == null)
+//			if (anSTType.waitForSuperTypeToBeBuilt())
+//				return null;
+//			else
+//				return result;
 		if (anSTType.isInterface()) {
 			System.err.println("An interface does not have an interface:"
-					+ aType.getName());
-			return null;
+					+ anSTType.getName());
+			return emptyList;
 		}
+//		if (anSTType.getName().contains("Vertical") || anSTType.getName().contains("Anim")) {
+//		System.out.println("checking all ointerfaces " + anSTType.getName());
+//	}
 		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
 		for (STNameable anInterface : anInterfaces) {
-			List<STNameable> anInterfaceTypes = getAllTypes(anInterface);
+//			STType anSTInterface = SymbolTableFactory.getOrCreateSymbolTable()
+//			.getSTClassByShortName(anInterface.getName());
+//			if (anSTInterface == null)
+//				if (anSTType.waitForSuperTypeToBeBuilt())
+//					return null;
+//				else
+//					continue;
+			List<STNameable> anInterfaceTypes = getAllTypes(anInterface, anSTType);
 			if (anInterfaceTypes == null) {
 				if (anSTType.waitForSuperTypeToBeBuilt())
 					return null;
@@ -738,6 +777,25 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			}
 			result.addAll(anInterfaceTypes);
 		}
+		STNameable aSuperClass = anSTType.getSuperClass();
+//		STType anSTSuperClass = SymbolTableFactory.getOrCreateSymbolTable()
+//		.getSTClassByShortName(aSuperClass.getName());
+//		if (anSTSuperClass == null)
+//			if (anSTType.waitForSuperTypeToBeBuilt())
+//				return null;
+//			else
+//				return result;
+		 if (aSuperClass == null)
+		 return result;
+//		List<STNameable> aSuperInterfaces = getAllInterfaces(anSTSuperClass, anSTType);
+		List<STNameable> aSuperInterfaces = getAllInterfaces(aSuperClass, anSTType);
+		if (aSuperInterfaces == null) {
+			if (anSTType.waitForSuperTypeToBeBuilt())
+				return null;
+			else
+				return result;
+		}
+		addAllNonDuplicates(result, aSuperInterfaces);
 		return result;
 	}
 

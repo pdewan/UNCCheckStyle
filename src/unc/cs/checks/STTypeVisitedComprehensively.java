@@ -45,7 +45,7 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 		if (aTypeCheck == null)
 			return null;
 		if (!aTypeCheck)
-    		log(ast, aTreeAST, null);
+    		log(ast, aTreeAST);
 		return aTypeCheck;
 		
 	}

@@ -77,7 +77,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	
     	if (aPropertySpecifier.getType() != TokenTypes.STRING_LITERAL) {
 //    		log ( aPropertySpecifier.getLineNo(),MSG_KEY_2, aPropertySpecifierText);
-    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , INVALID_KEY);
+    		log (INVALID_KEY, aPropertySpecifier, aTreeAST, aPropertySpecifierText );
     		return true; // do not wnat super class to give error with msgKey();
     	}
     	String aPropertyName = maybeStripQuotes(aPropertySpecifierText);
@@ -94,7 +94,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
 		PropertyInfo aPropertyInfo = AnAbstractSTType.getPropertyInfo(aPropertyName, aPropertyInfos);
 
 		if (aPropertyInfo == null) {
-			log (aPropertySpecifier, aTreeAST, aPropertySpecifierText, MISSING_KEY );
+			log (MISSING_KEY, aPropertySpecifier,  aTreeAST, aPropertySpecifierText);
     		return true; // do not want super class to give message
     	
 		}
@@ -111,7 +111,9 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
 //    		return true; // do not want super class to give message
 //    	}
     	if (isStructuredProperty) {
-    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , STRUCTURED_KEY);
+//    		log (aPropertySpecifier, aTreeAST, aPropertySpecifierText , STRUCTURED_KEY);
+			log (STRUCTURED_KEY, aPropertySpecifier,  aTreeAST, aPropertySpecifierText);
+
     		return true;
 
     	}
