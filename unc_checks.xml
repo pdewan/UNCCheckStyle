@@ -100,7 +100,7 @@
 		<module name="StaticVariable">
 			<property name="includeTypeTags" value="*" />		
 			<property name="excludeTypeTags" value="@StaticVariableDemo"/>	
-			<property name="singletonTypes" value="Scanner"/>		
+			<property name="singletonTypes" value="Scanner, BufferedReader"/>		
 				
 		</module>
 		<module name="FunctionAssignsGlobal">
