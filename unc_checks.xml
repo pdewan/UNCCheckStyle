@@ -99,12 +99,14 @@
 		</module>
 		<module name="StaticVariable">
 			<property name="includeTypeTags" value="*" />		
-			<property name="excludeTypeTags" value="@StaticVariableDemo"/>		
+			<property name="excludeTypeTags" value="@StaticVariableDemo"/>	
+			<property name="singletonTypes" value="Scanner"/>		
+				
 		</module>
 		<module name="FunctionAssignsGlobal">
 			<property name="includeTypeTags" value="*" />			
 			<property name="excludeTypeTags" value="@Tag4" />
-			<property name="excludeMethodTags" value="next" />
+			<property name="excludeMethodTags" value="next, pop, delete, remove, read" />
 			
 		</module>
 		<module name="SetterAssignsGlobal">

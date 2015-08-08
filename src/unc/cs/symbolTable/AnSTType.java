@@ -30,6 +30,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected Map<String, PropertyInfo> actualPropertyInfo = new HashMap();
 //	protected List<STMethod> declaredInits = new ArrayList();
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
+	protected Map<String, String> globalVariableToType = new HashMap();
+
 //	protected Set<String> delegates = new HashSet();
 	
 	
@@ -51,7 +53,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] aComputedTags,
 			STNameable[] anImports,
 			STNameable[] aFields,
-			Map<String, List<CallInfo>> aGlobalVariableToCall
+			Map<String, List<CallInfo>> aGlobalVariableToCall,
+			Map<String, String> aGlobalVariableToType
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
@@ -71,6 +74,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		declaredFields = aFields;
 		globalVariableToCall = aGlobalVariableToCall;
 		computedTags = aComputedTags;
+		globalVariableToType = aGlobalVariableToType;
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
@@ -768,5 +772,13 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public boolean isEnum() {
 		return isEnum;
+	}
+	@Override
+	public Set<String> getDeclaredGlobals() {
+		return globalVariableToType.keySet();
+	}
+	@Override
+	public String getGlobalVariableType(String aGlobal) {
+		return globalVariableToType.get(aGlobal);
 	}
 }

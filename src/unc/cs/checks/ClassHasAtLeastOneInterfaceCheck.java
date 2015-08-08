@@ -48,14 +48,18 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 	protected Boolean typeCheck(STType anSTClass) {
 //		if (anSTClass.isInterface())
 //			return true;
+//		if (anSTClass.getName().contains("Vertical") || anSTClass.getName().contains("Anim")) {
+////			System.out.println(" Let us check sizes:");
+//			
+//			System.out.println ("Signatures:" );
+//			
+//		}
 		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
 		if (aSignatures == null)
 			return null;
 		if (aSignatures.size() == 0)
 			return true;
-//		if (anSTClass.getName().contains("Vertical") || anSTClass.getName().contains("Anim")) {
-//			System.out.println(" Let us check all interfaces");
-//		}
+
 		STNameable[] anInterfaces = anSTClass.getDeclaredInterfaces();
 
 		if (anInterfaces.length >= 1)
@@ -68,6 +72,13 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 			return null; // later
 		}
 		List<String> aSuperSignatures = aSuperSTType.getPublicInstanceSignatures();
+//		if (anSTClass.getName().contains("Vertical") || anSTClass.getName().contains("Anim")) {
+////			System.out.println(" Let us check sizes:");
+//			if (aSuperSignatures.size() != aSignatures.size()) {
+//			System.out.println ("Signatures:" + aSignatures);
+//			System.out.println("Super signature s:" + aSuperSignatures);
+//			}
+//		}
 		if (aSuperSignatures == null)
 			return null;
 		return aSuperSignatures.size() == aSignatures.size(); // no new method, let super type worry about implementing interfaces

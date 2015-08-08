@@ -73,6 +73,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// }
 	public static void addToList(List aList, Object[] anAdditions) {
 		for (Object anAddition : anAdditions) {
+			if (aList.contains(anAddition))
+				continue;
 			aList.add(anAddition);
 		}
 	}
@@ -1329,6 +1331,17 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		}
 		return result;
 	}
+	public List<String> computeInstanceSignatures() {
+		List<String> result = new ArrayList();
+		STMethod[] anSTMethods = getMethods();
+		if (anSTMethods == null)
+			return null;
+		for (STMethod anSTMethod : anSTMethods) {
+			if (anSTMethod.isInstance())
+				result.add(anSTMethod.getSignature());
+		}
+		return result;
+	}
 	
 	List<String> publicInstanceSignatures;
 
@@ -1338,15 +1351,17 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		   publicInstanceSignatures = computePublicInstanceSignatures();
 		return publicInstanceSignatures;
 		
-//		List<String> result = new ArrayList();
-//		STMethod[] anSTMethods = getMethods();
-//		if (anSTMethods == null)
-//			return null;
-//		for (STMethod anSTMethod : anSTMethods) {
-//			if (anSTMethod.isPublic() && anSTMethod.isInstance())
-//				result.add(anSTMethod.getSignature());
-//		}
-//		return result;
+
+	}
+	
+	List<String> instanceSignatures;
+
+	@Override
+	public List<String> getInstanceSignatures() {
+		if (instanceSignatures == null)
+			instanceSignatures = computeInstanceSignatures();
+		return instanceSignatures;		
+
 	}
 
 	public static List<String> commonSignatures(String aType1, String aType2) {

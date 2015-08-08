@@ -239,6 +239,24 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 
 
+
+
+	@Override
+	public Set<String> getDeclaredGlobals() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	@Override
+	public String getGlobalVariableType(String aGlobal) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 //	@Override
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;

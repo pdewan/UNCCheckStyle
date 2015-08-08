@@ -206,6 +206,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			dummyArray,
 	    			dummyArray,
 	    			dummyArray,
+	    			new HashMap(),
 	    			new HashMap());
 
 //	    	anSTClass.introspect();
@@ -253,7 +254,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			computedTypeTags().toArray(dummyArray),
 	    			imports.toArray(dummyArray),
 	    			globalVariables.toArray(dummyArray),
-	    			new HashMap<>(globalVariableToCall));
+	    			new HashMap<>(globalVariableToCall),
+	    			new HashMap<>(globalVariableToType));
 
 //	    	anSTClass.introspect();
 //	    	anSTClass.findDelegateTypes();	    

@@ -63,6 +63,7 @@ ContinuationProcessor{
 //	protected List<STNameable> currentMethodTags;
 	protected Map<String, String> typeScope = new HashMap();
 	protected List<STNameable> globalVariables = new ArrayList();
+	protected Map<String, String> globalVariableToType = new HashMap();
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> currentMethodScope = new HashMap();
 //	protected Set<String> excludeTags;
@@ -593,12 +594,14 @@ ContinuationProcessor{
     			return;
     	 visitVariableOrParameterDef(paramOrVarDef);
     	 if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
-    		 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+    		 final DetailAST aTypeParent = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+    		 FullIdent aTypeIdent = FullIdent.createFullIdentBelow(aTypeParent);
     	 		final DetailAST anIdentifier = paramOrVarDef.findFirstToken(TokenTypes.IDENT);
 //    	 		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 //    	 		final FullIdent anIdentifierType = FullIdent.createFullIdent(aType);
-    	 		STNameable anSTNameable = new AnSTNameable(paramOrVarDef, anIdentifier.getText(), aType.getText());
+    	 		STNameable anSTNameable = new AnSTNameable(paramOrVarDef, anIdentifier.getText(), aTypeIdent.getText());
     	 		globalVariables.add(anSTNameable);
+    	 		globalVariableToType.put(anIdentifier.getText(), aTypeIdent.getText());
     	 }
 		 
 	 }
@@ -826,9 +829,13 @@ ContinuationProcessor{
       * Code taken from anIdentAST
       */
      public static boolean inAssignment(DetailAST anIdentAST) {
-    	 final int parentType = anIdentAST.getParent().getType();
+    	 DetailAST aParentAST = anIdentAST.getParent();
+    	 final int parentType = aParentAST.getType();
+    	 if (aParentAST.getType() == TokenTypes.DOT)
+    		 return inAssignment(aParentAST);
          // TODO: is there better way to check is ast
          // in left part of assignment?
+    	 
         return ((TokenTypes.POST_DEC == parentType
                  || TokenTypes.DEC == parentType
                  || TokenTypes.POST_INC == parentType
