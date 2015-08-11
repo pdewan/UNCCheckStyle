@@ -12,6 +12,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
+	STNameable[] computedTags;
 	public AnSTTypeFromClass(Class aClass) {
 		super (null, aClass.getName());
 		reflectedClass = aClass;
@@ -39,6 +40,8 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		Class aSuperClass = aClass.getSuperclass();
 		if (aSuperClass != null)
 		   superClass = new AnSTNameable(aSuperClass.getSimpleName());
+		STNameable typeNameable = new AnSTNameable(null, getName());
+		computedTags = new STNameable[] {typeNameable};
 		
 	}
 	
@@ -235,7 +238,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	@Override
 	public STNameable[] getComputedTags() {
 		// TODO Auto-generated method stub
-		return getTags();
+		return computedTags;
 	}
 
 

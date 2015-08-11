@@ -210,7 +210,7 @@
 		  </module>
 		<module name="NoStructuredSetter">
 					<property name="includeTypeTags" value="*" />		
-					<property name="excludeStructuredTypes" value="@Tag1+@Tag2, Factorial, @POINT_PATTERN" />		
+					<property name="excludeStructuredTypes" value="@Tag1+@Tag2, Factorial, java.awt.Rectangle, @POINT_PATTERN" />		
 		
 		 </module>
 		<module name="IllegalPropertyNotification">
