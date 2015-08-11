@@ -90,6 +90,10 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	// not a full name I assume
 	public static String getName (DetailAST anAST) {
 //		return anAST.findFirstToken(TokenTypes.IDENT).getText();
+		if (anAST == null) {
+//			System.err.println("null ast in get name, returning null name");
+			return null;
+		}
 		if (anAST.getType() == TokenTypes.ENUM)
 			return getEnumName(anAST);
 			

@@ -49,5 +49,8 @@ public class ACallInfo implements CallInfo {
 	public String[] getNormalizedCall() {
 		return notmalizedCall;
 	}
+	public String toString() {
+		return caller + "-->" + calledType + "." + calleee;
+	}
 
 }

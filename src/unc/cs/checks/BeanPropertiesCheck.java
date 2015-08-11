@@ -31,6 +31,7 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 			return;
 		case TokenTypes.CLASS_DEF:
 		case TokenTypes.INTERFACE_DEF:
+			if (fullTypeName == null)
 			visitType(ast);
 			return;
 		default:

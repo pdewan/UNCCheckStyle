@@ -11,6 +11,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public abstract class UNCCheck extends Check{
 	protected boolean isPackageInfo = false;
 	protected String checkAndFileDescription = "";
+	protected static boolean errorOccurred;
+	public static final String ERROR_KEY = "checkStyleError";
 
 	public final void extendibleLog(int line, String key, Object... args) {
 //		System.out.println("key:" + key);
@@ -27,7 +29,9 @@ public abstract class UNCCheck extends Check{
     
    
 	
-    public void beginTree(DetailAST ast) {  
+    public void beginTree(DetailAST ast) { 
+    	if (errorOccurred)
+    		return;
     	try {
     		isPackageInfo = false;
     		String aFileName = getFileContents().getFilename();
@@ -47,7 +51,10 @@ public abstract class UNCCheck extends Check{
 			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-			throw e;
+			errorOccurred = true;
+			log(ast, ERROR_KEY, "Begin tree:" + checkAndFileDescription + " " + e.getMessage());
+
+//			throw e;
 			
 		}
     	
@@ -55,6 +62,8 @@ public abstract class UNCCheck extends Check{
 
 
 	public void finishTree(DetailAST ast) {
+		if (errorOccurred)
+    		return;
 		try {
 //			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
@@ -71,13 +80,18 @@ public abstract class UNCCheck extends Check{
 		} catch (RuntimeException e) {
 			System.out.println("Description:" + checkAndFileDescription);
 			e.printStackTrace();
-			throw e;
+			errorOccurred = true;
+			log(ast, ERROR_KEY, "Finish tree:" + checkAndFileDescription + " " + e.getMessage());
+
+//			throw e;
 			
 		}
 	}
 
 	
 	public void visitToken(DetailAST ast) {
+		if (errorOccurred)
+    		return;
 		try {
 			if (isPackageInfo)
 				return;
@@ -91,7 +105,11 @@ public abstract class UNCCheck extends Check{
 			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
-			throw e;
+			errorOccurred = true;
+			log(ast, ERROR_KEY, "Visit token:" + checkAndFileDescription + " " + e.getMessage());
+
+
+//			throw e;
 			
 		}
 	}

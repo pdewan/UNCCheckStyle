@@ -564,10 +564,13 @@ ContinuationProcessor{
 		 
 	 }
      
+     
      public void visitVariableOrParameterDef(DetailAST ast) {
     		if (!checkIncludeExcludeTagsOfCurrentType())
     			return;
-    	 if (ScopeUtils.inCodeBlock(ast))
+    	 if (ScopeUtils.inCodeBlock(ast) )
+//    			 || 
+//    			 ast.getParent().getType() == TokenTypes.LITERAL_CATCH)
     		 addToMethodScope(ast);
     	 else
     		 addToTypeScope(ast);		 
@@ -611,7 +614,8 @@ ContinuationProcessor{
     			return;
     	 visitVariableOrParameterDef(ast);
 	 }	
-     
+     // This is really kludgy, what aot for parameters etc. we need to open and close scopes.
+     // actually we are only looking at granparents that are methods
      public void addToMethodScope(DetailAST paramOrVarDef) {
 //    	 final DetailAST aType = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
 // 		final DetailAST anIdentifier = paramOrVarDef.findFirstToken(TokenTypes.IDENT);
@@ -1300,7 +1304,7 @@ ContinuationProcessor{
 					aCallPartsList.add(aType);
 					aCallPartsList.add(aCallParts[1]);
 				} else {
-					return aCallParts; // static call
+					return aCallParts; // static call or sub method scope
 				}
 			} else {
 				return aCallParts; // System.out.println() probabluy
@@ -1654,6 +1658,7 @@ ContinuationProcessor{
 ////				}
 //			}
 //		}
+		
 	    public void doVisitToken(DetailAST ast) {
 //	    	System.out.println("Check called:" + MSG_KEY);
 			switch (ast.getType()) {
@@ -1661,9 +1666,12 @@ ContinuationProcessor{
 				visitPackage(ast);
 				return;
 			case TokenTypes.CLASS_DEF:
+				if (fullTypeName == null) // avoid inner class if we haev visited outer class
 				visitClass(ast);
 				return;
 			case TokenTypes.INTERFACE_DEF:
+				if (fullTypeName == null) // avoid inner class if we have visited outer class
+
 				visitInterface(ast);
 				return;
 			case TokenTypes.METHOD_DEF:
@@ -1705,6 +1713,9 @@ ContinuationProcessor{
 				return;
 			case TokenTypes.METHOD_CALL:
 				visitMethodCall(ast);
+				return;
+			case TokenTypes.CTOR_CALL:
+				visitConstructorCall(ast);
 				return;
 			case TokenTypes.IDENT:
 				visitIdent(ast);

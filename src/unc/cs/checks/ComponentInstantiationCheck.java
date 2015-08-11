@@ -141,6 +141,9 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		} else {
 
 			aMethodName = getEnclosingMethodName(ast);
+			if (aMethodName == null) {
+				return true; // variable declaration?
+			}
 			String aClassName = getEnclosingShortClassName(ast);
 			anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aClassName);
 			if (anSTType == null)

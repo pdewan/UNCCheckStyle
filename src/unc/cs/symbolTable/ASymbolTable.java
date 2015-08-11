@@ -114,8 +114,13 @@ public class ASymbolTable implements SymbolTable{
 		STType anSTType = typeNameToSTClass.get(aTypeName);
 //		if (anSTType == null) {
 //			System.out.println("Null ST Type:" + aTypeName);
+//			System.out.println(" STable:" + typeNameToSTClass.keySet());
+//			for (String aKey:typeNameToSTClass.keySet()) {
+//				System.out.println("Type:" + aKey);
+//			}
+//
 //		}
-		return typeNameToSTClass.get(aTypeName);
+		return anSTType;
 //		return anSTType;
 
 	}

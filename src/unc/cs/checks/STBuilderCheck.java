@@ -237,7 +237,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		  STMethod[] aConstructors = stConstructors.toArray(new STMethod[0]);
 	    	STType anSTClass = new AnSTType(
 	    			typeAST, 
-	    			fullTypeName, 
+	    			fullTypeName, // may be an inner class
 	    			aMethods, 
 	    			aConstructors,
 	    			interfaces, 

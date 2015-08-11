@@ -46,6 +46,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 			return;
 		case TokenTypes.CLASS_DEF:
 		case TokenTypes.INTERFACE_DEF:
+			if (fullTypeName == null)
+
 			visitType(ast);
 			return;
 		

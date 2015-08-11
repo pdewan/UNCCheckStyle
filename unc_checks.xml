@@ -132,7 +132,7 @@
 		<module name="FunctionAssignsGlobal">
 			<property name="includeTypeTags" value="*" />			
 			<property name="excludeTypeTags" value="@Tag4" />
-			<property name="excludeMethodTags" value="next, pop, delete, remove, read" />
+			<property name="excludeMethodTags" value="next, pop, delete, remove, read, create, set(.*)" />
 			
 		</module>
 		<module name="SetterAssignsGlobal">

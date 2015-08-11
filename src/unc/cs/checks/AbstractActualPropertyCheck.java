@@ -64,8 +64,8 @@ public abstract  class AbstractActualPropertyCheck extends ComprehensiveVisitChe
 		STType anSTType = getSTType(aTreeAST);
 
 		if (anSTType == null) {
-			System.err.println("Should have been able to get an ST Type for:" + aTypeName);
-			return null;
+			System.err.println("Probably an inner class:" + aTypeName);
+			return true;
 		}
 		if (anSTType.isEnum())
 			return true;

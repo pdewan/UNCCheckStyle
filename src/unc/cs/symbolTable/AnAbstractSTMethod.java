@@ -278,10 +278,13 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			for (CallInfo aCallInfo:aCalledMethods) {
 				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
 						continue;
+				if (Character.isLowerCase(aCallInfo.getCalledType().charAt(0))) // we did not capture the type
+					continue;
 				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
-				if (anAllDirectlyCalledMethods == null) {
-					System.err.println ("directly called methods should not be null");
-					return null;
+				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
+//					System.err.println ("directly called methods should not be null");
+					continue;
+//					return null;
 				}
 				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
