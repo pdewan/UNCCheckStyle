@@ -217,10 +217,16 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				setCalledMethods(this, allInternallyCalledMethods);
 			return internallyCallingMethods;
 		}
+		static Set<STMethod> visitedInternalMethods = new HashSet();
 		@Override
 		public Set<STMethod> getAllInternallyCalledMethods() {
-			if (allInternallyCalledMethods == null)
-				allInternallyCalledMethods = computeAllInternallyCalledMethods(this);
+			if (allInternallyCalledMethods == null) {
+//				allInternallyCalledMethods = computeAllInternallyCalledMethods(this);
+				
+			allInternallyCalledMethods = 
+			computeAllInternallyCalledMethods(this);
+			}
+
 			return allInternallyCalledMethods;
 		}
 		@Override
@@ -267,9 +273,52 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			}
 			return result;			
 		}
+		/*
+		 * got to think this through, recirsion problems
+		 */
+		public static Set<STMethod> computeAllInternallyCalledMethods (STMethod aMethod, Set<STMethod> result) {
+//			Set<STMethod> result = new HashSet();
+//			STType aDeclaringType = aMethod.getDeclaringSTType();
+//			if (aDeclaringType == null) {
+//				System.err.println("Declaring type should not be null");
+//				return null;
+//			}
+			if (result.contains(aMethod))
+				return result; // recursion
+			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			for (CallInfo aCallInfo:aCalledMethods) {
+				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
+						continue;
+				String aCalledTypeShortName = ComprehensiveVisitCheck.toShortTypeName(aCallInfo.getCalledType());
+				// we did not capture the type
+				if (Character.isLowerCase(aCalledTypeShortName.charAt(0)))
+					continue;
+				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
+//					System.err.println ("directly called methods should not be null");
+					continue;
+//					return null;
+				}
+				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
+				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+					
+					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyCalledMethods();
+					if (anAllIndirectlyCalledMethods == null) {
+						return null;
+					}
+					result.addAll(anAllIndirectlyCalledMethods);
+				}
+			}
+			
+			return result;
+		}
+
 		
 		public static Set<STMethod> computeAllInternallyCalledMethods (STMethod aMethod) {
+			
 			Set<STMethod> result = new HashSet();
+			if (visitedInternalMethods.contains(aMethod))
+				return result;
 //			STType aDeclaringType = aMethod.getDeclaringSTType();
 //			if (aDeclaringType == null) {
 //				System.err.println("Declaring type should not be null");
@@ -290,12 +339,15 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //					return null;
 				}
 				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
+				visitedInternalMethods.addAll(result);
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+					
 					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyCalledMethods();
 					if (anAllIndirectlyCalledMethods == null) {
 						return null;
 					}
-					result.addAll(anAllIndirectlyCalledMethods);
+					result.addAll(anAllIndirectlyCalledMethods); // add empty if already visited
+					visitedInternalMethods.addAll(anAllIndirectlyCalledMethods);
 				}
 			}
 			return result;
