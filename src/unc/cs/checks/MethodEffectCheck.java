@@ -156,8 +156,13 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 					return null; //return to pending check
 				}
 				for (STMethod aPossibleCalledMethod: allOverloadedMethods) {
-					if (!shouldVisitCalledMethod(aPossibleCalledMethod))
-						continue;
+					if (!shouldVisitCalledMethod(aPossibleCalledMethod)) { 
+						// called method passes check
+						if (!stopOnFailure()) // stop on success
+							return true; // check passed
+						else
+						   continue;
+					}
 					Boolean checkCalled = checkCalledMethod(aPossibleCalledMethod);
 					if (checkCalled == null) {
 						return null;

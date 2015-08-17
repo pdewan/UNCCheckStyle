@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
 import unc.cs.checks.STTypeVisited;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
@@ -278,7 +279,9 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			for (CallInfo aCallInfo:aCalledMethods) {
 				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
 						continue;
-				if (Character.isLowerCase(aCallInfo.getCalledType().charAt(0))) // we did not capture the type
+				String aCalledTypeShortName = ComprehensiveVisitCheck.toShortTypeName(aCallInfo.getCalledType());
+				// we did not capture the type
+				if (Character.isLowerCase(aCalledTypeShortName.charAt(0)))
 					continue;
 				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
 				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
