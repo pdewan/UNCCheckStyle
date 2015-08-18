@@ -76,10 +76,14 @@ public  class AnExtendibleTreeWalker
 							File.class, List.class
 					});
 			delegateProcessFiltered.setAccessible(true);
-			delegateCacheField = delegate.getClass()
-					.getDeclaredField("cache");
+//			delegateCacheField = delegate.getClass()
+//					.getDeclaredField("cache");
+			delegateCacheField = UNCCheckStyleUtil.getDeclaredField (delegate.getClass(),
+					"cache");
 			delegateCacheField.setAccessible(true);
-			delegateMessageField = AbstractFileSetCheck.class.getDeclaredField("messages");
+//			delegateMessageField = AbstractFileSetCheck.class.getDeclaredField("messages");
+			delegateMessageField = UNCCheckStyleUtil.getDeclaredField (AbstractFileSetCheck.class,
+					"messages");
 			delegateMessageField.setAccessible(true);
 		
 			delegateMessageField.set(delegate, delegateMessageField.get(this));
