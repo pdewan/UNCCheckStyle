@@ -72,11 +72,7 @@
 			<property name="exceptionCalls"
 				value="String.substring, String.charAt, String.length, Scanner.nextLine" />
 		</module>
-		<module name="LegalMethodCall">
-			<property name="severity" value="info" />
-			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
-			<property name="expectedMethods" value="charAt, length, substring" />
-		</module>
+		
 		<module name="IllegalInitCall">
 			<property name="includeTypeTags" value="*" />				
 		</module>		
