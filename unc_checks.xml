@@ -56,10 +56,7 @@
 		<module name="MemberName"/>
 		<module name="StaticVariableName"/>
 					
-		<module name="VariableHasClassType">
-
-		</module>
-		
+				
 		<module name="NoDuplicateShortTypeName">
 			<property name="includeTypeTags" value="*" />		
 		</module>
@@ -88,9 +85,7 @@
 			<property name="illegalTypeNames"
 				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
 		</module>
-		<module name="StaticVariable">
-			<property name="singletonTypes" value="Scanner, BufferedReader"/>				
-		</module>
+		
 		<module name="FunctionAssignsGlobal">	
 			<property name="excludeMethodTags" value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*)" />
 			
