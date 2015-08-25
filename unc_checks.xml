@@ -70,7 +70,7 @@
 		<module name="IllegalMethodCall">
 			<property name="disallowedCalls" value="Scanner, String" />
 			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, Scanner.nextLine" />
+				value="String.substring, String.charAt, String.length, Scanner.nextLine, Scanner.close" />
 		</module>
 
 		<module name="IllegalInitCall">
