@@ -14,7 +14,7 @@
 		<property name="severity" value="info" />
 
 		<module name="STBuilder">
-			<property name="includeTypeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />
 
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="test,lectures,mp, grail" />
@@ -28,83 +28,87 @@
 
 
 	<module name="TreeWalker">
-		<module name="EqualsAvoidNull"/>
-		<module name="EmptyStatement"/>
-		<module name="MagicNumber"/>
-		<module name="SimplifyBooleanExpression"/>
-		<module name="SimplifyBooleanReturn"/>
-		<module name="StringLiteralEquality"/>
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="MagicNumber" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
 		<module name="NestedForDepth">
-    		<property name="max" value="2"/>
+			<property name="max" value="2" />
 		</module>
 		<module name="NestedIfDepth">
-    		<property name="max" value="2"/>
+			<property name="max" value="2" />
 		</module>
 		<module name="MinDeclaredMethods">
-    		<property name="minDeclaredMethods" value="2"/>
+			<property name="minDeclaredMethods" value="2" />
+		</module>
+		<module name="AvoidStarImport">
+
 		</module>
 		<module name="MinCalledMethods">
-    		<property name="minCalledMethods" value="1"/>
+			<property name="minCalledMethods" value="1" />
 		</module>
 		<module name="VisibilityModifier">
-    		<property name="packageAllowed" value="true"/>
-    		<property name="protectedAllowed" value="true"/>    		
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
 		</module>
-		<module name="ConstantName"/>
-		<module name="MethodName"/>
-		<module name="LocalVariableName"/>
-		<module name="MemberName"/>
-		<module name="StaticVariableName"/>
-					
-				
+		<module name="ConstantName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+
+
 		<module name="NoDuplicateShortTypeName">
-			<property name="includeTypeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />
 		</module>
 		<module name="NoFullTypeName">
-			<property name="includeTypeTags" value="*" />		
+			<property name="includeTypeTags" value="*" />
 		</module>
-		
+
 		<module name="IllegalMethodCall">
 			<property name="disallowedCalls" value="Scanner, String" />
 			<property name="exceptionCalls"
 				value="String.substring, String.charAt, String.length, Scanner.nextLine" />
 		</module>
-		
+
 		<module name="IllegalInitCall">
-			<property name="includeTypeTags" value="*" />				
-		</module>		
+			<property name="includeTypeTags" value="*" />
+		</module>
 		<module name="IllegalComponentInstantiation">
-			<property name="includeTypeTags" value="*"/>		
-		</module>		
+			<property name="includeTypeTags" value="*" />
+		</module>
 		<module name="IllegalTypeImported">
-		    <property name="illegalPrefixes" value="*" />
+			<property name="illegalPrefixes" value="*" />
 			<property name="legalPrefixes"
-				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util"/>
+				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
 				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
 		</module>
-		
-		<module name="FunctionAssignsGlobal">	
-			<property name="excludeMethodTags" value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*)" />
-			
+
+		<module name="FunctionAssignsGlobal">
+			<property name="excludeMethodTags"
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+
 		</module>
 		<module name="SetterAssignsGlobal">
 		</module>
-		
+
 		<module name="PackageDeclaration" />
 		<module name="LinePattern">
 		</module>
-		<module name="OvalPattern">		
-		</module>		
+		<module name="OvalPattern">
+		</module>
 		<module name="RectanglePattern">
 		</module>
-		<module name="StringShapePattern">		
+		<module name="StringShapePattern">
 		</module>
-		<module name="PointPattern">		
-		</module>		
-		<module name="ImagePattern">		
+		<module name="PointPattern">
+		</module>
+		<module name="ImagePattern">
 		</module>
 		<module name="VectorPattern">
 		</module>
@@ -112,19 +116,19 @@
 		</module>
 		<module name="MapPattern">
 		</module>
-	
-		<module name="NoStructuredSetter">		
-		 </module>
+
+		<module name="NoStructuredSetter">
+		</module>
 		<module name="IllegalPropertyNotification">
-			<property name="excludeProperties" value="this" />		
-		</module>		
-		<module name="MissingActualProperty">		
-		</module>	
-		<module name="MissingActualEditableProperty">	
-		</module>	
+			<property name="excludeProperties" value="this" />
+		</module>
+		<module name="MissingActualProperty">
+		</module>
+		<module name="MissingActualEditableProperty">
+		</module>
 
 
-		
+
 	</module>
 </module>
 
