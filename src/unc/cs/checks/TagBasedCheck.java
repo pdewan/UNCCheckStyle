@@ -425,7 +425,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  }
 //for some reason this is not supposed to call matchedMyType with clas name
 	public Boolean matchesMyType(String aDescriptor) {
-		String aClassName = shortTypeName;
+//		String aClassName = shortTypeName;
 		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*"))
 			return true;
 		if (aDescriptor.startsWith("@")) {
@@ -438,7 +438,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 
 			return contains(Arrays.asList(checkTags), aDescriptor, shortTypeName);
 		} else {
-			return matchesNameOrVariable(aDescriptor, aClassName);
+			return matchesNameOrVariable(aDescriptor, shortTypeName) ||  matchesNameOrVariable(aDescriptor, fullTypeName);
 		}
 			
 //		} else if (aDescriptor.startsWith("$")) {

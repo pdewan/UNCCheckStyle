@@ -44,6 +44,7 @@
 			<property name="minDeclaredMethods" value="2" />
 		</module>
 		<module name="AvoidStarImport">
+		<module name="HiddenField"/>
 
 		</module>
 		<module name="MinCalledMethods">
@@ -54,6 +55,7 @@
 			<property name="protectedAllowed" value="true" />
 		</module>
 		<module name="ConstantName" />
+		<module name="TypeName" />
 		<module name="MethodName" />
 		<module name="LocalVariableName" />
 		<module name="MemberName" />
@@ -87,6 +89,11 @@
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
 				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
+		</module>
+		<module name="ClassDefined">
+			<property name="severity" value="info" />
+			<property name="expectedTypes" value="main.Assignment(.*)" />
+
 		</module>
 
 		<module name="FunctionAssignsGlobal">

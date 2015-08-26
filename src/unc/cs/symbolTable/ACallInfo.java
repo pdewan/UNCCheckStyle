@@ -10,7 +10,7 @@ public class ACallInfo implements CallInfo {
 	
 	List<DetailAST> actuals;
 	
-	String[] notmalizedCall;
+	String[] normalizedCall;
 	
 	
 //	public ACallInfo(String caller, String calledType,
@@ -27,7 +27,7 @@ public class ACallInfo implements CallInfo {
 		this.calledType = calledType;
 		this.calleee = calleee;
 		this.actuals = actuals;
-		this.notmalizedCall = notmalizedCall;
+		this.normalizedCall = notmalizedCall;
 	}
 	@Override
 	public String getCaller() {
@@ -47,7 +47,7 @@ public class ACallInfo implements CallInfo {
 	}
 	@Override
 	public String[] getNormalizedCall() {
-		return notmalizedCall;
+		return normalizedCall;
 	}
 	public String toString() {
 		return caller + "-->" + calledType + "." + calleee;
