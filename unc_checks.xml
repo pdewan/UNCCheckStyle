@@ -40,16 +40,12 @@
 		<module name="NestedIfDepth">
 			<property name="max" value="2" />
 		</module>
-		<module name="MinDeclaredMethods">
-			<property name="minDeclaredMethods" value="2" />
-		</module>
+		<module name="PackageDeclaration" />		
 		<module name="AvoidStarImport">
 		<module name="HiddenField"/>
 
 		</module>
-		<module name="MinCalledMethods">
-			<property name="minCalledMethods" value="1" />
-		</module>
+		
 		<module name="VisibilityModifier">
 			<property name="packageAllowed" value="true" />
 			<property name="protectedAllowed" value="true" />
@@ -60,6 +56,14 @@
 		<module name="LocalVariableName" />
 		<module name="MemberName" />
 		<module name="StaticVariableName" />
+		
+		<module name="MinDeclaredMethods">
+			<property name="minDeclaredMethods" value="2" />
+		</module>
+		
+		<module name="MinCalledMethods">
+			<property name="minCalledMethods" value="1" />
+		</module>
 
 
 		<module name="NoDuplicateShortTypeName">
@@ -84,7 +88,7 @@
 		<module name="IllegalTypeImported">
 			<property name="illegalPrefixes" value="*" />
 			<property name="legalPrefixes"
-				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util" />
+				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util.List, java.util.ArrayList" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
@@ -104,7 +108,6 @@
 		<module name="SetterAssignsGlobal">
 		</module>
 
-		<module name="PackageDeclaration" />
 		<module name="LinePattern">
 		</module>
 		<module name="OvalPattern">
