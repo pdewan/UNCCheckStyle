@@ -67,7 +67,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		isElaboration = anIsElaboration;
 		isEnum = anIsEnum;
 		structurePatternName = aStructurePatternName;
-		declaredPropertyNames = aDeclaredEditablePropertyNames;
+		declaredPropertyNames = aDeclaredPropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
 		tags = aTags;
 		imports = anImports;
@@ -177,7 +177,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	}
 	// recursion is safer
 	@Override
-	public STNameable[] getPropertyNames() {
+	public STNameable[] getAllDeclaredPropertyNames() {
 		List<STNameable> result = new ArrayList<>();
 //		STNameable[] aPropertyNames = getDeclaredPropertyNames();
 		STNameable[] aPropertyNames;

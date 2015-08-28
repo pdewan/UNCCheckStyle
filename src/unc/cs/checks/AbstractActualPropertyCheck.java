@@ -58,6 +58,7 @@ public abstract  class AbstractActualPropertyCheck extends ComprehensiveVisitChe
 
 	}
     public abstract Boolean checkActualProperty (STType anSTType, String aDeclarePropertyName ) ;
+    abstract STNameable[] getDeclaredPropertyNames(STType anSTType);
     public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
     	String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
@@ -71,7 +72,8 @@ public abstract  class AbstractActualPropertyCheck extends ComprehensiveVisitChe
 			return true;
 		Boolean retVal = true;
 		
-		STNameable[] anSTNameables = anSTType.getPropertyNames();
+//		STNameable[] anSTNameables = anSTType.getAllDeclaredPropertyNames();
+		STNameable[] anSTNameables = getDeclaredPropertyNames(anSTType);
 		if (anSTNameables == null)
 			return null;
 		for (STNameable aNameable:anSTNameables) {

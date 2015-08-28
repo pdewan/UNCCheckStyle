@@ -331,7 +331,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// }
 	// recursion is safer
 	@Override
-	public STNameable[] getPropertyNames() {
+	public STNameable[] getAllDeclaredPropertyNames() {
 		List<STNameable> result = new ArrayList<>();
 		// STNameable[] aPropertyNames = getDeclaredPropertyNames();
 		STNameable[] aPropertyNames;
@@ -361,7 +361,37 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		}
 		return result.toArray(new STNameable[0]);
 	}
+	@Override
+	public STNameable[] getAllDeclaredEditablePropertyNames() {
+		List<STNameable> result = new ArrayList<>();
+		// STNameable[] aPropertyNames = getDeclaredPropertyNames();
+		STNameable[] aPropertyNames;
 
+		STType anSTClass = this;
+		while (true) {
+			aPropertyNames = anSTClass.getDeclaredEditablePropertyNames();
+			for (STNameable aNameable : aPropertyNames) {
+				result.add(aNameable);
+			}
+			STNameable aSuperClass = anSTClass.getSuperClass();
+			if (aSuperClass == null
+					|| TagBasedCheck.isExternalClass(aSuperClass.getName()))
+				break;
+			STType anSTSuperClass = SymbolTableFactory.getOrCreateSymbolTable()
+					.getSTClassByShortName(aSuperClass.getName());
+			if (anSTSuperClass == null) {
+				if (anSTClass.waitForSuperTypeToBeBuilt())
+					return null;
+				else
+					break;
+				// return null; // assume that we are only inheriting our own
+				// types
+			}
+			anSTClass = anSTSuperClass;
+
+		}
+		return result.toArray(new STNameable[0]);
+	}
 	// public void initDeclaredPropertyNames(STNameable[] propertyNames) {
 	// this.declaredPropertyNames = propertyNames;
 	// }

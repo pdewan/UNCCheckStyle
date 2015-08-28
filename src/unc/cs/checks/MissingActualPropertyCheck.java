@@ -91,6 +91,10 @@ public  class MissingActualPropertyCheck extends AbstractActualPropertyCheck {
 	protected String msgKey() {
 		return MSG_KEY;
 	}
+	@Override
+	STNameable[] getDeclaredPropertyNames(STType anSTType) {
+		return anSTType.getAllDeclaredPropertyNames();
+	}
 	
 	
 }

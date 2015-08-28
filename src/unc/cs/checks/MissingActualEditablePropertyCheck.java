@@ -91,6 +91,10 @@ public  class MissingActualEditablePropertyCheck extends AbstractActualPropertyC
 	protected String msgKey() {
 		return MSG_KEY;
 	}
+	@Override
+	STNameable[] getDeclaredPropertyNames(STType anSTType) {
+		return anSTType.getAllDeclaredEditablePropertyNames();
+	}
 	
 	
 }

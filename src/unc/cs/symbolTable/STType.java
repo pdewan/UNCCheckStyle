@@ -24,7 +24,7 @@ public interface STType extends STNameable{
 	void introspect();
 	STNameable[] getImports();
 	STMethod[] getDeclaredConstructors();
-	STNameable[] getPropertyNames();
+	STNameable[] getAllDeclaredPropertyNames();
 	Map<String, PropertyInfo> getDeclaredPropertyInfos();
 	Map<String, PropertyInfo> getPropertyInfos();
 	STMethod[] getMethods(String aName);
@@ -71,4 +71,5 @@ public interface STType extends STNameable{
 	List<String> getInstanceSignatures();
 	Set<String> getDeclaredGlobals();
 	String getGlobalVariableType(String aGlobal);
+	STNameable[] getAllDeclaredEditablePropertyNames();
 }

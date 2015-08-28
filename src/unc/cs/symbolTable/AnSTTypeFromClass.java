@@ -136,7 +136,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	
 
 	@Override
-	public STNameable[] getPropertyNames() {
+	public STNameable[] getAllDeclaredPropertyNames() {
 		// TODO Auto-generated method stub
 		return emptyNemable;
 	}
