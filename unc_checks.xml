@@ -56,7 +56,8 @@
 		<module name="LocalVariableName" />
 		<module name="MemberName" />
 		<module name="StaticVariableName" />
-		
+		<module name="NeedBraces"/>
+		<module name="MultipleStringLiterals"/>
 		<module name="MinDeclaredMethods">
 			<property name="minDeclaredMethods" value="2" />
 		</module>
@@ -101,8 +102,14 @@
 		</module>
 		<module name="ClassDefined">
 			<property name="severity" value="info" />
-			<property name="expectedTypes" value="main.Assignment(.*)" />
-
+			<property name="expectedTypes" value="main.Assignment(.*), @ScannerBean" />
+		</module>
+		
+		<module name="ExpectedGetters">
+			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
+		</module>
+		<module name="ExpectedSetters">
+			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
 		</module>
 
 		<module name="FunctionAssignsGlobal">
