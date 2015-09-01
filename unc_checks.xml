@@ -58,20 +58,10 @@
 		<module name="StaticVariableName" />
 		<module name="NeedBraces"/>
 		<module name="MultipleStringLiterals"/>
-		<module name="MinDeclaredMethods">
-			<property name="minDeclaredMethods" value="2" />
-		</module>
 		
-		<module name="MinCalledMethods">
-			<property name="minCalledMethods" value="1" />
-		</module>
-
-
 		<module name="NoDuplicateShortTypeName">
-			<property name="includeTypeTags" value="*" />
 		</module>
 		<module name="NoFullTypeName">
-			<property name="includeTypeTags" value="*" />
 		</module>
 
 		<module name="IllegalMethodCall">
@@ -92,7 +82,6 @@
 			<property name="includeTypeTags" value="*" />
 		</module>
 		<module name="IllegalTypeImported">
-			<property name="illegalPrefixes" value="*" />
 			<property name="legalPrefixes"
 				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util.List, java.util.ArrayList" />
 		</module>
@@ -119,6 +108,11 @@
 		</module>
 		<module name="SetterAssignsGlobal">
 		</module>
+		<module name="MissingActualProperty">
+		</module>
+		<module name="MissingActualEditableProperty">
+		</module>
+		
 
 		<module name="LinePattern">
 		</module>
@@ -144,11 +138,7 @@
 		<module name="IllegalPropertyNotification">
 			<property name="excludeProperties" value="this" />
 		</module>
-		<module name="MissingActualProperty">
-		</module>
-		<module name="MissingActualEditableProperty">
-		</module>
-
+		
 
 
 	</module>
