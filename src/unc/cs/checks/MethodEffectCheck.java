@@ -211,6 +211,8 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //		for (STMethod aMethod: anSTType.getMethods()) {
 //			visitMethod(anSTType, aMethod);
 //		}
+		if (shortTypeName == null)
+			return; // maybe visiting interface
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
     	

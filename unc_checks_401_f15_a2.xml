@@ -112,11 +112,7 @@
 		</module>
 		<module name="MissingActualEditableProperty">
 		</module>
-		<module name="ClassHasAtLeastOneInterface">
-		</module>
-		<module name="VariableHasClassType">
-
-		</module>
+		
 
 		<module name="LinePattern">
 		</module>
