@@ -118,10 +118,10 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 *            parameter list for check.
 	 */
 	@Override
-	public void visitParameterDef(DetailAST paradef) {
+	public void visitParamDef(DetailAST paradef) {
 		final DetailAST grandParentAST = paradef.getParent().getParent();
-
-		if (grandParentAST.getType() == TokenTypes.METHOD_DEF)
+// why this condition?
+		if (grandParentAST.getType() == TokenTypes.METHOD_DEF || grandParentAST.getType() == TokenTypes.CTOR_DEF )
 		// && isCheckedMethod(grandParentAST)) {
 		maybeAddToPendingTypeChecks(paradef);
 		// }

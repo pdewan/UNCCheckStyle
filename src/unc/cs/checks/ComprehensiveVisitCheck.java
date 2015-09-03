@@ -490,8 +490,11 @@ ContinuationProcessor{
 	}
     public void visitParamDef(DetailAST paramDef) {
     	final DetailAST grandParentAST = paramDef.getParent().getParent();
-		if (!(grandParentAST.getType() == TokenTypes.METHOD_DEF))
-			return;
+    	// why this condition?
+//		if (!(grandParentAST.getType() == TokenTypes.METHOD_DEF ))
+//			return;
+		if ((grandParentAST.getType() != TokenTypes.METHOD_DEF && grandParentAST.getType() != TokenTypes.CTOR_DEF))
+		return;
 		final DetailAST aType = paramDef.findFirstToken(TokenTypes.TYPE);
 //		DetailAST aTypeNameAST = aType.findFirstToken(TokenTypes.IDENT);
 //		String aTypeName = aTypeNameAST.getText();
@@ -609,11 +612,11 @@ ContinuationProcessor{
 		 
 	 }
      
-     public void visitParameterDef(DetailAST ast) {
-    		if (!checkIncludeExcludeTagsOfCurrentType())
-    			return;
-    	 visitVariableOrParameterDef(ast);
-	 }	
+//     public void visitParameterDef(DetailAST ast) {
+//    		if (!checkIncludeExcludeTagsOfCurrentType())
+//    			return;
+//    	 visitVariableOrParameterDef(ast);
+//	 }	
      // This is really kludgy, what aot for parameters etc. we need to open and close scopes.
      // actually we are only looking at granparents that are methods
      public void addToMethodScope(DetailAST paramOrVarDef) {
