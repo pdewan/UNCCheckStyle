@@ -215,6 +215,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 			return; // maybe visiting interface
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
+		shortTypeName = null;
     	
     }
 	
