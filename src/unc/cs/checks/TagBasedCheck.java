@@ -911,6 +911,6 @@ public static boolean isOEAtomic(String aType) {
  }
  
 // public static void main (String[] args) {
-//	 String[] aTags = "Tag1&Tag2&Tag3".split("&");
+//	 System.out.println("String".matches(".*\\[\\]"));
 // }
 }

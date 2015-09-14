@@ -480,8 +480,14 @@ ContinuationProcessor{
     	currentMethodIsInstance = !isStatic(methodDef);
     	if (!currentMethodIsConstructor) {
     	DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
-    	FullIdent aTypeFullIdent = FullIdent.createFullIdent(typeDef.getFirstChild());
+    	DetailAST firstChild = typeDef.getFirstChild();
+    	if (firstChild.getType() == TokenTypes.ARRAY_DECLARATOR) {
+//    	if (firstChild.getText().startsWith("[")) {
+    		currentMethodType = firstChild.getFirstChild().getText() + "[]";
+    	} else {
+    	FullIdent aTypeFullIdent = FullIdent.createFullIdent(firstChild);
     	currentMethodType = aTypeFullIdent.getText();
+    	}
         }
     	currentMethodAST = methodDef;
     	maybeVisitVisible(methodDef);  
