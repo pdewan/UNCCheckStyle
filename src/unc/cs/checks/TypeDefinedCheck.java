@@ -2,7 +2,11 @@ package unc.cs.checks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -14,6 +18,8 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	
 	protected List<String> expectedTypes = new ArrayList();	
 	protected List<String> unmatchedTypes = new ArrayList();
+	protected Map<String, String> tagMatches = new HashMap();
+//	protected Set<String> matchedTypes = new HashSet();
 	protected boolean overlappingTags;
 //	@Override
 //	public int[] getDefaultTokens() {
@@ -33,7 +39,7 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	}
 	
 	public void visitType(DetailAST ast) {  
-
+		
     	super.visitType(ast);
     	Boolean check = checkIncludeExcludeTagsOfCurrentType();
     	if (check == null)
@@ -41,11 +47,19 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     	if (!check)
     		return;
     	List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
+    	if (tagMatches.containsKey(fullTypeName)) {
+    		tagMatches.remove(fullTypeName);
+    		if (!overlappingTags) {
+    			unmatchedTypes.remove(tagMatches.get(fullTypeName));
+    		}
+    	}
     	
 //			log(currentTree, msgKey(), shortTypeName, expectedClasses.toString());
 
     	for (String anExpectedClassOrTag:checkTags) {
     		if ( matchesMyType(anExpectedClassOrTag)) {
+    			tagMatches.put(fullTypeName, anExpectedClassOrTag);
+//    			matchedTypes.add(fullTypeName);
     			unmatchedTypes.remove(anExpectedClassOrTag);
     			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
 //    			log(currentTree, msgKey(), shortTypeName, unmatchedClasses.toString());
