@@ -114,8 +114,14 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 			String[] aPropertyAndType = aSpecifiedProperty.split(":");
 			String aType = aPropertyAndType[1].trim();
 			String aPropertySpecification = aPropertyAndType[0].trim();
-//			String[] aPropertiesPath = aPropertySpecification.split(".");			
-			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
+//			String[] aPropertiesPath = aPropertySpecification.split(".");
+			Boolean matched = matchProperty(aType, aPropertySpecification, aPropertyInfos);
+			if (matched ==null) {
+				return null;
+			}
+//			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
+			if (!matched) {
+
 				logPropertyNotMatched(aTreeAST, aPropertySpecification, aType);
 				retVal = false;
 			}

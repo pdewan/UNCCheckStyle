@@ -1632,6 +1632,30 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			initMethods = computeInitMethods(getDeclaredMethods());
 		return initMethods;
 	}
+	public static boolean contains (List<STNameable> anInterfaces, String anInterface) {
+		String aShortInterface = ComprehensiveVisitCheck.toShortTypeName(anInterface);
+		for (STNameable aNameable:anInterfaces) {
+			String aMember = ComprehensiveVisitCheck.toShortTypeName(aNameable.getName());
+			return aMember.equals(aShortInterface);
+		}
+		return false;
+	}
+	
+	public static List<STType> getImplementations(String anInterface) {
+		List<STType> result = new ArrayList();
+		SymbolTable aSymbolTable = SymbolTableFactory.getSymbolTable();
+		for (STType anSTType:aSymbolTable.getAllSTTypes()) {
+			if (anSTType.isInterface())
+				continue;
+			List<STNameable> interfaces = anSTType.getAllInterfaces();
+			if (interfaces == null)
+				return null;
+			if (contains(interfaces, anInterface)) {
+				result.add(anSTType);
+			}			
+		}
+		return result;
+	}
 	
 	// @Override
 	// public boolean isParsedClass() {
