@@ -328,7 +328,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 			return true;
 		if (aMethodSpecification.indexOf("@") == -1)
 //			return aMethodSpecification.equals(aShortMethodName);
-			return matchesNameOrVariable(aMethodSpecification, aShortMethodName);
+			return matchesNameVariableOrTag(aMethodSpecification, aShortMethodName, null);
 		
 		String aSpecificationTag = aMethodSpecification.substring(1);
 		STType aTypeST = SymbolTableFactory.getOrCreateSymbolTable()

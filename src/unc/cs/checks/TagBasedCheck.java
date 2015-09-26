@@ -154,7 +154,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return false;
 	   }
 	
-	public  boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
+	public static  boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
 		for (STNameable aStoredTag:aStoredTags) {
 			if (matchesStoredTag(aStoredTag.getName(), aDescriptor)) {
 				return true;
@@ -228,7 +228,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	/*
 	 * looks like this is has some stored tag, should use anded stuff here also
 	 */
-	public  Boolean hasTag(STNameable[] aStoredTags, String aDescriptor) {
+	public static  Boolean hasTag(STNameable[] aStoredTags, String aDescriptor) {
 		return matchesSomeStoredTag(Arrays.asList(aStoredTags), aDescriptor);
 //    	for (STNameable anSTNameable:aTags) {
 //    		if (matchesStoredTag(anSTNameable.getName(), aTag)) return true;
@@ -398,7 +398,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	return aTags;
 	
 }
- public Boolean matchesNameOrVariable(String aDescriptor, String aName) {
+ public Boolean matchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
 	 if (aDescriptor.equals("*")) {
 	 	 return true;
 	 } else if (aDescriptor.startsWith("$")) {
@@ -412,7 +412,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			} else {
 				return aName.equals(aUnifiedValue);
 			}
-		} else {
+		} else if (aDescriptor.startsWith("@")) {
+			return hasTag(aTags, aDescriptor);
+		}	else {
 			return aName.matches(aDescriptor); // allow regex
 		}
 	 
@@ -438,7 +440,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 
 			return contains(Arrays.asList(checkTags), aDescriptor, shortTypeName);
 		} else {
-			return matchesNameOrVariable(aDescriptor, shortTypeName) ||  matchesNameOrVariable(aDescriptor, fullTypeName);
+			return matchesNameVariableOrTag(aDescriptor, shortTypeName, null) ||  matchesNameVariableOrTag(aDescriptor, fullTypeName, null);
 		}
 			
 //		} else if (aDescriptor.startsWith("$")) {
@@ -522,7 +524,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 //		return true;
 	if (!aDescriptor.startsWith("@")) {
 //		return aShortClassName.equals(aDescriptor);
-		return matchesNameOrVariable(aDescriptor, aShortClassName);
+		return matchesNameVariableOrTag(aDescriptor, aShortClassName, null);
 	}
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)

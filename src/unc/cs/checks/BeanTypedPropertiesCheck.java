@@ -173,7 +173,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	public Boolean matchProperty(String aSpecifiedType,
 			String aSpecifiedProperty, Collection<PropertyInfo> aPropertyInfos) {
 		for (PropertyInfo aProperty : aPropertyInfos) {
-			if (matchesNameOrVariable(aSpecifiedProperty, aProperty.getName()))
+			if (matchesNameVariableOrTag(aSpecifiedProperty, aProperty.getName(), null))
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
 				return matchType(aSpecifiedType, aProperty);
@@ -187,8 +187,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		String[] aPropertyAndType = aSpecification.split(":");
 		String aTypeSpecification = aPropertyAndType[1].trim();
 		String aPropertySpecification = aPropertyAndType[0].trim();
-		return matchesNameOrVariable(aTypeSpecification, aProperty.getType()) &&
-				matchesNameOrVariable(aPropertySpecification, aProperty.getName());
+		return matchesNameVariableOrTag(aTypeSpecification, aProperty.getType(), null) &&
+				matchesNameVariableOrTag(aPropertySpecification, aProperty.getName(), null);
 	}
 	public Boolean matchProperty(
 			List<String> aSpecifications, PropertyInfo aProperty) {
@@ -217,7 +217,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		return matchType(aSpecifiedType, aPropertyInfos.get(aProperty) );
 	}
 	public   Boolean matchType(String aSpecifiedType, PropertyInfo aProperty) {
-		return matchesNameOrVariable(aSpecifiedType, aProperty.getName());
+		return matchesNameVariableOrTag(aSpecifiedType, aProperty.getName(), null);
 	}
 		
 	

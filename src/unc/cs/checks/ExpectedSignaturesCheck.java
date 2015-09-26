@@ -13,6 +13,7 @@ import java.util.Set;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -82,8 +83,11 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		boolean retVal = true;
 		for (STMethod aSpecification : aSpecifications) {
 		
-//			String[] aPropertiesPath = aPropertySpecification.split(".");			
-			if (!matchMethod(aSpecification, aMethods)) {
+//			String[] aPropertiesPath = aPropertySpecification.split(".");	
+			Boolean hasMatched = matchMethod(aSpecification, aMethods);
+			if (hasMatched == null)
+				return null;
+			if (!hasMatched) {
 				logSignatureNotMatched(aTreeAST, aSpecification.getSignature());
 				retVal = false;
 			}
@@ -137,7 +141,10 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchMethod(
 			STMethod aSpecification, STMethod[] aMethods) {
 		for (STMethod aMethod : aMethods) {
-			if (matchSignature(aSpecification, aMethod))
+			Boolean hasMatched = matchSignature(aSpecification, aMethod);
+			if (hasMatched == null)
+				return null;
+			if (hasMatched)
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
 				return true;
@@ -168,10 +175,19 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchSignature(
 			STMethod aSpecification, STMethod aMethod) {
 		variablesAdded.clear();
+		String aReturnType = aSpecification.getReturnType();
+		STNameable[] typeTags = null;
+		if (aReturnType.startsWith("@")) {
+			
+			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
+			if (aReturnSTType == null)
+				return null;
+			typeTags = aReturnSTType.getComputedTags();
+		}
 		Boolean retVal  = 
 				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
-				matchesNameOrVariable(aSpecification.getName(), aMethod.getName()) &&
-				matchesNameOrVariable(aSpecification.getReturnType(), aMethod.getReturnType());
+				matchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
+				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
 				
 		if (!retVal) {
 			backTrackUnification();
@@ -180,7 +196,18 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
 		String[] aMethodParameterTypes = aMethod.getParameterTypes();
 		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
-			if (!matchesNameOrVariable(aSpecificationParameterTypes[i], aMethodParameterTypes[i])) {
+			String aParameterType = aSpecificationParameterTypes[i];
+
+			STNameable[] parameterTags =null;
+			if (aParameterType.startsWith("@")) {
+				
+				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
+				if (aParameterSTType == null)
+					return null;
+				parameterTags = aParameterSTType.getComputedTags();
+			}
+			
+			if (!matchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
 				backTrackUnification();
 				return false;
 			}
