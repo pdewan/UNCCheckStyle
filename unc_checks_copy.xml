@@ -83,7 +83,7 @@
 		</module>
 		<module name="IllegalTypeImported">
 			<property name="legalPrefixes"
-				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.NoSuchElementException" />
+				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.NoSuchElementException, javax.swing" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
@@ -95,10 +95,14 @@
 		</module>
 		
 		<module name="ExpectedGetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String | Tokens:.*\[\] , @Word= Input:String | Value:String, @Number= Input:String | Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String, @Angle= LeftLine:@LINE_PATTERN | RightLine:@LINE_PATTERN, @Avatar= Text:String | Head:@IMAGE_PATTERN | Arms:@Angle | Legs:@Angle, @BridgeScene= Arthur:@Avatar | Galahad:@Avatar | Lancelot:@Avatar | Robin:@Avatar | Guard:@Avatar" />
+			<property name="expectedProperties" value="@ScannerBean= ScannedString:String | Tokens:.*\[\] | TokenList:@LIST_PATTERN | TokenList:@ClearableHistory, @Word= Input:String | Value:String, @Number= Input:String | Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String, @Angle= LeftLine:@LINE_PATTERN | RightLine:@LINE_PATTERN, @Avatar= Text:String | Head:@IMAGE_PATTERN | Arms:@Angle | Legs:@Angle, @BridgeScene= Arthur:@Avatar | Galahad:@Avatar | Lancelot:@Avatar | Robin:@Avatar | Guard:@Avatar | Gorge:* | KnightArea:* | GuardArea:* | Occupied:boolean |KnightTurn:boolean" />
 		</module>
 		<module name="ExpectedSetters">
 			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
+		</module>
+		<module name="ExpectedSignatures">
+			<property name="expectedSignatures"
+				value="@Angle= @move:int;int->*| @scale:double->*, @Avatar= @move:int;int->* | @scale:double->*, @BridgeScene= @scroll:int->* | @approach:@Avatar->*| @say:String->* | @passed:->* | @failed:->*" />
 		</module>
 
 		<module name="FunctionAssignsGlobal">
@@ -142,8 +146,7 @@
 		<module name="IllegalPropertyNotification">
 			<property name="excludeProperties" value="this" />
 		</module>
-	
-		
+
 
 
 	</module>
