@@ -142,6 +142,11 @@
 		<module name="IllegalPropertyNotification">
 			<property name="excludeProperties" value="this" />
 		</module>
+		<module name="PeerCommonProperties">
+			<property name="includeTypeTags" value="@move, @say, @rotateLeftArm, @rotateRightArm,  @repeat, @define, @call,  @thread, @wait, @proceedAll,  @sleep,  @undo, @redo" />			
+			<property name="includeSets" value="@move | @say | @rotateLeftArm | @rotateRightArm |  @repeat | @define | @call |  @thread | @wait | @proceedAll |  @sleep |  @undo | @redo" />		
+		    <property name="excludeProperties" value="*:int" />
+		  </module>
 		
 
 
