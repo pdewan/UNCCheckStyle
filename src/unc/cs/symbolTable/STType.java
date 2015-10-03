@@ -34,7 +34,7 @@ public interface STType extends STNameable{
 	Boolean isType(String aTypeName);
 	Boolean hasPublicMethod(String aSignature);
 	Boolean hasDeclaredMethod(String aSignature);
-	List<STNameable> getSuperTypes();
+	List<STNameable> getAllSuperTypes();
 	List<String> getAllSignatures();
 	List<String> getAllTypeNames();
 	List<String> getSuperTypeNames();

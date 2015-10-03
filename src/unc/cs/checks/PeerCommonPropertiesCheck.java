@@ -147,6 +147,8 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 //			List<PropertyInfo> aCommonProperties = anSTType.propertiesCommonWith(aPeerType);
 //			if (aCommonProperties == null)
 //				return null;
+			if (anSTType.getName().contains(aPeerType))
+				continue;
 			if (compareCommonProperties(anSTType, aPeerType, aTree) == null)
 				return null;
 //			System.out.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);

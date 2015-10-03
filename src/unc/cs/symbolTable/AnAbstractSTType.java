@@ -640,32 +640,62 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (anOriginal.getSetter() == null)
 			anOriginal.setSetter(aNew.getSetter());
 	}
+//	public Map<String, PropertyInfo> computeAllPropertyInfos() {
+//		Map<String, PropertyInfo> result = new HashMap<>();
+//		Map<String, PropertyInfo> aPropertyInfos = new HashMap();
+//		STType anSTClass = this;
+//		while (true) {
+//			aPropertyInfos = anSTClass.getDeclaredPropertyInfos();
+//			for (String aPropertyName : aPropertyInfos.keySet()) {
+////				result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
+//				mergingPut(result, aPropertyName, aPropertyInfos.get(aPropertyName));
+//			}
+//			STNameable aSuperClass = anSTClass.getSuperClass();
+//			if (aSuperClass == null
+//					|| TagBasedCheck.isExternalClass(aSuperClass.getName()))
+//				break;
+//			STType aSuperClassSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//					.getSTClassByShortName(aSuperClass.getName());
+//			if (aSuperClassSTType == null) {
+//				if (anSTClass.waitForSuperTypeToBeBuilt()) {
+//				return null; // assume that we are only inheriting our own types
+//				} else {
+//					break;
+//				}
+//					
+//			}
+//			anSTClass = aSuperClassSTType;
+//		}
+//		return result;
+//	}
 	public Map<String, PropertyInfo> computeAllPropertyInfos() {
-		Map<String, PropertyInfo> result = new HashMap<>();
-		Map<String, PropertyInfo> aPropertyInfos = new HashMap();
-		STType anSTClass = this;
-		while (true) {
-			aPropertyInfos = anSTClass.getDeclaredPropertyInfos();
-			for (String aPropertyName : aPropertyInfos.keySet()) {
-//				result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
-				mergingPut(result, aPropertyName, aPropertyInfos.get(aPropertyName));
-			}
-			STNameable aSuperClass = anSTClass.getSuperClass();
-			if (aSuperClass == null
-					|| TagBasedCheck.isExternalClass(aSuperClass.getName()))
-				break;
-			STType aSuperClassSTType = SymbolTableFactory.getOrCreateSymbolTable()
-					.getSTClassByShortName(aSuperClass.getName());
-			if (aSuperClassSTType == null) {
-				if (anSTClass.waitForSuperTypeToBeBuilt()) {
-				return null; // assume that we are only inheriting our own types
-				} else {
-					break;
-				}
-					
-			}
-			anSTClass = aSuperClassSTType;
+		Map<String, PropertyInfo> result = new HashMap<>();		
+		Map<String, PropertyInfo> aPropertyInfos = getDeclaredPropertyInfos();
+		for (String aPropertyName : aPropertyInfos.keySet()) {
+//			result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
+			mergingPut(result, aPropertyName, aPropertyInfos.get(aPropertyName));
 		}
+		
+		List<STNameable> allSuperTypes = getAllSuperTypes();
+		if (allSuperTypes == null)
+			return null;
+		for (STNameable aSuperType:allSuperTypes) {
+			if (TagBasedCheck.isExternalClass(aSuperType.getName())) {
+				continue;
+			}
+			STType aSuperClassSTType = SymbolTableFactory.getOrCreateSymbolTable()
+					.getSTClassByShortName(aSuperType.getName());
+			if (aSuperClassSTType ==null) {
+				return null; // this should not happen
+			} 
+			Map<String, PropertyInfo> aSuperPropertyInfos = aSuperClassSTType.getPropertyInfos();
+			for (String aPropertyName : aSuperPropertyInfos.keySet()) {
+//				result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
+				mergingPut(result, aPropertyName, aSuperPropertyInfos.get(aPropertyName));
+			}
+		}
+		
+		
 		return result;
 	}
 
@@ -676,6 +706,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (allPropertyInfos == null) {
 			allPropertyInfos = computeAllPropertyInfos();
 		}
+//		allPropertyInfos = computeAllPropertyInfos();
 		return allPropertyInfos;
 //		Map<String, PropertyInfo> result = new HashMap<>();
 //		Map<String, PropertyInfo> aPropertyInfos = new HashMap();
@@ -736,36 +767,34 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			return emptyList;
 		List<STNameable> result = new ArrayList();
 		result.add(anSTType);
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(aType.getName());
-//		if (anSTType == null)
-//			return null;
-//		if (anSTType.getName().contains("Anim") || anSTType.getName().contains("ert")) {
-//			System.out.println ("Found anim");
+		List<STNameable> aSuperTypes = getAllSuperTypes(anSTType);
+		if (aSuperTypes == null)
+			return null;
+
+//		// why is this not calling getAllSuperTypes
+//		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
+//		for (STNameable anInterface : anInterfaces) {
+//			List<STNameable> anInterfaceTypes = getAllTypes(anInterface, anSTType);
+//			if (anInterfaceTypes == null) {
+//				if (anSTType.waitForSuperTypeToBeBuilt())
+//					return null;
+//				else
+//					continue;
+//			}
+//			result.addAll(anInterfaceTypes);
 //		}
-		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
-		for (STNameable anInterface : anInterfaces) {
-			List<STNameable> anInterfaceTypes = getAllTypes(anInterface, anSTType);
-			if (anInterfaceTypes == null) {
-				if (anSTType.waitForSuperTypeToBeBuilt())
-					return null;
-				else
-					continue;
-			}
-			result.addAll(anInterfaceTypes);
-		}
-		if (anSTType.isInterface())
-			return result;
-		STNameable aSuperClass = anSTType.getSuperClass();
-		if (aSuperClass == null)
-			return result;
-		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass(), anSTType);
-		if (aSuperTypes == null) {
-			if (anSTType.waitForSuperTypeToBeBuilt())
-				return null;
-			else
-				return result;
-		}
+//		if (anSTType.isInterface())
+//			return result;
+//		STNameable aSuperClass = anSTType.getSuperClass();
+//		if (aSuperClass == null)
+//			return result;
+//		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass(), anSTType);
+//		if (aSuperTypes == null) {
+//			if (anSTType.waitForSuperTypeToBeBuilt())
+//				return null;
+//			else
+//				return result;
+//		}
 		addAllNonDuplicates(result, aSuperTypes);
 		// result.addAll(aSuperType);
 		return result;
@@ -848,7 +877,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				.toShortTypeName(aType.getName())))
 			return emptyList;
 		List<STNameable> result = new ArrayList();
-		result.add(aType);
+//		result.add(aType);
 
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aType.getName());
@@ -860,6 +889,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				if (result.contains(anInterface)) // an interface may be
 													// extended by many
 					continue;
+				result.add(anInterface);
 				List<STNameable> anInterfaceTypes = getAllSuperTypes(anInterface);
 				if (anInterfaceTypes == null)
 					if (anSTType.waitForSuperTypeToBeBuilt())
@@ -874,6 +904,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			STNameable aSuperClass = anSTType.getSuperClass();
 			if (aSuperClass == null)
 				return result;
+			result.add(aSuperClass);
 			List<STNameable> aSuperTypes = getAllSuperTypes(aSuperClass);
 			if (aSuperTypes == null) {
 				if (anSTType.waitForSuperTypeToBeBuilt())
@@ -941,7 +972,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 	
 	public List<String> computeSuperTypeNames() {
-		List<STNameable> aTypes = getSuperTypes();
+		List<STNameable> aTypes = getAllSuperTypes();
 		if (aTypes == null) {
 			if (waitForSuperTypeToBeBuilt())
 				return null;
@@ -968,9 +999,10 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 	List<STNameable> superTypes;
 	@Override
-	public List<STNameable> getSuperTypes() {
+	public List<STNameable> getAllSuperTypes() {
 		if (superTypes == null)
 			superTypes = getAllSuperTypes(this);
+//		superTypes = getAllSuperTypes(this);
 		return superTypes;
 		// List<STNameable> result = new ArrayList();
 //		return getAllSuperTypes(this);
@@ -1008,7 +1040,9 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		else
 			anAllTypes = aSymbolTable.getAllClassNames();
 		List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
-		List<String> anAllMyTypes = toNameList(getSuperTypes());
+//		List<String> anAllMyTypes = toNameList(getAllSuperTypes());
+		List<String> anAllMyTypes = toNameList(getAllTypes());
+
 		return difference(aNormalizedTypes, anAllMyTypes);
 	}
 	List<String> nonSuperTypes;
@@ -1067,6 +1101,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			if (aSuperTypes.contains(myShortName))
 				result.add(aNonSuperType);
 		}
+//		result.remove(getShortName());
 		return result;
 	}
 	List<String> subTypes;
@@ -1116,6 +1151,9 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				return emptyList;
 		}
 		List<String> aResult = difference(aNonSuperTypes, aSubTypes);
+		if (aResult != null) {
+			aResult.remove(getShortName());
+		}
 		if (isInterface() || aResult == null)
 			return aResult;
 		// find delegates
@@ -1300,10 +1338,10 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	public static List<STNameable> commonSuperTypes(STType anSTType1,
 			STType anSTType2) {
 		//
-		List<STNameable> aSuperTypes1 = anSTType1.getSuperTypes();
+		List<STNameable> aSuperTypes1 = anSTType1.getAllSuperTypes();
 		if (aSuperTypes1 == null)
 			return null;
-		List<STNameable> aSuperTypes2 = anSTType2.getSuperTypes();
+		List<STNameable> aSuperTypes2 = anSTType2.getAllSuperTypes();
 		if (aSuperTypes2 == null)
 			return null;
 		return intersect(aSuperTypes1, aSuperTypes2);
