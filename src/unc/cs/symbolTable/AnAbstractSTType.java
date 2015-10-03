@@ -689,6 +689,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 				return null; // this should not happen
 			} 
 			Map<String, PropertyInfo> aSuperPropertyInfos = aSuperClassSTType.getPropertyInfos();
+			if (aSuperPropertyInfos == null)
+				return null;
 			for (String aPropertyName : aSuperPropertyInfos.keySet()) {
 //				result.put(aPropertyName, aPropertyInfos.get(aPropertyName));
 				mergingPut(result, aPropertyName, aSuperPropertyInfos.get(aPropertyName));
