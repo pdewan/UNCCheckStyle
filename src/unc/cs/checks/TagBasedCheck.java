@@ -669,9 +669,10 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	}
 	computedTypeTags = new ArrayList(typeTags);
 	computedTypeTags.add(typeNameable);
+	computedTypeTags.add(toShortPatternName(typeNameable));
 	if (structurePattern != null) {
 		computedTypeTags.add(structurePattern);
-//		computedTypeTags.add(toShortPatternName(structurePattern));
+		computedTypeTags.add(toShortPatternName(structurePattern));
 	}
 }
 

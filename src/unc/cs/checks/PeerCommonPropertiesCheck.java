@@ -192,6 +192,11 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 //		
 //	}
 
-
+    public void visitType(DetailAST typeDef) {  
+    	super.visitType(typeDef);
+    	
+//		FullIdent aFullIdent = CheckUtils.createFullType(ast);
+//		typeName = aFullIdent.getText();
+    }
 
 }

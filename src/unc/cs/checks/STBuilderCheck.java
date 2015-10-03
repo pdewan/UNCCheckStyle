@@ -268,7 +268,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //	        }
 		  
 	  }
-	  
+	 
 	  public static void addKnownClass (Class aClass) {
 		  
 	  }

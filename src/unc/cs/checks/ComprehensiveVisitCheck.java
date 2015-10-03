@@ -377,9 +377,11 @@ ContinuationProcessor{
     
     public void visitType(DetailAST typeDef) {  
     	super.visitType(typeDef);
+		maybeVisitStructurePattern(typeDef);
+        // why this?
     	if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
-		maybeVisitStructurePattern(typeDef);
+//		maybeVisitStructurePattern(typeDef);
 		maybeVisitPropertyNames(typeDef);
 		maybeVisitEditablePropertyNames(typeDef);
 		maybeVisitTypeTags(typeDef);
