@@ -138,9 +138,9 @@
 		<module name="IllegalPropertyNotification">
 			<property name="excludeProperties" value="this" />
 		</module>
-		
 
-
+ 	<module name="InvalidPackageName">
+		</module>
 	</module>
 </module>
 
