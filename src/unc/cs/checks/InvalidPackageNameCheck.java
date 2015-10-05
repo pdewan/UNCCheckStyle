@@ -2,13 +2,8 @@ package unc.cs.checks;
 
 import java.util.Arrays;
 
-import sun.org.mozilla.javascript.internal.ast.DoLoop;
-import unc.cs.symbolTable.STType;
-import unc.cs.symbolTable.SymbolTableFactory;
-
-import com.puppycrawl.tools.checkstyle.api.Check;
-import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "invalidPackageName";
