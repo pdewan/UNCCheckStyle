@@ -94,7 +94,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		}
 		return retVal;
 	}
-	public List<STMethod> signaturesToMethods(String[] aSignatures) {
+	public static List<STMethod> signaturesToMethods(String[] aSignatures) {
 		List<STMethod> aMethods = new ArrayList();
 		for (String aSignature:aSignatures) {
 			aMethods.add(signatureToMethod(aSignature));
@@ -102,7 +102,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		return aMethods;		
 	}
 	
-	public STMethod signatureToMethod(String aSignature) {
+	public static STMethod signatureToMethod(String aSignature) {
 		String[] aNameAndRest = aSignature.split(":");
 		if (aNameAndRest.length != 2) {
 			System.err.print("Illegal signature, missing :" + aSignature);
