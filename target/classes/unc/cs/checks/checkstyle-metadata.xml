@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE checkstyle-metadata PUBLIC
+"-//eclipse-cs//DTD Check Metadata 1.1//EN"
+"http://eclipse-cs.sourceforge.net/dtds/checkstyle-metadata_1_1.dtd">
+<checkstyle-metadata>
+	<rule-group-metadata name="UNC custom checks"
+		priority="1600">
+		<rule-metadata name="%ClassDefined.name" internal-name="ClassDefined"
+			parent="unc.tools.checkstyle.AnExtendibleTreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassDefinedCheck" />
+			<description>%ClassDefined.desc</description>			
+		</rule-metadata>
+		<rule-metadata name="%InterfaceDefined.name" internal-name="InterfaceDefined"
+			parent="unc.tools.checkstyle.AnExtendibleTreeWalker">
+			<alternative-name internal-name="unc.cs.checks.InterfaceDefinedCheck" />
+			<description>%InterfaceDefined.desc</description>			
+		</rule-metadata>
+			<rule-metadata name="%STBuilder.name" internal-name="STBuilder"
+			parent="unc.tools.checkstyle.AnExtendibleTreeWalker">
+			<alternative-name internal-name="unc.cs.checks.STBuilderCheck" />
+			<description>%STBuilder.desc</description>			
+		</rule-metadata>
+		<rule-metadata name="%NoDuplicateShortTypeName.name" internal-name="NoDuplicateShortTypeName"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.NoDuplicateShortTypeNameCheck" />
+			<description>%NoDuplicateShortTypeNameDefined.desc</description>			
+		</rule-metadata>
+		<rule-metadata name="%NoFullTypeName.name" internal-name="NoFullTypeName"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.NoFullTypeNameCheck" />
+			<description>%NoFullTypeNameDefined.desc</description>			
+		</rule-metadata>
+		<rule-metadata name="%MethodLimit.name" internal-name="MethodLimit"
+			parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MethodLimitCheck" />
+			<description>%MethodLimit.desc</description>
+			<property-metadata name="max" datatype="Integer"
+				default-value="30">
+				<description>The maximum number of allowed methods.</description>
+			</property-metadata>
+			<quickfix classname="unc.cs.checks.MethodLimitQuickfix" />
+		</rule-metadata>
+		<rule-metadata name="%VariableHasClassType.name"
+			internal-name="VariableHasClassType" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.VariableHasClassTypeCheck" />
+			<description>%VariableHasClassType.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ClassHasOneInterface.name"
+			internal-name="ClassHasOneInterface" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassHasOneInterfaceCheck" />
+			<description>%ClassHasOneInterface.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ClassHasAtLeastOneInterface.name"
+			internal-name="ClassHasAtLeastOneInterface" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ClassHasAtLeastOneInterfaceCheck" />
+			<description>%ClassHasAtLeastOneInterfaceCheck.desc</description>
+		</rule-metadata>		
+		<rule-metadata name="%IllegalMethodCall.name"
+			internal-name="IllegalMethodCall" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalMethodCallCheck" />
+			<description>%IllegalMethodCall.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%LegalMethodCall.name"
+			internal-name="LegalMethodCall" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.LegalMethodCallCheck" />
+			<description>%LegalMethodCall.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalTypeImported.name"
+			internal-name="IllegalTypeImported" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalTypeImportedCheck" />
+			<description>%IllegalTypeImported.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalInitCall.name"
+			internal-name="IllegalInitCall" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalInitCallCheck" />
+			<description>%IllegalInitCall.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%LegalInitCall.name"
+			internal-name="LegalInitCall" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.LegalInitCallCheck" />
+			<description>%LegalInitCall.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalComponentInstantiation.name"
+			internal-name="IllegalComponentInstantiation" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalComponentInstantiationCheck" />
+			<description>%IllegalComponentInstantiation.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%StatiVariable.name"
+			internal-name="StatiVariable" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.StatiVariableCheck" />
+			<description>%StatiVariable.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%FunctionAssignsGlobal.name"
+			internal-name="FunctionAssignsGlobal" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.FunctionAssignsGlobalCheck" />
+			<description>%FunctionAssignsGlobal.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%SetterAssignsGlobal.name"
+			internal-name="SetterAssignsGlobal" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.SetterAssignsGlobalCheck" />
+			<description>%SetterAssignsGlobal.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ExpectedGetters.name"
+			internal-name="ExpectedGetters" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ExpectedGettersCheck" />
+			<description>%ExpectedGetters.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ExpectedSetters.name"
+			internal-name="ExpectedSetters" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ExpectedSettersCheck" />
+			<description>%ExpectedSetters.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%NoStructuredSetter.name"
+			internal-name="NoStructuredSetter" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.NoStructuredSetterCheck" />
+			<description>%NoStructuredSetter.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%LinePattern.name"
+			internal-name="LinePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.LinePatternCheck" />
+			<description>%LinePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%OvalPattern.name"
+			internal-name="OvalPattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.OvalPatternCheck" />
+			<description>%OvalPattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%RectanglePattern.name"
+			internal-name="RectanglePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.RectanglePatternCheck" />
+			<description>%RectanglePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%StringShapePattern.name"
+			internal-name="StringShapePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.StringShapePatternCheck" />
+			<description>%StringShapePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%ImagePattern.name"
+			internal-name="ImagePattern" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.ImagePatternCheck" />
+			<description>%ImageShapePattern.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%DescendentProperties.name"
+			internal-name="DescendentProperties" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.DescendentPropertiesCheck" />
+			<description>%DescendentProperties.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalPropertyNotification.name"
+			internal-name="IllegalPropertyNotification" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalPropertyNotificationCheck" />
+			<description>%IllegalPropertyNotification.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%MinComponentObjects.name"
+			internal-name="MinComponentObjects" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MinComponentObjectsCheck" />			
+			<description>%MinComponentObjects.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%MinDescendentObjects.name"
+			internal-name="MinDescendentObjects" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MinDescendentObjectsCheck" />			
+			<description>%MinComponentDescendents.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%MinDescendentShapes.name"
+			internal-name="MinDescendentShapes" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.MinDescendentShapesCheck" />			
+			<description>%MinDescendentShapes.desc</description>
+		</rule-metadata>
+		<rule-metadata name="%IllegalTypeDefined.name"
+			internal-name="IllegalTypeDefined" parent="TreeWalker">
+			<alternative-name internal-name="unc.cs.checks.IllegalTypeDefinedCheck" />			
+			<description>%IllegalTypeDefined.desc</description>
+		</rule-metadata>
+	</rule-group-metadata>
+</checkstyle-metadata>
