@@ -1,4 +1,8 @@
 *.class
+target/*
+target/classes
+target/classes/unc/cs/checks/message.properties
+target
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
