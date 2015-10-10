@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import unc.cs.symbolTable.AnSTMethod;
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
@@ -22,6 +23,29 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 
 	protected Map<String, String[]> typeToSignatures = new HashMap<>();
 	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
+	@Override
+	// get full name
+	public int[] getDefaultTokens() {
+		return new int[] {
+				 TokenTypes.PACKAGE_DEF,
+				TokenTypes.CLASS_DEF,
+				TokenTypes.INTERFACE_DEF,
+//				TokenTypes.ANNOTATION,
+				// TokenTypes.INTERFACE_DEF,
+				// TokenTypes.TYPE_ARGUMENTS,
+				// TokenTypes.TYPE_PARAMETERS,
+//				TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF,
+//				TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF,
+				// TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
+				// TokenTypes.PARAMETER_DEF,
+				// TokenTypes.LCURLY,
+				// TokenTypes.RCURLY,
+//				TokenTypes.CTOR_CALL,
+//				TokenTypes.LITERAL_NEW,
+//				TokenTypes.METHOD_CALL
+				};
+
+	}
 
 //	public static final String SEPARATOR = ">";
 
@@ -299,6 +323,14 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		super.doFinishTree(ast);
 
 	}
+
+//	@Override
+//	// this should never be called
+//	protected Boolean check(DetailAST ast, String aShortMethodName,
+//			String aLongMethodName, CallInfo aCallInfo) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 
 }

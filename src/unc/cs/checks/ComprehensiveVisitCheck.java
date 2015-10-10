@@ -237,6 +237,36 @@ ContinuationProcessor{
 		}
 		return (STNameable[]) anInterfaces.toArray(emptyNameableArray);    	
     }
+	public static List<STMethod> signaturesToMethods(String[] aSignatures) {
+		List<STMethod> aMethods = new ArrayList();
+		for (String aSignature:aSignatures) {
+			aMethods.add(signatureToMethod(aSignature));
+		}
+		return aMethods;		
+	}
+	
+	public static STMethod signatureToMethod(String aSignature) {
+		String[] aNameAndRest = aSignature.split(":");
+		if (aNameAndRest.length != 2) {
+			System.err.print("Illegal signature, missing :" + aSignature);
+			return null;
+		}
+		String aName = aNameAndRest[0].trim();
+		String[] aReturnTypeAndParameters = aNameAndRest[1].split("->");
+		if (aReturnTypeAndParameters.length != 2) {
+			System.err.print("Illegal signature, missing ->" + aSignature);
+			return null;
+		}
+		String aReturnType = aReturnTypeAndParameters[1].trim();
+		String aParametersString = aReturnTypeAndParameters[0];
+		String[] aParameterTypes = aParametersString.equals("")?new String[0]:  aParametersString.split(STMethod.PARAMETER_SEPARATOR);
+		for (int i = 0; i < aParameterTypes.length; i++) {
+			aParameterTypes[i] = aParameterTypes[i].trim();
+			
+		}
+		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, false, aReturnType, true, null, null, false, null);
+		
+	}
     
     
     protected Map<DetailAST, FileContents> getAstToFileContents() {
@@ -533,6 +563,7 @@ ContinuationProcessor{
 		if (arrayDeclAST != null)
 			text = text + "[]";
 		currentMethodParameterTypes.add(text);
+		addToMethodScope(paramDef);
 
     }
     public void visitTypeParameters(DetailAST typeParameters) {

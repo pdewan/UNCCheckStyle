@@ -89,6 +89,12 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
 	protected abstract Boolean check(DetailAST ast, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo);
+	
+	protected void log(DetailAST ast, DetailAST aTreeAST, String aShortMethodName,
+		String aLongMethodName, CallInfo aCallInfo) {
+		log(ast, aTreeAST, aCallInfo);
+		
+	}
 
 //	public String[] toNormalizedClassBasedCall(String[] aCallParts) {
 //		List<String> aCallPartsList = new ArrayList();
@@ -204,6 +210,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 		// }
 
 	}
+	
 
 	@Override
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
@@ -229,7 +236,11 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 		// if (!check(ast, shortMethodName, aNormalizedLongName,
 		// aNormalizedParts))
 		if (!checkResult) {
-			log(ast, aTreeAST, shortMethodName);
+//			log(ast, aTreeAST, shortMethodName);
+//			log(ast, aTreeAST, aCallInfo);
+			log(ast, aTreeAST, shortMethodName, aNormalizedLongName,
+					aCallInfo);
+
 			// log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
 		}
 		return checkResult;

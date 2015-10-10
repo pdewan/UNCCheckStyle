@@ -110,8 +110,14 @@
 		</module>
 		<module name="ExpectedSuperTypes">
 			<property name="expectedSuperTypes"
-				value="@LINE_PATTERN= @BoundedShape | @BoundedShape=@Locatable"/>
+				value="@LINE_PATTERN= @BoundedShape | @STRING_PATTERN= @BoundedShape | @IMAGE_PATTERN= @BoundedShape | @LABEL_PATTERN = @BoundedShape | @BoundedShape=@Locatable"/>
 		</module>
+		<module name="ExpectedMethodCall">
+			<property name="severity" value="info" />		
+			<property name="expectedCalls"
+				value="@Avatar= @STRING_PATTERN!set(.*):(.*)->*) | @LINE_PATTERN!set(.*):(.*)->*), @BridgeScence = @Avatar!move:(.*):(.*)->(.*)) |  @Avatar!setText:(.*);(.*)->(.*))"/>
+		</module>
+	
 		<module name="ExpectedPattern">
 			<property name="expectedPattern"
 				value="@Table= MAP_PATTERN, @Angle= BEAN_PATTERN"/>
