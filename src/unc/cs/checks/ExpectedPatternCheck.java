@@ -27,9 +27,9 @@ public  class ExpectedPatternCheck extends ComprehensiveVisitCheck {
 
 	// this should be in an abstract class
 	public void setExpectedPatternOfType(String aPattern) {
-		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
-		String aType = extractTypeAndSignatures[0].trim();
-		String aStructurePatern = extractTypeAndSignatures[1].trim();
+		String[] extractTypeAndPattern = aPattern.split(TYPE_SEPARATOR);
+		String aType = extractTypeAndPattern[0].trim();
+		String aStructurePatern = extractTypeAndPattern[1].trim();
 		typeToPattern.put(aType, aStructurePatern);
 	}
 	

@@ -327,14 +327,15 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  }
  
  // could return a list also
- public  String findMatchingType (Set<String> aSpecifiedTypes, STType anSTType) {
-		for (String aSpecifiedType:aSpecifiedTypes) {
+ public  String findMatchingType (Collection<String> aTypesToBeMatched, STType anSTType) {
+		for (String aSpecifiedType:aTypesToBeMatched) {
 			matchedTypeOrTagAST = anSTType.getAST();
 				if (matchesType(aSpecifiedType, anSTType.getName()))
 					return aSpecifiedType; 
 		}
 		return null;
 	}
+ 
  
  public static String maybeStripQuotes(String aString) {
  	if (aString.indexOf("\"") != -1) // quote rather than named constant
@@ -520,6 +521,7 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*" ))
 		return true;
+	aDescriptor = aDescriptor.trim();
 //	if (aDescriptor.equals("*"))
 //		return true;
 	if (!aDescriptor.startsWith("@")) {
@@ -629,7 +631,12 @@ protected List<STNameable> typeTags( ) {
 	return typeTags;
 }
 public static STNameable toShortPatternName(STNameable aLongName) {
+	if (aLongName ==null) {
+		System.out.println("Null:" + aLongName);
+		return null;
+	}
 	String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
+
 	return  new AnSTNameable(aLongName.getAST(), aShortName);
 }
 

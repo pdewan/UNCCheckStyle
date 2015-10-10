@@ -91,7 +91,7 @@
 		</module>
 		<module name="ClassDefined">
 			<property name="severity" value="info" />
-			<property name="expectedTypes" value="main.Assignment(.*), @ScannerBean, @Number, @Word, @Quote, @Start, @End, @Plus, @Minus,@move, @say, @rotateLeftArm, @rotateRightArm,  @repeat, @define, @call,  @thread, @wait, @proceedAll,  @sleep,  @undo, @redo, @RotatingLine, @Angle, @Avatar, @BridgeScene, @Table, @CommandInterpreter" />
+			<property name="expectedTypes" value="main.Assignment(.*), @ScannerBean, @Number, @Word, @Quote, @Start, @End, @Plus, @Minus,@move, @say, @rotateLeftArm, @rotateRightArm,  @repeat, @define, @call,  @thread, @wait, @proceedAll,  @sleep,  @undo, @redo, @RotatingLine, @Angle, @Avatar, @BridgeScene, @Locatable, @BoundedShape, @Table, @CommandInterpreter" />
 		</module>
 		
 		<module name="ExpectedGetters">
@@ -104,9 +104,17 @@
 			<property name="expectedSignatures"
 				value="@Angle= @move:int;int->*| @scale:double->*, @Avatar= @move:int;int->* | @scale:double->*, @BridgeScene= @scroll:int->* | @approach:@Avatar->*| @say:String->* | @passed:->* | @failed:->*" />
 		</module>
+		<module name="ExpectedInterfaces">
+			<property name="expectedInterfaces"
+				value="@Angle= @Angle | @Avatar=@Avatar"/>
+		</module>
+		<module name="ExpectedSuperTypes">
+			<property name="expectedSuperTypes"
+				value="@LINE_PATTERN= @BoundedShape | @BoundedShape=@Locatable"/>
+		</module>
 		<module name="ExpectedPattern">
 			<property name="expectedPattern"
-				value="@Table= MAP_PATTERN , @Angle= BEAN_PATTERN"/>
+				value="@Table= MAP_PATTERN, @Angle= BEAN_PATTERN"/>
 		</module>
 
 		<module name="FunctionAssignsGlobal">

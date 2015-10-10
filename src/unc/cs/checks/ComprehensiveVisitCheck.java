@@ -242,6 +242,25 @@ ContinuationProcessor{
     protected Map<DetailAST, FileContents> getAstToFileContents() {
 		return astToFileContents;
 	}
+    
+    public static List<String> toNames(Collection<STNameable> aNameables) {
+    	List result = new ArrayList<> (aNameables.size());
+    	for (STNameable aNameable:aNameables) {
+    		result.add(aNameable.getName());
+    	}
+    	return result;
+    }
+    public static List<STType> toSTTypes(Collection<STNameable> aNameables) {
+    	List<STType> result = new ArrayList<> (aNameables.size());
+    	for (STNameable aNameable:aNameables) {
+    		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aNameable.getName());
+    		if (anSTType == null) {
+    			return null;
+    		}
+    		result.add(anSTType);
+    	}
+    	return result;
+    }
 
 	public static STNameable[] getSuperTypes(DetailAST aClassDef) {
     	List<STNameable> aSuperTypes = new ArrayList();
