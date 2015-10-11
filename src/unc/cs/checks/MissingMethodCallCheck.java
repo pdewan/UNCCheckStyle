@@ -19,8 +19,8 @@ import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public  class ExpectedMethodCallCheck extends MethodCallCheck {
-	public static final String MSG_KEY = "expectedMethodCall";
+public  class MissingMethodCallCheck extends MethodCallCheck {
+	public static final String MSG_KEY = "missingMethodCall";
 	
 
 	public void setExpectedCalls(String[] aPatterns) {
@@ -29,19 +29,19 @@ public  class ExpectedMethodCallCheck extends MethodCallCheck {
 		}
 
 	}
-	
+    // "fail" if method matches
 	
 
+	
 	@Override
 	protected String msgKey() {
 		return MSG_KEY;
 	}
 
-    // "fail" if method matches
 
 	@Override
 	protected boolean returnValueOnMatch() {
-		return false;
+		return true;
 	}
 
 }

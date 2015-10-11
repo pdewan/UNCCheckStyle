@@ -115,9 +115,9 @@
 		<module name="ExpectedMethodCall">
 			<property name="severity" value="info" />		
 			<property name="expectedCalls"
-				value="@Avatar= @STRING_PATTERN!set(.*):(.*)->*) | @LINE_PATTERN!set(.*):(.*)->*), @BridgeScence = @Avatar!move:(.*):(.*)->(.*)) |  @Avatar!setText:(.*);(.*)->(.*))"/>
+				value="@Avatar= @STRING_PATTERN!set(.*):(.*)->*) | @LINE_PATTERN!set(.*):(.*)->*) | @STRING_PATTERN!move:int;int->void | @LINE_PATTERN!move:int;int->void | @ANGLE!move:int;int->void, @BridgeScene = @Avatar!@move:int;int->void |  @Avatar!setText:String->void"/>
 		</module>
-	
+		
 		<module name="ExpectedPattern">
 			<property name="expectedPattern"
 				value="@Table= MAP_PATTERN, @Angle= BEAN_PATTERN"/>

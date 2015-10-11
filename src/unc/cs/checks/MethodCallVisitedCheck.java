@@ -329,7 +329,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
 	public  Boolean hasTag(STMethod aMethod, String aTag) {
 		STNameable[] aTags = aMethod.getTags();
-		return hasTag(aMethod.getTags(), aTag);
+		return hasTag(aMethod.getComputedTags(), aTag);
 	}
 
 	// assume classes have been matched
