@@ -118,37 +118,37 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		}
 		return retVal;
 	}
-	public static List<STMethod> signaturesToMethods(String[] aSignatures) {
-		List<STMethod> aMethods = new ArrayList();
-		for (String aSignature:aSignatures) {
-			aMethods.add(signatureToMethod(aSignature));
-		}
-		return aMethods;		
-	}
+//	public  List<STMethod> signaturesToMethods(String[] aSignatures) {
+//		List<STMethod> aMethods = new ArrayList();
+//		for (String aSignature:aSignatures) {
+//			aMethods.add(signatureToMethod(aSignature));
+//		}
+//		return aMethods;		
+//	}
+//	
+//	public  STMethod signatureToMethod(String aSignature) {
+//		String[] aNameAndRest = aSignature.split(":");
+//		if (aNameAndRest.length != 2) {
+//			System.err.print("Illegal signature, missing :" + aSignature);
+//			return null;
+//		}
+//		String aName = aNameAndRest[0].trim();
+//		String[] aReturnTypeAndParameters = aNameAndRest[1].split("->");
+//		if (aReturnTypeAndParameters.length != 2) {
+//			System.err.print("Illegal signature, missing ->" + aSignature);
+//			return null;
+//		}
+//		String aReturnType = aReturnTypeAndParameters[1].trim();
+//		String aParametersString = aReturnTypeAndParameters[0];
+//		String[] aParameterTypes = aParametersString.equals("")?new String[0]:  aParametersString.split(STMethod.PARAMETER_SEPARATOR);
+//		for (int i = 0; i < aParameterTypes.length; i++) {
+//			aParameterTypes[i] = aParameterTypes[i].trim();
+//			
+//		}
+//		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, false, aReturnType, true, null, null, false, null);
+//		
+//	}
 	
-	public static STMethod signatureToMethod(String aSignature) {
-		String[] aNameAndRest = aSignature.split(":");
-		if (aNameAndRest.length != 2) {
-			System.err.print("Illegal signature, missing :" + aSignature);
-			return null;
-		}
-		String aName = aNameAndRest[0].trim();
-		String[] aReturnTypeAndParameters = aNameAndRest[1].split("->");
-		if (aReturnTypeAndParameters.length != 2) {
-			System.err.print("Illegal signature, missing ->" + aSignature);
-			return null;
-		}
-		String aReturnType = aReturnTypeAndParameters[1].trim();
-		String aParametersString = aReturnTypeAndParameters[0];
-		String[] aParameterTypes = aParametersString.equals("")?new String[0]:  aParametersString.split(STMethod.PARAMETER_SEPARATOR);
-		for (int i = 0; i < aParameterTypes.length; i++) {
-			aParameterTypes[i] = aParameterTypes[i].trim();
-			
-		}
-		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, false, aReturnType, true, null, null, false, null);
-		
-	}
-
 	public Boolean matchSignature(
 			String aSpecification, STMethod[] aMethods) {
 		for (STMethod aMethod : aMethods) {
@@ -193,9 +193,15 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	}
 	public Boolean matchSignature(
 			String aSpecification, STMethod aMethod) {
-		return matchSignature(signatureToMethod(aSpecification), aMethod);
+//		return matchSignature(signatureToMethod(aSpecification), aMethod);
+		return matchSignature(signatureToMethodorOrConstructor(aSpecification), aMethod);
+
 		
 	}
+//	public  STMethod signatureToMethodorOrConstructor(String aSignature) {
+//		return signatureToMethod(aSignature);
+//	}
+
 	public Boolean matchSignature(
 			STMethod aSpecification, STMethod aMethod) {
 		variablesAdded.clear();
@@ -217,6 +223,31 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			backTrackUnification();
 			return false;
 		}
+		return matchParameters(aSpecification, aMethod);
+//		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
+//		String[] aMethodParameterTypes = aMethod.getParameterTypes();
+//		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
+//			String aParameterType = aSpecificationParameterTypes[i];
+//
+//			STNameable[] parameterTags =null;
+//			if (aParameterType.startsWith("@")) {
+//				
+//				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
+//				if (aParameterSTType == null)
+//					return null;
+//				parameterTags = aParameterSTType.getComputedTags();
+//			}
+//			
+//			if (!matchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
+//				backTrackUnification();
+//				return false;
+//			}
+//		}
+//		return true;		
+		
+	}
+	public Boolean matchParameters(
+			STMethod aSpecification, STMethod aMethod) {		
 		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
 		String[] aMethodParameterTypes = aMethod.getParameterTypes();
 		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
@@ -225,7 +256,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			STNameable[] parameterTags =null;
 			if (aParameterType.startsWith("@")) {
 				
-				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
+//				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
+				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aMethodParameterTypes[i]);
+
 				if (aParameterSTType == null)
 					return null;
 				parameterTags = aParameterSTType.getComputedTags();
@@ -247,9 +280,13 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			return null;
 		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
 	}
+	protected STMethod[] getMethods(STType anSTType) {
+		return anSTType.getMethods();
+		
+	}
 	public Boolean matchMethods(STType anSTType, List<STMethod> aSpecifiedSignatures, DetailAST aTree) {
-		STMethod[] aMethods = anSTType.getMethods();
-
+//		STMethod[] aMethods = anSTType.getMethods();
+		STMethod[] aMethods = getMethods(anSTType);
 		if (aMethods == null) 
 			return null;
 		return matchMethods(aSpecifiedSignatures, aMethods, aTree);
@@ -289,7 +326,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 //		String[] aSpecifiedSignatures = typeToSignature.get(aSpecifiedType);
 //		return matchSignatures(anSTType, aSpecifiedSignatures, aTree);
 //		
-
+  protected boolean visitType(STType anSTType) {
+	  return true;
+  }
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
@@ -299,6 +338,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 
 		if (anSTType.isEnum())
 			return true;
+		if (!visitType(anSTType)) {
+			return true;
+		}
 		
 		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
 				anSTType);

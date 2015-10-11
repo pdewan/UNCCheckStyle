@@ -104,13 +104,17 @@
 			<property name="expectedSignatures"
 				value="@Angle= @move:int;int->*| @scale:double->*, @Avatar= @move:int;int->* | @scale:double->*, @BridgeScene= @scroll:int->* | @approach:@Avatar->*| @say:String->* | @passed:->* | @failed:->*" />
 		</module>
+		<module name="ExpectedConstructors">
+			<property name="expectedSignatures"
+				value="@BridgeScene =:, @Angle=:, @CommandInterpreter = :@BridgeScene; @ScannerBean" />
+		</module>
 		<module name="ExpectedInterfaces">
 			<property name="expectedInterfaces"
-				value="@Angle= @Angle | @Avatar=@Avatar"/>
+				value="@Angle= @Angle, @Avatar=@Avatar, @ScannerBean = @ScannerBean"/>
 		</module>
 		<module name="ExpectedSuperTypes">
 			<property name="expectedSuperTypes"
-				value="@LINE_PATTERN= @BoundedShape | @STRING_PATTERN= @BoundedShape | @IMAGE_PATTERN= @BoundedShape | @LABEL_PATTERN = @BoundedShape | @BoundedShape=@Locatable"/>
+				value="@LINE_PATTERN= @BoundedShape , @STRING_PATTERN= @BoundedShape , @IMAGE_PATTERN= @BoundedShape, @LABEL_PATTERN = @BoundedShape , @BoundedShape=@Locatable"/>
 		</module>
 		<module name="ExpectedMethodCall">
 			<property name="severity" value="info" />		
@@ -135,6 +139,8 @@
 		<module name="MissingActualEditableProperty">
 		</module>
 		<module name="ClassHasAtLeastOneInterface">
+		</module>
+		<module name="ClassHasOneInterface">			
 		</module>
 		<module name="VariableHasClassType">
 

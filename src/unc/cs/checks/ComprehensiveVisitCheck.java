@@ -237,28 +237,52 @@ ContinuationProcessor{
 		}
 		return (STNameable[]) anInterfaces.toArray(emptyNameableArray);    	
     }
-	public static List<STMethod> signaturesToMethods(String[] aSignatures) {
+	public  List<STMethod> signaturesToMethods(String[] aSignatures) {
 		List<STMethod> aMethods = new ArrayList();
 		for (String aSignature:aSignatures) {
-			aMethods.add(signatureToMethod(aSignature));
+			aMethods.add(signatureToMethodorOrConstructor(aSignature));
 		}
 		return aMethods;		
 	}
+	public  STMethod signatureToMethodorOrConstructor(String aSignature) {
+		return signatureToMethod(aSignature);
+	}
 	
-	public static STMethod signatureToMethod(String aSignature) {
+	public  STMethod signatureToMethod(String aSignature) {
 		String[] aNameAndRest = aSignature.split(":");
 		if (aNameAndRest.length != 2) {
-			System.err.print("Illegal signature, missing :" + aSignature);
+			System.err.println("Illegal signature, missing :" + aSignature);
 			return null;
 		}
 		String aName = aNameAndRest[0].trim();
 		String[] aReturnTypeAndParameters = aNameAndRest[1].split("->");
 		if (aReturnTypeAndParameters.length != 2) {
-			System.err.print("Illegal signature, missing ->" + aSignature);
+			System.err.println("Illegal signature, missing ->" + aSignature);
 			return null;
 		}
 		String aReturnType = aReturnTypeAndParameters[1].trim();
 		String aParametersString = aReturnTypeAndParameters[0];
+		String[] aParameterTypes = aParametersString.equals("")?new String[0]:  aParametersString.split(STMethod.PARAMETER_SEPARATOR);
+		for (int i = 0; i < aParameterTypes.length; i++) {
+			aParameterTypes[i] = aParameterTypes[i].trim();
+			
+		}
+		return new AnSTMethod(null, aName, null, aParameterTypes, true, true, false, aReturnType, true, null, null, false, null);
+		
+	}
+	public  STMethod signatureToConstructor(String aSignature) {
+		int aColonIndex = aSignature.indexOf(':');
+//		String[] aNameAndRest = aSignature.split(":");
+		if (aColonIndex == -1) {
+			System.err.print("Illegal signature, missing :" + aSignature);
+			return null;
+		}
+		String aNameAndRest = aSignature.substring(aColonIndex + 1);
+		String aName = "";
+		String aReturnType = "";
+		
+		String[] aReturnTypeAndParameters = aNameAndRest.split("->");		
+		String aParametersString = aReturnTypeAndParameters[0].trim();
 		String[] aParameterTypes = aParametersString.equals("")?new String[0]:  aParametersString.split(STMethod.PARAMETER_SEPARATOR);
 		for (int i = 0; i < aParameterTypes.length; i++) {
 			aParameterTypes[i] = aParameterTypes[i].trim();
@@ -517,6 +541,7 @@ ContinuationProcessor{
 //    		stMethods.add(anSTMethod);
 //    	}    
 //    	processPreviousMethodData();
+    	currentMethodType = "";
     	currentMethodParameterTypes.clear(); 
     	currentMethodScope.clear();
 	 	methodsCalledByCurrentMethod.clear();
