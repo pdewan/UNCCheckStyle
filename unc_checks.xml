@@ -140,11 +140,25 @@
 		
 		<module name="MissingMethodCall">
 			<property name="expectedCalls"
-				value="@CommandInterpreter = (.*)!move:(int;int)->void | @Table!get:(.*)->(.*) | (.*)!setString:String->void,
+				value="
+				@CommandInterpreter = 
+							(.*)!move:(int;int)->void |
+							(.*)!setString:String->void |
+					 		@Table!get:(.*)->(.*) |
+					 		@Table!put:(.*);(.*) -> (.*) |
+					 		@BridgeScene!getArthur:->(.*),					 		
 				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
 				 @BridgeScene = @Avatar!@move:int;int->void,
 				 @Locatable = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @BoundedShape = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				 @ConsoleSceneView = (.*)!addPropertyChangeListener:PropertyChangeListener->void) |
+				 						(.*)!getArms:-> @Angle|
+				 						(.*)!getLegs:-> @Angle |
+				 						(.*)!getLeftLine:-> @LINE_PATTERN |
+				 						(.*)!getRightLine:-> @LINE_PATTERN |
+				 						(.*)!getText:->@STRING_PATTERN,
+				 						
+				 						
 				 "/>
 		</module>
 		
