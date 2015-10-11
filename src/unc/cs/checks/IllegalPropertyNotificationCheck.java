@@ -45,7 +45,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
 		return new int[] {
 				 TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
-				TokenTypes.ENUM_DEF,
+//				TokenTypes.ENUM_DEF,
 //				TokenTypes.ANNOTATION,
 				// TokenTypes.INTERFACE_DEF,
 				// TokenTypes.TYPE_ARGUMENTS,

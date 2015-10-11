@@ -3,6 +3,7 @@ package unc.cs.symbolTable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -257,6 +258,15 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public String getGlobalVariableType(String aGlobal) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+
+	@Override
+	public List<CallInfo> getMethodsCalled() {
+		// TODO Auto-generated method stub
+		return new ArrayList();
 	}
 
 

@@ -72,4 +72,5 @@ public interface STType extends STNameable{
 	Set<String> getDeclaredGlobals();
 	String getGlobalVariableType(String aGlobal);
 	STNameable[] getAllDeclaredEditablePropertyNames();
+	List<CallInfo> getMethodsCalled();
 }

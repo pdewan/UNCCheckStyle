@@ -31,11 +31,13 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected List<STMethod> declaredInits = new ArrayList();
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> globalVariableToType = new HashMap();
+	protected List<CallInfo> methodsCalled = new ArrayList();
 
 //	protected Set<String> delegates = new HashSet();
 	
 	
 	
+
 	public AnSTType(
 			DetailAST ast, 
 			String name, 
@@ -75,6 +77,14 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		globalVariableToCall = aGlobalVariableToCall;
 		computedTags = aComputedTags;
 		globalVariableToType = aGlobalVariableToType;
+		if (!isInterface) {
+			for (STMethod aMethod:declaredMethods) {
+				methodsCalled.addAll(Arrays.asList(aMethod.methodsCalled()));
+			}
+			for (STMethod aConstructor:declaredConstructors) {
+				methodsCalled.addAll(Arrays.asList(aConstructor.methodsCalled()));
+			}
+		}
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
@@ -780,5 +790,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public String getGlobalVariableType(String aGlobal) {
 		return globalVariableToType.get(aGlobal);
+	}
+	@Override
+	public List<CallInfo> getMethodsCalled() {
+		return methodsCalled;
 	}
 }

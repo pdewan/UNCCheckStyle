@@ -148,6 +148,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		 if (!aSpecifiedMethod.getName().startsWith("@") && !aSpecifiedTarget.startsWith("@")) { // we do not need to determine tags
 			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && aTypeName.matches(aSpecifiedTarget); 
 		 }
+//		 System.out.println ("Temp");
 		 Boolean matchesType = matchesType(aSpecifiedTarget, aTypeName);
 		 if (matchesType == null)
 			 return null;
