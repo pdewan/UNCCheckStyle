@@ -385,6 +385,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 //		aTags = typeTags();
 		aTags = computedTypeTags();
 	} else {
+//		System.out.println ("Checking symbol table");
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aShortClassName);
 		if (anSTType == null) {
@@ -490,7 +491,10 @@ protected List<String> filterTypes(List<String> aTypes, String aTypeName) {
 		result = filterTypesByIncludeSets(result, aTypeName);
 	}
 	if (excludeSets.size() > 0) {
-		aTypes = filterTypesByExcludeSets(result, aTypeName);
+		// this should be result
+//		aTypes = filterTypesByExcludeSets(result, aTypeName);
+		result = filterTypesByExcludeSets(result, aTypeName);
+
 	} 
 	return result;
 }
@@ -500,7 +504,11 @@ protected List<String> filterTypesByIncludeSets(List<String> aTypes, String aTyp
 	Set<String> anIncludeSet = includeSetOf(aTypeName);
 	List<String> result = new ArrayList();
 	for (String aType:aTypes) {
-		if (matchesType(anIncludeSet, aType))
+		Boolean matches = matchesType(anIncludeSet, aType);
+//		if (matchesType(anIncludeSet, aType))
+		if (matches == null)
+			return null;
+		if (matches)
 			result.add(aType);
 	}
 	return result;
