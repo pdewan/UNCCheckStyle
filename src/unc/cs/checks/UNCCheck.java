@@ -65,7 +65,7 @@ public abstract class UNCCheck extends Check{
 		if (errorOccurred)
     		return;
 		try {
-//			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
+			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}

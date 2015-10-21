@@ -1329,12 +1329,17 @@ ContinuationProcessor{
 			 }
 			 return false;
 		 }
-	    protected boolean containedInClasses (String aTarget, List<String> aList, String aSourceClassName) {
+	    protected Boolean containedInClasses (String aTarget, List<String> aList, String aSourceClassName) {
 			 for (String aMember:aList) {
 				 String[] aMemberParts = aMember.split(TYPE_SEPARATOR);
 //				 if ((aMemberParts.length == 2) && !matchesMyType(aMemberParts[0], aSourceClassName))
+				 Boolean match = matchesType(aMemberParts[0], aSourceClassName);
+				 if (match == null) {
+					 return null;
+				 }
+				 if ((aMemberParts.length == 2) && !match)
 
-				 if ((aMemberParts.length == 2) && !matchesType(aMemberParts[0], aSourceClassName))
+//				 if ((aMemberParts.length == 2) && !matchesType(aMemberParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTrueMember = aMemberParts.length == 2?aMemberParts[1]:aMember;
 				 if (aTarget.equals(aTrueMember))

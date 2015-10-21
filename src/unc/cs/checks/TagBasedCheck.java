@@ -330,7 +330,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public  String findMatchingType (Collection<String> aTypesToBeMatched, STType anSTType) {
 		for (String aSpecifiedType:aTypesToBeMatched) {
 			matchedTypeOrTagAST = anSTType.getAST();
-				if (matchesType(aSpecifiedType, anSTType.getName()))
+				Boolean matches = matchesType(aSpecifiedType, anSTType.getName());
+				if (matches == null) {
+					return null;
+				}
+				if (matches)
+//				if (matchesType(aSpecifiedType, anSTType.getName()))
 					return aSpecifiedType; 
 		}
 		return null;
@@ -463,7 +468,13 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  
 public Boolean matchesType(Collection<String> aDescriptors, String aShortClassName) {
 	for (String aDescriptor:aDescriptors) {
-		if (matchesType(aDescriptor, aShortClassName))
+		Boolean match = matchesType(aDescriptor, aShortClassName);
+		if (match == null)
+			return null;
+		
+//		if (matchesType(aDescriptor, aShortClassName))
+		if (match)
+
 			return true;
 	}
 	return false;
@@ -539,6 +550,8 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)
 		return null;
+		// this should be changed back to null at some point
+//		return false;
 
 	String aTag = aDescriptor.substring(1);
 

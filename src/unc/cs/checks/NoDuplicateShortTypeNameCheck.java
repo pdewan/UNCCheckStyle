@@ -1,5 +1,7 @@
 package unc.cs.checks;
 
+import java.util.List;
+
 import unc.cs.symbolTable.SymbolTable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -45,7 +47,10 @@ public class NoDuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
 		String aTypeName = aTypeNameAST.getText();
 		String aFullTypeName = packageName + "." + aTypeName;
 		SymbolTable aSymbolTable = SymbolTableFactory.getOrCreateSymbolTable();
-		if (aSymbolTable.matchingFullSTTypeNames(aTypeName).size() > 1) {
+		List<String> aMatches = aSymbolTable.matchingFullSTTypeNames(aTypeName);
+//		if (aSymbolTable.matchingFullSTTypeNames(aTypeName).size() > 1) {
+
+		if (aMatches.size() > 1) {
 //			System.out.println("dupliicateshortname:" + aFullTypeName);
 //			log(aTypeNameAST.getLineNo(), aTypeNameAST.getColumnNo(), msgKey(),
 //					aTypeNameAST.getText());

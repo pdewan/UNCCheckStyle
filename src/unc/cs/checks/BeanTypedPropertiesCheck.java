@@ -248,19 +248,28 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 			Map<String, PropertyInfo> aPropertyInfos) {
 		STMethod aSetter = aPropertyInfos.get(aProperty)
 		.getSetter();		
+		Boolean matches = matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
+		if (matches == null)
+			return null;
 
 		return aSetter != null && 
 //				aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
-				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
+				matches;
+//				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
 
 	}
 	public Boolean matchSetter(String aSpecifiedType, PropertyInfo aProperty) {
 		STMethod aSetter = aProperty
 		.getSetter();		
+		Boolean matches = matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
+		if (matches == null)
+			return null;
 
 		return aSetter != null && 
 //				aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
-				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
+//				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
+				matches;
+		
 
 	}
 
