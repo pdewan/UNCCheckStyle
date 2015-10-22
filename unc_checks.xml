@@ -104,6 +104,7 @@
 			<property name="expectedSignatures"
 				value="@Angle= @move:int;int->*| @scale:double->*, @Avatar= @move:int;int->* | @scale:double->*, @BridgeScene= @scroll:int->* | @approach:@Avatar->*| @say:String->* | @passed:->* | @failed:->*" />
 		</module>
+		
 		<module name="ExpectedConstructors">
 			<property name="expectedSignatures"
 				value="@BridgeScene =:, 
@@ -161,7 +162,7 @@
 				 						
 				 "/>
 		</module>
-		
+		 
 		<module name="ExpectedPattern">
 			<property name="expectedPattern"
 				value="
@@ -169,6 +170,7 @@
 				@Angle= BEAN_PATTERN
 				"/>
 		</module>
+		
 
 		<module name="FunctionAssignsGlobal">
 			<property name="excludeMethodTags"
