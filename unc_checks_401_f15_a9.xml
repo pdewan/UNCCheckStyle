@@ -128,11 +128,7 @@
 			@PaintListener,
 			@BridgeSceneController,
 			@CommandInterpreterController,
-			@ObservableCommandInterpreter,
-			@SayCommand,
-			@MoveCommand,
-			@Animator,
-			@AnimatingCommand
+			@ObservableCommandInterpreter
 			" />
 		</module>
 		
@@ -150,14 +146,7 @@
 			@Avatar= Text:@STRING_PATTERN | Head:@IMAGE_PATTERN | Arms:@Angle | Legs:@Angle, 
 			@BridgeScene= Arthur:@Avatar | Galahad:@Avatar | Lancelot:@Avatar | Robin:@Avatar | Guard:@Avatar | Gorge:* | KnightArea:* | GuardArea:* | Occupied:boolean |KnightTurn:boolean, 
 			@CommandInterpreter = Command:String,
-			@CommandInterpreterController = 
-				TextField:JTextField | 
-				MenuItem:JMenuItem | 
-				Button:JButton |
-				Say: JButton |
-				Approach: JButton |
-				Pass: JButton |
-				Fail: JButton,
+			@CommandInterpreterController = TextField:JTextField | MenuItem:JMenuItem | Button:JButton,
 			@ProgressBarCreator =  ProgressBar:JProgressBar | Slider:JSlider
 			" />
 		</module>
@@ -169,30 +158,15 @@
 				value="
 				@Angle= @move:int;int->*| @scale:double->*, 
 				@Avatar= @move:int;int->* | @scale:double->*, 
-				@BridgeScene= 
-					@scroll:int->* | 
-					@approach:@Avatar->*| 
-					@say:String->* | 
-					@passed:->* | 
-					@failed:->*	| 
-					pre((.*)):->boolean,
-				@CommandInterpreter = 
-					@!parseSay:*->Runnable | 
-					@parseMove:*->Runnable | 
-					@asynchronousGalahad:->void	|
-					@asynchronousLancelot:->void |		
-					@asynchronousRobin:->void |	
-					@asynchronousArthur:->void |
-					@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void
+				@BridgeScene= @scroll:int->* | @approach:@Avatar->*| @say:String->* | @passed:->* | @failed:->*				
 				" />
 		</module>
 		<module name="ExpectedDeclaredSignatures">
 			<property name="expectedSignatures"
 				value="
 				@InheritingBridgeScenePainter=paint:Graphics(.*)->void,
-				@ObservableBridgeScenePainter=paint:Graphics(.*)->void |@addPaintListener:@PaintListener->void,
-				@PaintListener=paint:Graphics(.*)->void		
+				@ObservableBridgeScenePainter=paint:Graphics(.*)->void,
+				@PaintListener=paint:Graphics(.*)->void |@addPaintListener:@PaintListener->void				
 								
 				" />
 		</module>
@@ -205,9 +179,8 @@
 				@ConsoleSceneView = :@BridgeScene,
 				@InheritingBridgeScenePainter = :@BridgeScene,
 				@BridgeSceneController = :@BridgeScene,
-				@CommandInterpreterController = :@CommandInterpreter,
-				@MoveCommmand = :@Avatar; int; int,
-				@SayCommand = :@Avatar; String								
+				@CommandInterpreterController = :@CommandInterpreter
+								
 				"/>
 		</module>
 		<module name="ExpectedInterfaces">
@@ -219,18 +192,13 @@
 				@CommandInterpreter = @CommandInterpreter,
 				@ConsoleSceneView = @ConsoleSceneView,
 				@ConsoleSceneView = PropertyChangeListener,				
-				@Locatable =  PropertyListenerRegistrer,
-				@BoundedShape = PropertyListenerRegistrer,
+				@Locatable =  PropertyListenerRegistrar,
+				@BoundedShape = PropertyListenerRegistrar,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
 				@BridgeSceneController = MouseListener | KeyListener,
-				@ObservableCommandIntepreter = PropertyListenerRegistrer,
-				@SayCommand = Runnable,
-				@MoveCommand = Runnable,
-				@Animator = @Animator,
-				@AnimatingCommand = Runnable,
-				@BridgeScene = 	PropertyListenerRegistrer			
+				@ObservableCommandIntepreter = PropertyListenerRegistrar				
 				"/>
 		</module>
 		<module name="ExpectedSuperTypes">
@@ -254,13 +222,9 @@
 							(.*)!setString:String->void |
 					 		@Table!get:(.*)->(.*) |
 					 		@Table!put:(.*);(.*) -> (.*) |
-					 		@BridgeScene!getArthur:->(.*) |
-					 		@CommandInterpreter!@parseSay:*->Runnable |
-					 		@CommandInterpreter!@parseMove:*->Runnable,					 		
+					 		@BridgeScene!getArthur:->(.*),					 		
 				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
-				 @BridgeScene = 
-				 	@Avatar!@move:int;->void | 
-				 	(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				 @BridgeScene = @Avatar!@move:int;->void,
 				 @Locatable = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @BoundedShape = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @ConsoleSceneView = (.*)!addPropertyChangeListener:PropertyChangeListener->void) |
@@ -281,18 +245,13 @@
 				 						@BridgeScene!getGalahad:-> @Avatar	|
 				 						@BridgeScene!getLancelot:-> @Avatar	|	
 				 						@BridgeScene!getRobin:-> @Avatar	|
-				 						@Avatar!move:int; int->void |
-				 						@BridgeScene!@Pass:->void |
-				 						@BridgeScene!@Fail:->void |
-				 						@BridgeScene!@Say:@Avatar->void |
-				 						@BridgeScene!@Approach:@Avatar->void,
+				 						@Avatar!move:int; int->void,
 				 @ObservableCommandInterpreter = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @InheritingBridgeScenePainter = 
 				 	Graphics(.*)!draw(.*):*->(.*) |
 				 	super!paint:Graphics->void(.*),
 				 @PaintListener = 
-				 	Graphics(.*)!draw(.*):*->(.*),
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void						
+				 	Graphics(.*)!draw(.*):*->(.*)  						
 				 						
 				 "/>
 		</module>

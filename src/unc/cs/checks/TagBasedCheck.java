@@ -422,7 +422,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		} else if (aDescriptor.startsWith("@")) {
 			return hasTag(aTags, aDescriptor);
 		}	else {
-			return aName.matches(aDescriptor); // allow regex
+			String aShortName = toShortTypeName(aName);
+//			return aName.matches(aDescriptor) || aName.contains(aDescriptor); // allow regex
+			// do not want user scanner to match Scanner class so do not use contains
+			// allow regex
+			return aName.matches(aDescriptor) || aShortName.matches(aDescriptor);
+
 		}
 	 
  }
@@ -482,7 +487,13 @@ public Boolean matchesType(Collection<String> aDescriptors, String aShortClassNa
 public  Set<String> setOf(String aType, List<List<String>> aLists) {
 	Set<String> result = new HashSet();
 	for (List<String> aSet:aLists) {
-		if (matchesType(aSet, aType)) {
+		Boolean match = matchesType(aSet, aType);
+		if (match == null) {
+			return null;
+		}
+//		if (matchesType(aSet, aType)) {
+		if (match) {
+
 			result.addAll(aSet);
 		}
 	}
@@ -513,6 +524,8 @@ protected List<String> filterTypesByIncludeSets(List<String> aTypes, String aTyp
 	if (aTypes == null)
 		return null;
 	Set<String> anIncludeSet = includeSetOf(aTypeName);
+	if (anIncludeSet == null)
+		return null;
 	List<String> result = new ArrayList();
 	for (String aType:aTypes) {
 		Boolean matches = matchesType(anIncludeSet, aType);
@@ -529,9 +542,15 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 	if (aTypes == null)
 		return null;
 	Set<String> anExcludeSet = excludeSetOf(aTypeName);
+	if (anExcludeSet == null)
+		return null;
+	
 	List<String> result = new ArrayList();
 	for (String aType:aTypes) {
-		if (!matchesType(anExcludeSet, aType))
+		Boolean match = matchesType(anExcludeSet, aType);
+//		if (!matchesType(anExcludeSet, aType))
+		if (!match)
+
 			result.add(aType);
 	}
 	return result;

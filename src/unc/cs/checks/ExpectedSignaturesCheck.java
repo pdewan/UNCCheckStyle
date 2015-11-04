@@ -273,20 +273,24 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		
 	}
 	
+	protected STMethod[] getMatchedMethods(STType anSTType) {
+		return anSTType.getMethods();
+	}
+	
 	public Boolean matchSignatures(STType anSTType, String[] aSpecifiedSignatures, DetailAST aTree) {
-		STMethod[] aMethods = anSTType.getMethods();
-
+//		STMethod[] aMethods = anSTType.getMethods();
+		STMethod[] aMethods = getMatchedMethods(anSTType);
 		if (aMethods == null) 
 			return null;
 		return matchSignatures(aSpecifiedSignatures, aMethods, aTree);
 	}
-	protected STMethod[] getMethods(STType anSTType) {
-		return anSTType.getMethods();
-		
-	}
+//	protected STMethod[] getMethods(STType anSTType) {
+//		return anSTType.getMethods();
+//		
+//	}
 	public Boolean matchMethods(STType anSTType, List<STMethod> aSpecifiedSignatures, DetailAST aTree) {
 //		STMethod[] aMethods = anSTType.getMethods();
-		STMethod[] aMethods = getMethods(anSTType);
+		STMethod[] aMethods = getMatchedMethods(anSTType);
 		if (aMethods == null) 
 			return null;
 		return matchMethods(aSpecifiedSignatures, aMethods, aTree);

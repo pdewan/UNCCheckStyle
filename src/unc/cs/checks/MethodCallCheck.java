@@ -104,7 +104,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			typeTags = aReturnSTType.getComputedTags();
 		}
 		Boolean retVal  = 
-				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
+//				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
 				matchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
 				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
 				
@@ -114,7 +114,16 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		}
 		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
 		String[] aMethodParameterTypes = aMethod.getParameterTypes();
+		
+		if (aSpecificationParameterTypes.length == 1) {
+			if (aSpecificationParameterTypes[0].equals("*"))
+				return true;
+		}
+		if (aSpecificationParameterTypes.length != aMethodParameterTypes.length) {
+			return false;
+		}
 		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
+			
 			String aParameterType = aSpecificationParameterTypes[i];
 
 			STNameable[] parameterTags =null;
@@ -134,11 +143,15 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return true;		
 		
 	}
+	protected static boolean isStarParameters(String[] aParameters) {
+		return aParameters.length == 1 && aParameters[0].equals("*");
+	}
 	protected Boolean matches (String aSpecifiedTarget, STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
 //		String aRegex = aSpecifiedMethod.getName();
-		if ( aCallInfo.getActuals().size() != aSpecifiedMethod.getParameterTypes().length)
+		if ( !isStarParameters(aSpecifiedMethod.getParameterTypes()) &&
+				aCallInfo.getActuals().size() != aSpecifiedMethod.getParameterTypes().length)
 			return false;
 		String aTypeName = aCallInfo.getCalledType();
 		if (aTypeName == null) {

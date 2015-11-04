@@ -44,8 +44,8 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 				};
 
 	}
-
-	protected STMethod[] getMethods(STType anSTType) {
+	@Override
+	protected STMethod[] getMatchedMethods(STType anSTType) {
 		return anSTType.getDeclaredConstructors();
 		
 	}
