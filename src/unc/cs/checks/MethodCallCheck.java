@@ -78,6 +78,11 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	protected Boolean matches (String aSignatureWithTarget, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 		String[] aSignatureAndTarget = aSignatureWithTarget.split(TYPE_SIGNATURE_SEPARATOR);
+		if (aSignatureAndTarget == null || 
+				aSignatureAndTarget.length < 2 ||
+				aSignatureAndTarget[1] == null ) {
+			System.out.println ("Null signature");
+		}
 		String aSignature = aSignatureAndTarget[1].trim();
 		String aSpecifiedTarget = aSignatureAndTarget[0].trim();
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);

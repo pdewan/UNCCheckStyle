@@ -149,14 +149,8 @@
 			@Thread,			
 			@DefineCommand,
 			@CallCommand,
-			@ThreadCommand,
-			@ScanningException,
-			@ParsingException,
-			@BroadcastingClearanceManager,			
-			@SingletonsCreator,
-			@CustomSwingTextFieldFactory,
-			@UndoCommand,
-			@RedoCommand
+			@ThreadCommand
+			
 			
 			" />
 		</module>
@@ -215,19 +209,7 @@
 					@asynchronousLancelot:->void |		
 					@asynchronousRobin:->void |	
 					@asynchronousArthur:->void |
-					@asynchronousGuard:->void |
-					@waitingGalahad:->void	|
-					@waitingLancelot:->void |		
-					@waitingRobin:->void |	
-					@waitingArthur:->void |
-					@waitingGuard:->void |
-					@startAnimation:->void |
-					@lockstepGalahad:->void	|
-					@lockstepLancelot:->void |		
-					@lockstepRobin:->void |	
-					@lockstepArthur:->void |
-					@lockstepGuard:->void,
-										
+					@asynchronousGuard:->void,
 				@Animator = @animateAvatar:@Avatar->void,
 				@CommandList = @add:@Runnable->void,
 				@Parser = 
@@ -246,13 +228,7 @@
 					@parseDefine:*->Runnable |
 					@parseCall:*->Runnable |
 					@parseThread:*->Runnable,
-				@SingletonsCreator =
-					@scannerFactoryMethod:->@ScannerBean |
-					@parserFactoryMethod:->@Parser |
-					@bridgeSceneFactoryMethod:->@BridgeScene |
-					@avatarTableFactoryMethod:->@Table |
-					@commandInterpreterFactoryMethod:->@CommandInterpreter |
-					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager, 
+					
 					
 				
 				" />
@@ -262,8 +238,8 @@
 				value="
 				@InheritingBridgeScenePainter=paint:Graphics(.*)->void,
 				@ObservableBridgeScenePainter=paint:Graphics(.*)->void |@addPaintListener:@PaintListener->void,
-				@PaintListener=paint:Graphics(.*)->void,
-				@CustomSwingTextFieldFactory=createJTextField:String->JTextField, 								
+				@PaintListener=paint:Graphics(.*)->void		
+								
 				" />
 		</module>
 
@@ -320,9 +296,7 @@
 				@CommandList = @CommandList | Runnable,
 				@Animator = @Animator,
 				@AnimatingCommand = Runnable,
-				@BridgeScene = 	PropertyListenerRegistrer,
-				@UndoCommand = Runnable,
-				@RedoCommand = Runnable			
+				@BridgeScene = 	PropertyListenerRegistrer			
 				" />
 		</module>
 		<module name="ExpectedSuperTypes">
@@ -335,9 +309,6 @@
 				@BoundedShape=@Locatable,
 				@InheritingBridgeScenePainter=Component,
 				@ObservableBridgeScenePainter=Component,
-				@ScanningException=IOException,
-				@ParsingException=IOException,
-				@CustomSwingTextFieldFactory=SwingTextFieldFactory,
 				" />
 		</module>
 
@@ -352,11 +323,7 @@
 					 		@BridgeScene!getArthur:->(.*) |
 					 		@Parser!setCommandText:String->void |
 					 		@Parser!getCommandObject:->Runnable |
-					 		@Parser!getErrors:->* |
-					 		@SingletonsCreator!@parserFactoryMethod:->@Parser |
-					 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene |
-					 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table |
-					 		BroadcastingClearanceManager!proceedAll:->void
+					 		@Parser!getErrors:->*
 					 		,
 					  		
 				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
@@ -392,13 +359,7 @@
 				 	super!paint:Graphics->void(.*),
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
-				 @AnimatingCommand = 
-				 	@Animator!@animateAvatar:@Avatar->void |
-				 	ThreadSupport!sleep:long->void |
-				 	BroadcastingClearanceManager!waitForProceed:->void,
-				 @CoordinatingAnimatingCommand = 
-				 	@Animator!@animateAvatar:@Avatar->void |
-				 	BroadcastingClearanceManager!proceedAll:->void,
+				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
 				 @ApproachCommand = @BridgeScene!@approach:@Avatar->*,
 				 @FailCommand = @BridgeScene!@failed:->*,
 				 @PassCommand = @BridgeScene!@passed:->*,
@@ -419,10 +380,7 @@
 					@parseDefine:*->Runnable |
 					@parseCall:*->Runnable |
 					@parseThread:*->Runnable |
-				 	@parseSleep:*->Runnable |
-				 	@ScanningException!getMessage:->String |
-				 	@ParsingException!getMessage:->String |
-				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
+				 	@parseSleep:*->Runnable,
 				 	
 				 @RotateLeftArmCommand = @Avatar!@rotateLeftArm:int->void,
 				 @RotateRightArmCommand = @Avatar!@rotateRightArm:int->void,
@@ -430,7 +388,6 @@
 				 @DefineCommand = @Table!put:Object;Object->*,
 				 @CallCommand = @Table!get:Object->Object,				 
 				 @ThreadCommand = @Table!get:Object->Object | Thread!start(),
-			     
 				 			 						
 				 						
 				 " />
