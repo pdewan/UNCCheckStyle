@@ -239,7 +239,7 @@
 				 	@parseFail:*->Runnable |						
 				 	@parseRepeat:*->Runnable |						
 				 	@parseCommandList:*->Runnable |						
-				 	@parseNumber:*->Runnable |
+				 	@parseNumber:*->* |
 				 	@parseRotateLeftArm:*->Runnable |
 				 	@parseRotateRightArm:*->Runnable |
 				 	@parseSleep:*->Runnable |
@@ -320,6 +320,8 @@
 				@CommandList = @CommandList | Runnable,
 				@Animator = @Animator,
 				@AnimatingCommand = Runnable,
+				@CoordinatingCommand = Runnable,
+				@CoordinatedCommand = Runnable,
 				@BridgeScene = 	PropertyListenerRegistrer,
 				@UndoCommand = Runnable,
 				@RedoCommand = Runnable			
@@ -394,11 +396,17 @@
 				 	Graphics(.*)!draw(.*):*->(.*),
 				 @AnimatingCommand = 
 				 	@Animator!@animateAvatar:@Avatar->void |
-				 	ThreadSupport!sleep:long->void |
 				 	BroadcastingClearanceManager!waitForProceed:->void,
+				 @Animator = 
+				    ThreadSupport!sleep:long->void, 
 				 @CoordinatingAnimatingCommand = 
-				 	@Animator!@animateAvatar:@Avatar->void |
+				 	@CoordinatingAnimator!@animateAvatar:@Avatar->void,
+				 @CoordinatingAnimator = 
 				 	BroadcastingClearanceManager!proceedAll:->void,
+				 @CoordinatedAnimatingCommand =
+				 	@CoordinatedAnimator!@animateAvatar:@Avatar->void,
+				 @CoordinatedAnimator = 
+				 	BroadcastingClearanceManager!waitForProceed:->void,
 				 @ApproachCommand = @BridgeScene!@approach:@Avatar->*,
 				 @FailCommand = @BridgeScene!@failed:->*,
 				 @PassCommand = @BridgeScene!@passed:->*,
