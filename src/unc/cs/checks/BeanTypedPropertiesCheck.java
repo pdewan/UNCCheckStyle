@@ -260,7 +260,10 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	}
 	public Boolean matchSetter(String aSpecifiedType, PropertyInfo aProperty) {
 		STMethod aSetter = aProperty
-		.getSetter();		
+		.getSetter();	
+		if (aSetter == null || aSetter.getParameterTypes() == null) {
+			return false;
+		}
 		Boolean matches = matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
 		if (matches == null)
 			return null;

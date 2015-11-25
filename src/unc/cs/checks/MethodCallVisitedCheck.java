@@ -335,7 +335,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 	// assume classes have been matched
 	protected Boolean matchMethod(String aMethodSpecification,
 			String aShortMethodClassName, String aShortMethodName) {
-		if (aMethodSpecification == null || aMethodSpecification.equals("*"))
+		if (aMethodSpecification == null || aMethodSpecification.equals(MATCH_ANYTHING))
 			return true;
 		if (aMethodSpecification.indexOf("@") == -1)
 //			return aMethodSpecification.equals(aShortMethodName);

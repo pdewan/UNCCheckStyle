@@ -35,7 +35,7 @@ public abstract class UNCCheck extends Check{
 	  protected void consoleOut(String aString) {
 		  if (notInPlugIn)
 			  return;
-		  console.newMessageStream().println(aString);
+		  findConsole().newMessageStream().println(aString);
 	  }
 	  protected MessageConsole findConsole(String name) {
 		  try {

@@ -187,7 +187,7 @@
 				value="
 			@ScannerBean= ScannedString:String,
 			@CommandInterpreter = Command:String,
-			@Parser = CommandText:String | CommandObject:Runnable
+			@Parser = CommandText:String 
 			" />
 		</module>
 
@@ -387,7 +387,7 @@
 				 @SleepCommand = @ThreadSupport!sleep:long->void,
 				 @DefineCommand = @Table!put:Object;Object->*,
 				 @CallCommand = @Table!get:Object->Object,				 
-				 @ThreadCommand = @Table!get:Object->Object | Thread!start(),
+				 @ThreadCommand = @Table!get:Object->Object | Thread!start:->void,
 				 			 						
 				 						
 				 " />

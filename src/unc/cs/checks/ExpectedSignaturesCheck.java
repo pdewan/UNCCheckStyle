@@ -201,6 +201,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 //	public  STMethod signatureToMethodorOrConstructor(String aSignature) {
 //		return signatureToMethod(aSignature);
 //	}
+	boolean isMatchAnyting (Object[] aList) {
+		return aList != null && aList.length == 1 && MATCH_ANYTHING.equals(aList[0]);
+	}
 
 	public Boolean matchSignature(
 			STMethod aSpecification, STMethod aMethod) {
@@ -215,7 +218,8 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			typeTags = aReturnSTType.getComputedTags();
 		}
 		Boolean retVal  = 
-				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
+				(isMatchAnyting(aSpecification.getParameterTypes()) ||
+				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length) &&
 				matchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
 				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
 				
@@ -223,7 +227,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			backTrackUnification();
 			return false;
 		}
-		return matchParameters(aSpecification, aMethod);
+		if (isMatchAnyting(aSpecification.getParameterTypes()))
+				return true;
+		return  matchParameters(aSpecification, aMethod);
 //		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
 //		String[] aMethodParameterTypes = aMethod.getParameterTypes();
 //		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {

@@ -1324,7 +1324,7 @@ ContinuationProcessor{
 				 if ((aPrefixParts.length == 2) && !matchesType(aPrefixParts[0], aSourceClassName))
 					 continue; // not relevant
 				 String aTruePrefix = aPrefixParts.length == 2?aPrefixParts[1]:aPrefix;
-				 if (aTarget.startsWith(aTruePrefix) || aTruePrefix.equals("*"))
+				 if (aTarget.startsWith(aTruePrefix) || aTruePrefix.equals(MATCH_ANYTHING))
 					 return true;
 			 }
 			 return false;

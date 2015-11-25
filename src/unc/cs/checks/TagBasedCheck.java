@@ -21,6 +21,8 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class TagBasedCheck extends TypeVisitedCheck{
+	public static final String MATCH_ANYTHING = "*";
+
 	public static final String TYPE_SEPARATOR = "=";
 	public static final String SET_MEMBER_SEPARATOR = "\\|";
 	public static final String AND_SYMBOL = "\\+";
@@ -148,7 +150,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
    }
 	public  boolean matchesSomeSpecificationTags (Collection<STNameable> aStoredTags, Collection<String> aSpecifications) {
 		for (String aSpecificationTag:aSpecifications) {
-			if (aSpecificationTag.equals("*") || matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
+			if (aSpecificationTag.equals(MATCH_ANYTHING) || matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
 				return true;
 		}
 		return false;
@@ -239,7 +241,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	
 	protected int getInt(String aType) {
 		Integer retVal = typeToInt.get(aType);
-		if (retVal == null) return typeToInt.get("*"); // should not be exercised
+		if (retVal == null) return typeToInt.get(MATCH_ANYTHING); // should not be exercised
 		return retVal;
 	}
 //public boolean checkIncludeTagsOfCurrentType() {
@@ -355,7 +357,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  }
  public static Boolean matchesStoredTag(String aStoredTag, String aDescriptor) {
  		return 
-// 				aDescriptor.equals("*") || 
+// 				aDescriptor.equals(MATCH_ANYTHING) || 
  				maybeStripQuotes(aStoredTag).matches(maybeStripAt(maybeStripQuotes(aDescriptor)));
  	
  }
@@ -406,7 +408,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	
 }
  public Boolean matchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
-	 if (aDescriptor.equals("*")) {
+	 if (aDescriptor.equals(MATCH_ANYTHING)) {
 	 	 return true;
 	 } else if (aDescriptor.startsWith("$")) {
 			String aUnifiedValue = specificationVariablesToUnifiedValues
@@ -440,7 +442,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 //for some reason this is not supposed to call matchedMyType with clas name
 	public Boolean matchesMyType(String aDescriptor) {
 //		String aClassName = shortTypeName;
-		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*"))
+		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING))
 			return true;
 		if (aDescriptor.startsWith("@")) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
@@ -557,10 +559,10 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 		
 }
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
-	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals("*" ))
+	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
 		return true;
 	aDescriptor = aDescriptor.trim();
-//	if (aDescriptor.equals("*"))
+//	if (aDescriptor.equals(MATCH_ANYTHING))
 //		return true;
 	if (!aDescriptor.startsWith("@")) {
 //		return aShortClassName.equals(aDescriptor);
@@ -904,7 +906,7 @@ public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aToke
 }
 protected void setIntValueOfType(String newVal) {
 	String[] aTypeAndValue = newVal.split (TYPE_SEPARATOR);
-	String aType = "*";
+	String aType = MATCH_ANYTHING;
 	String aValueString = "";
 	if (aTypeAndValue.length == 1) {
 		aValueString = aTypeAndValue[0];
