@@ -570,6 +570,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 		try {
 		return matchesNameVariableOrTag(aDescriptor, aShortClassName, null);
 		} catch (PatternSyntaxException e) {
+			System.out.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aShortClassName);
 			e.printStackTrace();
 			return false;
 		}

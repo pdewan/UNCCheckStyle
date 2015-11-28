@@ -95,7 +95,10 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //			System.out.println ("signature with only one element");
 			aSignature = aSignatureAndTarget[0];
 			aSpecifiedTarget = aCallInfo.getCalledType(); // assuming local call
-			if (aSpecifiedTarget.contains("]") || aSpecifiedTarget.contains("["))
+			if (aSpecifiedTarget.contains("]") || 
+					aSpecifiedTarget.contains("[") ||
+					aSpecifiedTarget.contains("(") ||
+					aSpecifiedTarget.contains(")"))
 				return false;
 //			return false;
 		}
