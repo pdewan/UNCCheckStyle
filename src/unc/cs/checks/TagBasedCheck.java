@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.PatternSyntaxException;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -566,7 +567,12 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 //		return true;
 	if (!aDescriptor.startsWith("@")) {
 //		return aShortClassName.equals(aDescriptor);
+		try {
 		return matchesNameVariableOrTag(aDescriptor, aShortClassName, null);
+		} catch (PatternSyntaxException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)

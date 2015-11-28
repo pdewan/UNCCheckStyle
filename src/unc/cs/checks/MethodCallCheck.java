@@ -183,7 +183,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 				aCallInfo.getActuals().size() != aSpecifiedMethod.getParameterTypes().length)
 			return false;
 		String aTypeName = aCallInfo.getCalledType();
-		if (aTypeName == null) {
+		if (aTypeName == null || aTypeName.contains(("["))) {
 			return null;
 		}
 		
