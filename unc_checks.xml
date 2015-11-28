@@ -19,7 +19,7 @@
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="main, test,lectures,mp, grail" />
 			<property name="existingClasses"
-				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
+				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
 			<property name="importsAsExistingClasses" value="true" />
 
 		</module>
@@ -279,7 +279,7 @@
 				@MoveCommmand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
 				@FailCommand = :@BridgeScene,
-				@PassCommand = :@BridgeScene
+				@PassCommand = :@BridgeScene,
 				@ApproachCommand = :@BridgeScene;@Avatar,
 				@RepeatCommand = :int;@Runnable,
 				@RotateLeftArmCommand = :@Avatar; int,
@@ -421,9 +421,9 @@
 				 	@parseFail:*->Runnable |						
 				 	@parseRepeat:*->Runnable |						
 				 	@parseCommandList:*->Runnable |						
-				 	@parseNumber:*->Runnable |
+				 	@parseNumber:*->*|
 				 	@parseRotateLeftArm:*->Runnable |
-				 	@parseRightArm:*->Runnable |
+				 	@parseRotateRightArm:*->Runnable |
 					@parseDefine:*->Runnable |
 					@parseCall:*->Runnable |
 					@parseThread:*->Runnable |

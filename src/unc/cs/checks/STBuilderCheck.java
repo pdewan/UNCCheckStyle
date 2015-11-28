@@ -65,6 +65,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		if (!getImportsAsExistingClasses())
 			return;
 		for (STNameable aClassName:imports) {
+			if (TagBasedCheck.isProjectImport(aClassName.getName()))
+				continue;
 			processExistingClass(aClassName.getName());			
 		}
 	}

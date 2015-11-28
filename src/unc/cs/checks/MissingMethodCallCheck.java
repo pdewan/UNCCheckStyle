@@ -83,14 +83,19 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		if (aCalls == null)
 			return null;
 		String[] aSpecifications = typeToSignaturesWithTargets.get(specifiedType);
+		boolean returnNull = false; 
 		for (String aSpecification:aSpecifications) {
 			boolean found = false;
 			for (CallInfo aCallInfo:aCalls ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
 				Boolean matches = matches(aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
-				if (matches == null)
-					return null;
+				if (matches == null) {
+					returnNull = true;
+					found = true; // we will come back to this
+					break;
+//					return null;
+				}
 				if (matches) {
 					found = true;
 					break;
@@ -101,6 +106,8 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 			}
 			
 		}
+		if (returnNull)
+			return null;
 		return true;
 	}
 
