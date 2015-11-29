@@ -496,7 +496,9 @@
 		<module name="IllegalPropertyNotification">
 			<property name="excludeProperties" value="this" />
 		</module>
-
+        <module name="ClassIsGeneric">
+			<property name="includeTypeTags" value="Table" />
+		</module>
 
 		<module name="PeerCommonProperties">
 			<property name="includeTypeTags"

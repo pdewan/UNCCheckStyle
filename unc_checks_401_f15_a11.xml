@@ -457,5 +457,9 @@
 		</module>
 
 	</module>
+	<module name="ClassIsGeneric">
+			<property name="includeTypeTags" value="Table" />
+		</module>
+	
 </module>
 

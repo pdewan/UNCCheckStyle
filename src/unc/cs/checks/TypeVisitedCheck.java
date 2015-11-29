@@ -40,7 +40,12 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		}
 		return false;
 	}
-	 public void visitType(DetailAST ast) {  
+	 public void visitType(DetailAST ast) { 
+//		 DetailAST generic = ast.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
+//		 generic = ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);
+//		 if (generic.getType() == TokenTypes.TYPE_PARAMETERS) {
+//			 int i = 0;
+//		 }
 //	    	
 //			maybeVisitPackage(ast);
 	    	typeAST = ast;
