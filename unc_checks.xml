@@ -139,6 +139,7 @@
 			@Animator,
 			@AnimatingCommand,
 			@FailCommand,
+			@ApproachCommand,
 			@RepeatCommand,
 			@CommandList,
 			@RotateLeftArm,
@@ -272,7 +273,8 @@
 			<property name="expectedSignatures"
 				value="@BridgeScene =:, 
 				@Angle=:, 
-				@CommandInterpreter = :@BridgeScene; @ScannerBean,
+				@CommandInterpreter = :@BridgeScene,
+				@Parser = :@BridgeScene,
 				@ConsoleSceneView = :@BridgeScene,
 				@InheritingBridgeScenePainter = :@BridgeScene,
 				@BridgeSceneController = :@BridgeScene,
