@@ -150,6 +150,7 @@
 			@DefineCommand,
 			@CallCommand,
 			@ThreadCommand,
+			@Parser,
 			@ScanningException,
 			@ParsingException,
 			@BroadcastingClearanceManager,			

@@ -149,7 +149,8 @@
 			@Thread,			
 			@DefineCommand,
 			@CallCommand,
-			@ThreadCommand
+			@ThreadCommand,
+			@Parser
 			
 			
 			" />
