@@ -215,14 +215,25 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		STMethod[] aMethods = aTargetSTType.getMethods();
 		if (aMethods == null)
 			return null;
+		boolean hadNullMatch = false;
 		for (STMethod anSTMethod:aMethods) {
-			if (!matchSignature(aSpecifiedMethod, anSTMethod))
+			Boolean aMatch = matchSignature(aSpecifiedMethod, anSTMethod);
+			if (aMatch == null) {
+				hadNullMatch = true;
+				continue;
+			}
+				
+//			if (!matchSignature(aSpecifiedMethod, anSTMethod))
+
+			if (!aMatch)
 				continue;
 			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
 					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
 				return hasTag(anSTMethod, aSpecifiedMethod.getName());
 			}
 		}
+		if (hadNullMatch)
+			return null; // either way we do not know if something bad happened
 		return false;
 		
 
