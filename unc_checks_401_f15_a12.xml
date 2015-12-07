@@ -430,7 +430,7 @@
 				 	@parseRotateRightArm:*->Runnable |
 					@parseDefine:*->Runnable |
 					@parseCall:*->Runnable |
-					@Parser!@parseThread:*->Runnable |
+					@parseThread:*->Runnable |
 				 	@parseSleep:*->Runnable |
 				 	@ScanningException!getMessage:->String |
 				 	@ParsingException!getMessage:->String |
@@ -442,6 +442,8 @@
 				 @DefineCommand = @Table!put:Object;Object->*,
 				 @CallCommand = @Table!get:Object->Object,				 
 				 @ThreadCommand = @Table!get:Object->Object | Thread!start:->void,
+				 @CustomSwingTextFieldFactory = JTextField!setForeground:*->void | JTextField!setForeground:*->void,
+				 main.Assignment(.*) = ObjectEditor.initialize:->void
 			     
 				 			 						
 				 						
