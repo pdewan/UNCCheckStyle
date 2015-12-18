@@ -87,8 +87,8 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 //		}
 //	}
 
-	protected abstract Boolean check(DetailAST ast, String aShortMethodName,
-			String aLongMethodName, CallInfo aCallInfo);
+	protected abstract Boolean check(STType aCallingType, DetailAST ast,
+			String aShortMethodName, String aLongMethodName, CallInfo aCallInfo);
 	
 	protected void log(DetailAST ast, DetailAST aTreeAST, String aShortMethodName,
 		String aLongMethodName, CallInfo aCallInfo) {
@@ -227,8 +227,10 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
 		// System.out.println("Method text:" +
 		// getLastDescendent(ast).getText());
-		Boolean checkResult = check(ast, shortMethodName, aNormalizedLongName,
-				aCallInfo);
+		STType anSTType = getSTType(aTreeAST);
+//		String aCallingType = toShortTypeName(anSTType.getName());
+		Boolean checkResult = check(anSTType, ast, shortMethodName,
+				aNormalizedLongName, aCallInfo);
 		if (checkResult == null) {
 			// pendingChecks().add(ast);
 			return null;

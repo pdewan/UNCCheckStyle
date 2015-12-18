@@ -89,7 +89,8 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 			for (CallInfo aCallInfo:aCalls ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
-				Boolean matches = matches(aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
+//				int i = 0;
+				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
 				if (matches == null) {
 					if (!aSpecification.contains("!")) { // local call go onto another call
 						continue;

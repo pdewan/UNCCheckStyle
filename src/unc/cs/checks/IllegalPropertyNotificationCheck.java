@@ -124,7 +124,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     }
 
 	@Override
-	protected Boolean check(DetailAST aCalledMethodAST, String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
+	protected Boolean check(STType aCallingType, DetailAST aCalledMethodAST, String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
 
 		if (aCallInfo.getCalleee().equals(PROPERTY_CHANGE))
 			return processPropertyChange(aCallInfo.getActuals());

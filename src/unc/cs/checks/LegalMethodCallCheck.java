@@ -92,7 +92,7 @@ public  class LegalMethodCallCheck extends MethodCallVisitedCheck {
 	}
     // "fail" if method is in expected set
 	@Override
-	protected Boolean check(DetailAST ast, String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
+	protected Boolean check(STType aCallingType, DetailAST ast, String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
 		return !expectedMethodsSet.contains(aShortMethodName);
 	}
 

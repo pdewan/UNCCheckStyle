@@ -262,8 +262,8 @@
 					 		@Table!get:(.*)->(.*) |
 					 		@Table!put:(.*);(.*) -> (.*) |
 					 		@BridgeScene!getArthur:->(.*) |
-					 		@CommandInterpreter!@parseSay:*->Runnable |
-					 		@CommandInterpreter!@parseMove:*->Runnable,					 		
+					 		@parseSay:*->Runnable |
+					 		@parseMove:*->Runnable,					 		
 				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
 				 @BridgeScene = 
 				 	@Avatar!@move:int;->void | 

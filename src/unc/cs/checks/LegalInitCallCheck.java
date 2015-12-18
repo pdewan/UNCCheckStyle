@@ -32,8 +32,8 @@ public class LegalInitCallCheck extends InitCallCheck {
     
 	@Override
 	// "fails" if an init call in an init or constructor or external call
-	protected Boolean check(DetailAST ast, String aShortMethodName,
-			String aLongMethodName, CallInfo aCallInfo) {
+	protected Boolean check(STType aCallingType, DetailAST ast,
+			String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
 		return  ! (
 				AnSTMethod.isInit(aShortMethodName) && (
 				currentMethodIsConstructor // any call allowed from constructor

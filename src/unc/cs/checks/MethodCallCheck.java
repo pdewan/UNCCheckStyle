@@ -58,13 +58,13 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	protected abstract boolean returnValueOnMatch();
     String matchedSignature;
 	@Override
-	protected Boolean check(DetailAST ast, String aShortMethodName,
-			String aLongMethodName, CallInfo aCallInfo) {
+	protected Boolean check(STType aCallingType, DetailAST ast,
+			String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
 		matchedSignature = "";
 		String[] aSignaturesWithTargets = typeToSignaturesWithTargets.get(specifiedType);
 		for (String aSignatureWithTarget:aSignaturesWithTargets) {
 			
-			Boolean retVal = matches(aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+			Boolean retVal = matches(toShortTypeName (aCallingType.getName()),aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
 			if (retVal == null)
 				return null;
 			if (retVal) {
@@ -75,11 +75,12 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return !returnValueOnMatch();
 	}
 	
-	protected Boolean matches (String aSignatureWithTarget, String aShortMethodName,
+	protected Boolean matches (String aCallingType, String aSignatureWithTarget, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 		String[] aSignatureAndTarget = aSignatureWithTarget.split(TYPE_SIGNATURE_SEPARATOR);
 		String aSignature ;
 		String aSpecifiedTarget;
+		String aCalledType = aCallInfo.getCalledType();
 		if (aSignatureAndTarget == null ) {
 			
 			System.out.println ("Null signature!");
@@ -90,16 +91,19 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			System.out.println ("signature with no elements");
 			return false;
 		}
+		
 		if (aSignatureAndTarget.length == 1 ) {
 			
 //			System.out.println ("signature with only one element");
 			aSignature = aSignatureAndTarget[0];
-			aSpecifiedTarget = aCallInfo.getCalledType(); // assuming local call
-			if (aSpecifiedTarget.contains("]") || 
-					aSpecifiedTarget.contains("[") ||
-					aSpecifiedTarget.contains("(") ||
-					aSpecifiedTarget.contains(")"))
-				return false;
+			aSpecifiedTarget = aCallingType;
+//			aSpecifiedTarget = aCallInfo.getCalledType(); // assuming local call
+			// the following moved to below
+//			if (aSpecifiedTarget.contains("]") || 
+//					aSpecifiedTarget.contains("[") ||
+//					aSpecifiedTarget.contains("(") ||
+//					aSpecifiedTarget.contains(")"))
+//				return false;
 //			return false;
 		}
 //		if (aSignatureAndTarget.length < 2 ||
@@ -114,6 +118,11 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		aSignature = aSignatureAndTarget[1].trim();
 		aSpecifiedTarget = aSignatureAndTarget[0].trim();
 		}
+		if (aCalledType.contains("]") || // array element
+				aCalledType.contains("[") ||
+				aCalledType.contains("(") ||// casts
+				aCalledType.contains(")"))
+			return false;
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
 		return matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
 		
