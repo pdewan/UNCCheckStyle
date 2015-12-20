@@ -252,9 +252,10 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (aMethods == null) {
 			return null;
 		}
+//		int i = 5;
 		for (STMethod aMethod : aMethods) {
 			if (aMethod.getName().equals(aName)
-					&& aMethod.getParameterTypes().equals(aParameterTypes))
+					&& Arrays.asList(aMethod.getParameterTypes()).equals(Arrays.asList(aParameterTypes)))
 				return aMethod;
 		}
 		return null;

@@ -354,8 +354,8 @@
 				 						@BridgeScene!getLancelot:-> @Avatar	|	
 				 						@BridgeScene!getRobin:-> @Avatar	|
 				 						@Avatar!move:int; int->void |				 						
-				 						@BridgeScene!@Say:@Avatar->void |
-				 						@BridgeScene!@Approach:@Avatar->void,
+				 						@BridgeScene!@say:@Avatar->void |
+				 						@BridgeScene!@approach:@Avatar->void,
 				 @ObservableCommandInterpreter = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @InheritingBridgeScenePainter = 
 				 	Graphics(.*)!draw(.*):*->(.*) |

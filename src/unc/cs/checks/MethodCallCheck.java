@@ -13,6 +13,7 @@ import java.util.Set;
 
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.CallInfo;
+import unc.cs.symbolTable.NoMethod;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
@@ -21,7 +22,9 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	public static final String MSG_KEY = "expectedMethodCall";
-	public static final String TYPE_SIGNATURE_SEPARATOR = "!";
+	public static final String TYPE_SIGNATURE_SEPARATOR = "!"; // why not "."
+	public static final String CALLER_TYPE_SEPARATOR = "^";
+
 
 	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
 //	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
@@ -64,7 +67,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		String[] aSignaturesWithTargets = typeToSignaturesWithTargets.get(specifiedType);
 		for (String aSignatureWithTarget:aSignaturesWithTargets) {
 			
-			Boolean retVal = matches(toShortTypeName (aCallingType.getName()),aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+//			Boolean retVal = matches(toShortTypeName (aCallingType.getName()),aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+			Boolean retVal = matches(aCallingType,aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+
 			if (retVal == null)
 				return null;
 			if (retVal) {
@@ -75,8 +80,25 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return !returnValueOnMatch();
 	}
 	
-	protected Boolean matches (String aCallingType, String aSignatureWithTarget, String aShortMethodName,
+	protected Boolean matches (STType aCallingSTType, String aSpecifier, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
+		String aCallingType = toShortTypeName(aCallingSTType.getName());
+		String[] aCallerAndRest = aSpecifier.split(CALLER_TYPE_SEPARATOR);
+		String aCaller = MATCH_ANYTHING;
+		String aSignatureWithTarget = aSpecifier;
+		if (aCallerAndRest.length == 2) {
+			aCaller = aCallerAndRest[0];
+			aSignatureWithTarget = aCallerAndRest[1];
+		}
+		int i = 0;
+		STMethod aCallingMethod = aCallingSTType.getDeclaredMethod(aCallInfo.getCaller(), aCallInfo.getCallerParameterTypes().toArray(new String[]{}));
+		STMethod aCallingSpecifiedMethod = signatureToMethod(aCaller);
+		if (!matchSignature(aCallingSpecifiedMethod, aCallingMethod))
+			return false;
+		
+		
+//		STMethod  aCallingMatchingMethod = getMatchingMethod(aCallingSTType, aCallingSpecifiedMethod);
+
 		String[] aSignatureAndTarget = aSignatureWithTarget.split(TYPE_SIGNATURE_SEPARATOR);
 		String aSignature ;
 		String aSpecifiedTarget;
@@ -139,7 +161,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		variablesAdded.clear();
 		String aReturnType = aSpecification.getReturnType();
 		STNameable[] typeTags = null;
-		if (aReturnType.startsWith("@")) {
+		if (aReturnType != null && aReturnType.startsWith("@")) {
 			
 			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
 			if (aReturnSTType == null)
@@ -149,7 +171,11 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		Boolean retVal  = 
 //				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
 				matchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
-				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
+				(aReturnType== null ||
+				matchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
+
+//				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags)
+				);
 				
 		if (!retVal) {
 			backTrackUnification();
@@ -158,6 +184,8 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
 		String[] aMethodParameterTypes = aMethod.getParameterTypes();
 		
+		if (aSpecificationParameterTypes == null)
+			return true;
 		if (aSpecificationParameterTypes.length == 1) {
 			if (aSpecificationParameterTypes[0].equals(MATCH_ANYTHING))
 				return true;
@@ -189,7 +217,35 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	protected static boolean isStarParameters(String[] aParameters) {
 		return aParameters.length == 1 && aParameters[0].equals(MATCH_ANYTHING);
 	}
-	protected Boolean matches (String aSpecifiedTarget, STMethod aSpecifiedMethod, String aShortMethodName,
+	static STMethod noMethod = new NoMethod();
+//	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
+//		STMethod[] aMethods = aTargetSTType.getMethods();
+//		if (aMethods == null)
+//			return null;
+//		boolean hadNullMatch = false;
+//		for (STMethod anSTMethod:aMethods) {
+//			Boolean aMatch = matchSignature(aSpecifiedMethod, anSTMethod);
+//			if (aMatch == null) {
+//				hadNullMatch = true;
+//				continue;
+//			}
+//				
+////			if (!matchSignature(aSpecifiedMethod, anSTMethod))
+//
+//			if (!aMatch)
+//				continue;
+//			return anSTMethod;
+////			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
+////					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
+////				return hasTag(anSTMethod, aSpecifiedMethod.getName());
+////			}
+//		}
+//		if (hadNullMatch)
+//			return null; // either way we do not know if something bad happened
+//		return noMethod;
+//		
+//	}
+	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
 //		String aRegex = aSpecifiedMethod.getName();
@@ -238,7 +294,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 				continue;
 			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
 					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
-				return hasTag(anSTMethod, aSpecifiedMethod.getName());
+				return hasTag(anSTMethod, aSpecifiedMethod.getName()); // do we need this, does matchSignature not do this already
 			}
 		}
 		if (hadNullMatch)

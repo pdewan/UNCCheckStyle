@@ -110,14 +110,14 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	}
 	
 	protected boolean computeIsSetter() {
-		return getName().startsWith(SET) &&
+		return getName() != null && getName().startsWith(SET) &&
 				getName().length() > SET.length() &
 				isPublic() &&
 				getParameterTypes().length == 1 &&
 				isProcedure();
 	}
 	protected boolean computeIsGetter() {
-		return getName().startsWith(GET) &&
+		return getName() != null && getName().startsWith(GET) &&
 				getName().length() > GET.length() &&
 				isPublic() &&
 				getParameterTypes().length == 0 &&
@@ -126,8 +126,11 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	protected boolean computeIsInit() {
 		 return isInit(getName());
 	 }
-	 String toStringyParameterTypes() {
+	 String toStringParameterTypes() {
+		 if (getParameterTypes() == null)
+			 return "null";
 		 StringBuilder result = new StringBuilder();
+		 
 		 for (int i = 0; i < getParameterTypes().length; i++) {
 			 if (i > 0) {
 				 result.append(PARAMETER_SEPARATOR);
@@ -140,7 +143,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		 StringBuilder result = new StringBuilder();
 		 result.append(name);
 		 result.append(":");
-		 result.append(toStringyParameterTypes());
+		 result.append(toStringParameterTypes());
 		 result.append("->");
 		 result.append(TypeVisitedCheck.toShortTypeName(getReturnType()));
 		 return result.toString();
@@ -151,7 +154,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			return isInit;
 		}
 		public static boolean isInit(String aMethodName) {
-			return aMethodName.startsWith(INIT);
+			return aMethodName != null && aMethodName.startsWith(INIT);
 		}
 		public String toString() {
 			return signature;
@@ -330,6 +333,10 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 						continue;
 				String aCalledTypeShortName = ComprehensiveVisitCheck.toShortTypeName(aCallInfo.getCalledType());
 				// we did not capture the type
+				if (aCalledTypeShortName.length() == 0) {
+					System.err.println("Null string for short type name");
+					continue;
+				}
 				if (Character.isLowerCase(aCalledTypeShortName.charAt(0)))
 					continue;
 				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);

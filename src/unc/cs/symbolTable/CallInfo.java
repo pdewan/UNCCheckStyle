@@ -16,4 +16,6 @@ public interface CallInfo {
 
 	String[] getNormalizedCall();
 
+	List<String> getCallerParameterTypes();
+
 }

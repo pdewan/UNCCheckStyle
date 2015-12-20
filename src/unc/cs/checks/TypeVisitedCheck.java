@@ -121,6 +121,8 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		return anAST.findFirstToken(TokenTypes.IDENT);
 	}
 	public static String toShortTypeName (String aTypeName) {
+		if (aTypeName == null)
+			return aTypeName;
 		int aDotIndex = aTypeName.lastIndexOf(".");
 		String aShortTypeName = aTypeName;
 		if (aDotIndex != -1)

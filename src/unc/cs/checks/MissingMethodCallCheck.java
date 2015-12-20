@@ -27,6 +27,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		return new int[] {
 				 TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
+				
 //				TokenTypes.ANNOTATION,
 //				 TokenTypes.INTERFACE_DEF,
 
@@ -90,7 +91,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
 //				int i = 0;
-				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
+				Boolean matches = matches(anSTType, aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
+
+//				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
 				if (matches == null) {
 					if (!aSpecification.contains("!")) { // local call go onto another call
 						continue;

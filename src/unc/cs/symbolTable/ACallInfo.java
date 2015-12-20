@@ -7,6 +7,7 @@ public class ACallInfo implements CallInfo {
 	String caller;
 	String calledType;
 	String calleee;
+	List<String> callerParameterTypes;
 	
 	List<DetailAST> actuals;
 	
@@ -20,7 +21,7 @@ public class ACallInfo implements CallInfo {
 //		this.calledType = calledType;
 //		this.calleee = calleee;
 //	}
-	public ACallInfo(String caller, String calledType, String calleee,
+	public ACallInfo(String caller, List<String> aCallerParameterTypes, String calledType, String calleee,
 			List<DetailAST> actuals, String[] notmalizedCall) {
 		super();
 		this.caller = caller;
@@ -28,6 +29,11 @@ public class ACallInfo implements CallInfo {
 		this.calleee = calleee;
 		this.actuals = actuals;
 		this.normalizedCall = notmalizedCall;
+		callerParameterTypes = aCallerParameterTypes;
+	}
+	@Override
+	public List<String> getCallerParameterTypes() {
+		return callerParameterTypes;
 	}
 	@Override
 	public String getCaller() {
