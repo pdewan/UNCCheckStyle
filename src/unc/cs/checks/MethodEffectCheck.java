@@ -136,7 +136,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 		 if (!shouldTraverseVisitedMethod(aMethod))
 				return true;
 //			String[][] aCalledMethods = aMethod.methodsCalled();
-			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
 			for (CallInfo aCallInfo: aCalledMethods) {
 //				if (!aCalledMethod[0].equals(fullTypeName)) break;
 				String[] aCalledMethod = aCallInfo.getNormalizedCall();

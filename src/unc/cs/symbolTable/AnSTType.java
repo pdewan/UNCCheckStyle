@@ -79,10 +79,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		globalVariableToType = aGlobalVariableToType;
 		if (!isInterface) {
 			for (STMethod aMethod:declaredMethods) {
-				methodsCalled.addAll(Arrays.asList(aMethod.methodsCalled()));
+				methodsCalled.addAll(Arrays.asList(aMethod.getMethodsCalled()));
 			}
 			for (STMethod aConstructor:declaredConstructors) {
-				methodsCalled.addAll(Arrays.asList(aConstructor.methodsCalled()));
+				methodsCalled.addAll(Arrays.asList(aConstructor.getMethodsCalled()));
 			}
 		}
 	}
@@ -330,7 +330,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 				globalVariableToCall.values();
 		for (List<CallInfo> aCallList:aCalls){
 			for (CallInfo aCall:aCallList) {
-				if (aCall.getCalleee().equals(aCall.getCaller())) {
+				if (aCall.getCallee().equals(aCall.getCaller())) {
 					delegates.add(aCall.getCalledType());
 				}
 			}

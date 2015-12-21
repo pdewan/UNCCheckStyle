@@ -259,7 +259,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //				System.err.println("Declaring type should not be null");
 //				return null;
 //			}
-			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
 				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
 				if (anAllDirectlyCalledMethods == null)
@@ -288,7 +288,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //			}
 			if (result.contains(aMethod))
 				return result; // recursion
-			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
 				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
 						continue;
@@ -327,7 +327,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //				System.err.println("Declaring type should not be null");
 //				return null;
 //			}
-			CallInfo[] aCalledMethods = aMethod.methodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
 				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
 						continue;
@@ -373,6 +373,10 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			if (getAllCalledMethods() == null)
 				return null;
 			return getAllCalledMethods().contains(anSTMethod);			
+		}
+		@Override
+		public void setDeclaringSTType(STType declaringSTType) {
+			this.declaringSTType = declaringSTType;
 		}
 		
 

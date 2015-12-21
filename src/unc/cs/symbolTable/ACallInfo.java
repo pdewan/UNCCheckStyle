@@ -6,12 +6,15 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 public class ACallInfo implements CallInfo {
 	String caller;
 	String calledType;
-	String calleee;
+	String callee;
 	List<String> callerParameterTypes;
+	STType calledSTType;
 	
 	List<DetailAST> actuals;
 	
 	String[] normalizedCall;
+	STMethod callingMethod;
+	STMethod calledMethod;
 	
 	
 //	public ACallInfo(String caller, String calledType,
@@ -21,15 +24,23 @@ public class ACallInfo implements CallInfo {
 //		this.calledType = calledType;
 //		this.calleee = calleee;
 //	}
-	public ACallInfo(String caller, List<String> aCallerParameterTypes, String calledType, String calleee,
+	public ACallInfo(String caller, List<String> aCallerParameterTypes, String calledType, String aCallee,
 			List<DetailAST> actuals, String[] notmalizedCall) {
 		super();
 		this.caller = caller;
 		this.calledType = calledType;
-		this.calleee = calleee;
+		this.callee = aCallee;
 		this.actuals = actuals;
 		this.normalizedCall = notmalizedCall;
 		callerParameterTypes = aCallerParameterTypes;
+	}
+	@Override
+	public void setCallingMethod (STMethod anSTMethod) {
+		callingMethod = anSTMethod;
+	}
+	@Override
+	public STMethod getCallingMethod() {
+		return callingMethod;
 	}
 	@Override
 	public List<String> getCallerParameterTypes() {
@@ -44,8 +55,8 @@ public class ACallInfo implements CallInfo {
 		return calledType;
 	}
 	@Override
-	public String getCalleee() {
-		return calleee;
+	public String getCallee() {
+		return callee;
 	}
 	@Override
 	public List<DetailAST> getActuals() {
@@ -56,7 +67,31 @@ public class ACallInfo implements CallInfo {
 		return normalizedCall;
 	}
 	public String toString() {
-		return caller + "-->" + calledType + "." + calleee;
+		return caller + "-->" + calledType + "." + callee;
 	}
+	@Override
+	public STType getCalledSTType() {
+		if (calledSTType == null) {
+			calledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(calledType);
+		}
+		return calledSTType;
+	}
+	@Override
+	public STMethod getCalledMethod() {
+		if (calledMethod == null) {
+			STType aCalledType = getCalledSTType();
+			if (aCalledType == null)
+				return null;
+			for (STMethod anSTMethod:aCalledType.getDeclaredMethods()) {
+				if (anSTMethod.getName().equals(callee) &&
+						anSTMethod.getParameterTypes().length == actuals.size()) { // at some point do overload resolution?
+					calledMethod = anSTMethod;
+					break;
+				}
+			}
+		}
+		return calledMethod;
+	}
+	 
 
 }

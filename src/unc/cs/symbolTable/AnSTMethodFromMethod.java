@@ -1,6 +1,8 @@
 package unc.cs.symbolTable;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -78,7 +80,7 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 	}
 
 	@Override
-	public CallInfo[] methodsCalled() {
+	public CallInfo[] getMethodsCalled() {
 		// TODO Auto-generated method stub
 //		return new String[0][0];
 		return new CallInfo[0];
@@ -128,6 +130,26 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	List<STMethod> emptyMethodList = new ArrayList();
+	@Override
+	public List<STMethod> getLocalMethodsCalled() {
+		return emptyMethodList;
+	}
+	@Override
+	public List<STMethod> getAllMethodsCalled() {
+		// TODO Auto-generated method stub
+		return emptyMethodList;
+	}
+	@Override
+	public void fillAllCallClosure(List<STMethod> aList) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void fillLocalCallClosure(List<STMethod> aList) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }

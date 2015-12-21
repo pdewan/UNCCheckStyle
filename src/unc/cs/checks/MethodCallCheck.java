@@ -218,33 +218,34 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return aParameters.length == 1 && aParameters[0].equals(MATCH_ANYTHING);
 	}
 	static STMethod noMethod = new NoMethod();
-//	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
-//		STMethod[] aMethods = aTargetSTType.getMethods();
-//		if (aMethods == null)
-//			return null;
-//		boolean hadNullMatch = false;
-//		for (STMethod anSTMethod:aMethods) {
-//			Boolean aMatch = matchSignature(aSpecifiedMethod, anSTMethod);
-//			if (aMatch == null) {
-//				hadNullMatch = true;
-//				continue;
+	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
+		List<STMethod> result = new ArrayList();
+		STMethod[] aMethods = aTargetSTType.getMethods();
+		if (aMethods == null)
+			return null;
+		boolean hadNullMatch = false;
+		for (STMethod anSTMethod:aMethods) {
+			Boolean aMatch = matchSignature(aSpecifiedMethod, anSTMethod);
+			if (aMatch == null) {
+				hadNullMatch = true;
+				continue;
+			}
+				
+//			if (!matchSignature(aSpecifiedMethod, anSTMethod))
+
+			if (!aMatch)
+				continue;
+			result.add(anSTMethod);
+//			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
+//					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
+//				return hasTag(anSTMethod, aSpecifiedMethod.getName());
 //			}
-//				
-////			if (!matchSignature(aSpecifiedMethod, anSTMethod))
-//
-//			if (!aMatch)
-//				continue;
-//			return anSTMethod;
-////			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
-////					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
-////				return hasTag(anSTMethod, aSpecifiedMethod.getName());
-////			}
-//		}
-//		if (hadNullMatch)
-//			return null; // either way we do not know if something bad happened
-//		return noMethod;
-//		
-//	}
+		}
+		if (hadNullMatch)
+			return null; // either way we do not know if something bad happened
+		return result;
+		
+	}
 	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
@@ -292,7 +293,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 
 			if (!aMatch)
 				continue;
-			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
+			if (anSTMethod.getName().equals(aCallInfo.getCallee()) && 
 					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
 				return hasTag(anSTMethod, aSpecifiedMethod.getName()); // do we need this, does matchSignature not do this already
 			}

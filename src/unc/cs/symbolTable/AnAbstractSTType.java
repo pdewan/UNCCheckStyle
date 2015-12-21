@@ -514,6 +514,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	@Override
 	public void introspect() {
 		for (STMethod anSTMethod : getDeclaredMethods()) {
+			anSTMethod.setDeclaringSTType(this);
 			maybeProcessGetter(anSTMethod);
 			maybeProcessSetter(anSTMethod);
 		}

@@ -10,12 +10,20 @@ public interface CallInfo {
 
 	public abstract String getCalledType();
 
-	public abstract String getCalleee();
+	public abstract String getCallee();
 
 	List<DetailAST> getActuals();
 
 	String[] getNormalizedCall();
 
 	List<String> getCallerParameterTypes();
+
+	STMethod getCallingMethod();
+
+	void setCallingMethod(STMethod anSTMethod);
+
+	STType getCalledSTType();
+
+	STMethod getCalledMethod();
 
 }

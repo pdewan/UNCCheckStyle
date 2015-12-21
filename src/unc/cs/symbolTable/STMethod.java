@@ -1,5 +1,6 @@
 package unc.cs.symbolTable;
 
+import java.util.List;
 import java.util.Set;
 
 public interface STMethod extends STNameable{
@@ -13,7 +14,7 @@ public interface STMethod extends STNameable{
 	STNameable[] getTags();
 	boolean assignsToGlobal();
 //	String[][] methodsCalled();
-	CallInfo[] methodsCalled();
+	CallInfo[] getMethodsCalled();
 	boolean isProcedure();
 	boolean isSetter();
 	boolean isGetter();
@@ -33,4 +34,9 @@ public interface STMethod extends STNameable{
 	Boolean callsInternally(STMethod anSTMethod);
 	Boolean calls(STMethod anSTMethod);
 	boolean isConstructor();
+	void setDeclaringSTType(STType declaringSTType);
+	List<STMethod> getLocalMethodsCalled();
+	void fillLocalCallClosure(List<STMethod> aList);
+	List<STMethod> getAllMethodsCalled();
+	void fillAllCallClosure(List<STMethod> aList);
 }

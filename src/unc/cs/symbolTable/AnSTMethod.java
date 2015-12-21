@@ -1,5 +1,9 @@
 package unc.cs.symbolTable;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import unc.cs.checks.ComprehensiveVisitCheck;
 import unc.cs.checks.STTypeVisited;
 import unc.cs.checks.TypeVisitedCheck;
 
@@ -22,7 +26,13 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	final boolean assignsToGlobal;
 //	final String[][] methodsCalled;
 	final CallInfo[] methodsCalled;
+	protected List<STMethod> localMethodsCalled;
+	protected List<STMethod> localCallClosure;
+	
+	protected List<STMethod> allMethodsCalled;
+	protected List<STMethod> allCallClosure;
 
+	
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 	public static final String INIT = "init";
@@ -56,6 +66,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		assignsToGlobal = isAssignsToGlobal;
 		methodsCalled = aMethodsCalled;
 		isConstructor = anIsConstructor;
+		for (CallInfo aCallInfo:aMethodsCalled) {
+			aCallInfo.setCallingMethod(this);
+		}
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
@@ -93,10 +106,109 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 //	}
 	
 	@Override
-	public CallInfo[] methodsCalled() {
+	public CallInfo[] getMethodsCalled() {
 		return methodsCalled;
 	}
+	@Override
+	public List<STMethod> getLocalMethodsCalled() {
+		if (localMethodsCalled == null) {
+			List<STMethod> aList = new ArrayList();
+			for (CallInfo aCall:methodsCalled) {
+				if (ComprehensiveVisitCheck.toShortTypeName(aCall.getCalledType()).
+						equals(ComprehensiveVisitCheck.toShortTypeName(getDeclaringClass()))) {
+					STMethod anSTMethod = aCall.getCalledMethod();
+					if (anSTMethod == null) {
+						System.err.println("Could not create local st method");
+						return null;
+					} 
+					aList.add(anSTMethod);
+											
+				}
+			}
+			localMethodsCalled = aList;
+		}
+		return localMethodsCalled;
+	}
+	@Override
+	public List<STMethod> getAllMethodsCalled() {
+		if (allMethodsCalled == null) {
+			List<STMethod> aList = new ArrayList();
+			for (CallInfo aCall : methodsCalled) {
 
+				STMethod anSTMethod = aCall.getCalledMethod();
+				if (anSTMethod == null) {
+					return null;
+				}
+				aList.add(anSTMethod);
+
+			}
+			allMethodsCalled = aList;
+		}
+		return localMethodsCalled;
+	}
+	
+	public List<STMethod> getLocalCallClosure() {
+		if (localCallClosure == null) {
+			List<STMethod> aList = new ArrayList();
+			localMethodsCalled = getLocalMethodsCalled();
+			if (localMethodsCalled == null) {
+				return null;
+			}
+			fillLocalCallClosure(aList);
+			if (aList.contains(null))
+				return null;
+			localCallClosure = aList;
+		
+		}
+		return localCallClosure;
+	}
+	@Override
+	public void  fillLocalCallClosure(List<STMethod> aList) {
+	
+			localMethodsCalled = getLocalMethodsCalled();
+			if (localMethodsCalled == null) {
+				aList.add(null);
+				return;
+			}
+		
+			for (STMethod anSTMethod:aList) {
+				if (aList.contains(anSTMethod))
+					continue;
+				aList.add(anSTMethod);
+				anSTMethod.fillLocalCallClosure(aList);
+			}		
+	}
+	public List<STMethod> getAllCallClosure() {
+		if (allCallClosure == null) {
+			List<STMethod> aList = new ArrayList();
+			allMethodsCalled = getAllMethodsCalled();
+			if (allMethodsCalled == null) {
+				return null;
+			}
+			fillLocalCallClosure(aList);
+			if (aList.contains(null))
+				return null;
+			localCallClosure = aList;
+		
+		}
+		return localCallClosure;
+	}
+	@Override
+	public void  fillAllCallClosure(List<STMethod> aList) {
+	
+			localMethodsCalled = getAllMethodsCalled();
+			if (localMethodsCalled == null) {
+				aList.add(null);
+				return;
+			}
+		
+			for (STMethod anSTMethod:aList) {
+				if (aList.contains(anSTMethod))
+					continue;
+				aList.add(anSTMethod);
+				anSTMethod.fillAllCallClosure(aList);
+			}		
+	}
 	@Override
 	public boolean isVisible() {
 		return isVisible;
@@ -186,4 +298,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		public boolean isConstructor() {
 			return isConstructor;
 		}
+//		@Override
+//		public STType getDeclaringSTType() {
+//			return declaringSTType;
+//		}
+		
 }

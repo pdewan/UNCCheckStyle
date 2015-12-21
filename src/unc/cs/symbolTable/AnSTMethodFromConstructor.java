@@ -2,6 +2,8 @@ package unc.cs.symbolTable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -78,7 +80,7 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	}
 
 	@Override
-	public CallInfo[] methodsCalled() {
+	public CallInfo[] getMethodsCalled() {
 		// TODO Auto-generated method stub
 //		return new String[0][0];
 		return new CallInfo[0];
@@ -127,5 +129,31 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		return true;
 	}
+//	@Override
+//	public List<STMethod> getLocalMethodsCalled() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+	List<STMethod> emptyMethodList = new ArrayList();
+	@Override
+	public List<STMethod> getLocalMethodsCalled() {
+		return emptyMethodList;
+	}
+	@Override
+	public void fillLocalCallClosure(List<STMethod> aList) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public List<STMethod> getAllMethodsCalled() {
+		// TODO Auto-generated method stub
+		return emptyMethodList;
+	}
+	@Override
+	public void fillAllCallClosure(List<STMethod> aList) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 
 }
