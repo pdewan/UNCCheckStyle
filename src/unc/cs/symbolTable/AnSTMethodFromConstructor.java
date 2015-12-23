@@ -154,6 +154,14 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public List<STMethod> getAllCallClosure() {
+		return emptyMethodList;
+	}
+	@Override
+	public List<STMethod> getLocalCallClosure() {
+		return emptyMethodList;
+	}
 	
 
 }

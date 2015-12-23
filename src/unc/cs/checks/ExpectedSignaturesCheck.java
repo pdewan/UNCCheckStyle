@@ -210,7 +210,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		variablesAdded.clear();
 		String aReturnType = aSpecification.getReturnType();
 		STNameable[] typeTags = null;
-		if (aReturnType.startsWith("@")) {
+		if (aReturnType.startsWith(TAG_STRING)) {
 			
 			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
 			if (aReturnSTType == null)
@@ -260,7 +260,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			String aParameterType = aSpecificationParameterTypes[i];
 
 			STNameable[] parameterTags =null;
-			if (aParameterType.startsWith("@")) {
+			if (aParameterType.startsWith(TAG_STRING)) {
 				
 //				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
 				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aMethodParameterTypes[i]);

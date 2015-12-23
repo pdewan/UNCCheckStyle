@@ -90,6 +90,22 @@
 			<property name="exceptionCalls"
 				value="String.substring, String.charAt, String. @Tag1>String.length, Bar.@NextLineCaller>Scanner.nextLine, @Tag1.@Tag3>@Tag2.@Tag4" />
 		</module>
+		<module name="MissingMethodCall">
+			<property name="expectedCalls"
+				value="
+				@CommandInterpreter = 							
+					 		@Parser!setCommandText:String->void |
+					 		@Parser!getCommandObject:->Runnable |
+					 		@Parser!getErrors:->*
+					 		,
+				 @Parser = 
+				 	@parseCommandList#@parseCommand:*->Runnable |				 						
+				 	@parseSay:*->Runnable |
+				 	@parseSleep:*->Runnable
+				 			 						
+				 						
+				 " />
+		</module>
 		<module name="LegalMethodCall">
 			<property name="severity" value="info" />
 			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			

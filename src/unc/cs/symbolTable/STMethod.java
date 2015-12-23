@@ -39,4 +39,6 @@ public interface STMethod extends STNameable{
 	void fillLocalCallClosure(List<STMethod> aList);
 	List<STMethod> getAllMethodsCalled();
 	void fillAllCallClosure(List<STMethod> aList);
+	List<STMethod> getAllCallClosure();
+	List<STMethod> getLocalCallClosure();
 }

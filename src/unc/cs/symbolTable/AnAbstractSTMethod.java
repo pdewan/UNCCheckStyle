@@ -180,7 +180,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			
 		}
 		static STMethod[] emptySTMethods = {};
-		
+		//should check length of argument list
 		public static STMethod[] toSTMethods (CallInfo aCallInfo) {
 			
 			String[] aCalledMethod = aCallInfo.getNormalizedCall();
@@ -251,7 +251,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				aCalledMethod.addCaller(aCallingMethod);
 			}
 		}
-
+// deprecated by getAllLocalMethods and getAllMethods
 		public static Set<STMethod> computeAllCalledMethods (STMethod aMethod) {
 			Set<STMethod> result = new HashSet();
 //			STType aDeclaringType = aMethod.getDeclaringSTType();
@@ -334,7 +334,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				String aCalledTypeShortName = ComprehensiveVisitCheck.toShortTypeName(aCallInfo.getCalledType());
 				// we did not capture the type
 				if (aCalledTypeShortName.length() == 0) {
-					System.err.println("Null string for short type name");
+//					System.err.println("Null string for short type name");
 					continue;
 				}
 				if (Character.isLowerCase(aCalledTypeShortName.charAt(0)))
@@ -363,9 +363,12 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		}
 		@Override
 		public Boolean callsInternally(STMethod anSTMethod) {
-			if (getAllInternallyCalledMethods() == null)
+//			if (getAllInternallyCalledMethods() == null)
+//				return null;
+//			return getAllInternallyCalledMethods().contains(anSTMethod);
+			if (getLocalCallClosure() == null)
 				return null;
-			return getAllInternallyCalledMethods().contains(anSTMethod);
+			return getLocalCallClosure().contains(anSTMethod);
 			
 		}
 		@Override

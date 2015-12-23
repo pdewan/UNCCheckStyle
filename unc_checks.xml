@@ -19,7 +19,7 @@
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="main, test,lectures,mp, grail" />
 			<property name="existingClasses"
-				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
+				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
 			<property name="importsAsExistingClasses" value="true" />
 
 		</module>
@@ -115,6 +115,9 @@
 			@sleep,  
 			@undo, 
 			@redo, 
+			@approach,
+			@pass,
+			@fail,
 			@RotatingLine, 
 			@Angle, 
 			@Avatar, 
@@ -130,10 +133,26 @@
 			@BridgeSceneController,
 			@CommandInterpreterController,
 			@ObservableCommandInterpreter,
-			@Animator,
-			@AnimatingCommand,
 			@SayCommand,
 			@MoveCommand,
+			@PassCommand,
+			@Animator,
+			@AnimatingCommand,
+			@FailCommand,
+			@ApproachCommand,
+			@RepeatCommand,
+			@CommandList,
+			@RotateLeftArm,
+			@RotateRightArm,
+			@Sleep,
+			@Define,
+			@Call,
+			@Thread,			
+			@DefineCommand,
+			@CallCommand,
+			@ThreadCommand,
+			@Parser
+			
 			
 			" />
 		</module>
@@ -161,6 +180,8 @@
 				Pass: JButton |
 				Fail: JButton,
 			@ProgressBarCreator =  ProgressBar:JProgressBar | Slider:JSlider,
+			@Parser = CommandText:String | CommandObject:Runnable | Errors:*,
+			
 			" />
 		</module>
 		<module name="ExpectedSetters">
@@ -168,8 +189,10 @@
 				value="
 			@ScannerBean= ScannedString:String,
 			@CommandInterpreter = Command:String,
+			@Parser = CommandText:String 
 			" />
 		</module>
+
 		<module name="ExpectedSignatures">
 			<property name="expectedSignatures"
 				value="
@@ -183,14 +206,33 @@
 					@failed:->*	| 
 					pre((.*)):->boolean,
 				@CommandInterpreter = 
-					@parseSay:*->Runnable | 
-					@parseMove:*->Runnable | 
+					 
 					@asynchronousGalahad:->void	|
 					@asynchronousLancelot:->void |		
 					@asynchronousRobin:->void |	
 					@asynchronousArthur:->void |
 					@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void
+				@Animator = @animateAvatar:@Avatar->void,
+				@CommandList = @add:@Runnable->void,
+				@Parser = 
+				    @parseSay:*->Runnable | 
+					@parseMove:*->Runnable |
+				  	@parseCommand:*->Runnable |						
+				  	@parseApproach:*->Runnable |						
+				 	@parsePass:*->Runnable |						
+				 	@parseFail:*->Runnable |						
+				 	@parseRepeat:*->Runnable |						
+				 	@parseCommandList:*->Runnable |						
+				 	@parseNumber:*->* |
+				 	@parseRotateLeftArm:*->Runnable |
+				 	@parseRotateRightArm:*->Runnable |
+				 	@parseSleep:*->Runnable |
+					@parseDefine:*->Runnable |
+					@parseCall:*->Runnable |
+					@parseThread:*->Runnable,
+					
+					
+				
 				" />
 		</module>
 		<module name="ExpectedDeclaredSignatures">
@@ -207,14 +249,24 @@
 			<property name="expectedSignatures"
 				value="@BridgeScene =:, 
 				@Angle=:, 
-				@CommandInterpreter = :@BridgeScene; @ScannerBean,
+				@CommandInterpreter = :@BridgeScene,
+				@Parser = :@BridgeScene,
 				@ConsoleSceneView = :@BridgeScene,
 				@InheritingBridgeScenePainter = :@BridgeScene,
 				@BridgeSceneController = :@BridgeScene,
 				@CommandInterpreterController = :@CommandInterpreter,
 				@MoveCommmand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
-																			
+				@FailCommand = :@BridgeScene,
+				@PassCommand = :@BridgeScene,
+				@ApproachCommand = :@BridgeScene;@Avatar,
+				@RepeatCommand = :int;@Runnable,
+				@RotateLeftArmCommand = :@Avatar; int,
+				@RotateRightArmCommand = :@Avatar; int,
+				@SleepCommand = :long,
+				@DefineCommand = :String;@Runnable;@Table,	
+				@ThreadCommand = :String;@Table,
+												
 				" />
 		</module>
 		<module name="ExpectedInterfaces">
@@ -235,6 +287,16 @@
 				@ObservableCommandIntepreter = PropertyListenerRegistrer,
 				@SayCommand = Runnable,
 				@MoveCommand = Runnable,
+				@PassCommand = Runnable,
+				@FailCommand = Runnable,
+				@ApproachCommand = Runnable,
+				@RotateLeftArmCommand = Runnable,
+				@RotateRigtArmCommand = Runnable,
+				@SleepCommand = Runnable,
+				@DefineCommand = Runnable,
+				@CallCommand = Runnable,
+				@ThreadCommand = Runnable,								
+				@CommandList = @CommandList | Runnable,
 				@Animator = @Animator,
 				@AnimatingCommand = Runnable,
 				@BridgeScene = 	PropertyListenerRegistrer			
@@ -262,8 +324,11 @@
 					 		@Table!get:(.*)->(.*) |
 					 		@Table!put:(.*);(.*) -> (.*) |
 					 		@BridgeScene!getArthur:->(.*) |
-					 		@parseSay:*->Runnable |
-					 		@parseMove:*->Runnable,					 		
+					 		@Parser!setCommandText:String->void |
+					 		@Parser!getCommandObject:->Runnable |
+					 		@Parser!getErrors:->*
+					 		,
+					  		
 				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
 				 @BridgeScene = 
 				 	@Avatar!@move:int;->void | 
@@ -289,16 +354,44 @@
 				 						@BridgeScene!getLancelot:-> @Avatar	|	
 				 						@BridgeScene!getRobin:-> @Avatar	|
 				 						@Avatar!move:int; int->void |				 						
-				 						@BridgeScene!@Say:@Avatar->void |
-				 						@BridgeScene!@Approach:@Avatar->void,
+				 						@BridgeScene!@say:@Avatar->void |
+				 						@BridgeScene!@approach:@Avatar->void,
 				 @ObservableCommandInterpreter = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @InheritingBridgeScenePainter = 
 				 	Graphics(.*)!draw(.*):*->(.*) |
 				 	super!paint:Graphics->void(.*),
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void
-				 						
+				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
+				 @ApproachCommand = @BridgeScene!@approach:@Avatar->*,
+				 @FailCommand = @BridgeScene!@failed:->*,
+				 @PassCommand = @BridgeScene!@passed:->*,
+				 @SayCommand = @BridgeScene!@say:String->*,			 
+				 @CommandList = Runnable!run:->void,
+				 @Parser = 
+				 	@parseCommandList#@parseCommand:*->Runnable |				 						
+				 	@parseSay:*->Runnable |
+				 	@parseApproach:*->Runnable |						
+				 	@parseSay:*->Runnable |					
+				 	@parsePass:*->Runnable |						
+				 	@parseFail:*->Runnable |						
+				 	@parseRepeat:*->Runnable |						
+				 	@parseCommandList:*->Runnable |						
+				 	@parseNumber:*->* |
+				 	@parseRotateLeftArm:*->Runnable |
+				 	@parseRotateRightArm:*->Runnable |
+					@parseDefine:*->Runnable |
+					@parseCall:*->Runnable |
+					@parseThread:*->Runnable |
+				 	@parseSleep:*->Runnable,
+				 	
+				 @RotateLeftArmCommand = @Avatar!@rotateLeftArm:int->void,
+				 @RotateRightArmCommand = @Avatar!@rotateRightArm:int->void,
+				 @SleepCommand = @ThreadSupport!sleep:long->void,
+				 @DefineCommand = @Table!put:Object;Object->*,
+				 @CallCommand = @Table!get:Object->Object,				 
+				 @ThreadCommand = @Table!get:Object->Object | Thread!start:->void,
+				 			 						
 				 						
 				 " />
 		</module>
@@ -314,7 +407,7 @@
 
 		<module name="FunctionAssignsGlobal">
 			<property name="excludeMethodTags"
-				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*), parse(.*)" />
 
 		</module>
 		<module name="SetterAssignsGlobal">
@@ -365,7 +458,12 @@
 		</module>
 		<module name="InvalidPackageName">
 		</module>
+		<module name="ClassIsGeneric">
+			<property name="includeTypeTags" value="Table" />
+		</module>
 
 	</module>
+
+
 </module>
 

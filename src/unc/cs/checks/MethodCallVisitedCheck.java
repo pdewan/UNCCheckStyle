@@ -339,7 +339,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 			String aShortMethodClassName, String aShortMethodName) {
 		if (aMethodSpecification == null || aMethodSpecification.equals(MATCH_ANYTHING))
 			return true;
-		if (aMethodSpecification.indexOf("@") == -1)
+		if (aMethodSpecification.indexOf(TAG_STRING) == -1)
 //			return aMethodSpecification.equals(aShortMethodName);
 			return matchesNameVariableOrTag(aMethodSpecification, aShortMethodName, null);
 		

@@ -22,6 +22,8 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class TagBasedCheck extends TypeVisitedCheck{
+	public static final char TAG_CHAR = '@';
+	public static final String TAG_STRING = "" + TAG_CHAR;
 	public static final String MATCH_ANYTHING = "*";
 
 	public static final String TYPE_SEPARATOR = "=";
@@ -351,7 +353,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  	return aString;
  }
  public static String maybeStripAt(String aString) {
-	 if (aString.startsWith("@")) {
+	 if (aString.startsWith(TAG_STRING)) {
 			return aString.substring(1);
 	 }
 	 return aString;
@@ -422,7 +424,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			} else {
 				return aName.equals(aUnifiedValue);
 			}
-		} else if (aDescriptor.startsWith("@")) {
+		} else if (aDescriptor.startsWith(TAG_STRING)) {
 			return hasTag(aTags, aDescriptor);
 		}	else {
 			String aShortName = toShortTypeName(aName);
@@ -445,7 +447,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 //		String aClassName = shortTypeName;
 		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING))
 			return true;
-		if (aDescriptor.startsWith("@")) {
+		if (aDescriptor.startsWith(TAG_STRING)) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 //			STNameable[] checkTags = anSTType.getAllComputedTags();
 			STNameable[] checkTags = anSTType.getComputedTags();
@@ -565,7 +567,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	aDescriptor = aDescriptor.trim();
 //	if (aDescriptor.equals(MATCH_ANYTHING))
 //		return true;
-	if (!aDescriptor.startsWith("@")) {
+	if (!aDescriptor.startsWith(TAG_STRING)) {
 //		return aShortClassName.equals(aDescriptor);
 		try {
 		return matchesNameVariableOrTag(aDescriptor, aShortClassName, null);
@@ -575,13 +577,17 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 			return false;
 		}
 	}
+	String aTag = aDescriptor.substring(1);
+	if (aShortClassName.matches(aTag))
+		return true; // in case the class name is the same as tag
+
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)
 		return null;
 		// this should be changed back to null at some point
 //		return false;
 
-	String aTag = aDescriptor.substring(1);
+//	String aTag = aDescriptor.substring(1);
 
 	return contains(aTags, aTag, aShortClassName);
 }

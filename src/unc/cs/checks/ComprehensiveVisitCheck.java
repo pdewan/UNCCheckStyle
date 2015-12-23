@@ -237,11 +237,28 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public STMethod signatureToMethodorOrConstructor(String aSignature) {
 		return signatureToMethod(aSignature);
 	}
-
+	public static Boolean isIdentifier(String aString) {
+		if (aString.length() == 0)
+			return false;
+		char aFirstChar = aString.charAt(0);
+		if (!Character.isLetter(aFirstChar) && (aFirstChar != TAG_CHAR)) {
+			return false;
+		}
+		for (int index = 1; index < aString.length(); index++) { // in case of tag will allow first char to be digit
+			if (!Character.isLetter(aString.charAt(index)) && !Character.isDigit(aString.charAt(index))) {
+				return false;
+			}
+		}
+		return true;
+			
+				
+	}
 	public STMethod signatureToMethod(String aSignature) {
 		String[] aNameAndRest = aSignature.split(":");
 		if (aNameAndRest.length == 1) {
+			if (!aSignature.equals(MATCH_ANYTHING) && !isIdentifier(aSignature)) {
 			System.err.println("Illegal signature," + aSignature + ", missing :\n Assuming parameters and return types do not matter");
+			}
 			return new AnSTMethod(null, aSignature.trim(), null, null, true, true, false, null, false, null, null, false, null);
 		}
 		if (aNameAndRest.length > 2) {
@@ -858,19 +875,38 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
 		currentMethodNameAST = getLastDescendent(ast);
 		String shortMethodName = currentMethodNameAST.getText();
+		String aCastType = null;
 
 		DetailAST aLeftMostMethodTargetAST = currentMethodNameAST
 				.getPreviousSibling();
 		String aTargetName = null;
 
 		if (aLeftMostMethodTargetAST != null) {
+			if (aLeftMostMethodTargetAST.getType() == TokenTypes.RPAREN) {
+				DetailAST anLParen = aLeftMostMethodTargetAST.getPreviousSibling();
+				DetailAST aTypeAST = anLParen.getFirstChild();
+				if (aTypeAST.getType() == TokenTypes.TYPE) {
+//					int i = 0;
+					// this is a hack, need to search down the tree for parens and find the first
+					// idnetifier or indexop in the tree
+					aCastType = aTypeAST.getFirstChild().getText();
+					DetailAST anRTypeParen = aTypeAST.getNextSibling();
+					DetailAST aCastExpression = anRTypeParen.getFirstChild();
+					aLeftMostMethodTargetAST = aCastExpression;
 
-			if (aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
+					
+				}
+			}
+
+			if (aLeftMostMethodTargetAST != null && aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
 				aTargetName = aLeftMostMethodTargetAST.getFirstChild()
 						.getText() + "[]";
-			} else {
+			} else if (aLeftMostMethodTargetAST != null) {
 				aTargetName = aLeftMostMethodTargetAST.getText();
+			} else {
+				aTargetName = aCastType;
 			}
+			
 			// String aTargetName = aLeftMostMethodTargetAST.getText();
 //
 //			if (isGlobal(aTargetName)) {
@@ -914,18 +950,25 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			} else {
 				FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
 				String longMethodName = aFullIdent.getText();
+				String[] aCallParts;
+				if (longMethodName.length() > 0 && !Character.isLetter(longMethodName.charAt(0))) {
+					aCallParts = new String[] {aTargetName, shortMethodName};
+				} else {
+					 aCallParts = longMethodName.split("\\.");
 
-				String[] aCallParts = longMethodName.split("\\.");
+//				String[] aCallParts = longMethodName.split("\\.");
 				if (aTargetName != null) {
 					aCallParts[0] = aTargetName;
+				}
 				}
 				aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
 			}
 		}
+		int i = 0;
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeName(aNormalizedLongName);
 		CallInfo result = new ACallInfo(currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
-				aCallee, aCallParameters, aNormalizedParts);
+				aCallee, aCallParameters, aNormalizedParts, aCastType);
 		if (aLeftMostMethodTargetAST != null) {
 //			String aTargetName;
 //
@@ -978,9 +1021,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 			aNormalizedParts = new String[] { shortMethodName, shortMethodName };
 		}
-
+		// need to worry about cast at some point I assume
 		CallInfo result = new ACallInfo(currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
-				aNormalizedParts[1], aCallParameters, aNormalizedParts);
+				aNormalizedParts[1], aCallParameters, aNormalizedParts, null);
 
 		astToContinuationData.put(ast, aNormalizedParts);
 

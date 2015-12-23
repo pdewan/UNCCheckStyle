@@ -66,8 +66,10 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		assignsToGlobal = isAssignsToGlobal;
 		methodsCalled = aMethodsCalled;
 		isConstructor = anIsConstructor;
+		if (methodsCalled != null) {
 		for (CallInfo aCallInfo:aMethodsCalled) {
 			aCallInfo.setCallingMethod(this);
+		}
 		}
 		introspect();
 //		isSetter = computeIsSetter();
@@ -146,14 +148,14 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		}
 		return localMethodsCalled;
 	}
-	
+	@Override
 	public List<STMethod> getLocalCallClosure() {
 		if (localCallClosure == null) {
 			List<STMethod> aList = new ArrayList();
-			localMethodsCalled = getLocalMethodsCalled();
-			if (localMethodsCalled == null) {
-				return null;
-			}
+//			localMethodsCalled = getLocalMethodsCalled();
+//			if (localMethodsCalled == null) {
+//				return null;
+//			}
 			fillLocalCallClosure(aList);
 			if (aList.contains(null))
 				return null;
@@ -171,13 +173,14 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 				return;
 			}
 		
-			for (STMethod anSTMethod:aList) {
+			for (STMethod anSTMethod:localMethodsCalled) {
 				if (aList.contains(anSTMethod))
 					continue;
 				aList.add(anSTMethod);
 				anSTMethod.fillLocalCallClosure(aList);
 			}		
 	}
+	@Override
 	public List<STMethod> getAllCallClosure() {
 		if (allCallClosure == null) {
 			List<STMethod> aList = new ArrayList();

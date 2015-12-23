@@ -23,7 +23,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	public static final String MSG_KEY = "expectedMethodCall";
 	public static final String TYPE_SIGNATURE_SEPARATOR = "!"; // why not "."
-	public static final String CALLER_TYPE_SEPARATOR = "^";
+	public static final String CALLER_TYPE_SEPARATOR = "#";
 
 
 	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
@@ -80,6 +80,25 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return !returnValueOnMatch();
 	}
 	
+	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
+		if (matchSignature(aSpecifiedMethod, anActualMethod)) // check if there is a direct call by the specified method
+//		if (retVal)
+			return true;
+		// now go through the call graph and see if the specified method calls a method that matches the actual method
+		List<STMethod> aMatchingSpecifiedMethods = getMatchingMethods(anSTType, aSpecifiedMethod);
+		for (STMethod aRootMethod:aMatchingSpecifiedMethods) {
+			if (aRootMethod.callsInternally(anActualMethod))
+				return true;
+//			List<STMethod> aCalledMethods = aRootMethod.getLocalCallClosure();
+//			for (STMethod aCalledMethod:aCalledMethods) {
+//				if (anActualMethod == aCalledMethod)
+//					return true;
+//			}			
+		}
+		return false;
+
+	}
+	
 	protected Boolean matches (STType aCallingSTType, String aSpecifier, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 		String aCallingType = toShortTypeName(aCallingSTType.getName());
@@ -87,14 +106,20 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		String aCaller = MATCH_ANYTHING;
 		String aSignatureWithTarget = aSpecifier;
 		if (aCallerAndRest.length == 2) {
-			aCaller = aCallerAndRest[0];
+			aCaller = aCallerAndRest[0].trim();
 			aSignatureWithTarget = aCallerAndRest[1];
 		}
-		int i = 0;
-		STMethod aCallingMethod = aCallingSTType.getDeclaredMethod(aCallInfo.getCaller(), aCallInfo.getCallerParameterTypes().toArray(new String[]{}));
+//		int i = 0;
+//		STMethod aCallingMethod = aCallingSTType.getDeclaredMethod(aCallInfo.getCaller(), aCallInfo.getCallerParameterTypes().toArray(new String[]{}));
+		STMethod aCallingMethod = aCallInfo.getCallingMethod();
+
 		STMethod aCallingSpecifiedMethod = signatureToMethod(aCaller);
-		if (!matchSignature(aCallingSpecifiedMethod, aCallingMethod))
+//		if (!matchSignature(aCallingSpecifiedMethod, aCallingMethod)) {
+//			return false;
+//		}
+		if (!matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod)) {
 			return false;
+		}
 		
 		
 //		STMethod  aCallingMatchingMethod = getMatchingMethod(aCallingSTType, aCallingSpecifiedMethod);
@@ -144,7 +169,8 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 				aCalledType.contains("[") ||
 				aCalledType.contains("(") ||// casts
 				aCalledType.contains(")"))
-			return false;
+//			return false;
+			return true; // assume the type is right, 
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
 		return matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
 		
@@ -161,16 +187,25 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		variablesAdded.clear();
 		String aReturnType = aSpecification.getReturnType();
 		STNameable[] typeTags = null;
-		if (aReturnType != null && aReturnType.startsWith("@")) {
+		if (aReturnType != null && aReturnType.startsWith(TAG_STRING)) {
 			
 			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
 			if (aReturnSTType == null)
 				return null;
 			typeTags = aReturnSTType.getComputedTags();
 		}
+		
+		if (aMethod == null) {
+			System.err.println("Null method name");
+			return true;
+		}
+		
 		Boolean retVal  = 
 //				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
-				matchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
+				matchesNameVariableOrTag(
+						aSpecification.getName(), 
+						aMethod.getName(), 
+						aMethod.getComputedTags()) &&
 				(aReturnType== null ||
 				matchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
 
@@ -198,7 +233,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			String aParameterType = aSpecificationParameterTypes[i];
 
 			STNameable[] parameterTags =null;
-			if (aParameterType.startsWith("@")) {
+			if (aParameterType.startsWith(TAG_STRING)) {
 				
 				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
 				if (aParameterSTType == null)
@@ -258,7 +293,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			return null;
 		}
 		
-		 if (!aSpecifiedMethod.getName().startsWith("@") && !aSpecifiedTarget.startsWith("@")) { // we do not need to determine tags
+		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) && !aSpecifiedTarget.startsWith(TAG_STRING)) { // we do not need to determine tags
 			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && aTypeName.matches(aSpecifiedTarget); 
 		 }
 //		 System.out.println ("Temp");
@@ -269,7 +304,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 				 return false;
 		 }
 
-		 if (!aSpecifiedMethod.getName().startsWith("@") ) { // we do not need to determine method tags
+		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
 			 return aShortMethodName.matches(aSpecifiedMethod.getName());
 		 }
 		
@@ -330,6 +365,10 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	@Override
 	protected String msgKey() {
 		return MSG_KEY;
+	}
+	public static void main (String[] args) {
+		String[] split1 = "hello#dolly".split("#");
+		String[] split2 = "hello#dolly".split("\\#");
 	}
 
 }

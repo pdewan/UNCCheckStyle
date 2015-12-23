@@ -26,7 +26,7 @@ public abstract class LocatableShapePatternCheck extends BeanPatternCheck {
 	
 	protected String locatablePattern() {
 //		return LOCATABLE_PATTERN ;
-		return "@" +composePatternName() + TYPE_SEPARATOR + "X:int | Y:int";
+		return TAG_STRING +composePatternName() + TYPE_SEPARATOR + "X:int | Y:int";
 	}
 	@Override
 	public String composeProperties() {
@@ -50,7 +50,7 @@ public abstract class LocatableShapePatternCheck extends BeanPatternCheck {
 //		return aStructurePattern.getName().equals("StructurePatternNames.LINE_PATTERN");
 ////		if (aDescriptor == null || aDescriptor.length() == 0)
 ////			return true;
-////		if (!aDescriptor.startsWith("@")) {
+////		if (!aDescriptor.startsWith(TAG_STRING)) {
 ////			return aShortClassName.equals(aDescriptor);
 ////		}
 ////		List<STNameable> aTags = getTags(aShortClassName);

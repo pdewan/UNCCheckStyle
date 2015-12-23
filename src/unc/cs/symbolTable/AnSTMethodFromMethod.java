@@ -150,6 +150,18 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public List<STMethod> getAllCallClosure() {
+		// TODO Auto-generated method stub
+		return emptyMethodList;
+
+	}
+	@Override
+	public List<STMethod> getLocalCallClosure() {
+		// TODO Auto-generated method stub
+		return emptyMethodList;
+
+	}
 	
 
 }

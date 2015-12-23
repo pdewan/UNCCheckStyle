@@ -146,7 +146,7 @@
 							(.*)!move:(int;int)->void |
 							(.*)!setString:String->void |
 					 		@Table!get:(.*)->(.*) |
-					 		@Table!put:(.*);(.*) -> (.*) |
+					 		CommandInterpreter#@Table!put:(.*);(.*) -> (.*) |
 					 		@BridgeScene!getArthur:->(.*),					 		
 				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
 				 @BridgeScene = @Avatar!@move:int;int->void,
