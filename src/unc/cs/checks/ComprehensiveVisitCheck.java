@@ -897,15 +897,31 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					
 				}
 			}
-
-			if (aLeftMostMethodTargetAST != null && aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
+			if (aLeftMostMethodTargetAST != null && 
+					aLeftMostMethodTargetAST.getType() == TokenTypes.DOT) {
+//				DetailAST aFirstChild = aLeftMostMethodTargetAST.getFirstChild();
+				if (aLeftMostMethodTargetAST.getFirstChild().getText().equals("this")) {
+//					System.out.println ("found doot");
+					aLeftMostMethodTargetAST= aLeftMostMethodTargetAST.getLastChild();
+//					aLeftMostMethodTargetAST = aLeftMostMethodTargetAST.getLastChild();
+				}
+			}
+			if (aLeftMostMethodTargetAST == null) {
+				aTargetName = aCastType;
+			} else if (aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
 				aTargetName = aLeftMostMethodTargetAST.getFirstChild()
 						.getText() + "[]";
-			} else if (aLeftMostMethodTargetAST != null) {
+			} else  {
 				aTargetName = aLeftMostMethodTargetAST.getText();
-			} else {
-				aTargetName = aCastType;
-			}
+			} 
+//			 if (aLeftMostMethodTargetAST != null && aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
+//				aTargetName = aLeftMostMethodTargetAST.getFirstChild()
+//						.getText() + "[]";
+//			} else if (aLeftMostMethodTargetAST != null) {
+//				aTargetName = aLeftMostMethodTargetAST.getText();
+//			} else {
+//				aTargetName = aCastType;
+//			}
 			
 			// String aTargetName = aLeftMostMethodTargetAST.getText();
 //
@@ -957,7 +973,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					 aCallParts = longMethodName.split("\\.");
 
 //				String[] aCallParts = longMethodName.split("\\.");
-				if (aTargetName != null) {
+				if (aTargetName != null && isIdentifier(aTargetName)) {
 					aCallParts[0] = aTargetName;
 				}
 				}

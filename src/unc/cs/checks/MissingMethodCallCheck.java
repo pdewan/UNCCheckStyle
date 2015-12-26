@@ -90,7 +90,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 			for (CallInfo aCallInfo:aCalls ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
-//				int i = 0;
+				int i = 0;
 				Boolean matches = matches(anSTType, aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
 
 //				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);

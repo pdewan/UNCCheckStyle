@@ -118,10 +118,12 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			for (CallInfo aCall:methodsCalled) {
 				if (ComprehensiveVisitCheck.toShortTypeName(aCall.getCalledType()).
 						equals(ComprehensiveVisitCheck.toShortTypeName(getDeclaringClass()))) {
+//					int i = 0;
 					STMethod anSTMethod = aCall.getCalledMethod();
 					if (anSTMethod == null) {
-						System.err.println("Could not create local st method");
-						return null;
+						System.err.println("Could not create local st method, misguessed target type:" + aCall);
+						continue;
+//						return null;
 					} 
 					aList.add(anSTMethod);
 											

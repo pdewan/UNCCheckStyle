@@ -81,13 +81,21 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	}
 	
 	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
+		int i = 0;
 		if (matchSignature(aSpecifiedMethod, anActualMethod)) // check if there is a direct call by the specified method
 //		if (retVal)
 			return true;
 		// now go through the call graph and see if the specified method calls a method that matches the actual method
 		List<STMethod> aMatchingSpecifiedMethods = getMatchingMethods(anSTType, aSpecifiedMethod);
 		for (STMethod aRootMethod:aMatchingSpecifiedMethods) {
-			if (aRootMethod.callsInternally(anActualMethod))
+			if (aRootMethod == null)
+				continue;
+			Boolean callsInternally = aRootMethod.callsInternally(anActualMethod);
+			if (callsInternally == null) {
+				continue;
+			}
+			if (callsInternally)
+//			if (aRootMethod.callsInternally(anActualMethod))
 				return true;
 //			List<STMethod> aCalledMethods = aRootMethod.getLocalCallClosure();
 //			for (STMethod aCalledMethod:aCalledMethods) {
@@ -109,7 +117,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			aCaller = aCallerAndRest[0].trim();
 			aSignatureWithTarget = aCallerAndRest[1];
 		}
-//		int i = 0;
+		int i = 0;
 //		STMethod aCallingMethod = aCallingSTType.getDeclaredMethod(aCallInfo.getCaller(), aCallInfo.getCallerParameterTypes().toArray(new String[]{}));
 		STMethod aCallingMethod = aCallInfo.getCallingMethod();
 
@@ -165,14 +173,16 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		aSignature = aSignatureAndTarget[1].trim();
 		aSpecifiedTarget = aSignatureAndTarget[0].trim();
 		}
-		if (aCalledType.contains("]") || // array element
-				aCalledType.contains("[") ||
-				aCalledType.contains("(") ||// casts
-				aCalledType.contains(")"))
-//			return false;
-			return true; // assume the type is right, 
+//		if (aCalledType.contains("]") || // array element
+//				aCalledType.contains("[") ||
+//				aCalledType.contains("(") ||// casts
+//				aCalledType.contains(")"))
+////			return false;
+//			return true; // assume the type is right, 
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
-		return matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
+		Boolean result = matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
+		return result;
+//		return matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
 		
 	
 		
@@ -308,7 +318,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			 return aShortMethodName.matches(aSpecifiedMethod.getName());
 		 }
 		
-		
+		if (!isIdentifier(aTypeName)) { // (cast etc,could not match, assume internal call)
+			aTypeName = aSpecifiedTarget;
+		}
 		STType aTargetSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		if (aTargetSTType == null) {
 			return null;

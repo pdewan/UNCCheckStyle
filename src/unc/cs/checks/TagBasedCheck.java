@@ -564,6 +564,12 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
 		return true;
+	if (aShortClassName.contains("]") || // array element
+			aShortClassName.contains("[") ||
+			aShortClassName.contains("(") ||// casts
+			aShortClassName.contains(")"))
+//		return false;
+		return true; // assume the type is right, 
 	aDescriptor = aDescriptor.trim();
 //	if (aDescriptor.equals(MATCH_ANYTHING))
 //		return true;

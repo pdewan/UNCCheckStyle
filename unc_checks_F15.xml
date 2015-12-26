@@ -416,10 +416,9 @@
 				 @SayCommand = @BridgeScene!@say:String->*,			 
 				 @CommandList = Runnable!run:->void,
 				 @Parser = 
-				 	@parseCommand:*->Runnable |						
+				 	@parseCommandList#@parseCommand:*->Runnable |
 				 	@parseSay:*->Runnable |
 				 	@parseApproach:*->Runnable |						
-				 	@parseSay:*->Runnable |					
 				 	@parsePass:*->Runnable |						
 				 	@parseFail:*->Runnable |						
 				 	@parseRepeat:*->Runnable |						
