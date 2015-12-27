@@ -110,6 +110,9 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	}
 	
 	protected boolean computeIsSetter() {
+		if (getParameterTypes() == null) {
+			return false;
+		}
 		return getName() != null && getName().startsWith(SET) &&
 				getName().length() > SET.length() &
 				isPublic() &&
@@ -117,6 +120,9 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				isProcedure();
 	}
 	protected boolean computeIsGetter() {
+		if (getParameterTypes() == null) {
+			return false;
+		}
 		return getName() != null && getName().startsWith(GET) &&
 				getName().length() > GET.length() &&
 				isPublic() &&

@@ -260,6 +260,8 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		
 	}
 	protected static boolean isStarParameters(String[] aParameters) {
+		if (aParameters == null)
+			return true;
 		return aParameters.length == 1 && aParameters[0].equals(MATCH_ANYTHING);
 	}
 	static STMethod noMethod = new NoMethod();

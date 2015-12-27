@@ -159,6 +159,8 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 	}
 	protected Boolean checkDisallowedClassAllowedMethods(DetailAST aCalledMethod, String[] aCallParts, String aLongMethodName) {		
 		String aCalledClass = aCallParts[0];
+		if (!isIdentifier(aCalledClass))
+			return true; // we really do not know the class, so give benefit of doubt
 		Boolean aTypesMatch = methodCallContainedInSpecifications(aCallParts, disallowedCallsCollection, aCalledMethod);
 		if (aTypesMatch == null)
 			return null;
@@ -180,6 +182,7 @@ public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
 		// why do this check
 //		if (!checkTagsOfCurrentType())
 //			return true;
+		int i = 0;
 		String[] aCallParts = aCallInfo.getNormalizedCall();
 		String[] aNormalizedCallParts = aCallParts;
 		if (aCallParts.length > 2) { // cannot dissect it into a class 

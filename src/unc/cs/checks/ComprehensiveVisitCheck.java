@@ -742,6 +742,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public String lookupGlobal(String aVariable) {
+		if (aVariable.equals("this")) {
+			return fullTypeName; // short type name?
+		}
 		return typeScope.get(aVariable);
 	}
 
@@ -873,6 +876,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// String shortMethodName = null;
 		// if (ast.getType() == TokenTypes.METHOD_CALL) {
 		// FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
+		int i = 0;
 		currentMethodNameAST = getLastDescendent(ast);
 		String shortMethodName = currentMethodNameAST.getText();
 		String aCastType = null;
@@ -883,55 +887,77 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		if (aLeftMostMethodTargetAST != null) {
 			if (aLeftMostMethodTargetAST.getType() == TokenTypes.RPAREN) {
-				DetailAST anLParen = aLeftMostMethodTargetAST.getPreviousSibling();
+				DetailAST anLParen = aLeftMostMethodTargetAST
+						.getPreviousSibling();
 				DetailAST aTypeAST = anLParen.getFirstChild();
 				if (aTypeAST.getType() == TokenTypes.TYPE) {
-//					int i = 0;
-					// this is a hack, need to search down the tree for parens and find the first
+					// int i = 0;
+					// this is a hack, need to search down the tree for parens
+					// and find the first
 					// idnetifier or indexop in the tree
 					aCastType = aTypeAST.getFirstChild().getText();
 					DetailAST anRTypeParen = aTypeAST.getNextSibling();
 					DetailAST aCastExpression = anRTypeParen.getFirstChild();
 					aLeftMostMethodTargetAST = aCastExpression;
 
-					
 				}
 			}
-			if (aLeftMostMethodTargetAST != null && 
-					aLeftMostMethodTargetAST.getType() == TokenTypes.DOT) {
-//				DetailAST aFirstChild = aLeftMostMethodTargetAST.getFirstChild();
-				if (aLeftMostMethodTargetAST.getFirstChild().getText().equals("this")) {
-//					System.out.println ("found doot");
-					aLeftMostMethodTargetAST= aLeftMostMethodTargetAST.getLastChild();
-//					aLeftMostMethodTargetAST = aLeftMostMethodTargetAST.getLastChild();
+			if (aLeftMostMethodTargetAST != null) {
+				while ( aLeftMostMethodTargetAST.getType() == TokenTypes.METHOD_CALL) { // target is result of method call
+					DetailAST down = aLeftMostMethodTargetAST.getFirstChild();
+					if (down != null && down.getType() == TokenTypes.DOT)
+						aLeftMostMethodTargetAST = down.getFirstChild(); // go to next call
+					else
+						break;
 				}
+			}
+//			if (aLeftMostMethodTargetAST != null
+//					&& aLeftMostMethodTargetAST.getType() == TokenTypes.DOT) {
+//				// DetailAST aFirstChild =
+//				// aLeftMostMethodTargetAST.getFirstChild();
+//				if (aLeftMostMethodTargetAST.getFirstChild().getText()
+//						.equals("this")) {
+//					// System.out.println ("found doot");
+//					aLeftMostMethodTargetAST = aLeftMostMethodTargetAST
+//							.getLastChild();
+//					// aLeftMostMethodTargetAST =
+//					// aLeftMostMethodTargetAST.getLastChild();
+//				}
+//			}
+			// not syre we need this while with the previous code, but maybe public variables
+			if (aLeftMostMethodTargetAST != null) {
+				while (aLeftMostMethodTargetAST.getType() == TokenTypes.DOT) {
+					aLeftMostMethodTargetAST = aLeftMostMethodTargetAST.getFirstChild();
+				}
+				
 			}
 			if (aLeftMostMethodTargetAST == null) {
 				aTargetName = aCastType;
 			} else if (aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
 				aTargetName = aLeftMostMethodTargetAST.getFirstChild()
 						.getText() + "[]";
-			} else  {
+			} else {
 				aTargetName = aLeftMostMethodTargetAST.getText();
-			} 
-//			 if (aLeftMostMethodTargetAST != null && aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
-//				aTargetName = aLeftMostMethodTargetAST.getFirstChild()
-//						.getText() + "[]";
-//			} else if (aLeftMostMethodTargetAST != null) {
-//				aTargetName = aLeftMostMethodTargetAST.getText();
-//			} else {
-//				aTargetName = aCastType;
-//			}
-			
+			}
+			// if (aLeftMostMethodTargetAST != null &&
+			// aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
+			// aTargetName = aLeftMostMethodTargetAST.getFirstChild()
+			// .getText() + "[]";
+			// } else if (aLeftMostMethodTargetAST != null) {
+			// aTargetName = aLeftMostMethodTargetAST.getText();
+			// } else {
+			// aTargetName = aCastType;
+			// }
+
 			// String aTargetName = aLeftMostMethodTargetAST.getText();
-//
-//			if (isGlobal(aTargetName)) {
-//				List<CallInfo> aCalls = getVariableCalls(aTargetName);
-//				// CallInfo aCall = new ACallInfo(
-//				// currentMethodName, aNormalizedParts[0], aNormalizedParts[1],
-//				// aCallParameters, aNormalizedParts );
-//				aCalls.add(result);
-//			}
+			//
+			// if (isGlobal(aTargetName)) {
+			// List<CallInfo> aCalls = getVariableCalls(aTargetName);
+			// // CallInfo aCall = new ACallInfo(
+			// // currentMethodName, aNormalizedParts[0], aNormalizedParts[1],
+			// // aCallParameters, aNormalizedParts );
+			// aCalls.add(result);
+			// }
 		}
 		// aLeftMostMethodTargetAST = aMethodNameAST
 		// .getPreviousSibling();
@@ -967,20 +993,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				FullIdent aFullIdent = FullIdent.createFullIdentBelow(ast);
 				String longMethodName = aFullIdent.getText();
 				String[] aCallParts;
-				if (longMethodName.length() > 0 && !Character.isLetter(longMethodName.charAt(0))) {
-					aCallParts = new String[] {aTargetName, shortMethodName};
+				if (longMethodName.length() > 0
+						&& !Character.isLetter(longMethodName.charAt(0))) {
+					aCallParts = new String[] { aTargetName, shortMethodName };
 				} else {
-					 aCallParts = longMethodName.split("\\.");
+					aCallParts = longMethodName.split("\\.");
 
-//				String[] aCallParts = longMethodName.split("\\.");
-				if (aTargetName != null && isIdentifier(aTargetName)) {
-					aCallParts[0] = aTargetName;
-				}
+					// String[] aCallParts = longMethodName.split("\\.");
+					if (aTargetName != null && isIdentifier(aTargetName)) {
+						aCallParts[0] = aTargetName;
+					}
 				}
 				aNormalizedParts = toNormalizedClassBasedCall(aCallParts);
 			}
 		}
-		int i = 0;
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeName(aNormalizedLongName);
 		CallInfo result = new ACallInfo(currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
