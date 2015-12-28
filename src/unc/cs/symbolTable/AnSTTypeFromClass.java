@@ -270,6 +270,33 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 
 
+
+	static protected List<STNameable> emptyNameableList = new ArrayList();
+	@Override
+	public List<STNameable> getTypesInstantiated() {
+		// TODO Auto-generated method stub
+		return emptyNameableList;
+	}
+
+
+	List<STMethod> emptyMethodList = new ArrayList();
+
+	@Override
+	public List<STMethod> getInstantiatingMethods(String aTypeName) {
+		// TODO Auto-generated method stub
+		return emptyMethodList;
+	}
+
+
+
+
+	@Override
+	public boolean instantiatesType(String aShortOrLongName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+
 //	@Override
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;

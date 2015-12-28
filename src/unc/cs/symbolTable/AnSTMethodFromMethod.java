@@ -162,6 +162,16 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		return emptyMethodList;
 
 	}
+	@Override
+	public List<STNameable> getTypesInstantiated() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public boolean instantiatesType(String aShortOrLongName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 
 }

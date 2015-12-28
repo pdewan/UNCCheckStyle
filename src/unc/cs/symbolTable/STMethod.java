@@ -41,4 +41,6 @@ public interface STMethod extends STNameable{
 	void fillAllCallClosure(List<STMethod> aList);
 	List<STMethod> getAllCallClosure();
 	List<STMethod> getLocalCallClosure();
+	List<STNameable> getTypesInstantiated();
+	boolean instantiatesType(String aShortOrLongName);
 }

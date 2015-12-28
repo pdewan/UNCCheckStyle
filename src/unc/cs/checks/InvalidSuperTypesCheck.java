@@ -18,8 +18,8 @@ import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
-	public static final String MSG_KEY = "expectedSuperTypes";
+public  class InvalidSuperTypesCheck extends SuperTypesCheck {
+	public static final String MSG_KEY = "invalidSuperTypes";
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -27,14 +27,12 @@ public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
 //				TokenTypes.INTERFACE_DEF
 //				};
 //	}
-	public void setExpectedSuperTypes(String[] aSpecifications) {
-		setExpectedTypes(aSpecifications);
-//		setSpecifiedTypes(aSpecifications);
-
+	public void setInvalidSuperTypes(String[] aSpecifications) {
+		setSpecifiedTypes(aSpecifications);
 
 	}
 	protected boolean logOnNoMatch() {
-		return true;
+		return false;
 	}
 //	// this should be in an abstract type
 //	protected List<STNameable> getTypes(STType anSTType) {

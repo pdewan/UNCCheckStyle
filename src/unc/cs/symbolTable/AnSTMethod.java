@@ -31,6 +31,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	
 	protected List<STMethod> allMethodsCalled;
 	protected List<STMethod> allCallClosure;
+	protected List<STNameable> typesInstantiated;
 
 	
 	public  static final String GET = "get";
@@ -47,7 +48,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			STNameable[] aComputedTags,
 			boolean isAssignsToGlobal,
 //			String[][] aMethodsCalled
-			CallInfo[] aMethodsCalled
+			CallInfo[] aMethodsCalled,
+			List<STNameable> aTypesInstantiated
 			) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
@@ -71,6 +73,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			aCallInfo.setCallingMethod(this);
 		}
 		}
+		typesInstantiated = aTypesInstantiated;
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
@@ -118,7 +121,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			for (CallInfo aCall:methodsCalled) {
 				if (ComprehensiveVisitCheck.toShortTypeName(aCall.getCalledType()).
 						equals(ComprehensiveVisitCheck.toShortTypeName(getDeclaringClass()))) {
-//					int i = 0;
+					int i = 0;
 					STMethod anSTMethod = aCall.getCalledMethod();
 					if (anSTMethod == null) {
 						System.err.println("Could not create local st method, misguessed target type:" + aCall);
@@ -303,9 +306,25 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		public boolean isConstructor() {
 			return isConstructor;
 		}
+		@Override
+		public List<STNameable> getTypesInstantiated() {
+			return typesInstantiated;
+		}
 //		@Override
 //		public STType getDeclaringSTType() {
 //			return declaringSTType;
 //		}
+		@Override
+		public boolean instantiatesType (String aShortOrLongName) {
+			for (STNameable anInsantiatedNameable:typesInstantiated) {
+				String anInstantiatedType = 
+						ComprehensiveVisitCheck.toShortTypeName(anInsantiatedNameable.getName());
+				String anExpectedType =
+						ComprehensiveVisitCheck.toShortTypeName(aShortOrLongName);
+				if (anInstantiatedType.equals(anExpectedType))
+					return true;
+			}
+			return false;
+		}
 		
 }

@@ -101,11 +101,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodType,
     				currentMethodIsVisible,
     				currentMethodTags.toArray(dummyArray),
-    				currentMethodComputedTags.toArray(dummyArray),
-    			
+    				currentMethodComputedTags.toArray(dummyArray),    			
     				currentMethodAssignsToGlobalVariable,
 //    				methodsCalledByCurrentMethod.toArray(new String[0][0]));
-			        methodsCalledByCurrentMethod.toArray(new CallInfo[0]));
+			        methodsCalledByCurrentMethod.toArray(new CallInfo[0]),
+			        new ArrayList(typesInstantiatedByCurrentMethod));
 
     		if (currentMethodIsConstructor)
     			stConstructors.add(anSTMethod);
@@ -209,7 +209,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			dummyArray,
 	    			dummyArray,
 	    			new HashMap(),
-	    			new HashMap());
+	    			new HashMap(),
+	    			new ArrayList());
 
 //	    	anSTClass.introspect();
 //	    	anSTClass.findDelegateTypes();	    
@@ -257,7 +258,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			imports.toArray(dummyArray),
 	    			globalVariables.toArray(dummyArray),
 	    			new HashMap<>(globalVariableToCall),
-	    			new HashMap<>(globalVariableToType));
+	    			new HashMap<>(globalVariableToType),
+	    			new ArrayList<>(typesInstantiated));
 
 //	    	anSTClass.introspect();
 //	    	anSTClass.findDelegateTypes();	    

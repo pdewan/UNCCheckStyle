@@ -387,8 +387,12 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		public void setDeclaringSTType(STType declaringSTType) {
 			this.declaringSTType = declaringSTType;
 		}
-		
+		static List<STNameable> emptyNameableList = new ArrayList();
 
+		@Override
+		public List<STNameable> getTypesInstantiated() {
+			return emptyNameableList;
+		}
 //		@Override
 //		public boolean isParsedMethod() {
 //			return true;

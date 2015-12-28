@@ -18,34 +18,29 @@ import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
+public  class SuperTypesCheck extends ExpectedTypesCheck {
 	public static final String MSG_KEY = "expectedSuperTypes";
-//	@Override
-//	public int[] getDefaultTokens() {
-//		return new int[] {
-//				TokenTypes.CLASS_DEF,
-//				TokenTypes.INTERFACE_DEF
-//				};
-//	}
+	@Override
+	public int[] getDefaultTokens() {
+		return new int[] {
+				TokenTypes.CLASS_DEF,
+				TokenTypes.INTERFACE_DEF
+				};
+	}
 	public void setExpectedSuperTypes(String[] aSpecifications) {
 		setExpectedTypes(aSpecifications);
-//		setSpecifiedTypes(aSpecifications);
-
 
 	}
-	protected boolean logOnNoMatch() {
+	// this should be in an abstract type
+	protected List<STNameable> getTypes(STType anSTType) {
+		return anSTType.getAllSuperTypes();
+	}
+
+	@Override
+	boolean doCheck(STType anSTType) {
+		// TODO Auto-generated method stub
 		return true;
 	}
-//	// this should be in an abstract type
-//	protected List<STNameable> getTypes(STType anSTType) {
-//		return anSTType.getAllSuperTypes();
-//	}
-//
-//	@Override
-//	boolean doCheck(STType anSTType) {
-//		// TODO Auto-generated method stub
-//		return true;
-//	}
 	@Override
 	protected String msgKey() {
 		return MSG_KEY;

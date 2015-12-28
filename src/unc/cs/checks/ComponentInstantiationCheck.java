@@ -224,7 +224,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 //
 //}
 
-	void visitInstantiation(DetailAST ast) {
+	protected void visitInstantiation(DetailAST ast) {
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
 		if (doPendingCheck(ast, currentTree) == null) {

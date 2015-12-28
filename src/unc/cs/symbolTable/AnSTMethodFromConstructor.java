@@ -9,7 +9,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STMethod{
 	Constructor constructor;
-	static STNameable[] emptyList = {};
+	static STNameable[] emptyArray = {};
+
 	
 	public AnSTMethodFromConstructor(Constructor aMethod) {
 		super(null, aMethod.getName());
@@ -70,7 +71,7 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 
 	@Override
 	public STNameable[] getTags() {
-		return emptyList;
+		return emptyArray;
 	}
 
 	@Override
@@ -162,6 +163,11 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	public List<STMethod> getLocalCallClosure() {
 		return emptyMethodList;
 	}
+	@Override
+	public boolean instantiatesType(String aShortOrLongName) {
+		return false;
+	}
+	
 	
 
 }

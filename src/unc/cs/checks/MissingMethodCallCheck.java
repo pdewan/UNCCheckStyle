@@ -85,12 +85,12 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 			return null;
 		String[] aSpecifications = typeToSignaturesWithTargets.get(specifiedType);
 		boolean returnNull = false; 
+//		int i = 0;
 		for (String aSpecification:aSpecifications) {
 			boolean found = false;
 			for (CallInfo aCallInfo:aCalls ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
-				int i = 0;
 				Boolean matches = matches(anSTType, aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
 
 //				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);

@@ -32,6 +32,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> globalVariableToType = new HashMap();
 	protected List<CallInfo> methodsCalled = new ArrayList();
+	protected List<STNameable> typesInstantiated;
+
 
 //	protected Set<String> delegates = new HashSet();
 	
@@ -56,7 +58,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] anImports,
 			STNameable[] aFields,
 			Map<String, List<CallInfo>> aGlobalVariableToCall,
-			Map<String, String> aGlobalVariableToType
+			Map<String, String> aGlobalVariableToType,
+			List<STNameable> aTypesInstantiated
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
@@ -85,6 +88,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 				methodsCalled.addAll(Arrays.asList(aConstructor.getMethodsCalled()));
 			}
 		}
+		typesInstantiated = aTypesInstantiated;
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
@@ -794,5 +798,37 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public List<CallInfo> getMethodsCalled() {
 		return methodsCalled;
+	}
+	@Override
+	public List<STNameable> getTypesInstantiated() {
+		return typesInstantiated;
+	}
+	@Override
+	public boolean instantiatesType (String aShortOrLongName) {
+		for (STNameable anInsantiatedNameable:typesInstantiated) {
+			String anInstantiatedType = 
+					ComprehensiveVisitCheck.toShortTypeName(anInsantiatedNameable.getName());
+			String anExpectedType =
+					ComprehensiveVisitCheck.toShortTypeName(aShortOrLongName);
+			if (anInstantiatedType.equals(anExpectedType))
+				return true;
+		}
+		return false;
+	}
+	@Override
+	public List<STMethod> getInstantiatingMethods(String aTypeName) {
+		List<STMethod> result = new ArrayList();
+		STMethod[] anAllMethods = getMethods();
+		if (anAllMethods == null)
+			return null;
+		for (STMethod aMethod:anAllMethods) {
+			if (aMethod.instantiatesType(aTypeName)) {
+				result.add(aMethod);
+			}
+		}
+		if (instantiatesType(aTypeName)) {
+			result.add(NoMethod.getInstance());
+		}
+		return result;
 	}
 }

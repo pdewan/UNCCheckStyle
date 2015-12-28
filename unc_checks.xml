@@ -348,6 +348,22 @@
 				@CustomSwingTextFieldFactory=SwingTextFieldFactory,
 				" />
 		</module>
+			<module name="InvalidSuperTypes">
+			<property name="invalidSuperTypes"
+				value="
+				@BridgeSceneController= 
+					@ObservableBridgeScenePainter | 
+					@InheritingBridgeScenePainter,	
+				@InheritingBridgeScenePainter= @BridgeSceneController,
+				@ObservableBridgeScenePainter = @BridgeSceneController,
+				@STRING_PATTERN= @IMAGE_PATTERN, 
+				@IMAGE_PATTERN = @STRING_PATTERN,
+				@LINE_PATTERN = @STRING_PATTERN,
+				@STRING_PATTERN = @LINE_PATTERN,
+				@IMAGE_PATTERN = @LINE_PATTERN
+				
+				" />
+		</module>
 
 		<module name="MissingMethodCall">
 			<property name="expectedCalls"
@@ -449,9 +465,9 @@
 				 @SayCommand = @BridgeScene!@say:String->*,			 
 				 @CommandList = Runnable!run:->void,
 				 @Parser = 
-				 	@setCommandText#ScannerBean!setScannedString:String->void |		
-				 	@setCommandText#ScannerBean!getTokenList:String->void |	 
-				 	@setCommandText#ScannerBean!getTokens:String->void |					 			 
+				 	@setCommandText#@ScannerBean!setScannedString:String->void |		
+				 	@setCommandText#@ScannerBean!getTokenList:String->void |	 
+				 	@setCommandText#@ScannerBean!getTokens:String->void |					 			 
 				 	@setCommandText#@parseCommandList:*->Runnable |				 
 				 	@parseCommandList#@parseCommand:*->Runnable |
 				 	@parseCommand#@parseSay:*->Runnable |

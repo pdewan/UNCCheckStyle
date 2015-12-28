@@ -29,15 +29,28 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 
 	
 	// this should be in an abstract class
-		public void setExpectedTypesOfType(String aPattern) {
+		public void setSpecifiedTypesOfType(String aPattern) {
 			String[] extractTypeAndInterfaces = aPattern.split(TYPE_SEPARATOR);
 			String aType = extractTypeAndInterfaces[0].trim();
-			String[] anInterfaces = extractTypeAndInterfaces[1].split(SET_MEMBER_SEPARATOR);
-			for (int i = 0; i < anInterfaces.length; i++) {
-				anInterfaces[i] = anInterfaces[i].trim();
+			String[] aTypes = extractTypeAndInterfaces[1].split(SET_MEMBER_SEPARATOR);
+			for (int i = 0; i < aTypes.length; i++) {
+				aTypes[i] = aTypes[i].trim();
 			}
-			List<String> anInterfaceList = Arrays.asList(anInterfaces);
-			typeToTypes.put(aType, anInterfaceList);
+			List<String> aTypeList = Arrays.asList(aTypes);
+			List<String> anExistingList = typeToTypes.get(aType);
+			
+			if (anExistingList == null) {
+				typeToTypes.put(aType, aTypeList);
+			} else {
+				List<String> aNewList = new ArrayList();
+				aNewList.addAll(aTypeList);
+				aNewList.addAll(anExistingList);
+				typeToTypes.put(aType, aNewList);
+
+//				anExistingList.addAll(aTypeList);
+				
+			}
+				
 		}
 
 	/*
@@ -48,13 +61,19 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	 */
 	
 	public void setExpectedTypes(String[] aSpecifications) {
-		for (String aSpecification : aSpecifications) {
-			setExpectedTypesOfType(aSpecification);
-		}
+//		for (String aSpecification : aSpecifications) {
+//			setSpecifiedTypesOfType(aSpecification);
+//		}
+		setSpecifiedTypes(aSpecifications);
 
 	}
 	
+	public void setSpecifiedTypes(String[] aSpecifications) {
+		for (String aSpecification : aSpecifications) {
+			setSpecifiedTypesOfType(aSpecification);
+		}
 
+	}
 	
 	protected void logTypeNotMatched(DetailAST aTreeAST, String aType) {
 //		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
@@ -70,20 +89,34 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //		}
 
 	}
+	
+	protected boolean logOnNoMatch() {
+		return true;
+	}
 
 	
 	public Boolean matchType(List<String> aSpecifications,
 			List<String> aTypes, DetailAST aTreeAST) {
-		boolean retVal = true;
+		Boolean retVal = true;
+		
 		for (String aSpecification : aSpecifications) {
 		
 //			String[] aPropertiesPath = aPropertySpecification.split(".");	
 			Boolean hasMatched = matchType(aSpecification, aTypes);
-			if (hasMatched == null)
-				return null;
-			if (!hasMatched) {
+			if (hasMatched == null) {
+//				return null;
+				retVal = null; // means we will try again later
+				continue;
+
+			}
+//			if (!hasMatched) {
+//				logTypeNotMatched(aTreeAST, aSpecification);
+//				retVal = false;
+//			}
+			if ((!hasMatched && logOnNoMatch()) || (hasMatched && !logOnNoMatch())) {
 				logTypeNotMatched(aTreeAST, aSpecification);
-				retVal = false;
+				if (retVal != null)
+					retVal = false;
 			}
 		}
 		return retVal;
@@ -140,6 +173,9 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 			return true; // the constraint does not apply to us
 		
 		List<String> aSpecifiedTypes = typeToTypes.get(aSpecifiedType);
+//		if (aSpecifiedType.equals("ABridgeSceneController")) {
+//			System.out.println ("found ABridgeSceneController")
+//		}
 		return matchTypes(anSTType, aSpecifiedTypes, aTree);
 	}
 

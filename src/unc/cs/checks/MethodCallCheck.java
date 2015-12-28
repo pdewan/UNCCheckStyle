@@ -80,32 +80,32 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return !returnValueOnMatch();
 	}
 	
-	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
-		int i = 0;
-		if (matchSignature(aSpecifiedMethod, anActualMethod)) // check if there is a direct call by the specified method
-//		if (retVal)
-			return true;
-		// now go through the call graph and see if the specified method calls a method that matches the actual method
-		List<STMethod> aMatchingSpecifiedMethods = getMatchingMethods(anSTType, aSpecifiedMethod);
-		for (STMethod aRootMethod:aMatchingSpecifiedMethods) {
-			if (aRootMethod == null)
-				continue;
-			Boolean callsInternally = aRootMethod.callsInternally(anActualMethod);
-			if (callsInternally == null) {
-				continue;
-			}
-			if (callsInternally)
-//			if (aRootMethod.callsInternally(anActualMethod))
-				return true;
-//			List<STMethod> aCalledMethods = aRootMethod.getLocalCallClosure();
-//			for (STMethod aCalledMethod:aCalledMethods) {
-//				if (anActualMethod == aCalledMethod)
-//					return true;
-//			}			
-		}
-		return false;
-
-	}
+//	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
+//		int i = 0;
+//		if (matchSignature(aSpecifiedMethod, anActualMethod)) // check if there is a direct call by the specified method
+////		if (retVal)
+//			return true;
+//		// now go through the call graph and see if the specified method calls a method that matches the actual method
+//		List<STMethod> aMatchingSpecifiedMethods = getMatchingMethods(anSTType, aSpecifiedMethod);
+//		for (STMethod aRootMethod:aMatchingSpecifiedMethods) {
+//			if (aRootMethod == null)
+//				continue;
+//			Boolean callsInternally = aRootMethod.callsInternally(anActualMethod);
+//			if (callsInternally == null) {
+//				continue;
+//			}
+//			if (callsInternally)
+////			if (aRootMethod.callsInternally(anActualMethod))
+//				return true;
+////			List<STMethod> aCalledMethods = aRootMethod.getLocalCallClosure();
+////			for (STMethod aCalledMethod:aCalledMethods) {
+////				if (anActualMethod == aCalledMethod)
+////					return true;
+////			}			
+//		}
+//		return false;
+//
+//	}
 	
 	protected Boolean matches (STType aCallingSTType, String aSpecifier, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
@@ -192,107 +192,107 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			log(ast, aTreeAST, specifiedType + " = " + matchedSignature);
 			
 		}
-	public Boolean matchSignature(
-			STMethod aSpecification, STMethod aMethod) {
-		variablesAdded.clear();
-		String aReturnType = aSpecification.getReturnType();
-		STNameable[] typeTags = null;
-		if (aReturnType != null && aReturnType.startsWith(TAG_STRING)) {
-			
-			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
-			if (aReturnSTType == null)
-				return null;
-			typeTags = aReturnSTType.getComputedTags();
-		}
-		
-		if (aMethod == null) {
-			System.err.println("Null method name");
-			return true;
-		}
-		
-		Boolean retVal  = 
-//				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
-				matchesNameVariableOrTag(
-						aSpecification.getName(), 
-						aMethod.getName(), 
-						aMethod.getComputedTags()) &&
-				(aReturnType== null ||
-				matchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
-
-//				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags)
-				);
-				
-		if (!retVal) {
-			backTrackUnification();
-			return false;
-		}
-		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
-		String[] aMethodParameterTypes = aMethod.getParameterTypes();
-		
-		if (aSpecificationParameterTypes == null)
-			return true;
-		if (aSpecificationParameterTypes.length == 1) {
-			if (aSpecificationParameterTypes[0].equals(MATCH_ANYTHING))
-				return true;
-		}
-		if (aSpecificationParameterTypes.length != aMethodParameterTypes.length) {
-			return false;
-		}
-		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
-			
-			String aParameterType = aSpecificationParameterTypes[i];
-
-			STNameable[] parameterTags =null;
-			if (aParameterType.startsWith(TAG_STRING)) {
-				
-				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
-				if (aParameterSTType == null)
-					return null;
-				parameterTags = aParameterSTType.getComputedTags();
-			}
-			
-			if (!matchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
-//				backTrackUnification();
-				return false;
-			}
-		}
-		return true;		
-		
-	}
+//	public Boolean matchSignature(
+//			STMethod aSpecification, STMethod aMethod) {
+//		variablesAdded.clear();
+//		String aReturnType = aSpecification.getReturnType();
+//		STNameable[] typeTags = null;
+//		if (aReturnType != null && aReturnType.startsWith(TAG_STRING)) {
+//			
+//			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
+//			if (aReturnSTType == null)
+//				return null;
+//			typeTags = aReturnSTType.getComputedTags();
+//		}
+//		
+//		if (aMethod == null) {
+//			System.err.println("Null method name");
+//			return true;
+//		}
+//		
+//		Boolean retVal  = 
+////				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
+//				matchesNameVariableOrTag(
+//						aSpecification.getName(), 
+//						aMethod.getName(), 
+//						aMethod.getComputedTags()) &&
+//				(aReturnType== null ||
+//				matchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
+//
+////				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags)
+//				);
+//				
+//		if (!retVal) {
+//			backTrackUnification();
+//			return false;
+//		}
+//		String[] aSpecificationParameterTypes = aSpecification.getParameterTypes();
+//		String[] aMethodParameterTypes = aMethod.getParameterTypes();
+//		
+//		if (aSpecificationParameterTypes == null)
+//			return true;
+//		if (aSpecificationParameterTypes.length == 1) {
+//			if (aSpecificationParameterTypes[0].equals(MATCH_ANYTHING))
+//				return true;
+//		}
+//		if (aSpecificationParameterTypes.length != aMethodParameterTypes.length) {
+//			return false;
+//		}
+//		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
+//			
+//			String aParameterType = aSpecificationParameterTypes[i];
+//
+//			STNameable[] parameterTags =null;
+//			if (aParameterType.startsWith(TAG_STRING)) {
+//				
+//				STType aParameterSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aParameterType.substring(1));
+//				if (aParameterSTType == null)
+//					return null;
+//				parameterTags = aParameterSTType.getComputedTags();
+//			}
+//			
+//			if (!matchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
+////				backTrackUnification();
+//				return false;
+//			}
+//		}
+//		return true;		
+//		
+//	}
 	protected static boolean isStarParameters(String[] aParameters) {
 		if (aParameters == null)
 			return true;
 		return aParameters.length == 1 && aParameters[0].equals(MATCH_ANYTHING);
 	}
 	static STMethod noMethod = new NoMethod();
-	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
-		List<STMethod> result = new ArrayList();
-		STMethod[] aMethods = aTargetSTType.getMethods();
-		if (aMethods == null)
-			return null;
-		boolean hadNullMatch = false;
-		for (STMethod anSTMethod:aMethods) {
-			Boolean aMatch = matchSignature(aSpecifiedMethod, anSTMethod);
-			if (aMatch == null) {
-				hadNullMatch = true;
-				continue;
-			}
-				
-//			if (!matchSignature(aSpecifiedMethod, anSTMethod))
-
-			if (!aMatch)
-				continue;
-			result.add(anSTMethod);
-//			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
-//					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
-//				return hasTag(anSTMethod, aSpecifiedMethod.getName());
+//	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
+//		List<STMethod> result = new ArrayList();
+//		STMethod[] aMethods = aTargetSTType.getMethods();
+//		if (aMethods == null)
+//			return null;
+//		boolean hadNullMatch = false;
+//		for (STMethod anSTMethod:aMethods) {
+//			Boolean aMatch = matchSignature(aSpecifiedMethod, anSTMethod);
+//			if (aMatch == null) {
+//				hadNullMatch = true;
+//				continue;
 //			}
-		}
-		if (hadNullMatch)
-			return null; // either way we do not know if something bad happened
-		return result;
-		
-	}
+//				
+////			if (!matchSignature(aSpecifiedMethod, anSTMethod))
+//
+//			if (!aMatch)
+//				continue;
+//			result.add(anSTMethod);
+////			if (anSTMethod.getName().equals(aCallInfo.getCalleee()) && 
+////					anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) {
+////				return hasTag(anSTMethod, aSpecifiedMethod.getName());
+////			}
+//		}
+//		if (hadNullMatch)
+//			return null; // either way we do not know if something bad happened
+//		return result;
+//		
+//	}
 	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
