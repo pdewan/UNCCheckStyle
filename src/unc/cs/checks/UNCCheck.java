@@ -1,6 +1,8 @@
 package unc.cs.checks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ui.console.ConsolePlugin;
@@ -19,8 +21,10 @@ public abstract class UNCCheck extends Check{
 	protected static boolean errorOccurred;
 	public static final String ERROR_KEY = "checkStyleError";
 	public static final String CONSOLE_NAME = "UNCChecks";
-	protected MessageConsole console;
+	protected MessageConsole console;	
 	protected boolean notInPlugIn;
+	protected boolean deferLogging;
+	protected List<LogObject> log = new ArrayList();
 	  protected MessageConsole findConsole() {
 		  if (notInPlugIn)
 			  return null;
@@ -58,12 +62,16 @@ public abstract class UNCCheck extends Check{
 	   }
 
 	public final void extendibleLog(int line, String key, Object... args) {
+		if (isDeferLogging()) {
+    		log.add(new ALogObject(line, -1, key, args));
+    	} else {	
 //		System.out.println("key:" + key);
 		try {
         log(line, key, args);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+    	}
     }
 	
 	public abstract void doVisitToken(DetailAST ast);
@@ -176,14 +184,42 @@ public abstract class UNCCheck extends Check{
 			
 		}
 	}
+	
+	protected boolean isDeferLogging() {
+		return deferLogging;
+	}
 
+	protected void deferLogging() {
+		deferLogging = true;
+	}
+	protected void flushLogAndResumeLogging() {
+		deferLogging = false;
+		for (LogObject aLogObject:log) {
+			extendibleLog(aLogObject.getLine(),  aLogObject.getColumn(),  aLogObject.getKey(), aLogObject.getArgs());
+		}
+		log.clear();
+	}
+	protected void clearLogAndResumeLogging() {
+		deferLogging = false;
+		log.clear();
+		
+	}
 
 
     public final void extendibleLog(int lineNo, int colNo, String key,
             Object... args) {
 //		System.out.println("key:" + key);
-
+    	if (colNo < 0) {
+    		extendibleLog(lineNo, key, args);
+    		return;
+    	}
+    	if (isDeferLogging()) {
+    		log.add(new ALogObject(lineNo, colNo, key, args));
+    	} else {	
+				
+				
         log(lineNo, colNo, key, args);
+    	}
     }
     protected  abstract String msgKey();
     public static boolean isPublicAndInstance(DetailAST methodOrVariableDef) {

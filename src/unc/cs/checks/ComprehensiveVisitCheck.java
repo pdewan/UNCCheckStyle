@@ -279,12 +279,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		
 		Boolean retVal  = 
 //				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length &&
-				matchesNameVariableOrTag(
+				unifyingMatchesNameVariableOrTag(
 						aSpecification.getName(), 
 						aMethod.getName(), 
 						aMethod.getComputedTags()) &&
 				(aReturnType== null ||
-				matchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
+				unifyingMatchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
 
 //				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags)
 				);
@@ -318,7 +318,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				parameterTags = aParameterSTType.getComputedTags();
 			}
 			
-			if (!matchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
+			if (!unifyingMatchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
 //				backTrackUnification();
 				return false;
 			}
@@ -356,7 +356,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
 		int i = 0;
-		if (matchSignature(aSpecifiedMethod, anActualMethod)) // check if there is a direct call by the specified method
+		Boolean aMatch = matchSignature(aSpecifiedMethod, anActualMethod);
+		if (aMatch == null) {
+			return null;
+		}
+		if (aMatch) // check if there is a direct call by the specified method
 //		if (retVal)
 			return true;
 		// now go through the call graph and see if the specified method calls a method that matches the actual method
@@ -1482,8 +1486,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				specificationVariablesToUnifiedValues.clear();
 				// System.out.println ("Doing pending check: " +
 				// getName(getEnclosingTypeDeclaration(aPendingCheck)));
-				if (doPendingCheck(aPendingCheck, aPendingAST) != null)
+				deferLogging();
+				if (doPendingCheck(aPendingCheck, aPendingAST) != null) {
 					aPendingChecks.remove(aPendingCheck);
+					flushLogAndResumeLogging();
+				} else {
+					clearLogAndResumeLogging();
+				}
 
 			}
 		}
@@ -1493,13 +1502,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
 		specificationVariablesToUnifiedValues.clear();
+		deferLogging();
 		if (doPendingCheck(ast, currentTree) == null) {
+			clearLogAndResumeLogging();
 			// System.out.println ("added to pending checks:" +
 			// getName(getEnclosingTypeDeclaration(ast)));
 			List<DetailAST> aPendingChecks = pendingChecks();
 			if (!aPendingChecks.contains(ast))
 				aPendingChecks.add(ast);
 			// pendingChecks().add(ast);
+		} else {
+			flushLogAndResumeLogging();
 		}
 
 		// if (isMatchingClassName(ident.getText())) {
@@ -1691,7 +1704,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		for (String aPrefix : aPrefixes) {
 			String[] aPrefixParts = aPrefix.split(TYPE_SEPARATOR);
 			if ((aPrefixParts.length == 2)
-					&& !matchesType(aPrefixParts[0], aSourceClassName))
+					&& !matchesTypeUnifying(aPrefixParts[0], aSourceClassName))
 				continue; // not relevant
 			String aTruePrefix = aPrefixParts.length == 2 ? aPrefixParts[1]
 					: aPrefix;
@@ -1708,7 +1721,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			String[] aMemberParts = aMember.split(TYPE_SEPARATOR);
 			// if ((aMemberParts.length == 2) && !matchesMyType(aMemberParts[0],
 			// aSourceClassName))
-			Boolean match = matchesType(aMemberParts[0], aSourceClassName);
+			Boolean match = matchesTypeUnifying(aMemberParts[0], aSourceClassName);
 			if (match == null) {
 				return null;
 			}

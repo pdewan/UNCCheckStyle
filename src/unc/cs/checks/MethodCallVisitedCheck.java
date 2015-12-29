@@ -314,14 +314,14 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 			String anActualDestinationType, DetailAST aCallAST) {
 		String aSourceTypeName = this
 				.getName(getEnclosingTypeDeclaration(aCallAST));
-		Boolean aSourceTypeMatches = matchesType(aSourceTypeSpecification,
+		Boolean aSourceTypeMatches = matchesTypeUnifying(aSourceTypeSpecification,
 				aSourceTypeName);
 		if (aSourceTypeMatches == null) { // this should never occur
 			return null;
 		}
 		if (!aSourceTypeMatches)
 			return false;
-		Boolean aDestinationTypeMatches = matchesType(
+		Boolean aDestinationTypeMatches = matchesTypeUnifying(
 				aDestinationTypeSpecification, anActualDestinationType);
 		if (aDestinationTypeMatches == null) {
 			return null;
@@ -341,7 +341,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 			return true;
 		if (aMethodSpecification.indexOf(TAG_STRING) == -1)
 //			return aMethodSpecification.equals(aShortMethodName);
-			return matchesNameVariableOrTag(aMethodSpecification, aShortMethodName, null);
+			return unifyingMatchesNameVariableOrTag(aMethodSpecification, aShortMethodName, null);
 		
 		String aSpecificationTag = aMethodSpecification.substring(1);
 		STType aTypeST = SymbolTableFactory.getOrCreateSymbolTable()

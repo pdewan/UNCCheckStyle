@@ -220,8 +220,8 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		Boolean retVal  = 
 				(isMatchAnyting(aSpecification.getParameterTypes()) ||
 				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length) &&
-				matchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
-				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
+				unifyingMatchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
+				unifyingMatchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
 				
 		if (!retVal) {
 			backTrackUnification();
@@ -270,7 +270,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 				parameterTags = aParameterSTType.getComputedTags();
 			}
 			
-			if (!matchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
+			if (!unifyingMatchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
 				backTrackUnification();
 				return false;
 			}

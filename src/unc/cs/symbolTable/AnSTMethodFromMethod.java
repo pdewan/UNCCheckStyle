@@ -168,7 +168,7 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		return null;
 	}
 	@Override
-	public boolean instantiatesType(String aShortOrLongName) {
+	public Boolean instantiatesType(String aShortOrLongName) {
 		// TODO Auto-generated method stub
 		return false;
 	}

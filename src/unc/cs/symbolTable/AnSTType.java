@@ -804,14 +804,18 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		return typesInstantiated;
 	}
 	@Override
-	public boolean instantiatesType (String aShortOrLongName) {
+	public Boolean instantiatesType (String aShortOrLongName) {
 		for (STNameable anInsantiatedNameable:typesInstantiated) {
 			String anInstantiatedType = 
 					ComprehensiveVisitCheck.toShortTypeName(anInsantiatedNameable.getName());
 			String anExpectedType =
 					ComprehensiveVisitCheck.toShortTypeName(aShortOrLongName);
-			if (anInstantiatedType.equals(anExpectedType))
-				return true;
+//			if (anInstantiatedType.equals(anExpectedType))
+//				return true;
+			Boolean result = ComprehensiveVisitCheck.matchesType(anExpectedType, anInstantiatedType);
+			if (result == null)
+				return null;
+			return result;
 		}
 		return false;
 	}
@@ -821,12 +825,27 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		STMethod[] anAllMethods = getMethods();
 		if (anAllMethods == null)
 			return null;
-		for (STMethod aMethod:anAllMethods) {
-			if (aMethod.instantiatesType(aTypeName)) {
+		STMethod[] anAllConstructors = getDeclaredConstructors();
+		if (anAllConstructors == null)
+			return null;
+		List<STMethod> aMethodsAndConstructors = new ArrayList();
+		aMethodsAndConstructors.addAll(Arrays.asList(anAllMethods));
+		aMethodsAndConstructors.addAll(Arrays.asList(anAllConstructors));
+		for (STMethod aMethod:aMethodsAndConstructors) {
+			Boolean instantiates = aMethod.instantiatesType(aTypeName);
+			if (instantiates == null)
+				return null;
+//			if (aMethod.instantiatesType(aTypeName)) {
+			if (instantiates) {
+
 				result.add(aMethod);
 			}
 		}
-		if (instantiatesType(aTypeName)) {
+		int i = 0;
+		Boolean instantiates = instantiatesType(aTypeName);
+		if (instantiates == null)
+			return null;
+		if (instantiates) {
 			result.add(NoMethod.getInstance());
 		}
 		return result;

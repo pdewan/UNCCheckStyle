@@ -75,5 +75,5 @@ public interface STType extends STNameable{
 	List<CallInfo> getMethodsCalled();
 	List<STNameable> getTypesInstantiated();
 	List<STMethod> getInstantiatingMethods(String aTypeName);
-	boolean instantiatesType(String aShortOrLongName);
+	Boolean instantiatesType(String aShortOrLongName);
 }

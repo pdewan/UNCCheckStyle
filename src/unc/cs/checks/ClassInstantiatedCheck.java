@@ -49,13 +49,8 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 
 	}
 
-	/*
-	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int
-	 * |Height:int,
-	 * 
-	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
-	 */
-	public void setExpectedInstantiations(String[] aPatterns) {
+	
+	public void setInstantiations(String[] aPatterns) {
 		for (String aPattern : aPatterns) {
 			setSpecificationsOfType(aPattern);
 		}
@@ -64,17 +59,17 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 	protected String msgKey() {
 		return MSG_KEY;
 	}
-    // "fail" if method matches
 	
 	
 	
 	String specifiedType; // was global in pending check
 	
-	
+	protected boolean logOnNoMatch() {
+		return true;
+	}
 	
 // move to super type at some points
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-
 		specifiedType = null;
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
@@ -92,49 +87,71 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 		boolean returnNull = false; 
 		boolean returnValue = true;
 		for (String aSpecification:aSpecifications) {
+//			int i = 0;
 			String aCaller = null;
 			STMethod aCallerSpecifiedMethod = null;
 			String aType;
 			String[] aCallerAndType = aSpecification.split(CALLER_TYPE_SEPARATOR);
 			if (aCallerAndType.length == 2) {
-				aCaller = aCallerAndType[0];
-				aType = aCallerAndType[1];
+				aCaller = aCallerAndType[0].trim();
+				aType = aCallerAndType[1].trim();
 				aCallerSpecifiedMethod = signatureToMethod(aCaller);
 			} else {
 				aCaller = null;
-				aType = aSpecification;
+				aType = aSpecification.trim();
 			}
-			List<STMethod> anInstantiatingMethods = anSTType.getInstantiatingMethods(specifiedType);
-			if (anInstantiatingMethods == null) {
+			List<STMethod> anInstantiatingMethods = anSTType.getInstantiatingMethods(aType);
+			if (anInstantiatingMethods == null || anInstantiatingMethods.contains(null)) {
 				returnNull = true;
 				
 				continue;
 //				return null; // should never happen
 			}
-			if (anInstantiatingMethods.isEmpty()) {
+			if (anInstantiatingMethods.isEmpty() && logOnNoMatch()) {
 				returnValue = false;
-				log(anAST, aTree, aSpecification);
+				log(anAST, aTree, anSTType.getName(), aType);
+				continue;
+			} else if (anInstantiatingMethods.isEmpty() && !logOnNoMatch()) {
+				// no instantiations, so success
+				continue;
 			}
-			if (aCaller == null)
-				return true;
-			if (anInstantiatingMethods.size() > 0)
-				log(anAST, aTree, aSpecification);
+			// so we know it is not empty now
+			if (aCaller == null && logOnNoMatch()) 
+				// we know it is not empty and caller is not specified, so success
+				continue;
+			
+			if (aCaller == null && !logOnNoMatch()) {
+				// not empty, caller is not specified, so failure
+				returnValue = false;
+				log(anAST, aTree, anSTType.getName(), aType);
+				continue;
+			}
+			if (anInstantiatingMethods.size() != 1 && logOnNoMatch()) {
+				// instantiated by more than one method, so failure if logOnNoMatch
+				log(anAST, aTree, anSTType.getName()+"." + aCaller, aType);
+				continue;
+			}
+			
+			
 			STMethod anInstiatingMethod = anInstantiatingMethods.get(0);
-			if (!matchesCallingMethod(anSTType, aCallerSpecifiedMethod, anInstiatingMethod)) {
-				log(anAST, aTree, aSpecification);
+			Boolean aMatch = matchesCallingMethod(anSTType, aCallerSpecifiedMethod, anInstiatingMethod);
+			if (aMatch == null) {
+				returnNull = true;
+				continue;
 			}
+			if (!aMatch && logOnNoMatch() || aMatch && !logOnNoMatch()) {
+				log(anAST, aTree, anSTType.getName() + "." + aCaller, aType );
+			} 
 		}
-		if (returnNull)
+		if (returnNull) {
+//			flushLog();
 			return null;
+		}
 		return returnValue;
 	}
 	
 	public void doFinishTree(DetailAST ast) {
-		// STType anSTType =
-		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
-		// for (STMethod aMethod: anSTType.getMethods()) {
-		// visitMethod(anSTType, aMethod);
-		// }
+		
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
 

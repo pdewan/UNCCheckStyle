@@ -309,7 +309,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && aTypeName.matches(aSpecifiedTarget); 
 		 }
 //		 System.out.println ("Temp");
-		 Boolean matchesType = matchesType(aSpecifiedTarget, aTypeName);
+		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);
 		 if (matchesType == null)
 			 return null;
 		 if (!matchesType) {

@@ -164,7 +164,7 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		return emptyMethodList;
 	}
 	@Override
-	public boolean instantiatesType(String aShortOrLongName) {
+	public Boolean instantiatesType(String aShortOrLongName) {
 		return false;
 	}
 	

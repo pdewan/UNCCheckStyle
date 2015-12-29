@@ -259,6 +259,34 @@
 				
 				" />
 		</module>
+			<module name="ExpectedClassInstantiations">
+			<property name="instantiations"
+				value="
+				
+				@SingletonsCreator =
+					@scannerFactoryMethod:->@ScannerBean#@ScannerBean |
+					@parserFactoryMethod:->@Parser#@Parser |
+					@bridgeSceneFactoryMethod:->@BridgeScene#@BridgeScene |
+					@avatarTableFactoryMethod:->@Table#@Table |
+					@commandInterpreterFactoryMethod:->@CommandInterpreter#@CommandInterpreter |
+					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager#ABroadcastingClearanceManager, 
+				
+				" />
+		</module>
+			<module name="InvalidClassInstantiations">
+			<property name="instantiations"
+				value="
+				
+				* =
+					@ScannerBean |
+					@Parser |
+					@BridgeScene |
+					@Table |
+					@CommandInterpreter |
+					ABroadcastingClearanceManager 
+				
+				" />
+		</module>
 		<module name="ExpectedDeclaredSignatures">
 			<property name="expectedSignatures"
 				value="
@@ -508,6 +536,8 @@
 
 
 		<module name="FunctionAssignsGlobal">
+			<property name="includeTypeTags" value="*" />
+			<property name="excludeTypeTags" value="@SingletonsCreator" />
 			<property name="excludeMethodTags"
 				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*), parse(.*)" />
 

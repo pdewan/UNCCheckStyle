@@ -127,7 +127,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchType(
 			String aSpecification, List<String> aTypes) {
 		for (String aMethod : aTypes) {
-			Boolean hasMatched = matchesType(aSpecification, aMethod);
+			Boolean hasMatched = matchesTypeUnifying(aSpecification, aMethod);
 			if (hasMatched == null)
 				return null;
 			if (hasMatched)

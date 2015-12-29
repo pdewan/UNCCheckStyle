@@ -262,13 +262,11 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 
-
 	@Override
 	public List<CallInfo> getMethodsCalled() {
 		// TODO Auto-generated method stub
 		return new ArrayList();
 	}
-
 
 
 	static protected List<STNameable> emptyNameableList = new ArrayList();
@@ -291,7 +289,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 	@Override
-	public boolean instantiatesType(String aShortOrLongName) {
+	public Boolean instantiatesType(String aShortOrLongName) {
 		// TODO Auto-generated method stub
 		return false;
 	}

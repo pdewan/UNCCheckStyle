@@ -143,7 +143,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return includeMethodTags != null && includeMethodTags.size() > 0;
 	}
 	
-	public  boolean matchesAllAndedSpecificationTag (Collection<STNameable> aStoredTags, String anAndedSpecification) {
+	public static  boolean matchesAllAndedSpecificationTag (Collection<STNameable> aStoredTags, String anAndedSpecification) {
 		String[] aSpecifications = anAndedSpecification.split(AND_SYMBOL);
 	for (String aSpecification:aSpecifications) {
 		if (! matchesSomeStoredTag(aStoredTags, aSpecification))
@@ -159,8 +159,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return false;
 	   }
 	
-	public static  boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
+	public static  Boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
 		for (STNameable aStoredTag:aStoredTags) {
+			if (aStoredTag == null) {
+				System.err.println("Null stored tag!");
+				return null;
+			}
 			if (matchesStoredTag(aStoredTag.getName(), aDescriptor)) {
 				return true;
 			}
@@ -310,9 +314,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  	}
  	
  }
- public boolean contains(List<STNameable> aTags, String aTag, String aTypeName) {
+ public  boolean containsEfficient(List<STNameable> aTags, String aTag, String aTypeName) {
 	 return matchesAllAndedSpecificationTag(aTags, aTag) ||
-			 matchesPattern(aTag, aTypeName); // should not need this
+			 matchesPatternEfficient(aTag, aTypeName); // should not need this
 // 	for (STNameable aNameable:aTags) {
 // 		if (matchesStoredTag(aNameable.getName(), aTag)) {
 // 			matchedTypeOrTagAST = aNameable.getAST();
@@ -323,7 +327,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 // 	return matchesPattern(aTag, aTypeName);
  }
  
- public boolean matchesPattern (String aPatternName, String aTypeName) {
+ public  boolean matchesPatternEfficient (String aPatternName, String aTypeName) {
 	 STNameable aStructurePattern = getPattern(aTypeName);
 		if (aStructurePattern == null)
 			return false;
@@ -335,7 +339,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public  String findMatchingType (Collection<String> aTypesToBeMatched, STType anSTType) {
 		for (String aSpecifiedType:aTypesToBeMatched) {
 			matchedTypeOrTagAST = anSTType.getAST();
-				Boolean matches = matchesType(aSpecifiedType, anSTType.getName());
+				Boolean matches = matchesTypeUnifying(aSpecifiedType, anSTType.getName());
 				if (matches == null) {
 					return null;
 				}
@@ -410,7 +414,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	return aTags;
 	
 }
- public Boolean matchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
+ public Boolean unifyingMatchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
 	 if (aDescriptor.equals(MATCH_ANYTHING)) {
 	 	 return true;
 	 } else if (aDescriptor.startsWith("$")) {
@@ -455,9 +459,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 //			String aTag = aDescriptor.substring(1);
 //			return contains(typeTags(), aDescriptor, shortTypeName);
 
-			return contains(Arrays.asList(checkTags), aDescriptor, shortTypeName);
+			return containsEfficient(Arrays.asList(checkTags), aDescriptor, shortTypeName);
 		} else {
-			return matchesNameVariableOrTag(aDescriptor, shortTypeName, null) ||  matchesNameVariableOrTag(aDescriptor, fullTypeName, null);
+			return unifyingMatchesNameVariableOrTag(aDescriptor, shortTypeName, null) ||  unifyingMatchesNameVariableOrTag(aDescriptor, fullTypeName, null);
 		}
 			
 //		} else if (aDescriptor.startsWith("$")) {
@@ -478,7 +482,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  
 public Boolean matchesType(Collection<String> aDescriptors, String aShortClassName) {
 	for (String aDescriptor:aDescriptors) {
-		Boolean match = matchesType(aDescriptor, aShortClassName);
+		Boolean match = matchesTypeUnifying(aDescriptor, aShortClassName);
 		if (match == null)
 			return null;
 		
@@ -561,7 +565,7 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 	return result;
 		
 }
-public Boolean matchesType(String aDescriptor, String aShortClassName) {
+public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
 		return true;
 	if (aShortClassName.contains("]") || // array element
@@ -576,7 +580,7 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (!aDescriptor.startsWith(TAG_STRING)) {
 //		return aShortClassName.equals(aDescriptor);
 		try {
-		return matchesNameVariableOrTag(aDescriptor, aShortClassName, null);
+		return unifyingMatchesNameVariableOrTag(aDescriptor, aShortClassName, null);
 		} catch (PatternSyntaxException e) {
 			System.out.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aShortClassName);
 			e.printStackTrace();
@@ -584,8 +588,8 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 		}
 	}
 	String aTag = aDescriptor.substring(1);
-	if (aShortClassName.matches(aTag))
-		return true; // in case the class name is the same as tag
+	if (aShortClassName.matches(aTag) || aShortClassName.matches("A" + aTag))
+		return true; // in case the class name is the same as tag or is ATag
 
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)
@@ -595,7 +599,45 @@ public Boolean matchesType(String aDescriptor, String aShortClassName) {
 
 //	String aTag = aDescriptor.substring(1);
 
-	return contains(aTags, aTag, aShortClassName);
+	return containsEfficient(aTags, aTag, aShortClassName);
+}
+public static Boolean matchesType(String aDescriptor, String aShortClassName) {
+	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
+		return true;
+	if (aShortClassName.contains("]") || // array element
+			aShortClassName.contains("[") ||
+			aShortClassName.contains("(") ||// casts
+			aShortClassName.contains(")"))
+//		return false;
+		return true; // assume the type is right, 
+	aDescriptor = aDescriptor.trim();
+//	if (aDescriptor.equals(MATCH_ANYTHING))
+//		return true;
+	if (!aDescriptor.startsWith(TAG_STRING)) {
+//		return aShortClassName.equals(aDescriptor);
+		try {
+		return aShortClassName.matches(aDescriptor);
+		} catch (PatternSyntaxException e) {
+			System.out.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aShortClassName);
+			e.printStackTrace();
+			return false;
+		}
+	}
+	String aTag = aDescriptor.substring(1);
+	if (aShortClassName.matches(aTag) || aShortClassName.matches("A" + aTag))
+		return true; // in case the class name is the same as tag or is ATag
+	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aShortClassName);
+	if (anSTType == null)
+		return null;
+	List<STNameable> aTags = Arrays.asList(anSTType.getComputedTags());
+	if (aTags == null)
+		return null;
+		// this should be changed back to null at some point
+//		return false;
+
+//	String aTag = aDescriptor.substring(1);
+
+	return matchesAllAndedSpecificationTag(aTags, aTag);
 }
 public Boolean checkIncludeExcludeTagsOfCurrentType() {
 	if (!hasIncludeTypeTags() && !hasExcludeTypeTags())
@@ -616,6 +658,7 @@ public Boolean checkIncludeExcludeTagsOfCurrentType() {
 //	return false;
 	
 }
+
 public Boolean checkIncludeExcludeTagsOfMethod(List<STNameable> aCurrentMethodComputedTags) {
 	if (!hasIncludeMethodTags() && !hasExcludeMethodTags())
 		return true; // all tags checked in this case

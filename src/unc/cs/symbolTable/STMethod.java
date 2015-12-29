@@ -42,5 +42,5 @@ public interface STMethod extends STNameable{
 	List<STMethod> getAllCallClosure();
 	List<STMethod> getLocalCallClosure();
 	List<STNameable> getTypesInstantiated();
-	boolean instantiatesType(String aShortOrLongName);
+	Boolean instantiatesType(String aShortOrLongName);
 }
