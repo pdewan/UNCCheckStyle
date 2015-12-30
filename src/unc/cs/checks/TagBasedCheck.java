@@ -162,8 +162,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static  Boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
 		for (STNameable aStoredTag:aStoredTags) {
 			if (aStoredTag == null) {
-				System.err.println("Null stored tag!");
-				return null;
+//				System.err.println("Null stored tag!");
+//				return null;
+				continue; // an interface does this
 			}
 			if (matchesStoredTag(aStoredTag.getName(), aDescriptor)) {
 				return true;
@@ -568,6 +569,7 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
 		return true;
+//	int i = 0;
 	if (aShortClassName.contains("]") || // array element
 			aShortClassName.contains("[") ||
 			aShortClassName.contains("(") ||// casts

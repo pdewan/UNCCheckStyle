@@ -20,9 +20,9 @@ import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public class InvalidClassInstantiationsCheck extends ClassInstantiatedCheck {
+public class InvalidClassInstantiationCheck extends ClassInstantiatedCheck {
 
-	public static final String MSG_KEY = "invalidClassInstantiations";
+	public static final String MSG_KEY = "invalidClassInstantiation";
 
 	protected boolean logOnNoMatch() {
 		return false;

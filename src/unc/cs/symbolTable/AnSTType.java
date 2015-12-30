@@ -841,7 +841,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 				result.add(aMethod);
 			}
 		}
-		int i = 0;
+//		int i = 0;
 		Boolean instantiates = instantiatesType(aTypeName);
 		if (instantiates == null)
 			return null;

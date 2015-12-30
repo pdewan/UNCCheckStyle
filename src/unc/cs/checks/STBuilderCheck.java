@@ -146,7 +146,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     public void doBeginTree(DetailAST ast) {  
  		 super.doBeginTree(ast); 
  		 astToFileContents.put(ast, getFileContents());
-// 		 System.out.println("Check" + checkAndFileDescription);
+// 		 System.out.println("STBuilder" + checkAndFileDescription);
  		 	currentSTType = null;
  		 	stMethods.clear();
  		 	stConstructors.clear();

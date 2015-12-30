@@ -273,10 +273,11 @@
 				
 				" />
 		</module>
-			<module name="InvalidClassInstantiations">
+			<module name="InvalidClassInstantiation">
+			<property name="includeTypeTags" value="*" />
+			<property name="excludeTypeTags" value="@SingletonsCreator" />
 			<property name="instantiations"
-				value="
-				
+				value="				
 				* =
 					@ScannerBean |
 					@Parser |

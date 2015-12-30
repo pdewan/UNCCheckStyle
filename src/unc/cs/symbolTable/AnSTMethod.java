@@ -324,7 +324,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 				Boolean result = ComprehensiveVisitCheck.matchesType(anExpectedType, anInstantiatedType);
 				if (result == null)
 					return null;
-				return result;
+				if (result)
+					return result;
+//				return result;
 //				if (anInstantiatedType.equals(anExpectedType))
 //					return true;
 			}

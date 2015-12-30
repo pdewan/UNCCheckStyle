@@ -24,6 +24,8 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 	// move this to a super class
 	public static final String CALLER_TYPE_SEPARATOR = "#";
 	public static final String MSG_KEY = "classInstantiated";
+	public static final String MULTIPLE_INSTANTIATING_CODE = "multipleInstantiatingMethods";
+
 
 
 
@@ -34,8 +36,12 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //	public static final String SEPARATOR = ">";
 	public int[] getDefaultTokens() {
 		return new int[] {
+				TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF
 				};
+	}
+	public void visitClass(DetailAST ast) {
+		visitTypeMinimal(ast); //just get the name
 	}
 
 	// this should be in an abstract class
@@ -128,7 +134,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 			}
 			if (anInstantiatingMethods.size() != 1 && logOnNoMatch()) {
 				// instantiated by more than one method, so failure if logOnNoMatch
-				log(anAST, aTree, anSTType.getName()+"." + aCaller, aType);
+				log(MULTIPLE_INSTANTIATING_CODE, anAST, aTree, anSTType.getName()+"." + aCaller, aType, anInstantiatingMethods.toString() );
 				continue;
 			}
 			
@@ -151,7 +157,9 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 	}
 	
 	public void doFinishTree(DetailAST ast) {
-		
+		if (fullTypeName == null) {
+			return; // interface or come other non class
+		}
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
 
