@@ -20,11 +20,19 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 
 //	/** flag to control whether marker interfaces are allowed. */
 //	private boolean allowMarkerInterfaces = true;
+	public int[] getDefaultTokens() {
+		return new int[] {
+//				TokenTypes.CLASS_DEF, 
+//				TokenTypes.INTERFACE_DEF, 
+//				TokenTypes.PACKAGE_DEF
+				};
+	}
 
 	
 	public ClassHasOneInterfaceCheck() {
 
 	}
+	
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};

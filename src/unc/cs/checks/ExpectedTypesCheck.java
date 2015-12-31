@@ -25,6 +25,12 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
 
 //	public static final String SEPARATOR = ">";
+	public int[] getDefaultTokens() {
+		return new int[] {
+//				TokenTypes.CLASS_DEF,
+				};
+	}
+	
 
 
 	
@@ -152,7 +158,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 		return matchType(aSpecifiedInterfaces, toNames(aClassNames), aTree);
 	}
 	
-	abstract boolean doCheck(STType anSTType) ;
+//	abstract boolean doCheck(STType anSTType) ;
 
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {

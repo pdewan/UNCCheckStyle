@@ -22,9 +22,10 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 	
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.PACKAGE_DEF, 
-				TokenTypes.CLASS_DEF,
-				 TokenTypes.INTERFACE_DEF,
+		return new int[] { 
+//				TokenTypes.PACKAGE_DEF, 
+//				TokenTypes.CLASS_DEF,
+//				 TokenTypes.INTERFACE_DEF,
 //				 TokenTypes.ENUM_DEF
 				
 		};
@@ -84,7 +85,7 @@ public void doFinishTree(DetailAST ast) {
 
 		if (anSTType == null) // we did not  visit the type
 			return true;
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isInterface())
 			return true;
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 		if (aPropertyInfos == null)

@@ -16,7 +16,7 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public class StringShapePatternCheck extends LocatableShapePatternCheck {
-	public static final String STRING_PROPERTIES = "String: String";
+	public static final String STRING_PROPERTIES = "Text: String";
 	public static final String STRING_PATTERN = "StructurePatternNames.STRING_PATTERN";
 
 	@Override

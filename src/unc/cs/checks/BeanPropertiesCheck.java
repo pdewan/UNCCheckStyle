@@ -38,11 +38,13 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 			System.err.println("Unexpected token");
 		}
 	}
-
+	// do not neeed any tokens as we do deferred checking
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
-				TokenTypes.PACKAGE_DEF };
+		return new int[] { 
+//				TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
+//				TokenTypes.PACKAGE_DEF 
+				};
 	}
 
 //	public void setExpectedPropertiesOfType(String aPattern) {

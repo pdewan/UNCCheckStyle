@@ -384,6 +384,28 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return false;
 	return aShortClassName.equals("Object") || isExternalImport(aShortClassName) || isJavaLangClass(aShortClassName);
  }
+ public List<STNameable> lookupTags(String aShortClassName)  {
+	 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aShortClassName);
+		if (anSTType == null) {
+			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
+				return emptyList;			
+			return null;
+		}
+		return Arrays.asList(anSTType.getComputedTags());
+ }
+ 
+ public List<STNameable> lookupTagsOfCurrentTree()  {
+	STType anSTType = getSTType(currentTree);
+	if (anSTType == null) {
+		return computedTypeTags(); // STBuilder
+	} else {
+		return Arrays.asList(anSTType.getComputedTags());
+	}
+			
+	
+ }
+ 
  public List<STNameable> getTags(String aShortClassName)  {
 	List<STNameable> aTags = emptyList;
 
@@ -392,26 +414,33 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			isJavaLangClass(aShortClassName) ) {
 		return emptyList;
 	}
+	aTags = lookupTags(aShortClassName);
+	if (aTags == null && (
+//			shortTypeName == null ||
+			aShortClassName.equals(shortTypeName))) {
+		aTags = computedTypeTags();
+	}
 	/*
 	 * why shortcircuit current one, there was a reason, I forget now
 	 */
-	if (shortTypeName == null || // guaranteed to not be a pending check
-			aShortClassName.equals(shortTypeName)) {
-//		aTags = typeTags();
-		aTags = computedTypeTags();
-	} else {
-//		System.out.println ("Checking symbol table");
-		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-				.getSTClassByShortName(aShortClassName);
-		if (anSTType == null) {
-			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
-				return emptyList;			
-			return null;
-		}
-		aTags = Arrays.asList(anSTType.getComputedTags());
-//		aTags = Arrays.asList(anSTType.getAllComputedTags());
-
-	}
+//	if (shortTypeName == null || // guaranteed to not be a pending check
+//			aShortClassName.equals(shortTypeName)) {
+////		aTags = typeTags();
+//		aTags = computedTypeTags();
+//	} else {
+//		aTags = lookupTags(aShortClassName);
+//////		System.out.println ("Checking symbol table");
+////		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+////				.getSTClassByShortName(aShortClassName);
+////		if (anSTType == null) {
+////			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
+////				return emptyList;			
+////			return null;
+////		}
+////		aTags = Arrays.asList(anSTType.getComputedTags());
+//////		aTags = Arrays.asList(anSTType.getAllComputedTags());
+//
+//	}
 	return aTags;
 	
 }
@@ -589,6 +618,7 @@ public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 			return false;
 		}
 	}
+//	int i = 0;
 	String aTag = aDescriptor.substring(1);
 	if (aShortClassName.matches(aTag) || aShortClassName.matches("A" + aTag))
 		return true; // in case the class name is the same as tag or is ATag
@@ -645,11 +675,11 @@ public Boolean checkIncludeExcludeTagsOfCurrentType() {
 	if (!hasIncludeTypeTags() && !hasExcludeTypeTags())
 		return true; // all tags checked in this case
 //		return false; // no tags checked in this case
-	
-	if (fullTypeName == null) {
-//		System.err.println("Check called without type name being populated");
-		return false;
-	}
+//	
+//	if (fullTypeName == null) {
+////		System.err.println("Check called without type name being populated");
+//		return false;
+//	}
 	
 	return checkIncludeTagsOfCurrentType()	&& checkExcludeTagsOfCurrentType();
 //	List<STNameable> aStoredTags = computedTypeTags();
@@ -684,7 +714,9 @@ public boolean checkIncludeTagsOfCurrentType() {
 	if (!hasIncludeTypeTags())
 		return false;
 //	return checkTags(includeTags, computedTypeTags());
-	return matchesSomeSpecificationTags(computedTypeTags(), includeTypeTags);
+//	return matchesSomeSpecificationTags(computedTypeTags(), includeTypeTags);
+	return matchesSomeSpecificationTags(lookupTagsOfCurrentTree(), includeTypeTags);
+
 	
 }
 /*
@@ -694,7 +726,7 @@ public boolean checkExcludeTagsOfCurrentType() {
 	if (!hasExcludeTypeTags())
 		return true;
 //	return !checkTags(excludeTags, computedTypeTags());
-	return !matchesSomeSpecificationTags(computedTypeTags(), excludeTypeTags);	
+	return !matchesSomeSpecificationTags(lookupTagsOfCurrentTree(), excludeTypeTags);	
 }
 
 /*
@@ -738,7 +770,7 @@ protected List<STNameable> typeTags( ) {
 }
 public static STNameable toShortPatternName(STNameable aLongName) {
 	if (aLongName ==null) {
-		System.out.println("Null:" + aLongName);
+//		System.out.println("Null a long nane:" + aLongName);
 		return null;
 	}
 	String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
@@ -781,6 +813,11 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	typeTags = getArrayLiterals(annotationAST);
 	}
 	computedTypeTags = new ArrayList(typeTags);
+	if (typeNameable == null) {
+		String aName = getName(ast);
+		typeNameable = new AnSTNameable(aName);
+	}
+		
 	computedTypeTags.add(typeNameable);
 	computedTypeTags.add(toShortPatternName(typeNameable));
 	if (structurePattern != null) {
@@ -842,8 +879,10 @@ public void doBeginTree(DetailAST ast) {
 	 super.doBeginTree(ast);
 	 	
 	 	typeTags = emptyNameableList;
+	 	computedTypeTags = emptyNameableList;
 //	 	typeScope.clear();
-//	 	fullTypeName = null;
+	 	// not sure why we need this as 
+	 	fullTypeName = null;
 //	 	isInterface = false;
 //	 	isGeneric = false;
 //	 	isElaboration = false;

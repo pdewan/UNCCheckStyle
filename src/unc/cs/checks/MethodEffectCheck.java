@@ -17,7 +17,10 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
+		return new int[] {
+//				TokenTypes.CLASS_DEF, 
+//				TokenTypes.PACKAGE_DEF
+				};
 	} 
 
 //	@Override
@@ -191,6 +194,8 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //		 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName (
 //				 getName(getEnclosingTypeDeclaration(aTree)));
 			STType anSTType = getSTType(aTree);
+			if (anSTType.isEnum() || anSTType.isInterface())
+				return true;
 
 		 STMethod[] aMethods = anSTType.getDeclaredMethods();// we check only out methods
 		 Boolean retVal = true;
@@ -211,8 +216,8 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //		for (STMethod aMethod: anSTType.getMethods()) {
 //			visitMethod(anSTType, aMethod);
 //		}
-		if (shortTypeName == null)
-			return; // maybe visiting interface
+//		if (shortTypeName == null)
+//			return; // maybe visiting interface
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
 		shortTypeName = null;

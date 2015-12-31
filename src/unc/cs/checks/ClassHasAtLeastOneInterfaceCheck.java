@@ -25,6 +25,13 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 	public  ClassHasAtLeastOneInterfaceCheck () {
 		
 	}
+	public int[] getDefaultTokens() {
+		return new int[] {
+//				TokenTypes.CLASS_DEF, 
+//				TokenTypes.INTERFACE_DEF, 
+//				TokenTypes.PACKAGE_DEF
+				};
+	}
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] { TokenTypes.CLASS_DEF };

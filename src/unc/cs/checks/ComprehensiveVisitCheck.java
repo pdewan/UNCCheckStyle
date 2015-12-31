@@ -262,14 +262,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public Boolean matchSignature(
 			STMethod aSpecification, STMethod aMethod) {
 		variablesAdded.clear();
-		String aReturnType = aSpecification.getReturnType();
-		STNameable[] typeTags = null;
-		if (aReturnType != null && aReturnType.startsWith(TAG_STRING)) {
-			
-			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aReturnType.substring(1));
+//		int j = 0;
+//		String aReturnType = aSpecification.getReturnType();
+		String aSpeifiedReturnType = aSpecification.getReturnType();
+		String anActualReturnType = aMethod.getReturnType();
+
+		STNameable[] anActualTypeTags = null;
+		if (aSpeifiedReturnType != null && aSpeifiedReturnType.startsWith(TAG_STRING)) {
+			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(anActualReturnType);
+
+//			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSpeifiedReturnType.substring(1));
 			if (aReturnSTType == null)
 				return null;
-			typeTags = aReturnSTType.getComputedTags();
+			anActualTypeTags = aReturnSTType.getComputedTags();
 		}
 		
 		if (aMethod == null) {
@@ -283,8 +288,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 						aSpecification.getName(), 
 						aMethod.getName(), 
 						aMethod.getComputedTags()) &&
-				(aReturnType== null ||
-				unifyingMatchesNameVariableOrTag(aReturnType, aMethod.getReturnType(), typeTags)
+				(aSpeifiedReturnType== null ||
+				unifyingMatchesNameVariableOrTag(aSpeifiedReturnType, aMethod.getReturnType(), anActualTypeTags)
 
 //				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags)
 				);
@@ -328,6 +333,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
 		List<STMethod> result = new ArrayList();
+		int i = 0;
 		STMethod[] aMethods = aTargetSTType.getMethods();
 		if (aMethods == null)
 			return null;
@@ -355,7 +361,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		
 	}
 	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
-		int i = 0;
+//		int i = 0;
 		Boolean aMatch = matchSignature(aSpecifiedMethod, anActualMethod);
 		if (aMatch == null) {
 			return null;
@@ -365,6 +371,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			return true;
 		// now go through the call graph and see if the specified method calls a method that matches the actual method
 		List<STMethod> aMatchingSpecifiedMethods = getMatchingMethods(anSTType, aSpecifiedMethod);
+		if (aMatchingSpecifiedMethods == null) {
+			return null;
+		}
 		for (STMethod aRootMethod:aMatchingSpecifiedMethods) {
 			if (aRootMethod == null)
 				continue;
@@ -617,10 +626,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public void visitType(DetailAST typeDef) {
 		super.visitType(typeDef);
+		// this should move to minimal
 		maybeVisitStructurePattern(typeDef);
 		// why this?
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
 		// maybeVisitStructurePattern(typeDef);
 		maybeVisitPropertyNames(typeDef);
 		maybeVisitEditablePropertyNames(typeDef);
@@ -833,8 +843,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public void visitVariableOrParameterDef(DetailAST ast) {
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
 		if (ScopeUtils.inCodeBlock(ast))
 			// ||
 			// ast.getParent().getType() == TokenTypes.LITERAL_CATCH)
@@ -881,8 +891,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public void visitVariableDef(DetailAST paramOrVarDef) {
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
 		visitVariableOrParameterDef(paramOrVarDef);
 		if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
 			final DetailAST aTypeParent = paramOrVarDef
@@ -1225,8 +1235,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public void visitMethodCall(DetailAST ast) {
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
 		CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast,
 				currentTree);
 		methodsCalledByCurrentMethod.add(aCallInfo);
@@ -1250,8 +1260,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public void visitIdent(DetailAST anIdentAST) {
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
 		if (currentMethodName == null)
 			return;
 		if (currentMethodAssignsToGlobalVariable)
@@ -1346,6 +1356,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		computedTypeTags = emptyNameableList;
 		typeScope.clear();
 		fullTypeName = null;
+		shortTypeName = null;
 		isInterface = false;
 		isEnum = false;
 		isGeneric = false;
@@ -1499,6 +1510,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	protected void maybeAddToPendingTypeChecks(DetailAST ast) {
+		int i = 0;
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
 		specificationVariablesToUnifiedValues.clear();
@@ -2047,6 +2059,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			// }
 		}
 	}
+    boolean doCheck(STType anSTType)  {
+    	return true;
+    }
+
 
 	protected void log(String aMessageKey, FullIdent ast, DetailAST aTreeAST,
 			Object... anExplanations) {

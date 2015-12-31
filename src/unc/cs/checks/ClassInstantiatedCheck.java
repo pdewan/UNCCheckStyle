@@ -36,13 +36,13 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //	public static final String SEPARATOR = ">";
 	public int[] getDefaultTokens() {
 		return new int[] {
-				TokenTypes.PACKAGE_DEF,
-				TokenTypes.CLASS_DEF
+//				TokenTypes.PACKAGE_DEF,
+//				TokenTypes.CLASS_DEF
 				};
 	}
-	public void visitClass(DetailAST ast) {
-		visitTypeMinimal(ast); //just get the name
-	}
+//	public void visitClass(DetailAST ast) {
+//		visitTypeMinimal(ast); //just get the name
+//	}
 
 	// this should be in an abstract class
 	public void setSpecificationsOfType(String aPattern) {
@@ -82,7 +82,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isInterface())
 			return true;
 		
 		specifiedType = findMatchingType(typeToSpecifications.keySet(),
@@ -157,9 +157,10 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 	}
 	
 	public void doFinishTree(DetailAST ast) {
-		if (fullTypeName == null) {
-			return; // interface or come other non class
-		}
+		
+//		if (fullTypeName == null) {
+//			return; // interface or come other non class
+//		}
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
 

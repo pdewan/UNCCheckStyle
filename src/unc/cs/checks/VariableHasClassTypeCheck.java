@@ -53,10 +53,12 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF, 
+		return new int[] { 
+				TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF, 
 				TokenTypes.PACKAGE_DEF, 
 				TokenTypes.CLASS_DEF,
-				TokenTypes.METHOD_DEF };
+				TokenTypes.METHOD_DEF 
+				};
 	}
 	
 	public VariableHasClassTypeCheck() {

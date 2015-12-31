@@ -15,6 +15,10 @@ public abstract class STClassVisitedComprehensively extends STTypeVisitedCompreh
 	public STClassVisitedComprehensively() {
 
 	}
+	@Override
+	boolean doCheck(STType anSTType)  {
+    	return !anSTType.isInterface() && !anSTType.isEnum();
+    }
 
 //	public void doVisitToken(DetailAST ast) {		
 //		switch (ast.getType()) {

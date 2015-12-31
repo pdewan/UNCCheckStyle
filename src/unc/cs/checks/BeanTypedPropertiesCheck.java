@@ -287,7 +287,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 			System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
 //			return true;
 		}
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() ||
+				anSTType.isInterface()) // why duplicate checking for interfaces
 			return true;
 		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),
 				anSTType);

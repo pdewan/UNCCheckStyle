@@ -26,8 +26,12 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	
 	public Boolean checkIncludeExcludeTagsOfCurrentType() {
 		if (fullTypeName == null) {
+			fullTypeName = getFullTypeName(currentTree);
+			if (fullTypeName == null) {
 			System.err.println ("Full type name not initialized ");
 			return false;
+
+			}
 		}
 		STType anSTType = SymbolTableFactory.getSymbolTable().
 				getSTClassByFullName(fullTypeName);

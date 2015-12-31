@@ -39,9 +39,9 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 	
 	public int[] getDefaultTokens() {
 		return new int[] { 
-				TokenTypes.PACKAGE_DEF,
-				TokenTypes.CLASS_DEF,
-				TokenTypes.INTERFACE_DEF
+//				TokenTypes.PACKAGE_DEF,
+//				TokenTypes.CLASS_DEF,
+//				TokenTypes.INTERFACE_DEF
 				
 		};
 	}
@@ -116,7 +116,7 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isInterface()) // no point duplicating interface checks
 			return true;
 //		List<String> aTypes = anSTType.getAllTypeNames();
 //		if (aTypes == null) 

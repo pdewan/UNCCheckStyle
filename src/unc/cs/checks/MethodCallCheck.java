@@ -125,7 +125,13 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //		if (!matchSignature(aCallingSpecifiedMethod, aCallingMethod)) {
 //			return false;
 //		}
-		if (!matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod)) {
+		Boolean aMatch = matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod);
+		if (aMatch == null) {
+			return null;
+		}
+		if (!aMatch) {
+
+//		if (!matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod)) {
 			return false;
 		}
 		
@@ -367,7 +373,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isInterface())
 			return true;
 		
 		specifiedType = findMatchingType(typeToSignaturesWithTargets.keySet(),

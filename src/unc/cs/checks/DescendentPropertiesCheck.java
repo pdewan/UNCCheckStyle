@@ -24,27 +24,28 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 	protected Set<String> visitedTypes = new HashSet();
 
 
-	public void doVisitToken(DetailAST ast) {
-		// System.out.println("Check called:" + MSG_KEY);
-		switch (ast.getType()) {
-		case TokenTypes.PACKAGE_DEF:
-			visitPackage(ast);
-			return;
-		case TokenTypes.CLASS_DEF:
-		case TokenTypes.INTERFACE_DEF:
-			if (fullTypeName == null)
-
-			visitType(ast);
-			return;
-		default:
-			System.err.println("Unexpected token");
-		}
-	}
+//	public void doVisitToken(DetailAST ast) {
+//		// System.out.println("Check called:" + MSG_KEY);
+//		switch (ast.getType()) {
+//		case TokenTypes.PACKAGE_DEF:
+//			visitPackage(ast);
+//			return;
+//		case TokenTypes.CLASS_DEF:
+//		case TokenTypes.INTERFACE_DEF:
+//			if (fullTypeName == null)
+//
+//			visitType(ast);
+//			return;
+//		default:
+//			System.err.println("Unexpected token");
+//		}
+//	}
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF,
-				TokenTypes.PACKAGE_DEF, 
+		return new int[] { 
+//				TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF,
+//				TokenTypes.PACKAGE_DEF, 
 //				TokenTypes.ANNOTATION 
 				};
 	}
@@ -167,6 +168,9 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 //				.getSTClassByShortName(
 //						aTypeName);
 		STType anSTType = getSTType(aTree);
+		if (anSTType.isEnum() 
+				|| anSTType.isInterface())
+			return true;
 
 		return addProperties(anSTType, aTypeName, aTypeName);
 		

@@ -14,23 +14,24 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //	} 
 //	
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF};
+		return new int[] {
+//				TokenTypes.CLASS_DEF, 
+//				TokenTypes.INTERFACE_DEF, 
+//				TokenTypes.PACKAGE_DEF
+				};
 	} 
 
 	public STTypeVisitedComprehensively() {
 
 	}
 	protected abstract  Boolean typeCheck(STType anSTClass) ;
-	@Override
-	public void visitType(DetailAST ast) {
-    	super.visitType(ast); // need this to get full type name for checking tags
-    	maybeAddToPendingTypeChecks(ast);
-//    	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
-//    			getSTClassByFullName(fullTypeName);
-//    	if (!typeCheck(anSTClass))
-//    		log(ast);
-
-    }
+//	@Override
+//	public void visitType(DetailAST ast) {
+//    	super.visitType(ast); // need this to get full type name for checking tags
+//    	maybeAddToPendingTypeChecks(ast);
+//
+//
+//    }
 	
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
 //    	String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
@@ -41,6 +42,8 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //    	String aFullName = aPackageName + "." + aTypeName;
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aFullName);
 		STType anSTType = getSTType(aTreeAST);
+		if (!doCheck(anSTType))
+			return true;
 		Boolean aTypeCheck = typeCheck(anSTType);
 		if (aTypeCheck == null)
 			return null;
@@ -48,6 +51,15 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
     		log(ast, aTreeAST);
 		return aTypeCheck;
 		
+	}
+	public void doFinishTree(DetailAST ast) {
+		
+//		if (fullTypeName == null) {
+//			return; // interface or come other non class
+//		}
+		maybeAddToPendingTypeChecks(ast);
+		super.doFinishTree(ast);
+
 	}
 
 	

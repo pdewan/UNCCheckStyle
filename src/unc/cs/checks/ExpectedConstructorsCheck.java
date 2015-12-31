@@ -26,21 +26,9 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 	// get full name
 	public int[] getDefaultTokens() {
 		return new int[] {
-				 TokenTypes.PACKAGE_DEF,
-				TokenTypes.CLASS_DEF
-//				TokenTypes.ANNOTATION,
-				// TokenTypes.INTERFACE_DEF,
-				// TokenTypes.TYPE_ARGUMENTS,
-				// TokenTypes.TYPE_PARAMETERS,
-//				TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF,
-//				TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF,
-				// TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
-				// TokenTypes.PARAMETER_DEF,
-				// TokenTypes.LCURLY,
-				// TokenTypes.RCURLY,
-//				TokenTypes.CTOR_CALL,
-//				TokenTypes.LITERAL_NEW,
-//				TokenTypes.METHOD_CALL
+//				 TokenTypes.PACKAGE_DEF,
+//				TokenTypes.CLASS_DEF
+
 				};
 
 	}
@@ -68,8 +56,15 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 //		}
 //		return false;
 	}
-	 protected boolean visitType(STType anSTType) {
-		  return !anSTType.isInterface();
+	// integrate with doCHeck
+//	@Override
+//	 protected boolean visitType(STType anSTType) {
+//		  return !anSTType.isInterface() && !anSTType.isEnum();
+//	  }
+	
+	@Override
+	 protected boolean doCheck(STType anSTType) {
+		  return !anSTType.isInterface() && !anSTType.isEnum();
 	  }
 
 	public  STMethod signatureToMethodorOrConstructor(String aSignature) {

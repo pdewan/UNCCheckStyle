@@ -23,9 +23,10 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {
-				TokenTypes.CLASS_DEF,
+//				TokenTypes.CLASS_DEF,
 				};
 	}
+	
 	public void setExpectedInterfaces(String[] aSpecifications) {
 		setExpectedTypes(aSpecifications);
 
@@ -38,7 +39,7 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 	}
 	@Override
 	boolean doCheck(STType anSTType) {
-		return !anSTType.isInterface();
+		return !anSTType.isInterface() && !anSTType.isEnum();
 	}
 	@Override
 	protected String msgKey() {

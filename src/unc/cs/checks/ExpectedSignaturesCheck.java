@@ -27,22 +27,10 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	// get full name
 	public int[] getDefaultTokens() {
 		return new int[] {
-				 TokenTypes.PACKAGE_DEF,
-				TokenTypes.CLASS_DEF,
-				TokenTypes.INTERFACE_DEF,
-//				TokenTypes.ANNOTATION,
-				// TokenTypes.INTERFACE_DEF,
-				// TokenTypes.TYPE_ARGUMENTS,
-				// TokenTypes.TYPE_PARAMETERS,
-//				TokenTypes.VARIABLE_DEF, TokenTypes.PARAMETER_DEF,
-//				TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF,
-				// TokenTypes.IMPORT, TokenTypes.STATIC_IMPORT,
-				// TokenTypes.PARAMETER_DEF,
-				// TokenTypes.LCURLY,
-				// TokenTypes.RCURLY,
-//				TokenTypes.CTOR_CALL,
-//				TokenTypes.LITERAL_NEW,
-//				TokenTypes.METHOD_CALL
+//				 TokenTypes.PACKAGE_DEF,
+//				TokenTypes.CLASS_DEF,
+//				TokenTypes.INTERFACE_DEF,
+
 				};
 
 	}
@@ -336,22 +324,23 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 //		String[] aSpecifiedSignatures = typeToSignature.get(aSpecifiedType);
 //		return matchSignatures(anSTType, aSpecifiedSignatures, aTree);
 //		
-  protected boolean visitType(STType anSTType) {
-	  return true;
-  }
+//  protected boolean visitType(STType anSTType) {
+//	  return true;
+//  }
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(
-//						getName(getEnclosingTypeDeclaration(aTree)));
+
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isInterface()) // do not want to tag interface methods
 			return true;
-		if (!visitType(anSTType)) {
+//		if (!visitType(anSTType)) {
+//			return true;
+//		}
+		// this is redundant based on above check,but let us keep
+		if (!doCheck(anSTType)) {
 			return true;
 		}
-		
 		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)

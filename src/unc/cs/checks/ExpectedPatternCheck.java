@@ -21,6 +21,12 @@ public  class ExpectedPatternCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "expectedPattern";
 
 	protected Map<String, String> typeToPattern = new HashMap<>();
+	public int[] getDefaultTokens() {
+		return new int[] {
+//				TokenTypes.PACKAGE_DEF,
+//				TokenTypes.CLASS_DEF
+				};
+	}
 
 //	public static final String SEPARATOR = ">";
 

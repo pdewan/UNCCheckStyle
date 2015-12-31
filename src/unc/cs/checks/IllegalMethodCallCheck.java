@@ -16,6 +16,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 
 public  class IllegalMethodCallCheck extends MethodCallVisitedCheck {
+	
 
     /**
      * A key is pointing to the warning message text in "messages.properties"
