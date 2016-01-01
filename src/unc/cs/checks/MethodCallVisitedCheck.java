@@ -218,8 +218,13 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 //		DetailAST aLeftMostMethodTargetAST = aMethodNameAST
 //				.getPreviousSibling();
 //		String shortMethodName0 = aMethodNameAST.getText();
-
-		CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast, aTreeAST);
+		CallInfo aCallInfo = null;
+//		CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast, aTreeAST);
+		// this is bad, we are demultiplexng and then multiplexing, need to do this better at some point
+		if (ast.getType() == TokenTypes.CTOR_CALL)
+			aCallInfo = registerConstructorCallAndtoNormalizedParts(ast, aTreeAST);
+		else
+			aCallInfo = registerMethodCallAndtoNormalizedParts(ast, aTreeAST);
 //		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 		String shortMethodName = toShortTypeName(aNormalizedLongName);

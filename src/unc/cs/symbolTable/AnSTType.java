@@ -32,6 +32,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> globalVariableToType = new HashMap();
 	protected List<CallInfo> methodsCalled = new ArrayList();
+	protected List<CallInfo> allMethodsCalled ;
+
 	protected List<STNameable> typesInstantiated;
 
 
@@ -798,6 +800,38 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public List<CallInfo> getMethodsCalled() {
 		return methodsCalled;
+	}
+   public List<CallInfo>  computeAllCalls() {
+		
+		List<CallInfo> retVal = new ArrayList();
+		retVal.addAll(getMethodsCalled());
+		STNameable aSuperType = getSuperClass();
+		if (aSuperType != null
+				&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+					.getSTClassByShortName(aSuperType.getName());
+			if (anSTType == null) {
+				if (waitForSuperTypeToBeBuilt())
+					return null;
+				else
+					return retVal;
+			}
+			List<CallInfo> superTypeCalls = anSTType.getAllMethodsCalled();
+			if (superTypeCalls == null) // some supertype not compiled
+				return null;
+//			addToList(retVal, anSTType.getMethods());
+			retVal.addAll(superTypeCalls);
+//			return retVal;
+
+		}
+		return retVal;
+	}
+	@Override
+	public List<CallInfo> getAllMethodsCalled() {
+		if (allMethodsCalled == null) {
+			allMethodsCalled = computeAllCalls();
+		}
+		return allMethodsCalled;
 	}
 	@Override
 	public List<STNameable> getTypesInstantiated() {

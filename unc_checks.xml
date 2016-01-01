@@ -367,7 +367,7 @@
 				value="
 				@LINE_PATTERN= @BoundedShape, 
 				@STRING_PATTERN= @Locatable, 
-				@IMAGE_PATTERN= @BoundedShape, 
+				@IMAGE_PATTERN= @Locatable, 
 				@LABEL_PATTERN = @BoundedShape, 
 				@BoundedShape=@Locatable,
 				@InheritingBridgeScenePainter=Component,

@@ -854,7 +854,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	
 	public static boolean isArrayIndex(String aVariable) {
-		return aVariable.endsWith("]");
+		return aVariable != null && aVariable.endsWith("]");
 	}
 	
 	public static String removeBrackets (String anArrayIndex) {
@@ -884,6 +884,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public String lookupGlobal(String aVariable) {
+		if (aVariable == null)
+			return null;
 		if (aVariable.equals("this")) {
 			return fullTypeName; // short type name?
 		}
@@ -934,6 +936,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public static String getTypeName(DetailAST paramOrVarDef) {
 		DetailAST aTypeAST = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+//		if (aTypeAST == null)
+//			aTypeAST =  paramOrVarDef.findFirstToken(TokenTypes.CLASS_DEF);
+//		if (aTypeAST == null)
+//			aTypeAST =  paramOrVarDef.findFirstToken(TokenTypes.INTERFACE_DEF);
 		DetailAST aSpecificTypeAST = aTypeAST.getFirstChild();
 		if (aSpecificTypeAST.getType() == TokenTypes.ARRAY_DECLARATOR) {
 			String anElementType = FullIdent.createFullIdentBelow(
@@ -1014,18 +1020,30 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	 */
 	public CallInfo registerMethodCallAndtoNormalizedParts(DetailAST ast,
 			DetailAST aTreeAST) {
+		String aTargetName = null;
+		String shortMethodName = null;
+		String aCastType = null;
+
+
+//		if (ast.getType() == TokenTypes.CTOR_CALL) {
+//			aTargetName = getTypeName(aTreeAST);
+//			shortMethodName = aTargetName;
+//			
+//		} else {
 		// DetailAST aLeftMostMethodTargetAST = null;
 		// String shortMethodName = null;
 		// if (ast.getType() == TokenTypes.METHOD_CALL) {
 		// FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
-		int i = 0;
+//		int i = 0;
+//		int j = 0;
 		currentMethodNameAST = getLastDescendent(ast);
-		String shortMethodName = currentMethodNameAST.getText();
-		String aCastType = null;
+//		String shortMethodName = currentMethodNameAST.getText();
+		shortMethodName = currentMethodNameAST.getText();
+
+//		String aCastType = null;
 
 		DetailAST aLeftMostMethodTargetAST = currentMethodNameAST
 				.getPreviousSibling();
-		String aTargetName = null;
 
 		if (aLeftMostMethodTargetAST != null) {
 			if (aLeftMostMethodTargetAST.getType() == TokenTypes.RPAREN) {
@@ -1090,26 +1108,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			} else {
 				aTargetName = aLeftMostMethodTargetAST.getText();
 			}
-			// if (aLeftMostMethodTargetAST != null &&
-			// aLeftMostMethodTargetAST.getType() == TokenTypes.INDEX_OP) {
-			// aTargetName = aLeftMostMethodTargetAST.getFirstChild()
-			// .getText() + "[]";
-			// } else if (aLeftMostMethodTargetAST != null) {
-			// aTargetName = aLeftMostMethodTargetAST.getText();
-			// } else {
-			// aTargetName = aCastType;
-			// }
-
-			// String aTargetName = aLeftMostMethodTargetAST.getText();
-			//
-			// if (isGlobal(aTargetName)) {
-			// List<CallInfo> aCalls = getVariableCalls(aTargetName);
-			// // CallInfo aCall = new ACallInfo(
-			// // currentMethodName, aNormalizedParts[0], aNormalizedParts[1],
-			// // aCallParameters, aNormalizedParts );
-			// aCalls.add(result);
-			// }
-		}
+			
+//		}
 		// aLeftMostMethodTargetAST = aMethodNameAST
 		// .getPreviousSibling();
 		// } else if (ast.getType() == TokenTypes.LITERAL_NEW) {
@@ -1118,6 +1118,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// shortMethodName = toShortTypeName(anIdentifierType.getText());
 		// aLeftMostMethodTargetAST = null;
 		// }
+		}
 		DetailAST aCallEList = ast.findFirstToken(TokenTypes.ELIST);
 		List<DetailAST> aCallParameters = getEListComponents(aCallEList);
 
@@ -1190,12 +1191,23 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// do nto really need this, the register method call works just fine!
 	public CallInfo registerConstructorCallAndtoNormalizedParts(DetailAST ast,
 			DetailAST aTreeAST) {
+		 
+		String shortMethodName = null;
+		if (ast.getText().startsWith("this")) {// cannot find a type
+			shortMethodName = toShortTypeName(getFullTypeName(currentTree));
+		} else {
+		
+			FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
+		shortMethodName = toShortTypeName(anIdentifierType.getText());
+		}
 
-		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
-		String shortMethodName = toShortTypeName(anIdentifierType.getText());
+//		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
+//		String shortMethodName = toShortTypeName(anIdentifierType.getText());
 
 		DetailAST aCallEList = ast.findFirstToken(TokenTypes.ELIST);
-		currentMethodNameAST = aCallEList; // previous sibling?
+//		currentMethodNameAST = aCallEList; // previous sibling?
+		currentMethodNameAST = aCallEList.getPreviousSibling(); // current calling method or called method?
+
 
 		List<DetailAST> aCallParameters = getEListComponents(aCallEList);
 

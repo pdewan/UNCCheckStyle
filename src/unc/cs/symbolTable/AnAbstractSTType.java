@@ -80,6 +80,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 
 	protected STMethod[] emptyMethods = new STMethod[0];
+	protected List<CallInfo> emptyCalls = new ArrayList();
 	
 
 	@Override

@@ -80,7 +80,10 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				anSTType);
 		if (specifiedType == null)
 			return true; // the constraint does not apply to us
-		List<CallInfo> aCalls = anSTType.getMethodsCalled();
+//		List<CallInfo> aCalls = anSTType.getMethodsCalled();
+		// maybe have a separate check for local calls?
+		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
+
 		if (aCalls == null)
 			return null;
 		String[] aSpecifications = typeToSignaturesWithTargets.get(specifiedType);

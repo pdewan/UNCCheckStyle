@@ -295,6 +295,15 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 
 
+
+
+	@Override
+	public List<CallInfo> getAllMethodsCalled() {
+		// TODO Auto-generated method stub
+		return getMethodsCalled();
+	}
+
+
 //	@Override
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;
