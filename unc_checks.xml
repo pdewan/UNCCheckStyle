@@ -418,7 +418,7 @@
 				 	@Angle!move:int;int->void
 				 	, 
 				 @BridgeScene = 
-				 	@Avatar!@move:int;->void | 
+				 	@Avatar!@move:int;int->void | 
 				 	@approach#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
 				 	@say#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
 				 	@passed#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
