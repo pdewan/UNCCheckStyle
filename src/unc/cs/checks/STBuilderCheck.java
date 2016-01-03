@@ -210,6 +210,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			dummyArray,
 	    			new HashMap(),
 	    			new HashMap(),
+	    			new HashMap(),
 	    			new ArrayList());
 
 //	    	anSTClass.introspect();
@@ -259,6 +260,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			globalVariables.toArray(dummyArray),
 	    			new HashMap<>(globalVariableToCall),
 	    			new HashMap<>(globalVariableToType),
+	    			new HashMap<>(globalVariableToRHS),
 	    			new ArrayList<>(typesInstantiated));
 
 //	    	anSTClass.introspect();

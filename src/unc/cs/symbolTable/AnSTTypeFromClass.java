@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
 	STNameable[] computedTags;
+	Map emptyTable = new HashMap();
 	public AnSTTypeFromClass(Class aClass) {
 		super (null, aClass.getName());
 		reflectedClass = aClass;
@@ -255,7 +257,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 	@Override
-	public String getGlobalVariableType(String aGlobal) {
+	public String getDeclaredGlobalVariableType(String aGlobal) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -301,6 +303,15 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public List<CallInfo> getAllMethodsCalled() {
 		// TODO Auto-generated method stub
 		return getMethodsCalled();
+	}
+
+
+
+
+	@Override
+	public DetailAST getDeclaredGlobalVariableToRHS(String aGlobal) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

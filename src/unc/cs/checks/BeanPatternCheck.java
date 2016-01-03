@@ -17,11 +17,26 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	String specifiedPatternName;
+	String alternatePatternName;
+	static Map<String, String> specifiedToAlternateName = new HashMap();
+	
+	public static String getAlternateName(String anActualName) {
+		return specifiedToAlternateName.get(anActualName);
+	}
 
 	public BeanPatternCheck() {
 		super.setExpectedPropertiesOfType(composeProperties());
 		specifiedPatternName = composePatternName();
-		
+		alternatePatternName = composeAlternatePatternName();
+		// this is tricky as the expected pattern check may happen before the checks
+		// that populate the data structure
+		connect(specifiedPatternName, alternatePatternName);
+	}
+	
+	public static void connect (String aSpecifiedName, String anAlternateName) {
+		specifiedToAlternateName.put(aSpecifiedName, anAlternateName);	
+		specifiedToAlternateName.put(toShortTypeName(aSpecifiedName), anAlternateName);	
+
 	}
 	
 	public Boolean checkIncludeExcludeTagsOfCurrentType() {
@@ -36,7 +51,7 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 		STType anSTType = SymbolTableFactory.getSymbolTable().
 				getSTClassByFullName(fullTypeName);
 		if (anSTType == null) { // inner class
-			System.err.println ("canot find tale entry for" + fullTypeName);
+			System.err.println ("cannot find entry for" + fullTypeName);
 			
 			return false;
 		}
@@ -49,6 +64,13 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	public abstract String composeProperties();
 
 	public abstract String composePatternName();
+	protected  String composeAlternatePatternName() {
+		return composePatternName();
+	}
+	static {
+		connect("StucturePatternNames.BEAN_PATTERN", "Bean Pattern");
+	}
+
 
 	// @Override
 	// protected String msgKey() {

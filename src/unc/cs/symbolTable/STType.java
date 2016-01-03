@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+
 public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
@@ -70,11 +72,12 @@ public interface STType extends STNameable{
 	STMethod[] getDeclaredMethods(String aName);
 	List<String> getInstanceSignatures();
 	Set<String> getDeclaredGlobals();
-	String getGlobalVariableType(String aGlobal);
+	String getDeclaredGlobalVariableType(String aGlobal);
 	STNameable[] getAllDeclaredEditablePropertyNames();
 	List<CallInfo> getMethodsCalled();
 	List<STNameable> getTypesInstantiated();
 	List<STMethod> getInstantiatingMethods(String aTypeName);
 	Boolean instantiatesType(String aShortOrLongName);
 	List<CallInfo> getAllMethodsCalled();
+	DetailAST getDeclaredGlobalVariableToRHS(String aGlobal);
 }

@@ -65,6 +65,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected Map<String, String> typeScope = new HashMap();
 	protected List<STNameable> globalVariables = new ArrayList();
 	protected Map<String, String> globalVariableToType = new HashMap();
+	protected Map<String, DetailAST> globalVariableToRHS = new HashMap();
+
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> currentMethodScope = new HashMap();
 	
@@ -553,9 +555,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// return;
 		DetailAST expressionAST = annotationAST.findFirstToken(TokenTypes.EXPR);
 		DetailAST actualParamAST = expressionAST.getFirstChild();
-		FullIdent actualParamIDent = FullIdent.createFullIdent(actualParamAST);
+		String actualParamText = null;
+		if (actualParamAST.getType() == TokenTypes.STRING_LITERAL) {
+			actualParamText = actualParamAST.getText();
+		} else {
+			FullIdent aFullIdent = FullIdent.createFullIdent(actualParamAST);
+			actualParamText = aFullIdent.getText();
+		}
+//		structurePattern = new AnSTNameable(actualParamAST,
+//				actualParam.getText());
 		structurePattern = new AnSTNameable(actualParamAST,
-				actualParamIDent.getText());
+				actualParamText);
 	}
 
 	public void maybeVisitVisible(DetailAST ast) {
@@ -902,10 +912,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			FullIdent aTypeIdent = FullIdent.createFullIdentBelow(aTypeParent);
 			final DetailAST anIdentifier = paramOrVarDef
 					.findFirstToken(TokenTypes.IDENT);
-			// final FullIdent anIdentifierType =
-			// CheckUtils.createFullType(aType);
-			// final FullIdent anIdentifierType =
-			// FullIdent.createFullIdent(aType);
+			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+			if (aMaybeAssign != null && aMaybeAssign.getType() == TokenTypes.ASSIGN) {
+				DetailAST anRHS = aMaybeAssign.getFirstChild();
+				globalVariableToRHS.put(anIdentifier.getText(),anRHS);
+			}
+		
+;
 			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
 					anIdentifier.getText(), aTypeIdent.getText());
 			globalVariables.add(anSTNameable);
@@ -1379,6 +1392,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typesInstantiated.clear();
 		typesInstantiatedByCurrentMethod.clear();
 		globalVariableToCall.clear();
+		globalVariableToType.clear();
+		globalVariableToRHS.clear();
 		currentTree = ast;
 		typeTagsInitialized = false;
 		propertyNames = emptyArrayList;

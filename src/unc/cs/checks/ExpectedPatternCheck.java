@@ -66,9 +66,9 @@ public  class ExpectedPatternCheck extends ComprehensiveVisitCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isInterface())
 			return true;
-		
+//		int i = 0;
 		String aSpecifiedType = findMatchingType(typeToPattern.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)
@@ -81,8 +81,11 @@ public  class ExpectedPatternCheck extends ComprehensiveVisitCheck {
 			retVal = false;
 		}
 		else {
-		
-			retVal = anActualPattern.getName().endsWith(anExpectedPattern);
+			String anActualPatternName = maybeStripAt(maybeStripQuotes(anActualPattern.getName()));
+			String anAlternativeExpectedPatternName = BeanPatternCheck.getAlternateName(anExpectedPattern);
+			retVal = anActualPatternName.endsWith(anExpectedPattern) || 
+					(anAlternativeExpectedPatternName != null &&
+					anActualPatternName.endsWith(maybeStripQuotes(BeanPatternCheck.getAlternateName(anExpectedPattern))));
 		}
 		if (!retVal) {
 			logPatternNotMatched(anAST, anExpectedPattern);

@@ -20,7 +20,14 @@ public class LinePatternCheck extends BoundedShapePatternCheck {
 //	public static final String LINE_PATTERN = "*> X:int | Y:int | Height:int | Width:int";
 public static final String LINE_PATTERN = "StructurePatternNames.LINE_PATTERN";
 
+public static final String ALTERNATE_LINE_PATTERN = "Line Pattern";
 
+
+
+@Override
+protected  String composeAlternatePatternName() {
+	return ALTERNATE_LINE_PATTERN ;
+}
 @Override
 public String composePatternName() {
 	return LINE_PATTERN;

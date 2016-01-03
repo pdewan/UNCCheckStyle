@@ -31,6 +31,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected List<STMethod> declaredInits = new ArrayList();
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> globalVariableToType = new HashMap();
+	protected Map<String, DetailAST> globalVariableToRHS = new HashMap();
 	protected List<CallInfo> methodsCalled = new ArrayList();
 	protected List<CallInfo> allMethodsCalled ;
 
@@ -61,6 +62,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] aFields,
 			Map<String, List<CallInfo>> aGlobalVariableToCall,
 			Map<String, String> aGlobalVariableToType,
+			Map<String, DetailAST> aGlobalVariableToRHS,
 			List<STNameable> aTypesInstantiated
 			) {
 		super(ast, name);
@@ -80,6 +82,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		imports = anImports;
 		declaredFields = aFields;
 		globalVariableToCall = aGlobalVariableToCall;
+		globalVariableToRHS = aGlobalVariableToRHS;
 		computedTags = aComputedTags;
 		globalVariableToType = aGlobalVariableToType;
 		if (!isInterface) {
@@ -794,8 +797,12 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		return globalVariableToType.keySet();
 	}
 	@Override
-	public String getGlobalVariableType(String aGlobal) {
+	public String getDeclaredGlobalVariableType(String aGlobal) {
 		return globalVariableToType.get(aGlobal);
+	}
+	@Override
+	public DetailAST getDeclaredGlobalVariableToRHS(String aGlobal) {
+		return globalVariableToRHS.get(aGlobal);
 	}
 	@Override
 	public List<CallInfo> getMethodsCalled() {

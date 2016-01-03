@@ -18,10 +18,16 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public class StringShapePatternCheck extends LocatableShapePatternCheck {
 	public static final String STRING_PROPERTIES = "Text: String";
 	public static final String STRING_PATTERN = "StructurePatternNames.STRING_PATTERN";
+	public static final String ALTERNATE_STRING_PATTERN = "String Pattern";
+
 
 	@Override
 	public String composePatternName() {
 		return STRING_PATTERN;
+	}
+	@Override
+	protected  String composeAlternatePatternName() {
+		return ALTERNATE_STRING_PATTERN;
 	}
 	protected String stringShapePattern() {
 		return locatablePattern() + "|"  + stringProperties();

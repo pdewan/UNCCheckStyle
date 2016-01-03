@@ -160,6 +160,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	   }
 	
 	public static  Boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
+		int i = 0;
 		for (STNameable aStoredTag:aStoredTags) {
 			if (aStoredTag == null) {
 //				System.err.println("Null stored tag!");
@@ -340,7 +341,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public  String findMatchingType (Collection<String> aTypesToBeMatched, STType anSTType) {
 		for (String aSpecifiedType:aTypesToBeMatched) {
 			matchedTypeOrTagAST = anSTType.getAST();
-				Boolean matches = matchesTypeUnifying(aSpecifiedType, anSTType.getName());
+//				Boolean matches = matchesTypeUnifying(aSpecifiedType, anSTType.getName());
+				Boolean matches = matchesAllAndedSpecificationTag(Arrays.asList(anSTType.getComputedTags()), aSpecifiedType);
+
 				if (matches == null) {
 					return null;
 				}
@@ -365,8 +368,14 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  }
  public static Boolean matchesStoredTag(String aStoredTag, String aDescriptor) {
  		return 
-// 				aDescriptor.equals(MATCH_ANYTHING) || 
- 				maybeStripQuotes(aStoredTag).matches(maybeStripAt(maybeStripQuotes(aDescriptor)));
+ 				aDescriptor.equals(MATCH_ANYTHING) || 
+ 				maybeStripAt( // some may add @ to the tag, remove at  the storage point
+ 						maybeStripQuotes(aStoredTag)).matches(
+								maybeStripAt(
+											maybeStripQuotes(aDescriptor)));
+// 						maybeStripQuotes(aStoredTag).matches(
+// 									maybeStripAt(
+// 											maybeStripQuotes(aDescriptor)));
  	
  }
 

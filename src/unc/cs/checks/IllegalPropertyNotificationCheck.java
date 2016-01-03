@@ -73,8 +73,23 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	DetailAST aTreeAST = getEnclosingTreeDeclaration(aPropertySpecifier);
     	DetailAST aTypeAST = getEnclosingTypeDeclaration(aPropertySpecifier);
     	String aTypeName = getName(aTypeAST);
+    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+    	if (anSTType == null) return null;
+
     	
-    	
+    	if (aPropertySpecifier.getType() == TokenTypes.IDENT) {
+    		String anIdentName = aPropertySpecifier.getText();
+    		
+    		DetailAST anRHS = anSTType.getDeclaredGlobalVariableToRHS(anIdentName);
+    		if (anRHS == null) {
+    		log (INVALID_KEY, aPropertySpecifier, aTreeAST, aPropertySpecifierText );
+    		return true; // do not wnat super class to give error with msgKey();
+    		} else {
+    			aPropertySpecifier = getLastDescendent(anRHS);
+    	    	aPropertySpecifierText = aPropertySpecifier.getText();
+
+    		}
+    	}
     	if (aPropertySpecifier.getType() != TokenTypes.STRING_LITERAL) {
 //    		log ( aPropertySpecifier.getLineNo(),MSG_KEY_2, aPropertySpecifierText);
     		log (INVALID_KEY, aPropertySpecifier, aTreeAST, aPropertySpecifierText );
@@ -83,10 +98,9 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	String aPropertyName = maybeStripQuotes(aPropertySpecifierText);
     	if (excludeProperties.contains(aPropertyName))
     			return true;
-//    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
-    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+//    	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 
-    	if (anSTType == null) return null;
+//    	if (anSTType == null) return null;
     	Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 		if (aPropertyInfos == null)
 			return null; // should not happen
