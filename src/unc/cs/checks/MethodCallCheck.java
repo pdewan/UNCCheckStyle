@@ -312,7 +312,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		}
 		
 		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) && !aSpecifiedTarget.startsWith(TAG_STRING)) { // we do not need to determine tags
-			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && aTypeName.matches(aSpecifiedTarget); 
+			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && toShortTypeName(aTypeName).matches(aSpecifiedTarget); 
 		 }
 //		 System.out.println ("Temp");
 		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);

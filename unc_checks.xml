@@ -291,6 +291,11 @@
 		<module name="ExpectedDeclaredSignatures">
 			<property name="expectedSignatures"
 				value="
+				Assignment1 = 
+					indexOf:String;char;int->int |
+					scanString:String->void |
+					computeSumAndProduct:->void |
+					print:->void,					
 				@InheritingBridgeScenePainter=paint:Graphics(.*)->void,
 				@ObservableBridgeScenePainter=
 					paint:Graphics(.*)->void |
@@ -397,6 +402,11 @@
 		<module name="MissingMethodCall">
 			<property name="expectedCalls"
 				value="
+				Assignment1 = 
+					indexOf:String;char;int->int |
+					scanString:String->void |
+					computeSumAndProduct:->void |
+					print:->void,	
 				@CommandInterpreter = 							
 					 		@Table!put:(.*);(.*) -> (.*) |
 					 		@BridgeScene!getArthur:->(.*) |
