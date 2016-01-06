@@ -17,38 +17,17 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
-	public static final String MSG_KEY = "beanProperties";
+public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
+	public static final String MSG_KEY = "globalsCheck";
 
-	protected Map<String, String[]> typeToProperty = new HashMap<>();
-//	public static final String SEPARATOR = ">";
+	protected Map<String, String[]> typeToGlobal = new HashMap<>();
 
-//	public void doVisitToken(DetailAST ast) {
-//		// System.out.println("Check called:" + MSG_KEY);
-//		switch (ast.getType()) {
-//		case TokenTypes.PACKAGE_DEF:
-//			visitPackage(ast);
-//			return;
-//		case TokenTypes.CLASS_DEF:
-//		case TokenTypes.INTERFACE_DEF:
-//			visitType(ast);
-//			return;
-//		default:
-//			System.err.println("Unexpected token");
-//		}
-//	}
-//
-//	@Override
-//	public int[] getDefaultTokens() {
-//		return new int[] { TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF,
-//				TokenTypes.PACKAGE_DEF };
-//	}
 
-	public void setExpectedPropertiesOfType(String aPattern) {
-		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
-		String aType = extractTypeAndProperties[0].trim();
-		String[] aProperties = extractTypeAndProperties[1].split("\\|");
-		typeToProperty.put(aType, aProperties);
+	public void setExpectedGlobalsOfType(String aPattern) {
+		String[] extractTypeAndVariables = aPattern.split(TYPE_SEPARATOR);
+		String aType = extractTypeAndVariables[0].trim();
+		String[] aGlobals = extractTypeAndVariables[1].split("\\|");
+		typeToGlobal.put(aType, aGlobals);
 	}
 
 	/*
@@ -57,9 +36,9 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	 * 
 	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
 	 */
-	public void setExpectedProperties(String[] aPatterns) {
+	public void setExpectedGlobals(String[] aPatterns) {
 		for (String aPattern : aPatterns) {
-			setExpectedPropertiesOfType(aPattern);
+			setExpectedGlobalsOfType(aPattern);
 		}
 
 	}
@@ -90,9 +69,9 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	// checkTagsOfType(aSpecifiedType, anSTType);
 	// }
 	// }
-	protected void logPropertyNotMatched(DetailAST aTreeAST, String aProperty,
+	protected void logGlobalNotMatched(DetailAST aTreeAST, String aGlobal,
 			String aType) {
-		log (aTreeAST, aTreeAST, aProperty, aType);
+		log (aTreeAST, aTreeAST, aGlobal, aType);
 //		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 //				.getFilename());
 //		if (aTreeAST == currentTree) {
@@ -107,10 +86,10 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 
 	}
 
-	public Boolean matchProperties(String[] aSpecifiedProperties,
+	public Boolean matchGlobals(String[] aSpecifiedGlobals,
 			Map<String, PropertyInfo> aPropertyInfos, DetailAST aTreeAST) {
 		boolean retVal = true;
-		for (String aSpecifiedProperty : aSpecifiedProperties) {
+		for (String aSpecifiedProperty : aSpecifiedGlobals) {
 			String[] aPropertyAndType = aSpecifiedProperty.split(":");
 			String aType = aPropertyAndType[1].trim();
 			String aPropertySpecification = aPropertyAndType[0].trim();
@@ -122,7 +101,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
 			if (!matched) {
 
-				logPropertyNotMatched(aTreeAST, aPropertySpecification, aType);
+				logGlobalNotMatched(aTreeAST, aPropertySpecification, aType);
 				retVal = false;
 			}
 		}
@@ -137,7 +116,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 			String aPropertySpecification = aPropertyAndType[0].trim();
 //			String[] aPropertiesPath = aPropertySpecification.split(".");			
 			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
-				logPropertyNotMatched(aTreeAST, aPropertySpecification, aType);
+				logGlobalNotMatched(aTreeAST, aPropertySpecification, aType);
 				retVal = false;
 			}
 		}
@@ -290,7 +269,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		if (anSTType.isEnum() ||
 				anSTType.isInterface()) // why duplicate checking for interfaces
 			return true;
-		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),
+		String aSpecifiedType = findMatchingType(typeToGlobal.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
@@ -298,8 +277,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 		if (aPropertyInfos == null) 
 			return null;
-		String[] aSpecifiedProperties = typeToProperty.get(aSpecifiedType);
-		return matchProperties(aSpecifiedProperties, aPropertyInfos, aTree);
+		String[] aSpecifiedProperties = typeToGlobal.get(aSpecifiedType);
+		return matchGlobals(aSpecifiedProperties, aPropertyInfos, aTree);
 	}
 
 	@Override

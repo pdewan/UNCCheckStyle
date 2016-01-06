@@ -233,11 +233,21 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return (STNameable[]) anInterfaces.toArray(emptyNameableArray);
 	}
+	protected Map<STMethod, String> methodToSignature = new HashMap();
 
 	public List<STMethod> signaturesToMethods(String[] aSignatures) {
 		List<STMethod> aMethods = new ArrayList();
+		// do not clear it, as this is set before any signatures
+//		methodToSignature.clear();
 		for (String aSignature : aSignatures) {
-			aMethods.add(signatureToMethodorOrConstructor(aSignature));
+			aSignature = aSignature.trim();
+			STMethod aMethod = signatureToMethodorOrConstructor(maybeStripComment(aSignature));
+			
+//			aMethods.add(signatureToMethodorOrConstructor(aSignature));
+			aMethods.add(aMethod);
+			if (!aMethod.getSignature().equals(aSignature))
+			methodToSignature.put(aMethod, aSignature);
+
 		}
 		return aMethods;
 	}
@@ -361,6 +371,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			return null; // either way we do not know if something bad happened
 		return result;
 		
+	}
+    public static void addAllNoDuplicates (List anOriginal, List aNew) {
+		for (Object newElement:aNew) {
+			if (anOriginal.contains(aNew))
+				continue;
+			anOriginal.add(newElement);
+		}
 	}
 	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
 //		int i = 0;

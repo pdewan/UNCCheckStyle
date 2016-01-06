@@ -360,6 +360,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  		return aString.substring(1, aString.length() -1);
  	return aString;
  }
+ public static String maybeStripComment(String aString) {	 
+	 	int aCommentStart = aString.indexOf("//");
+	 	if (aCommentStart < 0)
+	 		return aString;
+	 	return aString.substring(0, aCommentStart).trim();
+	 }
  public static String maybeStripAt(String aString) {
 	 if (aString.startsWith(TAG_STRING)) {
 			return aString.substring(1);
@@ -370,9 +376,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  		return 
  				aDescriptor.equals(MATCH_ANYTHING) || 
  				maybeStripAt( // some may add @ to the tag, remove at  the storage point
- 						maybeStripQuotes(aStoredTag)).matches(
-								maybeStripAt(
-											maybeStripQuotes(aDescriptor)));
+ 						maybeStripQuotes(
+ 								aStoredTag)).matches(
+ 											maybeStripAt(
+ 													maybeStripQuotes(
+ 															maybeStripComment(
+ 																	aDescriptor))));
 // 						maybeStripQuotes(aStoredTag).matches(
 // 									maybeStripAt(
 // 											maybeStripQuotes(aDescriptor)));
@@ -454,6 +463,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	
 }
  public Boolean unifyingMatchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
+	 aDescriptor = aDescriptor.trim();
 	 if (aDescriptor.equals(MATCH_ANYTHING)) {
 	 	 return true;
 	 } else if (aDescriptor.startsWith("$")) {

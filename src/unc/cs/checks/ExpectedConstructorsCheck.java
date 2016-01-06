@@ -5,6 +5,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +38,14 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 		return anSTType.getDeclaredConstructors();
 		
 	}
+	@Override
 	public Boolean matchMethod(
-			STMethod aSpecification, STMethod[] aMethods) {
-		if (aMethods.length == 0 && aSpecification.getParameterTypes().length == 0)
+			STMethod aSpecification, List<STMethod> aMethods) {
+//	public Boolean matchMethod(
+//			STMethod aSpecification, STMethod[] aMethods) {
+//		if (aMethods.length == 0 && aSpecification.getParameterTypes().length == 0)
+		if (aMethods.size() == 0 && aSpecification.getParameterTypes().length == 0)
+
 			return true;
 		return super.matchMethod(aSpecification, aMethods);
 //		for (STMethod aMethod : aMethods) {

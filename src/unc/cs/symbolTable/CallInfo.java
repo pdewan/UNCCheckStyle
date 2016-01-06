@@ -24,6 +24,6 @@ public interface CallInfo {
 
 	STType getCalledSTType();
 
-	STMethod getCalledMethod();
+	List<STMethod> getMatchingCalledMethods();
 
 }

@@ -114,6 +114,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public CallInfo[] getMethodsCalled() {
 		return methodsCalled;
 	}
+	
 	@Override
 	public List<STMethod> getLocalMethodsCalled() {
 		if (localMethodsCalled == null) {
@@ -122,13 +123,15 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 				if (ComprehensiveVisitCheck.toShortTypeName(aCall.getCalledType()).
 						equals(ComprehensiveVisitCheck.toShortTypeName(getDeclaringClass()))) {
 					int i = 0;
-					STMethod anSTMethod = aCall.getCalledMethod();
-					if (anSTMethod == null) {
+//					STMethod anSTMethod = aCall.getMatchingCalledMethods();
+					List<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
+
+					if (anSTMethods == null) {
 						System.err.println("Could not create local st method, misguessed target type:" + aCall);
 						continue;
 //						return null;
 					} 
-					aList.add(anSTMethod);
+					ComprehensiveVisitCheck.addAllNoDuplicates(aList, anSTMethods);
 											
 				}
 			}
@@ -142,11 +145,12 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			List<STMethod> aList = new ArrayList();
 			for (CallInfo aCall : methodsCalled) {
 
-				STMethod anSTMethod = aCall.getCalledMethod();
-				if (anSTMethod == null) {
+				List<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
+				if (anSTMethods == null) {
 					return null;
 				}
-				aList.add(anSTMethod);
+//				aList.add(anSTMethod);
+				ComprehensiveVisitCheck.addAllNoDuplicates(allMethodsCalled, anSTMethods);
 
 			}
 			allMethodsCalled = aList;

@@ -68,7 +68,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		for (String aSignatureWithTarget:aSignaturesWithTargets) {
 			
 //			Boolean retVal = matches(toShortTypeName (aCallingType.getName()),aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
-			Boolean retVal = matches(aCallingType,aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+			Boolean retVal = matches(aCallingType, aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
 
 			if (retVal == null)
 				return null;
@@ -117,7 +117,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			aCaller = aCallerAndRest[0].trim();
 			aSignatureWithTarget = aCallerAndRest[1];
 		}
-		int i = 0;
+//		int i = 0;
 //		STMethod aCallingMethod = aCallingSTType.getDeclaredMethod(aCallInfo.getCaller(), aCallInfo.getCallerParameterTypes().toArray(new String[]{}));
 		STMethod aCallingMethod = aCallInfo.getCallingMethod();
 
@@ -157,7 +157,11 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			
 //			System.out.println ("signature with only one element");
 			aSignature = aSignatureAndTarget[0];
+			if (aCalledType.equals("super")) {
+				aSpecifiedTarget = "super"; // so we can match super with either super or the called type
+			} else {
 			aSpecifiedTarget = aCallingType;
+			}
 //			aSpecifiedTarget = aCallInfo.getCalledType(); // assuming local call
 			// the following moved to below
 //			if (aSpecifiedTarget.contains("]") || 

@@ -5,6 +5,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -93,16 +94,24 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchMethods(List<STMethod> aSpecifications,
 			STMethod[] aMethods, DetailAST aTreeAST) {
 		boolean retVal = true;
+		List<STMethod> aMethodsCopy = new ArrayList<STMethod>(Arrays.asList(aMethods));
 		for (STMethod aSpecification : aSpecifications) {
 		
 //			String[] aPropertiesPath = aPropertySpecification.split(".");	
-			Boolean hasMatched = matchMethod(aSpecification, aMethods);
+			Boolean hasMatched = matchMethod(aSpecification, aMethodsCopy);
 			if (hasMatched == null)
 				return null;
 			if (!hasMatched) {
-				logSignatureNotMatched(aTreeAST, aSpecification.getSignature());
+				String anOriginalSignature = methodToSignature.get(aSpecification);
+				if (anOriginalSignature == null) {
+					anOriginalSignature = aSpecification.getSignature();
+				}
+				logSignatureNotMatched(aTreeAST, 
+						anOriginalSignature
+//						aSpecification.getSignature()
+						);
 				retVal = false;
-			}
+			} 
 		}
 		return retVal;
 	}
@@ -151,17 +160,18 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		return false;
 	}
 	public Boolean matchMethod(
-			STMethod aSpecification, STMethod[] aMethods) {
+			STMethod aSpecification, List<STMethod> aMethods) {
 		for (STMethod aMethod : aMethods) {
 			Boolean hasMatched = matchSignature(aSpecification, aMethod);
 			if (hasMatched == null)
 				return null;
-			if (hasMatched)
+			if (hasMatched) {
+				aMethods.remove(aMethod);
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
 				return true;
 
-			else 
+			} else 
 				continue;
 		}
 		return false;

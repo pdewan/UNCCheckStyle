@@ -94,6 +94,7 @@
 			<property name="expectedTypes"
 				value="
 			main.Assignment(.*), 
+			ScanningIterator //EC,
 			@ScannerBean, 
 			@Number, 
 			@Word, 
@@ -127,8 +128,8 @@
 			@Table, 
 			@CommandInterpreter,
 			@ConsoleSceneView,
-			@InheritingBridgeScenePainter,
-			@ObservableBridgeScenePainter,
+			@InheritingBridgeScenePainter // No EC,
+			@ObservableBridgeScenePainter// EC,
 			@PaintListener,
 			@BridgeSceneController,
 			@CommandInterpreterController,
@@ -291,8 +292,10 @@
 		<module name="ExpectedDeclaredSignatures">
 			<property name="expectedSignatures"
 				value="
+				IteratingScanner =
+				   	indexOf:String;char;int->int // EC,				   	
 				Assignment1 = 
-					indexOf:String;char;int->int |
+					indexOf:String;char;int->int // No EC|
 					scanString:String->void |
 					computeSumAndProduct:->void |
 					print:->void,					
@@ -333,6 +336,7 @@
 		<module name="ExpectedInterfaces">
 			<property name="expectedInterfaces"
 				value="
+				ScanningIterator=Iterator,
 				@Angle= @Angle, 
 				@Avatar=@Avatar, 
 				@ScannerBean = @ScannerBean,
@@ -402,11 +406,21 @@
 		<module name="MissingMethodCall">
 			<property name="expectedCalls"
 				value="
-				Assignment1 = 
-					indexOf:String;char;int->int |
-					scanString:String->void |
-					computeSumAndProduct:->void |
-					print:->void,	
+				ScanningIterator =
+				    next#indexOf:String;char;int->int |
+					indexOf#String!charAt:int->char  |
+					indexOf#String!length:->void  ,	
+					
+				Assignment(.*) = 
+					scanString#indexOf:String;char;int->int // No EC |
+					scanString#String!length:->void // No EC |
+					iteratingScanString#Iterator!next:->String // EC |
+					iteratingScanString#Iterator!hasNext:->void //EC |					
+					indexOf#String!charAt:int->char // No EC  |
+					indexOf#String!length:->void // No EC  |					
+					main#scanString:String->void |
+					main#computeSumAndProduct:->void |
+					main#print:->void,	
 				@CommandInterpreter = 							
 					 		@Table!put:(.*);(.*) -> (.*) |
 					 		@BridgeScene!getArthur:->(.*) |
@@ -444,7 +458,7 @@
 				 	setHeight#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
 				 	,
 				 @ConsoleSceneView = 
-				 						(.*)!addPropertyChangeListener:PropertyChangeListener->void) |
+				 						(.*)!addPropertyChangeListener:PropertyChangeListener->void |
 				 						propertyChange#(.*)!(.*)println:*->void |
 				 						(.*)!getArthur:-> @Avatar |
 				 						(.*)!getLancelot:-> @Avatar |
@@ -457,7 +471,8 @@
 				 						(.*)!getText:->@STRING_PATTERN
 				 						,
 				 @InheritingBridgeScenePainter = 
-				 						(.*)!addPropertyChangeListener:PropertyChangeListener->void) |
+				 						paint#Graphics(.*)!draw(.*):*->(.*) |
+				 						paint#super!paint:Graphics->void(.*) |
 				 						(.*)!getArthur:-> @Avatar |
 				 						(.*)!getLancelot:-> @Avatar |
 				 						(.*)!getRobin:-> @Avatar |
@@ -465,8 +480,9 @@
 				 						(.*)!getArms:-> @Angle|
 				 						(.*)!getLegs:-> @Angle |
 				 						(.*)!getLeftLine:-> @LINE_PATTERN |
-				 						(.*)!getRightLine:-> @LINE_PATTERN |
-				 						(.*)!getText:->@STRING_PATTERN,
+				 						(.*)!getRightLine:-> @LINE_PATTERN |				 						
+				 						(.*)!getText:->@STRING_PATTERN |
+				 						propertyChange#repaint:->void,
 				 
 				 @ObservableBridgeScenePainter =
 				 						paint#PaintListener!paint:Graphics->void
@@ -480,9 +496,7 @@
 				 @ObservableCommandInterpreter = 
 				 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
 				 						,
-				 @InheritingBridgeScenePainter = 
-				 	Graphics(.*)!draw(.*):*->(.*) |
-				 	super!paint:Graphics->void(.*),
+				 
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
 				 @AnimatingCommand = 

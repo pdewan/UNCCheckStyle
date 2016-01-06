@@ -21,6 +21,8 @@ import unc.cs.symbolTable.SymbolTableFactory;
 
 public  class MissingMethodCallCheck extends MethodCallCheck {
 	public static final String MSG_KEY = "missingMethodCall";
+	public static final String WRONG_CALLER = "wrongCaller";
+
 	
 	@Override
 	public int[] getDefaultTokens() {
@@ -83,18 +85,22 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //		List<CallInfo> aCalls = anSTType.getMethodsCalled();
 		// maybe have a separate check for local calls?
 		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
+		// for efficiency, let us remove mapped calls
+
 
 		if (aCalls == null)
 			return null;
+		List<CallInfo> aCallsToBeChecked = new ArrayList(aCalls);
+
 		String[] aSpecifications = typeToSignaturesWithTargets.get(specifiedType);
 		boolean returnNull = false; 
 //		int i = 0;
 		for (String aSpecification:aSpecifications) {
 			boolean found = false;
-			for (CallInfo aCallInfo:aCalls ) {
+			for (CallInfo aCallInfo:aCallsToBeChecked ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
-				Boolean matches = matches(anSTType, aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
+				Boolean matches = matches(anSTType, maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
 
 //				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
 				if (matches == null) {
@@ -109,6 +115,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				}
 				if (matches) {
 					found = true;
+					aCallsToBeChecked.remove(aCallInfo);
 					break;
 				}				
 			}
