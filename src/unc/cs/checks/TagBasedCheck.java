@@ -655,8 +655,9 @@ public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 public static Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
 		return true;
-	if (aShortClassName.contains("]") || // array element
-			aShortClassName.contains("[") ||
+	if (
+//			aShortClassName.contains("]") || // array element
+//			aShortClassName.contains("[") ||
 			aShortClassName.contains("(") ||// casts
 			aShortClassName.contains(")"))
 //		return false;

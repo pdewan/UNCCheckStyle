@@ -115,7 +115,8 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				}
 				if (matches) {
 					found = true;
-					aCallsToBeChecked.remove(aCallInfo);
+					// same call may be made directly or indirectly, and can cause problems if removed
+//					aCallsToBeChecked.remove(aCallInfo);
 					break;
 				}				
 			}

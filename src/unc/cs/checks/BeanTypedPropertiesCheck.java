@@ -160,13 +160,18 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	public Boolean matchProperty(String aSpecifiedType,
 			String aSpecifiedProperty, Map<String, PropertyInfo> aPropertyInfos) {
 		for (String aProperty : aPropertyInfos.keySet()) {
-			if (aSpecifiedProperty.equalsIgnoreCase(aProperty))
+			if (aSpecifiedProperty.equalsIgnoreCase(aProperty)) {
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
-				return matchType(aSpecifiedType, aProperty, aPropertyInfos);
+				Boolean retVal = matchType(aSpecifiedType, aProperty, aPropertyInfos);
+				// may want to match a property against many specifications as in ClearableHistory
+//
+//				if (retVal != null && retVal) {
+////					aPropertyInfos.remove(aProperty);
+//				}
+				return retVal;
+			}
 
-			else
-				continue;
 		}
 		return false;
 	}
@@ -299,7 +304,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 		if (aPropertyInfos == null) 
 			return null;
 		String[] aSpecifiedProperties = typeToProperty.get(aSpecifiedType);
-		return matchProperties(aSpecifiedProperties, aPropertyInfos, aTree);
+		Map<String, PropertyInfo> anUmmatchedPropertyInfos = new HashMap(aPropertyInfos);
+		return matchProperties(aSpecifiedProperties, anUmmatchedPropertyInfos, aTree);
 	}
 
 	@Override

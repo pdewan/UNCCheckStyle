@@ -104,7 +104,7 @@ public class ASymbolTable implements SymbolTable{
 			return null;
 		}
 		if (aFullNames.size()> 1) {
-			System.err.println("Ambiguous short type names in " + aFullNames + ", returning null:" + aTypeName);
+//			System.err.println("Ambiguous short type names in " + aFullNames + ", returning null:" + aTypeName);
 			return null;
 		}
 		return getSTClassByFullName(aFullNames.get(0));

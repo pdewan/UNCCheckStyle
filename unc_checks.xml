@@ -94,28 +94,28 @@
 			<property name="expectedTypes"
 				value="
 			main.Assignment(.*), 
-			ScanningIterator //EC,
+			ScanningIterator//EC,
 			@ScannerBean, 
 			@Number, 
 			@Word, 
 			@Quote, 
 			@Start, 
 			@End, 
-			@Plus, 
-			@Minus,
+			@Plus//EC, 
+			@Minus//EC,
 			@move, 
 			@say, 
-			@rotateLeftArm, 
-			@rotateRightArm,  
+			@rotateLeftArm//EC, 
+			@rotateRightArm//EC,  
 			@repeat, 
-			@define, 
-			@call,  
-			@thread, 
-			@wait, 
-			@proceedAll,  
-			@sleep,  
-			@undo, 
-			@redo, 
+			@define//EC, 
+			@call//EC,  
+			@thread//EC, 
+			@wait//EC, 
+			@proceedAll//EC,  
+			@sleep//EC,  
+			@undo//EC, 
+			@redo//EC, 
 			@approach,
 			@pass,
 			@fail,
@@ -128,8 +128,8 @@
 			@Table, 
 			@CommandInterpreter,
 			@ConsoleSceneView,
-			@InheritingBridgeScenePainter // No EC,
-			@ObservableBridgeScenePainter// EC,
+			@InheritingBridgeScenePainter//No EC,
+			@ObservableBridgeScenePainter//EC,
 			@PaintListener,
 			@BridgeSceneController,
 			@CommandInterpreterController,
@@ -143,30 +143,35 @@
 			@ApproachCommand,
 			@RepeatCommand,
 			@CommandList,
-			@RotateLeftArm,
-			@RotateRightArm,
-			@Sleep,
-			@Define,
-			@Call,
-			@Thread,			
-			@DefineCommand,
-			@CallCommand,
-			@ThreadCommand,
+			@RotateLeftArm//EC,
+			@RotateRightArm//EC,
+			@Sleep//EC,
+			@Define//EC,
+			@Call//EC,
+			@Thread//EC,			
+			@DefineCommand//EC,
+			@CallCommand//EC,
+			@ThreadCommand//EC,
 			@Parser,
 			@ScanningException,
 			@ParsingException,
 			@BroadcastingClearanceManager,			
 			@SingletonsCreator,
 			@CustomSwingTextFieldFactory,
-			@UndoCommand,
-			@RedoCommand
+			@UndoCommand//EC,
+			@RedoCommand//EC
 			
 			" />
 		</module>
+		
 
 		<module name="ExpectedGetters">
 			<property name="expectedProperties"
-				value="@ScannerBean= ScannedString:String | Tokens:.*\[\] | TokenList:@LIST_PATTERN | TokenList:@ClearableHistory, 
+				value="@ScannerBean= 
+				ScannedString:String | 
+				Tokens:.*\[\] | 
+				TokenList:@ClearableHistory//EC |
+				TokenList:@LIST_PATTERN,				
 			@Word= Input:String | Value:String, 
 			@Number= Input:String | Value:int, 
 			@Quote= Input:String, 
@@ -174,7 +179,9 @@
 			@End= Input:String, 
 			@Plus= Input:String, 
 			@Minus= Input:String, 
-			@Angle= LeftLine:@LINE_PATTERN | RightLine:@LINE_PATTERN, 
+			@Angle= 
+				LeftLine:@LINE_PATTERN | 
+				RightLine:@LINE_PATTERN, 
 			@Avatar= Text:@STRING_PATTERN | Head:@IMAGE_PATTERN | Arms:@Angle | Legs:@Angle, 
 			@BridgeScene= Arthur:@Avatar | Galahad:@Avatar | Lancelot:@Avatar | Robin:@Avatar | Guard:@Avatar | Gorge:* | KnightArea:* | GuardArea:* | Occupied:boolean |KnightTurn:boolean, 
 			@CommandInterpreter = Command:String,
@@ -187,16 +194,24 @@
 				Pass: JButton |
 				Fail: JButton,
 			@ProgressBarCreator =  ProgressBar:JProgressBar | Slider:JSlider,
-			@Parser = CommandText:String | CommandObject:Runnable | Errors:*,
+			@Parser = 
+				CommandText:String | 
+				CommandObject:Runnable | 
+				Errors:*//EC,
 			
 			" />
 		</module>
-		<module name="ExpectedSetters">
-			<property name="expectedProperties"
+		
+		<module name="ExpectedGlobals">
+			<property name="expectedGlobals"
 				value="
-			@ScannerBean= ScannedString:String,
-			@CommandInterpreter = Command:String,
-			@Parser = CommandText:String
+			Assignment1 = 
+				(.*):int\[\] |
+				(.*):int |
+				(.*):int |
+				(.*):int,
+			ScanningIterator =
+				(.*):String, 
 			" />
 		</module>
 
@@ -246,9 +261,9 @@
 				 	@parseRotateLeftArm:*->Runnable |
 				 	@parseRotateRightArm:*->Runnable |
 				 	@parseSleep:*->Runnable |
-					@parseDefine:*->Runnable |
-					@parseCall:*->Runnable |
-					@parseThread:*->Runnable,
+					@parseDefine:*->Runnable//EC |
+					@parseCall:*->Runnable//EC |
+					@parseThread:*->Runnable//EC,
 				@SingletonsCreator =
 					@scannerFactoryMethod:->@ScannerBean |
 					@parserFactoryMethod:->@Parser |
@@ -295,7 +310,8 @@
 				IteratingScanner =
 				   	indexOf:String;char;int->int // EC,				   	
 				Assignment1 = 
-					indexOf:String;char;int->int // No EC|
+					main:String\[\]->void |
+					indexOf:String;char;int->int // No EC |
 					scanString:String->void |
 					computeSumAndProduct:->void |
 					print:->void,					
@@ -409,17 +425,18 @@
 				ScanningIterator =
 				    next#indexOf:String;char;int->int |
 					indexOf#String!charAt:int->char  |
-					indexOf#String!length:->void  ,	
+					indexOf#String!length:->int  ,	
 					
 				Assignment(.*) = 
 					scanString#indexOf:String;char;int->int // No EC |
-					scanString#String!length:->void // No EC |
+					scanString#String!length:->int// No EC |
 					iteratingScanString#Iterator!next:->String // EC |
 					iteratingScanString#Iterator!hasNext:->void //EC |					
 					indexOf#String!charAt:int->char // No EC  |
-					indexOf#String!length:->void // No EC  |					
+					indexOf#String!length:->int // No EC  |					
 					main#scanString:String->void |
 					main#computeSumAndProduct:->void |
+					print#System.out.print:->void |
 					main#print:->void,	
 				@CommandInterpreter = 							
 					 		@Table!put:(.*);(.*) -> (.*) |

@@ -735,6 +735,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 
+
 	public void visitMethodOrConstructor(DetailAST methodDef) {
 		// if (currentMethodName != null) {
 		// String[] aParameterTypes = currentMethodParameterTypes.toArray(new
@@ -766,16 +767,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		currentMethodIsPublic = isPublic(methodDef);
 		currentMethodIsInstance = !isStatic(methodDef);
 		if (!currentMethodIsConstructor) {
-			DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
-			DetailAST firstChild = typeDef.getFirstChild();
-			if (firstChild.getType() == TokenTypes.ARRAY_DECLARATOR) {
-				// if (firstChild.getText().startsWith("[")) {
-				currentMethodType = firstChild.getFirstChild().getText() + "[]";
-			} else {
-				FullIdent aTypeFullIdent = FullIdent
-						.createFullIdent(firstChild);
-				currentMethodType = aTypeFullIdent.getText();
-			}
+//			DetailAST typeDef = methodDef.findFirstToken(TokenTypes.TYPE);
+			currentMethodType = typeASTToString(methodDef);
+//			DetailAST firstChild = typeDef.getFirstChild();
+//			if (firstChild.getType() == TokenTypes.ARRAY_DECLARATOR) {
+//				// if (firstChild.getText().startsWith("[")) {
+//				currentMethodType = firstChild.getFirstChild().getText() + "[]";
+//			} else {
+//				FullIdent aTypeFullIdent = FullIdent
+//						.createFullIdent(firstChild);
+//				currentMethodType = aTypeFullIdent.getText();
+//			}
 		}
 		currentMethodAST = methodDef;
 		maybeVisitVisible(methodDef);
@@ -920,28 +922,28 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public void visitVariableDef(DetailAST paramOrVarDef) {
-//		if (!checkIncludeExcludeTagsOfCurrentType())
-//			return;
+
 		visitVariableOrParameterDef(paramOrVarDef);
-		if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
-			final DetailAST aTypeParent = paramOrVarDef
-					.findFirstToken(TokenTypes.TYPE);
-			FullIdent aTypeIdent = FullIdent.createFullIdentBelow(aTypeParent);
-			final DetailAST anIdentifier = paramOrVarDef
-					.findFirstToken(TokenTypes.IDENT);
-			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
-			if (aMaybeAssign != null && aMaybeAssign.getType() == TokenTypes.ASSIGN) {
-				DetailAST anRHS = aMaybeAssign.getFirstChild();
-				globalVariableToRHS.put(anIdentifier.getText(),anRHS);
-			}
-		
-;
-			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
-					anIdentifier.getText(), aTypeIdent.getText());
-			globalVariables.add(anSTNameable);
-			globalVariableToType.put(anIdentifier.getText(),
-					aTypeIdent.getText());
-		}
+		// code moved to addToScope
+//		if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
+//			final DetailAST aTypeParent = paramOrVarDef
+//					.findFirstToken(TokenTypes.TYPE);
+//			FullIdent aTypeIdent = FullIdent.createFullIdentBelow(aTypeParent);
+//			final DetailAST anIdentifier = paramOrVarDef
+//					.findFirstToken(TokenTypes.IDENT);
+//			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+//			if (aMaybeAssign != null && aMaybeAssign.getType() == TokenTypes.ASSIGN) {
+//				DetailAST anRHS = aMaybeAssign.getFirstChild();
+//				globalVariableToRHS.put(anIdentifier.getText(),anRHS);
+//			}
+//		
+//;
+//			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
+//					anIdentifier.getText(), aTypeIdent.getText());
+//			globalVariables.add(anSTNameable);
+//			globalVariableToType.put(anIdentifier.getText(),
+//					aTypeIdent.getText());
+//		}
 
 	}
 
@@ -966,10 +968,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public static String getTypeName(DetailAST paramOrVarDef) {
 		DetailAST aTypeAST = paramOrVarDef.findFirstToken(TokenTypes.TYPE);
-//		if (aTypeAST == null)
-//			aTypeAST =  paramOrVarDef.findFirstToken(TokenTypes.CLASS_DEF);
-//		if (aTypeAST == null)
-//			aTypeAST =  paramOrVarDef.findFirstToken(TokenTypes.INTERFACE_DEF);
+//		
 		DetailAST aSpecificTypeAST = aTypeAST.getFirstChild();
 		if (aSpecificTypeAST.getType() == TokenTypes.ARRAY_DECLARATOR) {
 			String anElementType = FullIdent.createFullIdentBelow(
@@ -982,8 +981,25 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				aTypeAST).getText();
 
 	}
+	
+	public static String typeASTToString (DetailAST parentAST) {
+		DetailAST typeDef = parentAST.findFirstToken(TokenTypes.TYPE);
+
+		DetailAST firstChild = typeDef.getFirstChild();
+		String result;
+		if (firstChild.getType() == TokenTypes.ARRAY_DECLARATOR) {
+			// if (firstChild.getText().startsWith("[")) {
+			result = firstChild.getFirstChild().getText() + "[]";
+		} else {
+			FullIdent aTypeFullIdent = FullIdent
+					.createFullIdent(firstChild);
+			result = aTypeFullIdent.getText();
+		}
+		return result;
+	}
 
 	public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope) {
+		int i = 0;
 		// final DetailAST aType =
 		// paramOrVarDef.findFirstToken(TokenTypes.TYPE);
 		final DetailAST anIdentifier = paramOrVarDef
@@ -991,17 +1007,33 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
 		// final FullIdent anIdentifierType =
 		// FullIdent.createFullIdentBelow(aType);
+		String aTypeName = getTypeName(paramOrVarDef);
 
-		aScope.put(anIdentifier.getText(), getTypeName(paramOrVarDef));
+		aScope.put(anIdentifier.getText(), aTypeName);
+		if (aScope == typeScope) {
+//			final DetailAST aTypeParent = paramOrVarDef
+//					.findFirstToken(TokenTypes.TYPE);
+//			FullIdent aTypeIdent = FullIdent.createFullIdentBelow(aTypeParent);
+//			final DetailAST anIdentifier = paramOrVarDef
+//					.findFirstToken(TokenTypes.IDENT);
+			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+			if (aMaybeAssign != null && aMaybeAssign.getType() == TokenTypes.ASSIGN) {
+				DetailAST anRHS = aMaybeAssign.getFirstChild();
+				globalVariableToRHS.put(anIdentifier.getText(),anRHS);
+			}
+		
+;
+			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
+					anIdentifier.getText(), aTypeName);
+			globalVariables.add(anSTNameable);
+			globalVariableToType.put(anIdentifier.getText(),
+					aTypeName);
+			
+		}
 	}
 
 	public void addToTypeScope(DetailAST paramOrVarDef) {
-		// final DetailAST aType =
-		// paramOrVarDef.findFirstToken(TokenTypes.TYPE);
-		// final DetailAST anIdentifier =
-		// paramOrVarDef.findFirstToken(TokenTypes.IDENT);
-		// final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
-		// typeScope.put(anIdentifier.getText(), anIdentifierType.getText());
+	
 		addToScope(paramOrVarDef, typeScope);
 	}
 

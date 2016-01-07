@@ -7,6 +7,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +18,17 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
-	public static final String MSG_KEY = "globalsCheck";
+public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
+	public static final String MSG_KEY = "expectedGlobals";
 
 	protected Map<String, String[]> typeToGlobal = new HashMap<>();
-
+	public int[] getDefaultTokens() {
+		return new int[] {
+//				TokenTypes.CLASS_DEF, 
+//				TokenTypes.INTERFACE_DEF, 
+//				TokenTypes.PACKAGE_DEF
+				};
+	}
 
 	public void setExpectedGlobalsOfType(String aPattern) {
 		String[] extractTypeAndVariables = aPattern.split(TYPE_SEPARATOR);
@@ -30,12 +37,7 @@ public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
 		typeToGlobal.put(aType, aGlobals);
 	}
 
-	/*
-	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int
-	 * |Height:int,
-	 * 
-	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
-	 */
+	
 	public void setExpectedGlobals(String[] aPatterns) {
 		for (String aPattern : aPatterns) {
 			setExpectedGlobalsOfType(aPattern);
@@ -43,146 +45,62 @@ public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
 
 	}
 
-	// public void visitType(DetailAST ast) {
-	// super.visitType(ast);
-	// }
-	// public void doVisitToken(DetailAST ast) {
-	// // System.out.println("Check called:" + MSG_KEY);
-	// switch (ast.getType()) {
-	// case TokenTypes.PACKAGE_DEF:
-	// visitPackage(ast);
-	// return;
-	// case TokenTypes.CLASS_DEF:
-	// visitType(ast);
-	// return;
-	// case TokenTypes.INTERFACE_DEF:
-	// visitType(ast);
-	// return;
-	// default:
-	// System.err.println("Unexpected token");
-	// }
-	// }
-
-	// public static Boolean matchType (Set<String> aSpecifiedTypes, STType
-	// anSTType) {
-	// for (String aSpecifiedType:aSpecifiedTypes) {
-	// checkTagsOfType(aSpecifiedType, anSTType);
-	// }
-	// }
+	
 	protected void logGlobalNotMatched(DetailAST aTreeAST, String aGlobal,
 			String aType) {
 		log (aTreeAST, aTreeAST, aGlobal, aType);
-//		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
-//				.getFilename());
-//		if (aTreeAST == currentTree) {
-//			DetailAST aLoggedAST = aTreeAST;
-//
-//			aLoggedAST = aTreeAST;
-//
-//			log (aLoggedAST.getLineNo(), msgKey(), aProperty, aType, aSourceName);
-//		} else {
-//			log(0, msgKey(), aProperty, aType, aSourceName);
-//		}
 
 	}
 
 	public Boolean matchGlobals(String[] aSpecifiedGlobals,
-			Map<String, PropertyInfo> aPropertyInfos, DetailAST aTreeAST) {
+			STType anSTType, DetailAST aTreeAST) {
 		boolean retVal = true;
-		for (String aSpecifiedProperty : aSpecifiedGlobals) {
-			String[] aPropertyAndType = aSpecifiedProperty.split(":");
-			String aType = aPropertyAndType[1].trim();
-			String aPropertySpecification = aPropertyAndType[0].trim();
+		Set<String> anUnmatchedGlobals = new HashSet(anSTType.getDeclaredGlobals());
+		for (String aSpecifiedGlobal : aSpecifiedGlobals) {
+			String[] aGlobalAndType = aSpecifiedGlobal.split(":");
+			String aType = aGlobalAndType[1];
+			String aVariableSpecification = aGlobalAndType[0].trim();
 //			String[] aPropertiesPath = aPropertySpecification.split(".");
-			Boolean matched = matchProperty(aType, maybeStripComment(aPropertySpecification), aPropertyInfos);
+			Boolean matched = matchGlobal(aVariableSpecification, maybeStripComment(aType), anUnmatchedGlobals, anSTType);
 			if (matched ==null) {
 				return null;
 			}
 //			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
 			if (!matched) {
 
-				logGlobalNotMatched(aTreeAST, aPropertySpecification, aType);
+				logGlobalNotMatched(aTreeAST, aVariableSpecification, aType);
 				retVal = false;
 			}
 		}
 		return retVal;
 	}
-	public Boolean matchProperties(String[] aSpecifiedProperties,
-			Collection <PropertyInfo> aPropertyInfos, DetailAST aTreeAST) {
-		boolean retVal = true;
-		for (String aSpecifiedProperty : aSpecifiedProperties) {
-			String[] aPropertyAndType = aSpecifiedProperty.split(":");
-			String aType = aPropertyAndType[1].trim();
-			String aPropertySpecification = aPropertyAndType[0].trim();
-//			String[] aPropertiesPath = aPropertySpecification.split(".");			
-			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
-				logGlobalNotMatched(aTreeAST, aPropertySpecification, aType);
-				retVal = false;
+	
+
+	public Boolean matchGlobal(String aVariableSpecification,
+			String aTypeSpecification, Set<String> anUnmatchedGlobals, STType anSTType) {
+		Set<String> aSet = anSTType.getDeclaredGlobals();
+		int i = 0;
+		for (String aVariable : anUnmatchedGlobals) {
+			if (aVariable.matches(aVariableSpecification)) {
+				String anActualType = anSTType.getDeclaredGlobalVariableType(aVariable);
+				
+				// return
+				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
+				Boolean retVal = matchesType(aTypeSpecification, anActualType);
+						
+				if (retVal == null)
+					return null;
+				if (retVal) {
+					anUnmatchedGlobals.remove(aVariable);
+					return true;
+				} 
+
 			}
 		}
-		return retVal;
-	}
-	public List<PropertyInfo> matchedOrUnMatchedProperties(List<String> aSpecifiedProperties,
-			Collection <PropertyInfo> aPropertyInfos, boolean aDoMatch) {
-		List<PropertyInfo> retVal = new ArrayList();
-		for (PropertyInfo aProperty : aPropertyInfos) {
-		
-//			String[] aPropertiesPath = aPropertySpecification.split(".");	
-			Boolean aMatched = matchProperty(aSpecifiedProperties, aProperty);
-			if (aMatched && aDoMatch || !aMatched && !aDoMatch) {
-				retVal.add(aProperty);
-			}
-		}
-		return retVal;
-	}
-
-	public Boolean matchProperty(String aSpecifiedType,
-			String aSpecifiedProperty, Map<String, PropertyInfo> aPropertyInfos) {
-		for (String aProperty : aPropertyInfos.keySet()) {
-			if (aSpecifiedProperty.equalsIgnoreCase(aProperty))
-				// return
-				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
-				return matchType(aSpecifiedType, aProperty, aPropertyInfos);
-
-			else
-				continue;
-		}
 		return false;
 	}
-	public Boolean matchProperty(String aSpecifiedType,
-			String aSpecifiedProperty, Collection<PropertyInfo> aPropertyInfos) {
-		for (PropertyInfo aProperty : aPropertyInfos) {
-			if (unifyingMatchesNameVariableOrTag(aSpecifiedProperty, aProperty.getName(), null))
-				// return
-				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
-				return matchType(aSpecifiedType, aProperty);
 
-			else
-				continue;
-		}
-		return false;
-	}
-	public Boolean matchProperty (String aSpecification, PropertyInfo aProperty) {
-		String[] aPropertyAndType = aSpecification.split(":");
-		String aTypeSpecification = aPropertyAndType[1].trim();
-		String aPropertySpecification = aPropertyAndType[0].trim();
-		return unifyingMatchesNameVariableOrTag(aTypeSpecification, aProperty.getType(), null) &&
-				unifyingMatchesNameVariableOrTag(aPropertySpecification, aProperty.getName(), null);
-	}
-	public Boolean matchProperty(
-			List<String> aSpecifications, PropertyInfo aProperty) {
-		for (String aSpecification : aSpecifications) {
-			
-			if (matchProperty(aSpecification, aProperty))
-				// return
-				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
-				return true;
-
-			else 
-				continue;
-		}
-		return false;
-	}
+	
 
 //	public Boolean matchType(String aSpecifiedType, String aProperty,
 //			Map<String, PropertyInfo> aPropertyInfos) {
@@ -191,70 +109,12 @@ public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
 //
 //	}
 	
-	public  Boolean matchType(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos) {
-		return matchType(aSpecifiedType, aPropertyInfos.get(aProperty) );
-	}
-	public   Boolean matchType(String aSpecifiedType, PropertyInfo aProperty) {
-		return unifyingMatchesNameVariableOrTag(aSpecifiedType, aProperty.getName(), null);
+
+	public   Boolean matchType(String aSpecifiedType, String anActualType) {
+		return unifyingMatchesNameVariableOrTag(aSpecifiedType, anActualType, null);
 	}
 		
 	
-
-	public Boolean matchGetter(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos) {
-		// yuk, sometimes using a different method
-		return super.matchesTypeUnifying(aSpecifiedType, aPropertyInfos.get(aProperty)
-				.getGetter().getReturnType());
-//		return aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty)
-//				.getGetter().getReturnType());
-
-	}
-	public Boolean matchGetter(String aSpecifiedType, PropertyInfo aProperty) {
-		// yuk, sometimes using a different method
-//		return super.matchesType(aSpecifiedType, aProperty
-//				.getGetter().getReturnType());
-		return super.matchesTypeUnifying(aSpecifiedType, aProperty.getType());
-
-
-	}
-
-	// public boolean match(String aSpecifiedType, String aSpecifiedPoperty,
-	// Map<String, PropertyInfo> aPropertyInfos) {
-	// return matchGetter(aSpecifiedType, aSpecifiedPoperty, aPropertyInfos);
-	// }
-	public Boolean matchSetter(String aSpecifiedType, String aProperty,
-			Map<String, PropertyInfo> aPropertyInfos) {
-		STMethod aSetter = aPropertyInfos.get(aProperty)
-		.getSetter();		
-		Boolean matches = matchesTypeUnifying(aSpecifiedType, aSetter.getParameterTypes()[0]);
-		if (matches == null)
-			return null;
-
-		return aSetter != null && 
-//				aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
-				matches;
-//				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
-
-	}
-	public Boolean matchSetter(String aSpecifiedType, PropertyInfo aProperty) {
-		STMethod aSetter = aProperty
-		.getSetter();	
-		if (aSetter == null || aSetter.getParameterTypes() == null) {
-			return false;
-		}
-		Boolean matches = matchesTypeUnifying(aSpecifiedType, aSetter.getParameterTypes()[0]);
-		if (matches == null)
-			return null;
-
-		return aSetter != null && 
-//				aSpecifiedType.equalsIgnoreCase(aSetter.getParameterTypes()[0]);
-//				 matchesType(aSpecifiedType, aSetter.getParameterTypes()[0]);
-				matches;
-		
-
-	}
-
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
@@ -273,12 +133,14 @@ public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
+		Set<String> aDeclaredGlobals = anSTType.getDeclaredGlobals();
+		
 
-		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
-		if (aPropertyInfos == null) 
+		if (aDeclaredGlobals == null) // should not happen
 			return null;
-		String[] aSpecifiedProperties = typeToGlobal.get(aSpecifiedType);
-		return matchGlobals(aSpecifiedProperties, aPropertyInfos, aTree);
+		String[] aSpecifiedGlobals = typeToGlobal.get(aSpecifiedType);
+
+		return matchGlobals(aSpecifiedGlobals, anSTType, aTree);
 	}
 
 	@Override
@@ -287,14 +149,14 @@ public abstract class ExpectedGlobalsCheck extends BeanPropertiesCheck {
 		return MSG_KEY;
 	}
 
-//	public void doFinishTree(DetailAST ast) {
-//		// STType anSTType =
-//		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
-//		// for (STMethod aMethod: anSTType.getMethods()) {
-//		// visitMethod(anSTType, aMethod);
-//		// }
-//		maybeAddToPendingTypeChecks(ast);
-//		super.doFinishTree(ast);
-//
-//	}
+	public void doFinishTree(DetailAST ast) {
+		// STType anSTType =
+		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		// for (STMethod aMethod: anSTType.getMethods()) {
+		// visitMethod(anSTType, aMethod);
+		// }
+		maybeAddToPendingTypeChecks(ast);
+		super.doFinishTree(ast);
+
+	}
 }
