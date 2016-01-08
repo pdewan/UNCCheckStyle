@@ -21,7 +21,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "expectedGlobals";
 
-	protected Map<String, String[]> typeToGlobal = new HashMap<>();
+//	protected Map<String, String[]> typeToSpecification = new HashMap<>();
 	public int[] getDefaultTokens() {
 		return new int[] {
 //				TokenTypes.CLASS_DEF, 
@@ -30,18 +30,19 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 				};
 	}
 
-	public void setExpectedGlobalsOfType(String aPattern) {
-		String[] extractTypeAndVariables = aPattern.split(TYPE_SEPARATOR);
-		String aType = extractTypeAndVariables[0].trim();
-		String[] aGlobals = extractTypeAndVariables[1].split("\\|");
-		typeToGlobal.put(aType, aGlobals);
-	}
+//	public void setExpectedSpecificationOfType(String aPattern) {
+//		String[] extractTypeAndSpecification = aPattern.split(TYPE_SEPARATOR);
+//		String aType = extractTypeAndSpecification[0].trim();
+//		String[] aGlobals = extractTypeAndSpecification[1].split("\\|");
+//		typeToSpecification.put(aType, aGlobals);
+//	}
 
 	
 	public void setExpectedGlobals(String[] aPatterns) {
-		for (String aPattern : aPatterns) {
-			setExpectedGlobalsOfType(aPattern);
-		}
+		setExpectedTypesAndSpecifications(aPatterns);
+//		for (String aPattern : aPatterns) {
+//			setExpectedSpecificationOfType(aPattern);
+//		}
 
 	}
 
@@ -129,7 +130,7 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 		if (anSTType.isEnum() ||
 				anSTType.isInterface()) // why duplicate checking for interfaces
 			return true;
-		String aSpecifiedType = findMatchingType(typeToGlobal.keySet(),
+		String aSpecifiedType = findMatchingType(typeToSpecification.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
@@ -138,7 +139,7 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 
 		if (aDeclaredGlobals == null) // should not happen
 			return null;
-		String[] aSpecifiedGlobals = typeToGlobal.get(aSpecifiedType);
+		String[] aSpecifiedGlobals = typeToSpecification.get(aSpecifiedType);
 
 		return matchGlobals(aSpecifiedGlobals, anSTType, aTree);
 	}

@@ -2355,5 +2355,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 
 	}
+	protected Map<String, String[]> typeToSpecification = new HashMap<>();
+	
+	public void setExpectedSpecificationOfType(String aPattern) {
+		String[] extractTypeAndSpecification = aPattern.split(TYPE_SEPARATOR);
+		String aType = extractTypeAndSpecification[0].trim();
+		String[] aSpecification = extractTypeAndSpecification[1].split("\\|");
+		typeToSpecification.put(aType, aSpecification);
+	}
+	public void setExpectedTypesAndSpecifications(String[] aPatterns) {
+		for (String aPattern : aPatterns) {
+			setExpectedSpecificationOfType(aPattern);
+		}
+
+	}
 
 }

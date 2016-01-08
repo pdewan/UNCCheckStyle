@@ -160,7 +160,12 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			if (aCalledType.equals("super")) {
 				aSpecifiedTarget = "super"; // so we can match super with either super or the called type
 			} else {
+			String[] dotSplit = aSignature.split("\\.");
+			if (dotSplit.length > 1) {
+				aSpecifiedTarget = dotSplit[0]; // consistent with call info
+			} else {
 			aSpecifiedTarget = aCallingType;
+			}
 			}
 //			aSpecifiedTarget = aCallInfo.getCalledType(); // assuming local call
 			// the following moved to below
@@ -316,6 +321,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		}
 		
 		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) && !aSpecifiedTarget.startsWith(TAG_STRING)) { // we do not need to determine tags
+			 if (aCallInfo.getNormalizedCall().length > 2) { // handling system.out.println
+					return aLongMethodName.matches(aSpecifiedMethod.getName());
+				}
 			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && toShortTypeName(aTypeName).matches(aSpecifiedTarget); 
 		 }
 //		 System.out.println ("Temp");

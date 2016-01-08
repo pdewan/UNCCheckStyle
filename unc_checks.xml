@@ -435,8 +435,8 @@
 					indexOf#String!charAt:int->char // No EC  |
 					indexOf#String!length:->int // No EC  |					
 					main#scanString:String->void |
-					main#computeSumAndProduct:->void |
-					print#System.out.print:->void |
+					main#computeSumAndProduct:String->void |
+					print#System.out.print:String->void |
 					main#print:->void,	
 				@CommandInterpreter = 							
 					 		@Table!put:(.*);(.*) -> (.*) |
@@ -575,7 +575,14 @@
 				@Angle= BEAN_PATTERN
 				" />
 		</module>
-
+	
+	<module name="ExpectedParseTrees">
+			<property name="expectedParseTrees"
+				value="
+				@Factorial= factorial#{IF {THEN {RETURN}}; CALL factorial}, 
+				@Table = @put#{ASSIGN table}
+				" />
+	</module>
 
 		<module name="FunctionAssignsGlobal">
 			<property name="includeTypeTags" value="*" />
@@ -584,6 +591,7 @@
 				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*), parse(.*)" />
 
 		</module>
+	
 		<module name="SetterAssignsGlobal">
 		</module>
 		<module name="MissingActualProperty">
