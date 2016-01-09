@@ -1,20 +1,23 @@
 package unc.cs.parseTree;
 
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+
 public class AnIFStatement extends AnAtomicOperation implements IFStatement {
-	Statement thenPart;
-	Statement elsePart;
+	CheckedStatement thenPart;
+	CheckedStatement elsePart;
 	
-	public AnIFStatement(int tokenType, Statement thenPart, Statement elsePart) {
-		super(tokenType);
+	public AnIFStatement(CheckedStatement thenPart, CheckedStatement elsePart) {
+		super(TokenTypes.LITERAL_IF);
 		this.thenPart = thenPart;
 		this.elsePart = elsePart;
 	}
 	@Override
-	public Statement getThenPart() {
+	public CheckedStatement getThenPart() {
 		return thenPart;
 	}
 	@Override
-	public Statement getElsePart() {
+	public CheckedStatement getElsePart() {
 		return elsePart;
 	}
 	

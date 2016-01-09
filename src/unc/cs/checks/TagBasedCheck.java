@@ -867,7 +867,7 @@ public void maybeVisitMethodTags(DetailAST ast) {
 public void visitImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
 	 String aLongClassName = anImport.getText();
-	 String aShortClassName = getLastDescendent(ast).getText();
+	 String aShortClassName = getLastDescendentOfFirstChild(ast).getText();
 
 	 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
 	 imports.add(anSTNameable);
@@ -879,7 +879,40 @@ public static boolean isProjectImport(String aFullName) {
 		 if (aFullName.startsWith(aPrefix)) return true;
 	 return false;
 }
-public static DetailAST getLastDescendent(DetailAST ast) {
+public static DetailAST getFirstInOrderMatchingNode(DetailAST ast, int aType  ) {
+	if (ast.getType() == aType)
+		return ast;
+//	if (ast.getChildCount() > 0) return null;
+	DetailAST aResult = null;
+	DetailAST aChild = ast.getFirstChild();
+	while (true) {
+		if (aChild == null)
+			return null;
+		aResult = getFirstInOrderMatchingNode(aChild, aType);
+		if (aResult != null)
+			return aResult;
+		aChild = aChild.getNextSibling();		
+	}
+}
+public static List<DetailAST>  getAllInOrderMatchingNodes(DetailAST ast, int aType ) {
+	 List<DetailAST> result = new ArrayList();
+	fillAllInOrderMatchingNodes(ast, aType, result);
+	return result;
+
+}
+public static void fillAllInOrderMatchingNodes(DetailAST ast, int aType, List<DetailAST>  aList ) {
+	if (ast.getType() == aType)
+		aList.add(ast);
+	DetailAST aChild = ast.getFirstChild();
+	while (true) {
+		if (aChild == null)
+			return;
+		fillAllInOrderMatchingNodes(aChild, aType, aList);		
+		aChild = aChild.getNextSibling();		
+	}
+
+}
+public static DetailAST getLastDescendentOfFirstChild(DetailAST ast) {
 	DetailAST result = ast.getFirstChild();
 	while (result.getChildCount() > 0)
 		result = result.getLastChild();    	

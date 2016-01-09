@@ -412,7 +412,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return false;
 
 	}
-	public STMethod signatureToMethod(String aSignature) {
+	public static STMethod signatureToMethod(String aSignature) {
 		String[] aNameAndRest = aSignature.split(":");
 		if (aNameAndRest.length == 1) {
 			if (!aSignature.equals(MATCH_ANYTHING) && !isIdentifier(aSignature)) {
@@ -1098,7 +1098,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
 //		int i = 0;
 //		int j = 0;
-		currentMethodNameAST = getLastDescendent(ast);
+		currentMethodNameAST = getLastDescendentOfFirstChild(ast);
 //		String shortMethodName = currentMethodNameAST.getText();
 		shortMethodName = currentMethodNameAST.getText();
 
@@ -2357,11 +2357,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	protected Map<String, String[]> typeToSpecification = new HashMap<>();
 	
+	protected void registerSpecifications (String aType, String[] aSpecification) {
+		typeToSpecification.put(aType, aSpecification);
+	}
+	
 	public void setExpectedSpecificationOfType(String aPattern) {
 		String[] extractTypeAndSpecification = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSpecification[0].trim();
-		String[] aSpecification = extractTypeAndSpecification[1].split("\\|");
-		typeToSpecification.put(aType, aSpecification);
+		String[] aSpecifications = extractTypeAndSpecification[1].split("\\|");
+//		typeToSpecification.put(aType, aSpecification);
+		registerSpecifications(aType, aSpecifications);
 	}
 	public void setExpectedTypesAndSpecifications(String[] aPatterns) {
 		for (String aPattern : aPatterns) {
@@ -2369,5 +2374,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 
 	}
+	
+	
 
 }

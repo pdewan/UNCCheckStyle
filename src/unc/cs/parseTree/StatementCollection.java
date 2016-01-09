@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface StatementCollection {
 
-	public abstract List<Statement> getStatements();
+	public abstract List<CheckedStatement> getStatements();
 
 }

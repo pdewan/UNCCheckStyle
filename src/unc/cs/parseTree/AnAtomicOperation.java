@@ -1,15 +1,14 @@
 package unc.cs.parseTree;
 
-public class AnAtomicOperation implements AtomicOperation {
-	int tokenType;
-
+public class AnAtomicOperation extends AStatement implements AtomicOperation {
+//	int tokenType;
+//
 	public AnAtomicOperation(int tokenType) {
-		super();
-		this.tokenType = tokenType;
+		super(tokenType);
 	}
-
-	@Override
-	public int getTokenType() {
-		return tokenType;
-	}
+//
+//	@Override
+//	public int getTokenType() {
+//		return tokenType;
+//	}
 }

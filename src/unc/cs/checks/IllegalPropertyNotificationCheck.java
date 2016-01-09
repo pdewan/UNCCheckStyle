@@ -68,7 +68,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	if (aParameters.size() < 2)
     		return true;
     	DetailAST aPropertyExpression = aParameters.get(1);
-    	DetailAST aPropertySpecifier = getLastDescendent(aPropertyExpression);
+    	DetailAST aPropertySpecifier = getLastDescendentOfFirstChild(aPropertyExpression);
     	String aPropertySpecifierText = aPropertySpecifier.getText();
     	DetailAST aTreeAST = getEnclosingTreeDeclaration(aPropertySpecifier);
     	DetailAST aTypeAST = getEnclosingTypeDeclaration(aPropertySpecifier);
@@ -85,7 +85,7 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     		log (INVALID_KEY, aPropertySpecifier, aTreeAST, aPropertySpecifierText );
     		return true; // do not wnat super class to give error with msgKey();
     		} else {
-    			aPropertySpecifier = getLastDescendent(anRHS);
+    			aPropertySpecifier = getLastDescendentOfFirstChild(anRHS);
     	    	aPropertySpecifierText = aPropertySpecifier.getText();
 
     		}

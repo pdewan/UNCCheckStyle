@@ -576,11 +576,10 @@
 				" />
 		</module>
 	
-	<module name="ExpectedParseTrees">
-			<property name="expectedParseTrees"
+	<module name="ExpectedStatements">
+			<property name="expectedStatements"
 				value="
-				@Factorial= factorial#{IF {THEN {RETURN}}; CALL factorial}, 
-				@Table = @put#{ASSIGN table}
+				Factorial= factorial#{ IF { RETURN } RETURN CALL @Self } 
 				" />
 	</module>
 

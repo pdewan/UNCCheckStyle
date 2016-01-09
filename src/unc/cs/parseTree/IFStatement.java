@@ -2,8 +2,8 @@ package unc.cs.parseTree;
 
 public interface IFStatement {
 
-	Statement getThenPart();
+	CheckedStatement getThenPart();
 
-	Statement getElsePart();
+	CheckedStatement getElsePart();
 
 }
