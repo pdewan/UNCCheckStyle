@@ -1,5 +1,6 @@
 package unc.cs.checks;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,9 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import unc.cs.parseTree.AMethodParseTree;
-import unc.cs.parseTree.AStatementNodes;
+import unc.cs.parseTree.AReturnOperation;
+import unc.cs.parseTree.AnIndependentNodes;
+import unc.cs.parseTree.AnIFStatement;
+import unc.cs.parseTree.AtomicOperation;
+import unc.cs.parseTree.IFStatement;
 import unc.cs.parseTree.MethodParseTree;
-import unc.cs.parseTree.CheckedStatement;
+import unc.cs.parseTree.CheckedNode;
 import unc.cs.parseTree.TreeSpecificationParser;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
@@ -20,7 +25,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 	public static final String MSG_KEY = "expectedNodes";
 	public Map<String, MethodParseTree> specificationToParseTree = new HashMap();
-
+	
 	@Override
 	protected String msgKey() {
 		return MSG_KEY;
@@ -47,7 +52,7 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 		} else {
 			aParseTreeSpecification = maybeStripComment(aMethodAndParseTreeSpecification[0]);
 		}
-		CheckedStatement aParseTree = null;
+		CheckedNode aParseTree = null;
 		try {
 		 aParseTree = TreeSpecificationParser.parseNodes(aParseTreeSpecification);
 		} catch (Exception e) {
@@ -67,10 +72,11 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 		log (aTreeAST, aTreeAST, aSpecification, aType);
 
 	}
-	public static Boolean matchParseTree(List<STMethod> anSTMethods, CheckedStatement aStatement) {
+	public static Boolean matchParseTree(List<STMethod> anSTMethods, CheckedNode aStatement, List<DetailAST> aMatchedNodes) {
 		boolean foundNull = false;
+		
 		for (STMethod anSTMethod:anSTMethods) {
-			Boolean aMatch = matchParseTree(anSTMethod.getAST(), aStatement);
+			Boolean aMatch = matchParseTree(anSTMethod.getAST(), aStatement, aMatchedNodes);
 			if (aMatch == null) {
 				foundNull = true;
 				
@@ -83,68 +89,119 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 		return false;		
 	}
 //	public static Boolean matchStatementNodes(DetailAST anAST, CheckedStatement aStatement) {
-
-	
-	public static Boolean matchParseTree(DetailAST anAST, CheckedStatement aStatement) {
-		if (aStatement instanceof AStatementNodes) {
-			Boolean aMatch = matchParseTree(anAST, aStatement);
+	// this is a top level thing, so we do not have to return
+	//need to change everything to Boolean as we have a list of matched nodes
+	public static Boolean matchNodes(DetailAST anAST,
+			CheckedNode aStatementNodes,
+			List<DetailAST> aMatchedNodes) {
+		List<CheckedNode> aStatements = ((AnIndependentNodes) aStatementNodes)
+				.getNodes();
+		boolean foundNull = false;
+		Boolean returnValue = true;
+		for (CheckedNode aStatement : aStatements) {
+			Boolean aMatch = matchParseTree(anAST, aStatement, aMatchedNodes);
 			if (aMatch == null) {
-				return null;
-			}
+				foundNull = true;
+				continue;
+
+			} 
 			if (!aMatch) {
-				return false;
+				returnValue = false;
+//				returnValue = noAST; // should log here
 			}
 		}
-		return true;
+		return returnValue;
+	}
+	public static Boolean matchAtomicOperation(DetailAST anAST,
+			AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
+		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
+		return (aMatchingNode != null) ;
+//		return false;
+	}
+	public static Boolean matchIF(DetailAST anAST,
+			IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
+		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);
+		
+		return (aMatchingNode != null) ;
+//		return false;
+	}
+	
+	public static Boolean matchParseTree(DetailAST anAST, CheckedNode aStatement, List<DetailAST> aMatchedNodes) {
+		if (aStatement instanceof AnIndependentNodes) {
+			return matchNodes(anAST, aStatement, aMatchedNodes);			
+		} else if (aStatement instanceof AReturnOperation) {
+			return matchAtomicOperation(anAST, (AtomicOperation) aStatement, aMatchedNodes);
+		} else if (aStatement instanceof AnIFStatement) {
+			return matchIF(anAST, (IFStatement) aStatement, aMatchedNodes);
+		}
+		return false;
 		
 	}
-
+//	public static Boolean matchParseTree(DetailAST anAST, 
+//			CheckedStatement aStatement, 
+//			List<DetailAST> aMatchedASTs) {
+//		if (aStatement instanceof AStatementNodes) {
+//			return matchNodes(anAST, aStatement, aMatchedASTs) != null;			
+//		} else if (aStatement instanceof AReturnOperation) {
+//			return matchAtomicOperation(anAST, (AtomicOperation) aStatement, aMatchedASTs );
+//		}
+//		return false;
+//		
+//	}
 
 	public Boolean matchParseTree(STType anSTType, String[] aSpecifications) {
+		Boolean foundNull = false;
 		boolean retVal = true;
-		Set<String> anUnmatchedGlobals = new HashSet(anSTType.getDeclaredGlobals());
+		Boolean aMatch = null;
+	
 		for (String aSpecification : aSpecifications) {
-			MethodParseTree aMethodParseTree = specificationToParseTree.get(aSpecification);
+			MethodParseTree aMethodParseTree = specificationToParseTree
+					.get(aSpecification);
 			STMethod aSpecifiedMethod = aMethodParseTree.getMethod();
-			if (aSpecifiedMethod != null) {
-				List<STMethod> aMatchingMethods = getMatchingMethods(anSTType, aSpecifiedMethod);
+			CheckedNode aStatement = aMethodParseTree.getParseTree();
+			if (aSpecifiedMethod == null) {
+				List<DetailAST> aMatchedNodes = new ArrayList();
+				aMatch= matchParseTree(anSTType.getAST(), aStatement, aMatchedNodes);
+				if (aMatch == null) {
+					foundNull = true;
+					continue;
+				}
+				if (!aMatch) {
+					retVal = false;
+					continue;
+				}
+			} else {
+				List<STMethod> aMatchingMethods = getMatchingMethods(anSTType,
+						aSpecifiedMethod);
 				if (aMatchingMethods == null)
-					return null;
-				if (aMatchingMethods.size() == 0) {					
+					return true;
+				if (aMatchingMethods.size() == 0) {
 					return false;
 				}
-				Boolean aMatch = matchParseTree()
+				for (STMethod anSTMethod : aMatchingMethods) {
+					List<DetailAST> aMatchedNodes = new ArrayList();
+
+					aMatch = matchParseTree(anSTMethod.getAST(), aStatement, aMatchedNodes);
+					if (aMatch == null) {
+						foundNull = true;
+						continue;
+					}
+					if (!aMatch) {
+						retVal = false;
+						continue;
+					}
+
+				}
+
 			}
-			
-			
 		}
+		if (foundNull)
+			return null;
 		return retVal;
 	}
 	
 
-	public Boolean matchGlobal(String aVariableSpecification,
-			String aTypeSpecification, Set<String> anUnmatchedGlobals, STType anSTType) {
-		Set<String> aSet = anSTType.getDeclaredGlobals();
-		int i = 0;
-		for (String aVariable : anUnmatchedGlobals) {
-			if (aVariable.matches(aVariableSpecification)) {
-				String anActualType = anSTType.getDeclaredGlobalVariableType(aVariable);
-				
-				// return
-				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
-				Boolean retVal = matchesType(aTypeSpecification, anActualType);
-						
-				if (retVal == null)
-					return null;
-				if (retVal) {
-					anUnmatchedGlobals.remove(aVariable);
-					return true;
-				} 
-
-			}
-		}
-		return false;
-	}
+	
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
@@ -158,13 +215,13 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 		if (anSTType.isEnum() ||
 				anSTType.isInterface()) // why duplicate checking for interfaces
 			return true;
-		String aSpecifiedType = findMatchingType(typeToSpecification.keySet(),
+		String aSpecifiedType = findMatchingType(typeToSpecifications.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
 		
 		
-		String[] aSpecifications = typeToSpecification.get(aSpecifiedType);
+		String[] aSpecifications = typeToSpecifications.get(aSpecifiedType);
 
 		return matchParseTree(anSTType, aSpecifications);
 	}

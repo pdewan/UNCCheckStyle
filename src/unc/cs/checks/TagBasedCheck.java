@@ -49,6 +49,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected Map<String, Integer> typeToInt = new Hashtable<>();
 	protected Map<String, String> specificationVariablesToUnifiedValues = new Hashtable<>();
 	protected STNameable structurePattern;
+	public static final DetailAST noAST = new DetailAST();
+
 
 	
 	protected List<String> variablesAdded = new ArrayList(); //should be cleared by a matcher
@@ -879,20 +881,63 @@ public static boolean isProjectImport(String aFullName) {
 		 if (aFullName.startsWith(aPrefix)) return true;
 	 return false;
 }
-public static DetailAST getFirstInOrderMatchingNode(DetailAST ast, int aType  ) {
-	if (ast.getType() == aType)
+static List<DetailAST> emptyASTList = new ArrayList();
+public static DetailAST getFirstInOrderMatchingNode(DetailAST ast, List<Integer> aType  ) {
+	return getFirstInOrderUnmatchedMatchingNode(ast, aType, emptyASTList);
+//	if (ast.getType() == aType)
+//		return ast;
+////	if (ast.getChildCount() > 0) return null;
+//	DetailAST aResult = null;
+//	DetailAST aChild = ast.getFirstChild();
+//	while (true) {
+//		if (aChild == null)
+//			return null;
+//		aResult = getFirstInOrderMatchingNode(aChild, aType);
+//		if (aResult != null)
+//			return aResult;
+//		aChild = aChild.getNextSibling();		
+//	}
+}
+public static DetailAST getFirstInOrderUnmatchedMatchingNode(DetailAST ast, List<Integer> aTypes, List<DetailAST> aMatchedNodes  ) {
+//	if (aast.getType() == aType &&
+	if (aTypes.contains(ast.getType()) &&
+
+			!aMatchedNodes.contains(ast)) {
+		aMatchedNodes.add(ast);
 		return ast;
+	}
 //	if (ast.getChildCount() > 0) return null;
 	DetailAST aResult = null;
 	DetailAST aChild = ast.getFirstChild();
 	while (true) {
 		if (aChild == null)
 			return null;
-		aResult = getFirstInOrderMatchingNode(aChild, aType);
+		aResult = getFirstInOrderUnmatchedMatchingNode(aChild, aTypes, aMatchedNodes);
 		if (aResult != null)
 			return aResult;
+//		if (aResult != noAST && 
+//				!aMatchedNodes.contains(aResult)) {
+//			aMatchedNodes.add(aResult);
+//			return aResult;
+//		}
 		aChild = aChild.getNextSibling();		
 	}
+}
+public static DetailAST getFirstInOrderMatchingNodeAfter(DetailAST ast, List<Integer> aType  ) {
+	// first see if someone below our sibling succeeds
+	DetailAST aNextSibiling = ast.getNextSibling();
+	if (aNextSibiling != null) {
+		DetailAST result = getFirstInOrderMatchingNode(aNextSibiling, aType);
+		if (result != null) {
+			return result;
+		}
+	}
+	// get the first node after our parent, who has not not been visited
+	DetailAST aParent = ast.getParent();
+	if (aParent == null) {
+		return noAST;
+	}
+	return getFirstInOrderMatchingNodeAfter(aParent, aType);
 }
 public static List<DetailAST>  getAllInOrderMatchingNodes(DetailAST ast, int aType ) {
 	 List<DetailAST> result = new ArrayList();
@@ -910,7 +955,6 @@ public static void fillAllInOrderMatchingNodes(DetailAST ast, int aType, List<De
 		fillAllInOrderMatchingNodes(aChild, aType, aList);		
 		aChild = aChild.getNextSibling();		
 	}
-
 }
 public static DetailAST getLastDescendentOfFirstChild(DetailAST ast) {
 	DetailAST result = ast.getFirstChild();

@@ -1,9 +1,9 @@
 package unc.cs.parseTree;
 
-public interface IFStatement {
+public interface IFStatement extends CheckedNode{
 
-	CheckedStatement getThenPart();
+	CheckedNode getThenPart();
 
-	CheckedStatement getElsePart();
+	CheckedNode getElsePart();
 
 }

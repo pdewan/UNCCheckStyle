@@ -4,20 +4,22 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class AnIFStatement extends AnAtomicOperation implements IFStatement {
-	CheckedStatement thenPart;
-	CheckedStatement elsePart;
+	CheckedNode expression;
+	CheckedNode thenPart;
+	CheckedNode elsePart;
 	
-	public AnIFStatement(CheckedStatement thenPart, CheckedStatement elsePart) {
-		super(TokenTypes.LITERAL_IF);
+	public AnIFStatement(CheckedNode anExpression, CheckedNode thenPart, CheckedNode elsePart) {
+		super(new Integer[] {TokenTypes.LITERAL_IF});
 		this.thenPart = thenPart;
 		this.elsePart = elsePart;
+		expression = anExpression;
 	}
 	@Override
-	public CheckedStatement getThenPart() {
+	public CheckedNode getThenPart() {
 		return thenPart;
 	}
 	@Override
-	public CheckedStatement getElsePart() {
+	public CheckedNode getElsePart() {
 		return elsePart;
 	}
 	

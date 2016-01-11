@@ -16,33 +16,41 @@ public class TreeSpecificationParser {
 	 * <StatementSet> -> [Statement*]
 	 * <Assign Statement> -> ASSIGN <String>
 	 * <Call Statement> -> Call <String>
-	 * <IF Statement> -> IF <Statement List> ELSE <Statement List>	 * 	 
+	 * <IF Statement> -> IF <Paren Expression> <Statement List> ELSE <Statement List>	 * 	 
 	 */
 	public static final String ASSIGN = "assign";
 	public static final String IF = "if";
 	public static final String ELSE = "else";
 	public static final String CALL = "call";
 	public static final String RETURN = "return";
-	public static final String SET_START = "[";
-	public static final String SET_END = "]";
+	public static final String SET_START = "\\[";
+	public static final String SET_END = "\\]";
 	public static final String SEQUENCE_START = "{";
 	public static final String SEQUENCE_END = "}";
+	public static final String L_PAREN = "\\(";
+	public static final String R_PAREN = "\\)";
 //	public static final String NODES_START = "(";
 //	public static final String NODES_END = ")";
 	
-	
-	public static CheckedStatement parseStatement(String aSpecification) {
+//	public static String normalizeSpecification (String aSpecification) {
+//		String result = aSpecification.toLowerCase();
+////		result.replaceAll("\\(", "\\(");
+////		result.replaceAll("\\)", "\\)");
+////		result.replaceAll("\\*", "\\*");
+//		return result;
+//	}
+	public static CheckedNode parseStatement(String aSpecification) {
 		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
-		return parseStatement(aScanner);
+		return parseNode(aScanner);
 	}
-	public static CheckedStatement parseNodes(String aSpecification) {
+	public static CheckedNode parseNodes(String aSpecification) {
 		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
-		List<CheckedStatement> aStatements = parseStatementList(aScanner, null);
+		List<CheckedNode> aStatements = parseNodeList(aScanner, null);
 
-		return new AStatementNodes(aStatements);
+		return new AnIndependentNodes(aStatements);
 	}
 	
-	protected static CheckedStatement parseStatement(Scanner aScanner) {
+	protected static CheckedNode parseNode(Scanner aScanner) {
 //		if (!aScanner.hasNext()) { 
 //			System.err.println ("Premature end of stream:");
 //			return null;
@@ -60,10 +68,12 @@ public class TreeSpecificationParser {
 			return parseStatementSet(aScanner);
 		else if (nextToken.equals(SEQUENCE_START))
 			return parseStatementSequence(aScanner);
-		return null;
+		else if (nextToken.equals(L_PAREN))
+			return parseParenthesizedExpression(aScanner);
+		return AnyNode.getSingleton();
 	}
 	
-	protected static CheckedStatement parseAssign(Scanner aScanner) {
+	protected static CheckedNode parseAssign(Scanner aScanner) {
 //		if (!aScanner.hasNext()) {
 //			System.err.println (ASSIGN + " not followed by variable name");
 //			return null;
@@ -71,67 +81,79 @@ public class TreeSpecificationParser {
 		String variableName = aScanner.next();
 		return new AnAssignOperation(variableName);
 	}
-	protected static CheckedStatement parseCall(Scanner aScanner) {
+	protected static CheckedNode parseParenthesizedExpression(Scanner aScanner) {
+		List<CheckedNode> anExpressions = parseNodeList(aScanner, R_PAREN);
+		return new AnExpressionSequence(anExpressions);
+	}
+	protected static CheckedNode parseCall(Scanner aScanner) {
 //		if (!aScanner.hasNext()) {
 //			System.err.println (ASSIGN + " not followed by variable name");
 //			return null;
 //		}
 		String methodName = aScanner.next();
-		return new ACallOperation(TokenTypes.METHOD_CALL, methodName);
+		return new ACallOperation( methodName);
 	}
-	protected static CheckedStatement parseReturn(Scanner aScanner) {
+	protected static CheckedNode parseReturn(Scanner aScanner) {
 		
-		return new AReturnOperation(TokenTypes.LITERAL_RETURN);
+		return new AReturnOperation();
 	}
 	
-	protected static CheckedStatement parseStatementSet(Scanner aScanner) {
-		List<CheckedStatement> aStatements = parseStatementList(aScanner, SET_END);
+	protected static CheckedNode parseStatementSet(Scanner aScanner) {
+		List<CheckedNode> aStatements = parseNodeList(aScanner, SET_END);
 		return new AStatementSet(aStatements);		
 	}
-	protected static CheckedStatement parseStatementSequence(Scanner aScanner) {
-		List<CheckedStatement> aStatements = parseStatementList(aScanner, SEQUENCE_END);
+	protected static CheckedNode parseStatementSequence(Scanner aScanner) {
+		List<CheckedNode> aStatements = parseNodeList(aScanner, SEQUENCE_END);
 		return new AStatementSequence(aStatements);		
 	}
-    protected static List<CheckedStatement> parseStatementList(Scanner aScanner, String anEndDelimiter) {
-    	List<CheckedStatement> result = new ArrayList();
-		while (aScanner.hasNext() && (anEndDelimiter == null || !aScanner.hasNext(anEndDelimiter))) {
-			CheckedStatement aStatement = parseStatement(aScanner);
+    protected static List<CheckedNode> parseNodeList(Scanner aScanner, String anEndDelimiter) {
+    	List<CheckedNode> result = new ArrayList();
+		while (aScanner.hasNext() && 
+				(anEndDelimiter == null || 
+				!aScanner.hasNext(anEndDelimiter))) {
+			CheckedNode aStatement = parseNode(aScanner);
 			result.add(aStatement);
 		}
 		if (anEndDelimiter != null)
-		aScanner.next();
+		   aScanner.next();
 		return result;		
 	}
 	
-	protected static CheckedStatement parseIF(Scanner aScanner) {
-		CheckedStatement thenPart = parseStatement(aScanner);
-		CheckedStatement elsePart = null;
+	protected static CheckedNode parseIF(Scanner aScanner) {		
+		aScanner.next(); // consume the left paren
+		CheckedNode expression = parseParenthesizedExpression(aScanner);
+		CheckedNode thenPart = parseNode(aScanner);
+		CheckedNode elsePart = null;
 		if (aScanner.hasNext(ELSE)) {
 			aScanner.next();
-			elsePart = parseStatement(aScanner);
+			elsePart = parseNode(aScanner);
 		}
-		return new AnIFStatement(thenPart, elsePart);
+		return new AnIFStatement(expression, thenPart, elsePart);
 		
 	}
 	
 	
-	 protected static StatementCollection parseStatementNodes (Scanner aScanner) {
+	 protected static NodesCollection parseStatementNodes (Scanner aScanner) {
 		
-		 List<CheckedStatement> aStatements = parseStatementList(aScanner, SEQUENCE_END);
-			return new AStatementNodes(aStatements);	
+		 List<CheckedNode> aStatements = parseNodeList(aScanner, SEQUENCE_END);
+			return new AnIndependentNodes(aStatements);	
 	 }
 	 
 
 	 
 	 public static void main (String[] args) {
 //		 String testString = "{ assign x123 if { return } else { call foo } }";
-		 String recursive = "{ if { return } call @caller }";
+		 String testString = "IF ( * ) main#CALL factorial CALL System.out.println:String->void ";
+
+		 String recursive = "{ if ( * ) { return } call @caller }";
+		 
+		 
 
 //		 Scanner aScanner = new Scanner(testString);
 //		 while (aScanner.hasNext()) {
 //			 System.out.println (aScanner.next());			 
 //		 }
-		 CheckedStatement parsedStatement = parseStatement(recursive);
+		 CheckedNode parsedStatement = parseStatement(recursive);
 		 System.out.println(parsedStatement);
 		 
 	 }

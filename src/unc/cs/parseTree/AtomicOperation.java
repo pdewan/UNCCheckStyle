@@ -1,7 +1,8 @@
 package unc.cs.parseTree;
 
-public interface AtomicOperation extends CheckedStatement{
+import java.util.List;
 
-	public abstract int getTokenType();
+public interface AtomicOperation extends CheckedNode{
+
 
 }

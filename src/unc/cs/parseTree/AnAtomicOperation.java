@@ -1,9 +1,9 @@
 package unc.cs.parseTree;
 
-public class AnAtomicOperation extends AStatement implements AtomicOperation {
+public class AnAtomicOperation extends ACheckedNode implements AtomicOperation {
 //	int tokenType;
 //
-	public AnAtomicOperation(int tokenType) {
+	public AnAtomicOperation(Integer[] tokenType) {
 		super(tokenType);
 	}
 //

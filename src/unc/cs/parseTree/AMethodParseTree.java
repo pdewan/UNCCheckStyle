@@ -4,8 +4,8 @@ import unc.cs.symbolTable.STMethod;
 
 public class AMethodParseTree implements MethodParseTree {
 	STMethod method;
-	CheckedStatement parseTree;
-	public AMethodParseTree(STMethod method, CheckedStatement parseTree) {
+	CheckedNode parseTree;
+	public AMethodParseTree(STMethod method, CheckedNode parseTree) {
 		super();
 		this.method = method;
 		this.parseTree = parseTree;
@@ -15,7 +15,7 @@ public class AMethodParseTree implements MethodParseTree {
 		return method;
 	}
 	@Override
-	public CheckedStatement getParseTree() {
+	public CheckedNode getParseTree() {
 		return parseTree;
 	}
 

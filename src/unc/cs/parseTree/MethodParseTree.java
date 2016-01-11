@@ -6,6 +6,6 @@ public interface MethodParseTree {
 
 	public abstract STMethod getMethod();
 
-	public abstract CheckedStatement getParseTree();
+	public abstract CheckedNode getParseTree();
 
 }

@@ -276,11 +276,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		variablesAdded.clear();
 //		int j = 0;
 //		String aReturnType = aSpecification.getReturnType();
-		String aSpeifiedReturnType = aSpecification.getReturnType();
+		String aSpecifiedReturnType = aSpecification.getReturnType();
 		String anActualReturnType = aMethod.getReturnType();
 
 		STNameable[] anActualTypeTags = null;
-		if (aSpeifiedReturnType != null && aSpeifiedReturnType.startsWith(TAG_STRING)) {
+		if (aSpecifiedReturnType != null && aSpecifiedReturnType.startsWith(TAG_STRING)) {
 			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(anActualReturnType);
 
 //			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSpeifiedReturnType.substring(1));
@@ -300,8 +300,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 						aSpecification.getName(), 
 						aMethod.getName(), 
 						aMethod.getComputedTags()) &&
-				(aSpeifiedReturnType== null ||
-				unifyingMatchesNameVariableOrTag(aSpeifiedReturnType, aMethod.getReturnType(), anActualTypeTags)
+				(aSpecifiedReturnType== null ||
+				unifyingMatchesNameVariableOrTag(aSpecifiedReturnType, aMethod.getReturnType(), anActualTypeTags)
 
 //				matchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags)
 				);
@@ -1107,12 +1107,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		DetailAST aLeftMostMethodTargetAST = currentMethodNameAST
 				.getPreviousSibling();
 
-		if (aLeftMostMethodTargetAST != null) {
-			if (aLeftMostMethodTargetAST.getType() == TokenTypes.RPAREN) {
+		if (aLeftMostMethodTargetAST != null) { // this should be a while?
+			while (aLeftMostMethodTargetAST.getType() == TokenTypes.RPAREN) {
 				DetailAST anLParen = aLeftMostMethodTargetAST
 						.getPreviousSibling();
+				if (anLParen.getType() == TokenTypes.RPAREN ) {
+					aLeftMostMethodTargetAST = anLParen;
+					continue;
+				} else if (anLParen.getType() == TokenTypes.LPAREN) {
 				DetailAST aTypeAST = anLParen.getFirstChild();
-				if (aTypeAST.getType() == TokenTypes.TYPE) {
+				if (typeAST == null) { // this should not happen
+					aLeftMostMethodTargetAST = anLParen;
+					break;
+				}				
+				else if (aTypeAST.getType() == TokenTypes.TYPE) {
 					// int i = 0;
 					// this is a hack, need to search down the tree for parens
 					// and find the first
@@ -1121,8 +1129,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					DetailAST anRTypeParen = aTypeAST.getNextSibling();
 					DetailAST aCastExpression = anRTypeParen.getFirstChild();
 					aLeftMostMethodTargetAST = aCastExpression;
+					break;
 
 				}
+				} else if (anLParen.getType() == TokenTypes.IDENT) {
+					aLeftMostMethodTargetAST = anLParen;
+					break;
+				} else {
+					break;
+				}
+				break;
 			}
 			if (aLeftMostMethodTargetAST != null) {
 				while ( aLeftMostMethodTargetAST.getType() == TokenTypes.METHOD_CALL) { // target is result of method call
@@ -2355,10 +2371,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 
 	}
-	protected Map<String, String[]> typeToSpecification = new HashMap<>();
+	protected Map<String, String[]> typeToSpecifications = new HashMap<>();
 	
 	protected void registerSpecifications (String aType, String[] aSpecification) {
-		typeToSpecification.put(aType, aSpecification);
+		typeToSpecifications.put(aType, aSpecification);
 	}
 	
 	public void setExpectedSpecificationOfType(String aPattern) {

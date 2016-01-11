@@ -579,7 +579,11 @@
 	<module name="ExpectedStatements">
 			<property name="expectedStatements"
 				value="
-				Factorial= factorial#{ IF { RETURN } RETURN CALL @Self } 
+				Factorial= 
+					factorial#RETURN IF (*) RETURN ELSE CALL @Self { RETURN } IF ( * ) { RETURN } ELSE { IF ( * ) { RETURN } RETURN CALL @Self } |
+					main#CALL factorial CALL System.out.println:String->void,
+							
+					 
 				" />
 	</module>
 

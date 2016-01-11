@@ -130,7 +130,7 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 		if (anSTType.isEnum() ||
 				anSTType.isInterface()) // why duplicate checking for interfaces
 			return true;
-		String aSpecifiedType = findMatchingType(typeToSpecification.keySet(),
+		String aSpecifiedType = findMatchingType(typeToSpecifications.keySet(),
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
@@ -139,7 +139,7 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 
 		if (aDeclaredGlobals == null) // should not happen
 			return null;
-		String[] aSpecifiedGlobals = typeToSpecification.get(aSpecifiedType);
+		String[] aSpecifiedGlobals = typeToSpecifications.get(aSpecifiedType);
 
 		return matchGlobals(aSpecifiedGlobals, anSTType, aTree);
 	}

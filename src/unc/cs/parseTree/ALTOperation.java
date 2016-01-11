@@ -2,10 +2,10 @@ package unc.cs.parseTree;
 
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class AReturnOperation extends AnAtomicOperation{
+public class ALTOperation extends AnAtomicOperation{
 
-	public AReturnOperation() {
-		super(new Integer[] {TokenTypes.LITERAL_RETURN});
+	public ALTOperation() {
+		super(new Integer[] {TokenTypes.LT});
 		// TODO Auto-generated constructor stub
 	}
 
