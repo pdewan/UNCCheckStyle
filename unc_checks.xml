@@ -580,7 +580,7 @@
 			<property name="expectedStatements"
 				value="
 				Factorial= 
-					factorial#RETURN IF (*) RETURN ELSE CALL @Self { RETURN } IF ( * ) { RETURN } ELSE { IF ( * ) { RETURN } RETURN CALL @Self } |
+					factorial#RETURN IF ( * ) RETURN ELSE CALL @Self$1  CALL factorial:->int$1 { RETURN } IF ( * ) { RETURN } ELSE { IF ( * ) { RETURN } RETURN CALL @Self } |
 					main#CALL factorial CALL System.out.println:String->void,
 							
 					 

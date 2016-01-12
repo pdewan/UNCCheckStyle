@@ -26,4 +26,6 @@ public interface CallInfo {
 
 	List<STMethod> getMatchingCalledMethods();
 
+	DetailAST getAST();
+
 }

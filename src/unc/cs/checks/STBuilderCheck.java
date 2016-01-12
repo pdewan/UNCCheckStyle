@@ -90,10 +90,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     protected void processPreviousMethodData() {
     	if (currentMethodName != null ) {
     		String[] aParameterTypes = currentMethodParameterTypes.toArray(new String[0]);
+    		String[] aParameterNames = currentMethodParameterNames.toArray(new String[0]);
     		STMethod anSTMethod = new AnSTMethod(
     				currentMethodAST, 
     				currentMethodName, 
     				fullTypeName,
+    				aParameterNames,
     				aParameterTypes, 
     				currentMethodIsPublic || isInterface,  
     				currentMethodIsInstance || isInterface,

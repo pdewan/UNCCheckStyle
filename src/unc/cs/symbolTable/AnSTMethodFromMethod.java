@@ -172,6 +172,11 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public String[] getParameterNames() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

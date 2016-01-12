@@ -15,7 +15,7 @@ public class NoMethod extends AnSTMethod implements STMethod{
 //		// TODO Auto-generated constructor stub
 //	}
 	public NoMethod() {
-		super(null, null, null, null, false, false, false, null, false, null, null, false, null, null);
+		super(null, null, null, null, null, false, false, false, null, false, null, null, false, null, null);
 	}
 	@Override
 	protected void introspect() {

@@ -7,15 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import unc.cs.parseTree.ACallOperation;
 import unc.cs.parseTree.AMethodParseTree;
 import unc.cs.parseTree.AReturnOperation;
 import unc.cs.parseTree.AnIndependentNodes;
 import unc.cs.parseTree.AnIFStatement;
 import unc.cs.parseTree.AtomicOperation;
+import unc.cs.parseTree.CallOperation;
 import unc.cs.parseTree.IFStatement;
 import unc.cs.parseTree.MethodParseTree;
 import unc.cs.parseTree.CheckedNode;
 import unc.cs.parseTree.TreeSpecificationParser;
+import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -76,7 +79,7 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 		boolean foundNull = false;
 		
 		for (STMethod anSTMethod:anSTMethods) {
-			Boolean aMatch = matchParseTree(anSTMethod.getAST(), aStatement, aMatchedNodes);
+			Boolean aMatch = matchParseTree(null, anSTMethod.getAST(), aStatement, aMatchedNodes);
 			if (aMatch == null) {
 				foundNull = true;
 				
@@ -91,15 +94,15 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 //	public static Boolean matchStatementNodes(DetailAST anAST, CheckedStatement aStatement) {
 	// this is a top level thing, so we do not have to return
 	//need to change everything to Boolean as we have a list of matched nodes
-	public static Boolean matchNodes(DetailAST anAST,
-			CheckedNode aStatementNodes,
-			List<DetailAST> aMatchedNodes) {
+	public static Boolean matchNodes(STMethod aMethod,
+			DetailAST anAST,
+			CheckedNode aStatementNodes, List<DetailAST> aMatchedNodes) {
 		List<CheckedNode> aStatements = ((AnIndependentNodes) aStatementNodes)
 				.getNodes();
 		boolean foundNull = false;
 		Boolean returnValue = true;
 		for (CheckedNode aStatement : aStatements) {
-			Boolean aMatch = matchParseTree(anAST, aStatement, aMatchedNodes);
+			Boolean aMatch = matchParseTree(null, anAST, aStatement, aMatchedNodes);
 			if (aMatch == null) {
 				foundNull = true;
 				continue;
@@ -112,27 +115,55 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 		}
 		return returnValue;
 	}
-	public static Boolean matchAtomicOperation(DetailAST anAST,
-			AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
+	public static Boolean matchAtomicOperation(STMethod aMethod,
+			DetailAST anAST, AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
+		
 		return (aMatchingNode != null) ;
 //		return false;
 	}
-	public static Boolean matchIF(DetailAST anAST,
-			IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
+	public static Boolean matchIF(STMethod aMethod,
+			DetailAST anAST, IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);
 		
 		return (aMatchingNode != null) ;
 //		return false;
 	}
 	
-	public static Boolean matchParseTree(DetailAST anAST, CheckedNode aStatement, List<DetailAST> aMatchedNodes) {
+	public static CallInfo getUnmatchedCallInfo (STMethod aMethod, CallOperation aCallOperation, List<DetailAST> aMatchedNode ) {
+		
+	}
+	
+	public static Boolean matchCall(STMethod aMethod,
+			DetailAST anAST, CallOperation aCallOperation, List<DetailAST> aMatchedNodes) {
+		CallInfo[] aCalls = aMethod.getMethodsCalled();
+		for (CallInfo aCallInfo:aCalls) {
+			if (aMatchedNodes.contains(aCallInfo.getAST())) {
+				continue;
+			}
+			STMethod aSpecifiedMethod = aCallOperation.getMethod();
+			List<STMethod> anActualMethods = aCallInfo.getMatchingCalledMethods();
+					
+		}
+		
+		
+		
+		return (aMatchingNode != null) ;
+//		return false;
+	}
+	
+	public static Boolean matchParseTree(STMethod aMethod, DetailAST anAST, CheckedNode aStatement, List<DetailAST> aMatchedNodes) {
+//		String aStringTree = anAST.toStringTree();
+//		String aStringList = anAST.toStringList();
+//		String aString = anAST.toString();
 		if (aStatement instanceof AnIndependentNodes) {
-			return matchNodes(anAST, aStatement, aMatchedNodes);			
+			return matchNodes(aMethod, anAST, aStatement, aMatchedNodes);			
 		} else if (aStatement instanceof AReturnOperation) {
-			return matchAtomicOperation(anAST, (AtomicOperation) aStatement, aMatchedNodes);
+			return matchAtomicOperation(aMethod, anAST, (AtomicOperation) aStatement, aMatchedNodes);
+		} else if (aStatement instanceof ACallOperation) {
+			
 		} else if (aStatement instanceof AnIFStatement) {
-			return matchIF(anAST, (IFStatement) aStatement, aMatchedNodes);
+			return matchIF(aMethod, anAST, (IFStatement) aStatement, aMatchedNodes);
 		}
 		return false;
 		
@@ -161,7 +192,7 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 			CheckedNode aStatement = aMethodParseTree.getParseTree();
 			if (aSpecifiedMethod == null) {
 				List<DetailAST> aMatchedNodes = new ArrayList();
-				aMatch= matchParseTree(anSTType.getAST(), aStatement, aMatchedNodes);
+				aMatch= matchParseTree(null, anSTType.getAST(), aStatement, aMatchedNodes);
 				if (aMatch == null) {
 					foundNull = true;
 					continue;
@@ -181,7 +212,7 @@ public class ExpectedStatementsCheck extends ComprehensiveVisitCheck{
 				for (STMethod anSTMethod : aMatchingMethods) {
 					List<DetailAST> aMatchedNodes = new ArrayList();
 
-					aMatch = matchParseTree(anSTMethod.getAST(), aStatement, aMatchedNodes);
+					aMatch = matchParseTree(anSTMethod, anSTMethod.getAST(), aStatement, aMatchedNodes);
 					if (aMatch == null) {
 						foundNull = true;
 						continue;

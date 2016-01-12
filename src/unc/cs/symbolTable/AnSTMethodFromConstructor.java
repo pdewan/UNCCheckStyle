@@ -167,6 +167,10 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	public Boolean instantiatesType(String aShortOrLongName) {
 		return false;
 	}
+	@Override
+	public String[] getParameterNames() {
+		return null;
+	}
 	
 	
 

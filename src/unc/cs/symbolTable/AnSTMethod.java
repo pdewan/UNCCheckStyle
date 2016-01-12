@@ -11,6 +11,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	final String declaringClass;
+	final String[] parameterNames;
 	final String[] parameterTypes;
 	final boolean isPublic;
 	final boolean isProcedure;
@@ -38,8 +39,12 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public  static final String SET = "set";
 	public static final String INIT = "init";
 	
-	public AnSTMethod(DetailAST ast, String name, 
-			String declaringClass, String[] parameterTypes,
+	public AnSTMethod(
+			DetailAST ast, 
+			String name, 
+			String declaringClass, 
+			String[] aParameterNames,
+			String[] parameterTypes,
 			boolean isPublic, boolean anIsInstance, 
 			boolean anIsConstructor,
 			String returnType,
@@ -54,6 +59,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		super(ast, name);
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
+		parameterNames = aParameterNames;
 		this.isPublic = isPublic;
 		isInstance = anIsInstance;
 		if (returnType == null)
@@ -85,7 +91,10 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public String getDeclaringClass() {
 		return declaringClass;
 	}
-	
+	@Override
+	public String[] getParameterNames() {
+		return parameterNames;
+	}
 	public String[] getParameterTypes() {
 		return parameterTypes;
 	}

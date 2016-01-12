@@ -5,6 +5,7 @@ import java.util.List;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class ACallInfo implements CallInfo {
+	DetailAST ast;
 	String caller;
 	String calledType;
 	String calledCastType;
@@ -26,9 +27,10 @@ public class ACallInfo implements CallInfo {
 //		this.calledType = calledType;
 //		this.calleee = calleee;
 //	}
-	public ACallInfo(String caller, List<String> aCallerParameterTypes, String calledType, String aCallee,
+	public ACallInfo(DetailAST anAST, String caller, List<String> aCallerParameterTypes, String calledType, String aCallee,
 			List<DetailAST> actuals, String[] notmalizedCall, String aCalledCastType) {
 		super();
+		ast = anAST;
 		this.caller = caller;
 		this.calledType = calledType;
 		this.callee = aCallee;
@@ -36,6 +38,7 @@ public class ACallInfo implements CallInfo {
 		this.normalizedCall = notmalizedCall;
 		callerParameterTypes = aCallerParameterTypes;
 		calledCastType = aCalledCastType;
+		
 	}
 	@Override
 	public void setCallingMethod (STMethod anSTMethod) {
@@ -98,5 +101,10 @@ public class ACallInfo implements CallInfo {
 		return matchingCalledMethods;
 	}
 	 
+
+	@Override
+	public DetailAST getAST() {
+		return ast;
+	}
 
 }

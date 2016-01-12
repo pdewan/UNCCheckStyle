@@ -55,6 +55,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected boolean currentMethodIsVisible;
 	protected List<String> currentMethodParameterTypes = new ArrayList();
+	protected List<String> currentMethodParameterNames = new ArrayList();
+
 	// protected List<STNameable> imports = new ArrayList();
 	// protected static Set<String> externalImports = new HashSet();
 	// protected static Set<String> javaLangClassesSet;
@@ -418,7 +420,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			if (!aSignature.equals(MATCH_ANYTHING) && !isIdentifier(aSignature)) {
 			System.err.println("Illegal signature," + aSignature + ", missing :\n Assuming parameters and return types do not matter");
 			}
-			return new AnSTMethod(null, aSignature.trim(), null, null, true, true, false, null, false, null, null, false, null, null);
+			return new AnSTMethod(null, aSignature.trim(), null, null, null, true, true, false, null, false, null, null, false, null, null);
 		}
 		if (aNameAndRest.length > 2) {
 			System.err.println("Illegal signature," + aSignature + ",  too many :" + aSignature);
@@ -443,7 +445,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			aParameterTypes[i] = aParameterTypes[i].trim();
 
 		}
-		return new AnSTMethod(null, aName, null, aParameterTypes, true, true,
+		return new AnSTMethod(null, aName, null, null, aParameterTypes, true, true,
 				false, aReturnType, true, null, null, false, null, null);
 
 	}
@@ -467,7 +469,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			aParameterTypes[i] = aParameterTypes[i].trim();
 
 		}
-		return new AnSTMethod(null, aName, null, aParameterTypes, true, true,
+		return new AnSTMethod(null, aName, null, null, aParameterTypes, true, true,
 				false, aReturnType, true, null, null, false, null, null);
 
 	}
@@ -753,6 +755,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// processPreviousMethodData();
 		currentMethodType = "";
 		currentMethodParameterTypes.clear();
+		currentMethodParameterNames.clear();
 		currentMethodScope.clear();
 		methodsCalledByCurrentMethod.clear();
 		currentMethodAssignsToGlobalVariable = false;
@@ -794,6 +797,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				.getType() != TokenTypes.CTOR_DEF))
 			return;
 		final DetailAST aType = paramDef.findFirstToken(TokenTypes.TYPE);
+		final DetailAST aParameterNameAST = aType.getNextSibling();
+		final String aParameterName = aParameterNameAST.getText();
+		
 		// DetailAST aTypeNameAST = aType.findFirstToken(TokenTypes.IDENT);
 		// String aTypeName = aTypeNameAST.getText();
 		final DetailAST arrayDeclAST = aType
@@ -804,6 +810,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (arrayDeclAST != null)
 			text = text + "[]";
 		currentMethodParameterTypes.add(text);
+		currentMethodParameterNames.add(aParameterName);
 		addToMethodScope(paramDef);
 
 	}
@@ -1239,7 +1246,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeName(aNormalizedLongName);
-		CallInfo result = new ACallInfo(currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
+		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
 				aCallee, aCallParameters, aNormalizedParts, aCastType);
 		if (aLeftMostMethodTargetAST != null) {
 //			String aTargetName;
@@ -1305,7 +1312,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			aNormalizedParts = new String[] { shortMethodName, shortMethodName };
 		}
 		// need to worry about cast at some point I assume
-		CallInfo result = new ACallInfo(currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
+		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(currentMethodParameterTypes), aNormalizedParts[0],
 				aNormalizedParts[1], aCallParameters, aNormalizedParts, null);
 
 		astToContinuationData.put(ast, aNormalizedParts);
