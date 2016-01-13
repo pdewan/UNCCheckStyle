@@ -24,7 +24,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	public static final String MSG_KEY = "expectedMethodCall";
 	public static final String TYPE_SIGNATURE_SEPARATOR = "!"; // why not "."
 	public static final String CALLER_TYPE_SEPARATOR = "#";
-	public static final String CALLED_PARAMETER_START = "%";
+	public static final String TREE_REGEX_START = "%";
 	public static final String CALLER_PARAMETER_SPECIFIER = "\\$";
 
 	
@@ -161,8 +161,23 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		return aCalledActualText.matches(aRegex); // basically called is dome function of caller parameter
 		
 	}
+	static StringBuffer treeText = new StringBuffer(4096);
+	protected boolean parametersMatch(STMethod aCallingMethod, CallInfo aCallInfo, String aSpecifiedParameters) {
+		if (aSpecifiedParameters == null )
+			return true;
+//		List<String> aCallerFormals = Arrays.asList(aCallingMethod.getParameterNames());
+		List<DetailAST> aCalledActuals = aCallInfo.getActuals();
+		StringBuffer aCalledActualsText = new StringBuffer();
+		treeText.setLength(0);
+		for (int actualIndex = 0; actualIndex < aCalledActuals.size(); actualIndex++) {
+			treeText.append(aCalledActuals.get(actualIndex).toStringTree());
+		}
+		return treeText.toString().matches(aSpecifiedParameters);
+	}
+		
 	
-	protected boolean parametersMatch(STMethod aCallingMethod, CallInfo aCallInfo, List<String> aSpecifiedParameters) {
+	
+	protected boolean incrementalParametersMatch(STMethod aCallingMethod, CallInfo aCallInfo, List<String> aSpecifiedParameters) {
 		if (aSpecifiedParameters == null || aSpecifiedParameters.size() == 0)
 			return true;
 //		List<String> aCallerFormals = Arrays.asList(aCallingMethod.getParameterNames());
@@ -189,7 +204,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		String[] aCallerAndRest = aSpecifier.split(CALLER_TYPE_SEPARATOR);
 		String aCaller = MATCH_ANYTHING;
 		String aNonTargetPart = aSpecifier;
-		List<String> aCalledParameters = null;
+//		List<String> aCalledParameters = null;
 
 		if (aCallerAndRest.length == 2) {
 			aCaller = aCallerAndRest[0].trim();
@@ -211,14 +226,18 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			return false;
 		}
 		String anEvaluatedNonTargetPart = substituteParameters(aNonTargetPart, aCallingMethod);
-		String[] aNameParts = anEvaluatedNonTargetPart.split(CALLED_PARAMETER_START);
+		String[] aNameParts = anEvaluatedNonTargetPart.split(TREE_REGEX_START);
 		String aSignatureWithTarget = aNameParts[0];
+		String aParametersText = null;
 		if (aNameParts.length > 1) {
-			aCalledParameters = new ArrayList<>();
-			for (int i = 1; i < aNameParts.length; i++) {
-				aCalledParameters.add(aNameParts[i]);
-			}							
-		}		
+			aParametersText = aNameParts[1];
+		}
+//		if (aNameParts.length > 1) {
+//			aCalledParameters = new ArrayList<>();
+//			for (int i = 1; i < aNameParts.length; i++) {
+//				aCalledParameters.add(aNameParts[i]);
+//			}							
+//		}		
 		
 //		STMethod  aCallingMatchingMethod = getMatchingMethod(aCallingSTType, aCallingSpecifiedMethod);
 
@@ -280,15 +299,18 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //			return true; // assume the type is right, 
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
 		Boolean result = matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
-		if (aCalledParameters == null)
+		
+//		if (aCalledParameters == null)
+//			return result;
+		if (aParametersText == null)
 			return result;
 		if (result != true)
 			return result;
-//		if (!result)
-//			return false;
-		return parametersMatch(aCallingMethod, aCallInfo, aCalledParameters);
-//		return matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
-		
+
+//		return incrementalParametersMatch(aCallingMethod, aCallInfo, aCalledParameters);
+
+		return parametersMatch(aCallingMethod, aCallInfo, aParametersText);
+
 	
 		
 	}
