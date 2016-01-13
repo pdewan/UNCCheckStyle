@@ -6,8 +6,8 @@ import unc.cs.symbolTable.STMethod;
 
 public interface CallOperation extends TransitiveOperation {
 
-	STMethod getMethod();
+//	STMethod getMethod();
 
-	List<String> getParams();
+//	List<String> getParams();
 
 }

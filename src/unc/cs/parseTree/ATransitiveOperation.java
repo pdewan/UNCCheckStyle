@@ -1,15 +1,15 @@
 package unc.cs.parseTree;
 
 public abstract class ATransitiveOperation extends AnAtomicOperation implements TransitiveOperation {
-	String name;
+	String operand;
 
 	public ATransitiveOperation(Integer[] tokenType, String name) {
 		super(tokenType);
-		this.name = name;
+		this.operand = name;
 	}
 	@Override
-	public String getName() {
-		return name;
+	public String getOperand() {
+		return operand;
 	}
 
 }

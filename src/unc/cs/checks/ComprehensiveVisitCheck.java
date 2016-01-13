@@ -273,11 +273,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			
 				
 	}
-	public Boolean matchSignature(
+	public  Boolean matchSignature(
 			STMethod aSpecification, STMethod aMethod) {
+		// let someone else add this , some instance method that calls it
 		variablesAdded.clear();
-//		int j = 0;
-//		String aReturnType = aSpecification.getReturnType();
+
 		String aSpecifiedReturnType = aSpecification.getReturnType();
 		String anActualReturnType = aMethod.getReturnType();
 
@@ -381,7 +381,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			anOriginal.add(newElement);
 		}
 	}
-	public Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
+    
+	public  Boolean matchesCallingMethod (STType anSTType, STMethod aSpecifiedMethod, STMethod anActualMethod) {
 //		int i = 0;
 		Boolean aMatch = matchSignature(aSpecifiedMethod, anActualMethod);
 		if (aMatch == null) {
@@ -1070,7 +1071,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	// ouch from subclass
-	public String toLongName(String[] aNormalizedName) {
+	public static String toLongName(String[] aNormalizedName) {
 		StringBuffer retVal = new StringBuffer();
 		int index = 0;
 		while (true) {

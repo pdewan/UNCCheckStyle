@@ -24,6 +24,10 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	public static final String MSG_KEY = "expectedMethodCall";
 	public static final String TYPE_SIGNATURE_SEPARATOR = "!"; // why not "."
 	public static final String CALLER_TYPE_SEPARATOR = "#";
+	public static final String CALLED_PARAMETER_START = "%";
+	public static final String CALLER_PARAMETER_SPECIFIER = "\\$";
+
+	
 
 
 	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
@@ -106,25 +110,97 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //		return false;
 //
 //	}
+	static StringBuffer aComposedString = new StringBuffer(300);
+
+	public static String substituteParameters (String aSpecification, STMethod aCallingMethod) {
+		List<String> aCallerFormals = Arrays.asList(aCallingMethod.getParameterNames());
+		String aCallerName = aCallingMethod.getName();
+		String[] aMethodAndParameters = aSpecification.split(CALLER_PARAMETER_SPECIFIER);
+		aComposedString.setLength(0);
+		aComposedString.append(aMethodAndParameters[0]);
+		for (int anIndex = 1; anIndex < aMethodAndParameters.length; anIndex++) {
+			String aParameterStart = aMethodAndParameters[anIndex];
+			if (aParameterStart.length() == 0) {
+				System.err.println(CALLER_PARAMETER_SPECIFIER + " missing an argument at position " + anIndex  + " in " + aSpecification);
+				continue;
+			}
+			String aParameterText = aParameterStart.substring(0, 1);
+			try {
+				int aParameterNumber = Integer.parseInt(aParameterText);
+				if (aParameterNumber > aCallerFormals.size()) {
+					System.err.println(CALLER_PARAMETER_SPECIFIER + " missing a legal index at position " + anIndex + " in " + aSpecification);
+
+				}
+				if (aParameterNumber == 0) {
+					aComposedString.append(aCallerName);
+				} else {
+				aComposedString.append(aCallerFormals.get(aParameterNumber - 1));
+				}
+				aComposedString.append(aParameterStart.substring(1));
+			} catch (Exception e) {
+				System.err.println(CALLER_PARAMETER_SPECIFIER + " missing an int argument at position " + anIndex + " in " + aSpecification);
+
+			}
+		}
+		return aComposedString.toString();
+		
+	}
+	public  boolean parameterMatches (List<DetailAST> aCalledActuals, String aRegex, int anActualIndex ) {
+//		if (aCallerIndex < 0 || aCallerIndex >= aCallerFormals.size()) {
+//			System.err.println ("Index " + aCallerIndex + " out of bounds in:" + aCallerFormals);
+//			return false;
+//		}
+		if (anActualIndex >= aCalledActuals.size()) { // should happen only when doing all
+			return false;
+		}
+//		String aCallerFormal = aCallerFormals.get(aCallerIndex);
+		DetailAST aCalledActual = aCalledActuals.get(anActualIndex);
+		String aCalledActualText = aCalledActual.toStringTree();
+		String aCalledActualList = aCalledActual.toStringList();
+		
+		return aCalledActualText.matches(aRegex); // basically called is dome function of caller parameter
+		
+	}
 	
-	protected Boolean matches (STType aCallingSTType, String aSpecifier, String aShortMethodName,
+	protected boolean parametersMatch(STMethod aCallingMethod, CallInfo aCallInfo, List<String> aSpecifiedParameters) {
+		if (aSpecifiedParameters == null || aSpecifiedParameters.size() == 0)
+			return true;
+//		List<String> aCallerFormals = Arrays.asList(aCallingMethod.getParameterNames());
+		List<DetailAST> aCalledActuals = aCallInfo.getActuals();
+		for (int actualIndex = 0; actualIndex < aSpecifiedParameters.size(); actualIndex++) {
+			String aSpecifiedParameterText = aSpecifiedParameters.get(actualIndex);
+			try {
+//				int aCallerIndex = Integer.parseInt(aSpecifiedParameterText) - 1; // countparams from 1 onwards
+				if (!parameterMatches(aCalledActuals, aSpecifiedParameterText, actualIndex))
+						return false;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println ("Specified parameter is not a number: " + aSpecifiedParameterText);
+			}			
+		}
+		return true;
+		
+	}
+	
+	protected  Boolean matches (STType aCallingSTType, String aSpecifier, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 		String aCallingType = toShortTypeName(aCallingSTType.getName());
 		String[] aCallerAndRest = aSpecifier.split(CALLER_TYPE_SEPARATOR);
 		String aCaller = MATCH_ANYTHING;
-		String aSignatureWithTarget = aSpecifier;
+		String aNonTargetPart = aSpecifier;
+		List<String> aCalledParameters = null;
+
 		if (aCallerAndRest.length == 2) {
 			aCaller = aCallerAndRest[0].trim();
-			aSignatureWithTarget = aCallerAndRest[1];
+			aNonTargetPart = aCallerAndRest[1];
 		}
-//		int i = 0;
-//		STMethod aCallingMethod = aCallingSTType.getDeclaredMethod(aCallInfo.getCaller(), aCallInfo.getCallerParameterTypes().toArray(new String[]{}));
+			
+
 		STMethod aCallingMethod = aCallInfo.getCallingMethod();
 
 		STMethod aCallingSpecifiedMethod = signatureToMethod(aCaller);
-//		if (!matchSignature(aCallingSpecifiedMethod, aCallingMethod)) {
-//			return false;
-//		}
+
 		Boolean aMatch = matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod);
 		if (aMatch == null) {
 			return null;
@@ -134,7 +210,15 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //		if (!matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod)) {
 			return false;
 		}
-		
+		String anEvaluatedNonTargetPart = substituteParameters(aNonTargetPart, aCallingMethod);
+		String[] aNameParts = anEvaluatedNonTargetPart.split(CALLED_PARAMETER_START);
+		String aSignatureWithTarget = aNameParts[0];
+		if (aNameParts.length > 1) {
+			aCalledParameters = new ArrayList<>();
+			for (int i = 1; i < aNameParts.length; i++) {
+				aCalledParameters.add(aNameParts[i]);
+			}							
+		}		
 		
 //		STMethod  aCallingMatchingMethod = getMatchingMethod(aCallingSTType, aCallingSpecifiedMethod);
 
@@ -196,7 +280,13 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //			return true; // assume the type is right, 
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
 		Boolean result = matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
-		return result;
+		if (aCalledParameters == null)
+			return result;
+		if (result != true)
+			return result;
+//		if (!result)
+//			return false;
+		return parametersMatch(aCallingMethod, aCallInfo, aCalledParameters);
 //		return matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
 		
 	
@@ -310,6 +400,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //	}
 	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
+		int i = 0;
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
 //		String aRegex = aSpecifiedMethod.getName();
 		if ( !isStarParameters(aSpecifiedMethod.getParameterTypes()) &&

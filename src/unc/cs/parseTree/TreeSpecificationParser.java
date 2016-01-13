@@ -83,7 +83,7 @@ public class TreeSpecificationParser {
 	}
 	protected static CheckedNode parseParenthesizedExpression(Scanner aScanner) {
 		List<CheckedNode> anExpressions = parseNodeList(aScanner, R_PAREN);
-		return new AnExpressionSequence(anExpressions);
+		return new AParenthizedExpressionSequence(anExpressions);
 	}
 	protected static CheckedNode parseCall(Scanner aScanner) {
 //		if (!aScanner.hasNext()) {
@@ -94,8 +94,8 @@ public class TreeSpecificationParser {
 		return new ACallOperation( methodName);
 	}
 	protected static CheckedNode parseReturn(Scanner aScanner) {
-		
-		return new AReturnOperation();
+		return null;
+//		return new AReturnOperation();
 	}
 	
 	protected static CheckedNode parseStatementSet(Scanner aScanner) {
@@ -143,16 +143,16 @@ public class TreeSpecificationParser {
 	 
 	 public static void main (String[] args) {
 //		 String testString = "{ assign x123 if { return } else { call foo } }";
-		 String testString = "IF ( * ) main#CALL factorial CALL System.out.println:String->void ";
+		 String testString = "factorial#RETURN IF ( * ) RETURN ELSE CALL @Self%(.*)$1(.*)  CALL factorial:int->int%(.*)$1(.*) { RETURN } IF ( * ) { RETURN } ELSE { IF ( * ) { RETURN } RETURN CALL @Self } ";
 
 		 String recursive = "{ if ( * ) { return } call @caller }";
 		 
-		 
+		 String[] aParameters = "CALL @Self%(.*)$1(.*)".split("%");
 
-//		 Scanner aScanner = new Scanner(testString);
-//		 while (aScanner.hasNext()) {
-//			 System.out.println (aScanner.next());			 
-//		 }
+		 Scanner aScanner = new Scanner(testString);
+		 while (aScanner.hasNext()) {
+			 System.out.println (aScanner.next());			 
+		 }
 		 CheckedNode parsedStatement = parseStatement(recursive);
 		 System.out.println(parsedStatement);
 		 
