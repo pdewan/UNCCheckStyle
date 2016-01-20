@@ -22,6 +22,7 @@ public class TreeSpecificationParser {
 	public static final String IF = "if";
 	public static final String ELSE = "else";
 	public static final String CALL = "call";
+	public static final String BODY = "body";
 	public static final String RETURN = "return";
 	public static final String SET_START = "\\[";
 	public static final String SET_END = "\\]";
@@ -39,7 +40,7 @@ public class TreeSpecificationParser {
 ////		result.replaceAll("\\*", "\\*");
 //		return result;
 //	}
-	public static CheckedNode parseStatement(String aSpecification) {
+	public static CheckedNode parseConstruct(String aSpecification) {
 		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
 		return parseNode(aScanner);
 	}
@@ -64,6 +65,8 @@ public class TreeSpecificationParser {
 			return parseIF(aScanner);
 		else if (nextToken.equalsIgnoreCase(CALL))
 			return parseCall(aScanner);
+		else if (nextToken.equalsIgnoreCase(BODY))
+			return parseBody(aScanner);
 		else if (nextToken.equals(SET_START))
 			return parseStatementSet(aScanner);
 		else if (nextToken.equals(SEQUENCE_START))
@@ -93,6 +96,11 @@ public class TreeSpecificationParser {
 		String methodName = aScanner.next();
 		return new ACallOperation( methodName);
 	}
+	protected static CheckedNode parseBody(Scanner aScanner) {
+
+		String body = aScanner.next();
+		return new ABody( body);
+	}
 	protected static CheckedNode parseReturn(Scanner aScanner) {
 		return null;
 //		return new AReturnOperation();
@@ -120,15 +128,16 @@ public class TreeSpecificationParser {
 	}
 	
 	protected static CheckedNode parseIF(Scanner aScanner) {		
-		aScanner.next(); // consume the left paren
-		CheckedNode expression = parseParenthesizedExpression(aScanner);
+//		aScanner.next(); // consume the left paren
+//		CheckedNode expression = parseParenthesizedExpression(aScanner);
+		String anExpression = aScanner.next();
 		CheckedNode thenPart = parseNode(aScanner);
 		CheckedNode elsePart = null;
 		if (aScanner.hasNext(ELSE)) {
 			aScanner.next();
 			elsePart = parseNode(aScanner);
 		}
-		return new AnIFStatement(expression, thenPart, elsePart);
+		return new AnIFStatement(anExpression, thenPart, elsePart);
 		
 	}
 	
@@ -153,7 +162,7 @@ public class TreeSpecificationParser {
 		 while (aScanner.hasNext()) {
 			 System.out.println (aScanner.next());			 
 		 }
-		 CheckedNode parsedStatement = parseStatement(recursive);
+		 CheckedNode parsedStatement = parseConstruct(recursive);
 		 System.out.println(parsedStatement);
 		 
 	 }

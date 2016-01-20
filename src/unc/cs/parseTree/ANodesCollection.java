@@ -20,6 +20,8 @@ public class ANodesCollection extends ACheckedNode implements NodesCollection {
 		return nodes;
 	}
 
-	
+	public String toString() {
+		return super.toString() + " " + nodes;
+	}	
 
 }

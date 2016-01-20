@@ -10,12 +10,12 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class ACallOperation extends ATransitiveOperation implements CallOperation {
 //	STMethod method; // called method
-	String signatureWithTarget;
+//	String signatureWithTarget;
 	
-	public static final String PARAM_START = "$";
-	List<String> params;
-	public ACallOperation(String name) {
-		super(new Integer[]{TokenTypes.METHOD_CALL}, name);
+//	public static final String PARAM_START = "$";
+//	List<String> params;
+	public ACallOperation(String aSpecification) {
+		super(new Integer[]{TokenTypes.METHOD_CALL}, aSpecification);
 //		try {
 //			String[] aNameParts = name.split("\\$");
 //			signatureWithTarget = aNameParts[0];

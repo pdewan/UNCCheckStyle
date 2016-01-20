@@ -113,6 +113,8 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	static StringBuffer aComposedString = new StringBuffer(300);
 
 	public static String substituteParameters (String aSpecification, STMethod aCallingMethod) {
+		if (aCallingMethod == null) 
+			return aSpecification;
 		List<String> aCallerFormals = Arrays.asList(aCallingMethod.getParameterNames());
 		String aCallerName = aCallingMethod.getName();
 		String[] aMethodAndParameters = aSpecification.split(CALLER_PARAMETER_SPECIFIER);

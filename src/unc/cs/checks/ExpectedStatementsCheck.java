@@ -15,6 +15,7 @@ import unc.cs.parseTree.AnIFStatement;
 import unc.cs.parseTree.AtomicOperation;
 import unc.cs.parseTree.CallOperation;
 import unc.cs.parseTree.IFStatement;
+import unc.cs.parseTree.Body;
 import unc.cs.parseTree.MethodParseTree;
 import unc.cs.parseTree.CheckedNode;
 import unc.cs.parseTree.TransitiveOperation;
@@ -148,8 +149,32 @@ public class ExpectedStatementsCheck extends MethodCallCheck{
 	public  Boolean matchIf(STMethod aMethod,
 			DetailAST anAST, IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);
+		if (aMatchingNode == null) {
+			return false;
+		}	
+		DetailAST anExpression = aMatchingNode.getFirstChild();
+		String anExpressionText = anExpression.toStringTree();
+		String aSpecification = anIFStatement.getExpression();
+		if (aMethod != null) {
+			aSpecification = substituteParameters(aSpecification, aMethod);
+		}
+		if (!anExpressionText.matches(aSpecification)) {
+			return false;
+		}
+		CheckedNode aThenPart = anIFStatement.getThenPart();
+		Boolean aMatch = matchParseTree(aMethod, anAST, aThenPart, aMatchedNodes);
+		if (aThenPart == null) {
+			return null;
+		}
+		if (!aMatch) {
+			return false;
+		}
+		CheckedNode anElsePart = anIFStatement.getElsePart();
+		if (anElsePart == null)
+			return true;
+		return matchParseTree(aMethod, anAST, anElsePart, aMatchedNodes);
 		
-		return (aMatchingNode != null) ;
+//		return (aMatchingNode != null) ;
 //		return false;
 	}
 	
@@ -191,12 +216,28 @@ public class ExpectedStatementsCheck extends MethodCallCheck{
 		
 //		return false;
 	}
+	public  Boolean matchMethodBody(STMethod aMethod, DetailAST anAST,
+		Body aBody) {
+		String aNormalizedBody = substituteParameters(aBody.getOperand(), aMethod);
+		String aBodyText = anAST.toStringTree();
+		return aBodyText.matches(aNormalizedBody);
+		
+		
+//	Boolean aMatch = matches(aMethod.getDeclaringSTType(), maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
+				
+		
+		
+		
+//		return false;
+	}
 	
 	public  Boolean matchParseTree(STMethod aMethod, DetailAST anAST, CheckedNode aStatement, List<DetailAST> aMatchedNodes) {
 //		String aStringTree = anAST.toStringTree();
 //		String aStringList = anAST.toStringList();
 //		String aString = anAST.toString();
-		if (aStatement instanceof AnIndependentNodes) {
+		if (aStatement instanceof Body) {
+			return matchMethodBody(aMethod, anAST, (Body) aStatement);
+		} else if (aStatement instanceof AnIndependentNodes) {
 			return matchNodes(aMethod, anAST, aStatement, aMatchedNodes);			
 		} else if (aStatement instanceof AReturnOperation) {
 			return matchTransitiveOperation(aMethod, anAST, (TransitiveOperation) aStatement, aMatchedNodes);

@@ -6,4 +6,6 @@ public interface IFStatement extends CheckedNode{
 
 	CheckedNode getElsePart();
 
+	String getExpression();
+
 }

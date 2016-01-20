@@ -580,7 +580,10 @@
 			<property name="expectedStatements"
 				value="
 				Factorial= 
-					factorial#CALL $0%(.*)-(.*)$1(.*) RETURN IF ( * ) RETURN ELSE CALL $0%(.*)-(.*)$1(.*)  CALL factorial:int->int%(.*)-(.*)$1(.*)1(.*) { RETURN } IF ( * ) { RETURN } ELSE { IF ( * ) { RETURN } RETURN CALL @Self } |
+					BODY (.*)-(.*)-(.*) |
+					factorial#BODY (.*)-(.*)$0(.*)-(.*)$1(.*)$0(.*)-(.*)$1(.*) |					
+					factorial#CALL $0%(.*)-(.*)$1(.*) |
+					factorial#IF (.*)n(.*)0(.*) CALL $0%(.*)-(.*)$1(.*) |					
 					main#CALL factorial CALL System.out.println:String->void,				
 					 
 				" />

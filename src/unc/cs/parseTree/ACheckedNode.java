@@ -14,4 +14,8 @@ public abstract class ACheckedNode implements CheckedNode {
 		return tokenTypes;
 	}
 	
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+	
 }

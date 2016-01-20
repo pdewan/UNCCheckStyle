@@ -11,5 +11,10 @@ public abstract class ATransitiveOperation extends AnAtomicOperation implements 
 	public String getOperand() {
 		return operand;
 	}
+	
+	public String toString() {
+		return super.toString() + "  " + operand;
+	}
+	
 
 }

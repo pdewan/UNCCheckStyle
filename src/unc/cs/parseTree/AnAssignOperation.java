@@ -5,8 +5,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class AnAssignOperation extends ATransitiveOperation {
 
-	public AnAssignOperation(String name) {
-		super(new Integer[]{TokenTypes.ASSIGN}, name);
+	public AnAssignOperation(String anExpression) {
+		super(new Integer[]{TokenTypes.ASSIGN}, anExpression);
 	}
 
 
