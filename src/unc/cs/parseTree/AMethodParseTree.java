@@ -2,18 +2,14 @@ package unc.cs.parseTree;
 
 import unc.cs.symbolTable.STMethod;
 
-public class AMethodParseTree implements MethodParseTree {
-	STMethod method;
+public class AMethodParseTree extends AMethodSpecification implements MethodParseTree {
 	CheckedNode parseTree;
 	public AMethodParseTree(STMethod method, CheckedNode parseTree) {
-		super();
+		super(method);
 		this.method = method;
 		this.parseTree = parseTree;
 	}
-	@Override
-	public STMethod getMethod() {
-		return method;
-	}
+	
 	@Override
 	public CheckedNode getParseTree() {
 		return parseTree;

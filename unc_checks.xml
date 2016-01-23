@@ -576,7 +576,7 @@
 				" />
 		</module>
 	
-	<module name="ExpectedStatements">
+	<module name="ExpectedParseTree">
 			<property name="expectedStatements"
 				value="
 				Factorial= 
@@ -585,6 +585,14 @@
 					factorial#CALL $0%(.*)-(.*)$1(.*) |
 					factorial#IF (.*)n(.*)0(.*) CALL $0%(.*)-(.*)$1(.*) |					
 					main#CALL factorial CALL System.out.println:String->void,				
+					 
+				" />
+	</module>
+		<module name="ExpectedConstructs">
+			<property name="expectedConstructs"
+				value="
+				Factorial= 					
+					factorial#IF CALL|				
 					 
 				" />
 	</module>
