@@ -42,11 +42,14 @@ public class TreeSpecificationParser {
 //		return result;
 //	}
 	public static CheckedNode parseConstruct(String aSpecification) {
-		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
+//		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
+		Scanner aScanner = new Scanner(aSpecification);
 		return parseNode(aScanner);
 	}
 	public static CheckedNode parseNodes(String aSpecification) {
-		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
+//		Scanner aScanner = new Scanner(aSpecification.toLowerCase());
+		Scanner aScanner = new Scanner(aSpecification);
+
 		List<CheckedNode> aStatements = parseNodeList(aScanner, null);
 
 		return new AnIndependentNodes(aStatements);
