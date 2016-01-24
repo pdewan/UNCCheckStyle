@@ -163,7 +163,7 @@
 			
 			" />
 		</module>
-		
+
 
 		<module name="ExpectedGetters">
 			<property name="expectedProperties"
@@ -201,7 +201,7 @@
 			
 			" />
 		</module>
-		
+
 		<module name="ExpectedGlobals">
 			<property name="expectedGlobals"
 				value="
@@ -275,7 +275,7 @@
 				
 				" />
 		</module>
-			<module name="ExpectedClassInstantiations">
+		<module name="ExpectedClassInstantiations">
 			<property name="instantiations"
 				value="
 				
@@ -289,7 +289,7 @@
 				
 				" />
 		</module>
-			<module name="InvalidClassInstantiation">
+		<module name="InvalidClassInstantiation">
 			<property name="includeTypeTags" value="*" />
 			<property name="excludeTypeTags" value="@SingletonsCreator" />
 			<property name="instantiations"
@@ -402,7 +402,7 @@
 				@CustomSwingTextFieldFactory=SwingTextFieldFactory,
 				" />
 		</module>
-			<module name="InvalidSuperTypes">
+		<module name="InvalidSuperTypes">
 			<property name="invalidSuperTypes"
 				value="
 				@BridgeSceneController= 
@@ -575,27 +575,8 @@
 				@Angle= BEAN_PATTERN
 				" />
 		</module>
-	
-	<module name="ExpectedParseTree">
-			<property name="expectedStatements"
-				value="
-				Factorial= 
-					BODY (.*)-(.*)-(.*) |
-					factorial#BODY (.*)-(.*)$0(.*)-(.*)$1(.*)$0(.*)-(.*)$1(.*) |					
-					factorial#CALL $0%(.*)-(.*)$1(.*) |
-					factorial#IF (.*)n(.*)0(.*) CALL $0%(.*)-(.*)$1(.*) |					
-					main#CALL factorial CALL System.out.println:String->void,				
-					 
-				" />
-	</module>
-		<module name="ExpectedConstructs">
-			<property name="expectedConstructs"
-				value="
-				Factorial= 					
-					factorial#IF CALL|				
-					 
-				" />
-	</module>
+
+
 
 		<module name="FunctionAssignsGlobal">
 			<property name="includeTypeTags" value="*" />
@@ -604,7 +585,7 @@
 				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*), parse(.*)" />
 
 		</module>
-	
+
 		<module name="SetterAssignsGlobal">
 		</module>
 		<module name="MissingActualProperty">
@@ -643,7 +624,7 @@
 		<module name="IllegalPropertyNotification">
 			<property name="excludeProperties" value="this" />
 		</module>
-        <module name="ClassIsGeneric">
+		<module name="ClassIsGeneric">
 			<property name="includeTypeTags" value="Table" />
 		</module>
 
@@ -654,6 +635,28 @@
 				value="@move | @say | @rotateLeftArm | @rotateRightArm |  @repeat | @define | @call |  @thread | @wait | @proceedAll |  @sleep |  @undo | @redo, @LINE_PATTERN | @IMAGE_PATTERN | @STRING_PATTERN" />
 		</module>
 		<module name="InvalidPackageName">
+		</module>
+
+		<module name="ExpectedParseTree">
+			<property name="expectedStatements"
+				value="
+				Factorial= 
+					BODY (.*)-(.*)-(.*) |
+					main#CALL $0%(.*)-(.*)$1(.*) |					
+					factorial#BODY (.*)-(.*)$0(.*)-(.*)$1(.*)$0(.*)-(.*)$1(.*) |					
+					factorial#CALL $0%(.*)-(.*)$1(.*) |
+					factorial#IF (.*)n(.*)0(.*) CALL $0%(.*)-(.*)$1(.*) |					
+					main#CALL factorial CALL System.out.println:String->void,				
+					 
+				" />
+		</module>
+		<module name="ExpectedConstructs">
+			<property name="expectedConstructs"
+				value="
+				Factorial= 					
+					factorial#FOR IF CALL|				
+					 
+				" />
 		</module>
 
 	</module>

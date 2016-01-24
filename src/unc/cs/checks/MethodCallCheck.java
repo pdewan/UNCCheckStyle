@@ -437,7 +437,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		
 		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) && !aSpecifiedTarget.startsWith(TAG_STRING)) { // we do not need to determine tags
 			 if (aCallInfo.getNormalizedCall().length > 2) { // handling system.out.println
-					return aLongMethodName.matches(aSpecifiedMethod.getName());
+					return aLongMethodName.toLowerCase().matches(aSpecifiedMethod.getName());
 				}
 			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && toShortTypeName(aTypeName).matches(aSpecifiedTarget); 
 		 }

@@ -20,6 +20,7 @@ public class TreeSpecificationParser {
 	 */
 	public static final String ASSIGN = "assign";
 	public static final String IF = "if";
+	public static final String FOR = "for";
 	public static final String ELSE = "else";
 	public static final String CALL = "call";
 	public static final String BODY = "body";

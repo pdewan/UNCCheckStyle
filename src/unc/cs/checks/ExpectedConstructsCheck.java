@@ -39,6 +39,8 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 	static {
 		constructNamesToCodes.put(TreeSpecificationParser.IF, Arrays.asList(new Integer[] {TokenTypes.LITERAL_IF}));
 		constructNamesToCodes.put(TreeSpecificationParser.CALL, Arrays.asList(new Integer[] {TokenTypes.METHOD_CALL}));
+		constructNamesToCodes.put(TreeSpecificationParser.FOR, Arrays.asList(new Integer[] {TokenTypes.LITERAL_FOR}));
+
 	}
 	
 	@Override
@@ -83,12 +85,12 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 		setExpectedTypesAndSpecifications(aPatterns);
 	}
 	
-	protected void logNodesNotMatched(DetailAST aTreeAST, String aSpecification,
-			String aType) {
-		log (aTreeAST, aTreeAST, aSpecification, aType);
+	protected void logConstructNotMatched(DetailAST aTreeAST, String aSpecification,
+			String aType, String aKeyword) {
+		log (aTreeAST, aTreeAST, aSpecification, aType, aKeyword);
 
 	}
-	public  Boolean matchConstructs(List<STMethod> anSTMethods, String aConstruct, List<DetailAST> aMatchedNodes) {
+	public  Boolean matchConstruct(List<STMethod> anSTMethods, String aConstruct, List<DetailAST> aMatchedNodes) {
 		boolean foundNull = false;
 		
 		for (STMethod anSTMethod:anSTMethods) {
@@ -102,6 +104,7 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 		}
 		if (foundNull)
 			return null;
+		
 		return false;		
 	}
 
@@ -140,12 +143,12 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 			}
 //			STMethod aSpecifiedMethod = aCallOperation.getMethod();
 			String aSpecification = aCallOperation.getOperand();
-			List<STMethod> anActualMethods = aCallInfo.getMatchingCalledMethods();
-			if (anActualMethods == null) {
-				return null;
-			}
-			int i = 0;
-			for (STMethod anSTMethod:anActualMethods) {
+//			List<STMethod> anActualMethods = aCallInfo.getMatchingCalledMethods();
+//			if (anActualMethods == null) {
+//				return null;
+//			}
+//			int i = 0;
+//			for (STMethod anSTMethod:anActualMethods) {
 				String aNormalizedLongName = ComprehensiveVisitCheck.toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = ComprehensiveVisitCheck.toShortTypeName(aNormalizedLongName);
 				Boolean aMatch = matches(aMethod.getDeclaringSTType(), maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
@@ -158,7 +161,7 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 					return true;
 				}
 			}					
-		}
+//		}
 		
 		if (foundNull)
 			return null;
@@ -181,16 +184,16 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 //		return false;
 	}
 	
-	public  Boolean matchConstructs(STMethod aMethod, DetailAST anAST, String[] aConstructs, List<DetailAST> aMatchedNodes) {
+	public  Boolean matchConstructs(String aType, String aSpecification, STMethod aMethod, DetailAST anAST, String[] aConstructs, List<DetailAST> aMatchedNodes) {
 		Boolean foundNull = false;
-		Boolean aMatch = true;
-		
+		Boolean aMatch = true;		
 		for (String aConstruct: aConstructs) {
 			aMatch = matchConstruct(aMethod, anAST, aConstruct, aMatchedNodes);
 			if (aMatch == null) {
 				foundNull = true;
 			}
 			else if (!aMatch) {
+				logConstructNotMatched(anAST, aSpecification, aType, aConstruct);
 				aMatch = false;
 			}
 		}
@@ -238,7 +241,7 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 			String[] aKeywords = aMethodStrings.getSpecifications();
 			if (aSpecifiedMethod == null) {
 				List<DetailAST> aMatchedNodes = new ArrayList();
-				aMatch= matchConstructs(null, anSTType.getAST(), aKeywords, aMatchedNodes);
+				aMatch= matchConstructs(toShortTypeName(anSTType.getName()), aSpecification, null, anSTType.getAST(), aKeywords, aMatchedNodes);
 				if (aMatch == null) {
 					foundNull = true;
 					continue;
@@ -255,20 +258,28 @@ public class ExpectedConstructsCheck extends MethodCallCheck{
 				if (aMatchingMethods.size() == 0) {
 					return false;
 				}
+				boolean specificationMatched = false;
+//				retVal = false; // set to true if any method matched
 				for (STMethod anSTMethod : aMatchingMethods) {
 					List<DetailAST> aMatchedNodes = new ArrayList();
 
-					aMatch = matchConstructs(anSTMethod, anSTMethod.getAST(), aKeywords, aMatchedNodes);
+					aMatch = matchConstructs(toShortTypeName(anSTType.getName()), aSpecification, anSTMethod, anSTMethod.getAST(), aKeywords, aMatchedNodes);
 					if (aMatch == null) {
 						foundNull = true;
 						continue;
 					}
-					if (!aMatch) {
-						retVal = false;
-						continue;
+					if (aMatch) {
+						specificationMatched = true;
+//						retVal = true;
+						break;
+						
 					}
 
 				}
+				if (!specificationMatched && !foundNull) {
+					retVal = false;
+				}
+				
 
 			}
 		}

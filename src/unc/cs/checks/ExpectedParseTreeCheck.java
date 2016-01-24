@@ -117,14 +117,16 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			} 
 			if (!aMatch) {
 				returnValue = false;
+//				logNodesNotMatched(anAST, aSt, aType)
 //				returnValue = noAST; // should log here
 			}
 		}
-		if (foundNull == true) {
+		if (foundNull) {
 			return null;
 		}
 		return returnValue;
 	}
+	
 	public static Boolean matchAtomicOperation(STMethod aMethod,
 			DetailAST anAST, AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
@@ -190,14 +192,15 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			}
 //			STMethod aSpecifiedMethod = aCallOperation.getMethod();
 			String aSpecification = aCallOperation.getOperand();
-			List<STMethod> anActualMethods = aCallInfo.getMatchingCalledMethods();
-			if (anActualMethods == null) {
-				return null;
-			}
+//			List<STMethod> anActualMethods = aCallInfo.getMatchingCalledMethods(); // these are internal methods
+//			if (anActualMethods == null) {
+//				return null;
+//			}
 			int i = 0;
-			for (STMethod anSTMethod:anActualMethods) {
+//			for (STMethod anSTMethod:anActualMethods) {
 				String aNormalizedLongName = ComprehensiveVisitCheck.toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = ComprehensiveVisitCheck.toShortTypeName(aNormalizedLongName);
+				// specified method has been matched already, matches will assume aSpecifiation has a caller
 				Boolean aMatch = matches(aMethod.getDeclaringSTType(), maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
 				if (aMatch == null) {
 					foundNull = true;
@@ -208,10 +211,11 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 					return true;
 				}
 			}					
-		}
+//		}
 		
 		if (foundNull)
 			return null;
+//		logNodesNotMatched(anAST, currentSpecification, currentType, aCallOperation.toString());
 		return false;		
 		
 //		return false;
@@ -235,18 +239,23 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 //		String aStringTree = anAST.toStringTree();
 //		String aStringList = anAST.toStringList();
 //		String aString = anAST.toString();
+		int i = 0;
+		Boolean retVal = false;
 		if (aStatement instanceof Body) {
-			return matchMethodBody(aMethod, anAST, (Body) aStatement);
+			retVal = matchMethodBody(aMethod, anAST, (Body) aStatement);
 		} else if (aStatement instanceof AnIndependentNodes) {
-			return matchNodes(aMethod, anAST, aStatement, aMatchedNodes);			
+			retVal = matchNodes(aMethod, anAST, aStatement, aMatchedNodes);			
 		} else if (aStatement instanceof AReturnOperation) {
-			return matchTransitiveOperation(aMethod, anAST, (TransitiveOperation) aStatement, aMatchedNodes);
+			retVal = matchTransitiveOperation(aMethod, anAST, (TransitiveOperation) aStatement, aMatchedNodes);
 		} else if (aStatement instanceof ACallOperation) {
-			return matchCall(aMethod, anAST, (CallOperation) aStatement, aMatchedNodes);
+			retVal = matchCall(aMethod, anAST, (CallOperation) aStatement, aMatchedNodes);
 		} else if (aStatement instanceof AnIFStatement) {
-			return matchIf(aMethod, anAST, (IFStatement) aStatement, aMatchedNodes);
+			retVal = matchIf(aMethod, anAST, (IFStatement) aStatement, aMatchedNodes);
 		}
-		return false;
+//		if (!retVal) {
+//			logNodesNotMatched(anAST, currentSpecification, currentType, aStatement.toString());
+//		}
+		return retVal;
 		
 	}
 //	public static Boolean matchParseTree(DetailAST anAST, 
@@ -260,13 +269,18 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 //		return false;
 //		
 //	}
+	
+	// global variables, ugh, but too many methods have to share this info
+	protected String currentSpecification = "";
+	protected String currentType = "";
 
 	public Boolean matchParseTree(STType anSTType, String[] aSpecifications) {
 		Boolean foundNull = false;
 		boolean retVal = true;
 		Boolean aMatch = null;
-	
+		currentType = toShortTypeName(anSTType.getName());
 		for (String aSpecification : aSpecifications) {
+			currentSpecification = aSpecification;
 			MethodParseTree aMethodParseTree = specificationToParseTree
 					.get(aSpecification);
 			STMethod aSpecifiedMethod = aMethodParseTree.getMethod();
@@ -280,6 +294,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 				}
 				if (!aMatch) {
 					retVal = false;
+					logNodesNotMatched(anSTType.getAST(), aSpecification, toShortTypeName(anSTType.getName()));
 					continue;
 				}
 			} else {
@@ -290,6 +305,8 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 				if (aMatchingMethods.size() == 0) {
 					return false;
 				}
+				boolean specificationMatched = false;
+//				retVal = false; // set to true if any method matched
 				for (STMethod anSTMethod : aMatchingMethods) {
 					List<DetailAST> aMatchedNodes = new ArrayList();
 
@@ -298,13 +315,19 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 						foundNull = true;
 						continue;
 					}
-					if (!aMatch) {
-						retVal = false;
-						continue;
+					if (aMatch) {
+						specificationMatched = true;
+//						retVal = true;
+						break;
+						
 					}
 
 				}
+				if (!specificationMatched && !foundNull) {
+					retVal = false;
+					logNodesNotMatched(anSTType.getAST(), aSpecification, toShortTypeName(anSTType.getName()));
 
+				}
 			}
 		}
 		if (foundNull)
