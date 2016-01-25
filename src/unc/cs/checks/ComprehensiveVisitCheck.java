@@ -1575,6 +1575,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
 		return false;
 	}
+	protected DetailAST checkedTree;
 
 	// pending check stuff
 	public void doPendingChecks() {
@@ -1595,6 +1596,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					aPendingChecks);
 			for (DetailAST aPendingCheck : aPendingTypeChecksCopy) {
 				specificationVariablesToUnifiedValues.clear();
+				checkedTree = aPendingAST;
 				// System.out.println ("Doing pending check: " +
 				// getName(getEnclosingTypeDeclaration(aPendingCheck)));
 				deferLogging();
@@ -1615,6 +1617,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			return;
 		specificationVariablesToUnifiedValues.clear();
 		deferLogging();
+		checkedTree = currentTree;
 		if (doPendingCheck(ast, currentTree) == null) {
 			clearLogAndResumeLogging();
 			// System.out.println ("added to pending checks:" +
