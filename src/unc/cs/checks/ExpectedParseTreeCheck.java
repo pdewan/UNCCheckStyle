@@ -133,7 +133,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		return returnValue;
 	}
 	
-	public static Boolean matchAtomicOperation(STMethod aMethod,
+	public  Boolean matchAtomicOperation(STMethod aMethod,
 			DetailAST anAST, AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
 		
@@ -141,16 +141,21 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		return result;
 //		return false
 	}
-	public static Boolean matchTransitiveOperation(STMethod aMethod,
+	public  Boolean matchTransitiveOperation(STMethod aMethod,
 			DetailAST anAST, TransitiveOperation aTransitiveOperation, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, aTransitiveOperation.getTokenTypes(), aMatchedNodes);
 		if (aMatchingNode == null) {
+			processMatchResult(false, aTransitiveOperation.toString());
+
 			return false;
 		}
 		DetailAST anOperand = aMatchingNode.getNextSibling();
 		
 		String anOperandText = anOperand.toStringTree();
-		return anOperandText.matches(aTransitiveOperation.getOperand());
+		boolean retVal = anOperandText.matches(aTransitiveOperation.getOperand());
+		processMatchResult(retVal, aTransitiveOperation.getOperand());
+
+		return retVal;
 		
 		
 //		return false;
@@ -159,6 +164,8 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			DetailAST anAST, IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);
 		if (aMatchingNode == null) {
+			processMatchResult(false, anIFStatement.toString());
+
 			return false;
 		}	
 		DetailAST anExpression = aMatchingNode.getFirstChild();
@@ -168,7 +175,8 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			aSpecification = substituteParameters(aSpecification, aMethod);
 		}
 		if (!anExpressionText.matches(aSpecification)) {
-			lastNodeNotMatched = anExpressionText;
+			processMatchResult(false, anExpressionText);
+
 			return false;
 		}
 		CheckedNode aThenPart = anIFStatement.getThenPart();
@@ -177,12 +185,15 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			return null;
 		}
 		if (!aMatch) {
+			processMatchResult(false, aThenPart.toString());
 			return false;
 		}
 		CheckedNode anElsePart = anIFStatement.getElsePart();
 		if (anElsePart == null)
 			return true;
-		return matchParseTree(aMethod, anAST, anElsePart, aMatchedNodes);
+		Boolean retVal = matchParseTree(aMethod, anAST, anElsePart, aMatchedNodes);
+		processMatchResult(retVal, anElsePart.toString());
+		return retVal;
 		
 //		return (aMatchingNode != null) ;
 //		return false;
@@ -216,6 +227,8 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 				} 
 				else if (aMatch) {
 					aMatchedNodes.add(aCallInfo.getAST());
+//					lastNodeMatched = aCallOperation.toString();
+					processMatchResult(true, aCallOperation.toString());
 					return true;
 				}
 			}					
@@ -224,15 +237,28 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		if (foundNull)
 			return null;
 //		logNodesNotMatched(anAST, currentSpecification, currentType, aCallOperation.toString());
+//		lastNodeNotMatched = aCallOperation.toString();
+		processMatchResult(false, aCallOperation.toString());
+
 		return false;		
 		
 //		return false;
+	}
+	protected void processMatchResult (Boolean aMatch, String aNode) {
+		if (aMatch) {
+			lastNodeMatched = aNode;
+		} else {
+			lastNodeNotMatched = aNode;
+		}
+			
 	}
 	public  Boolean matchMethodBody(STMethod aMethod, DetailAST anAST,
 		Body aBody) {
 		String aNormalizedBody = substituteParameters(aBody.getOperand(), aMethod);
 		String aBodyText = anAST.toStringTree();
-		return aBodyText.matches(aNormalizedBody);
+		boolean retVal = aBodyText.matches(aNormalizedBody);
+		processMatchResult(retVal, aBody.toString());
+		return retVal;
 		
 		
 //	Boolean aMatch = matches(aMethod.getDeclaringSTType(), maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
@@ -260,13 +286,13 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		} else if (aStatement instanceof AnIFStatement) {
 			retVal = matchIf(aMethod, anAST, (IFStatement) aStatement, aMatchedNodes);
 		}
-		if (!(aStatement instanceof AnIndependentNodes)) {
-		if (retVal ) {
-			lastNodeMatched = aStatement.toString();
-		} else {
-			lastNodeNotMatched = aStatement.toString();
-		}
-		}
+//		if (!(aStatement instanceof AnIndependentNodes)) {
+//		if (retVal ) {
+//			lastNodeMatched = aStatement.toString();
+//		} else {
+//			lastNodeNotMatched = aStatement.toString();
+//		}
+//		}
 //		if (!retVal) {
 //			logNodesNotMatched(anAST, currentSpecification, currentType, aStatement.toString());
 //		}
