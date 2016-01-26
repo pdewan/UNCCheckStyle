@@ -135,7 +135,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 	
 	public  Boolean matchAtomicOperation(STMethod aMethod,
 			DetailAST anAST, AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
-		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
+		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
 		
 		Boolean result = (aMatchingNode != null) ;
 		return result;
@@ -143,7 +143,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 	}
 	public  Boolean matchTransitiveOperation(STMethod aMethod,
 			DetailAST anAST, TransitiveOperation aTransitiveOperation, List<DetailAST> aMatchedNodes) {
-		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, aTransitiveOperation.getTokenTypes(), aMatchedNodes);
+		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, aTransitiveOperation.getTokenTypes(), aMatchedNodes);
 		if (aMatchingNode == null) {
 			processMatchResult(false, aTransitiveOperation.toString());
 
@@ -162,7 +162,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 	}
 	public  Boolean matchIf(STMethod aMethod,
 			DetailAST anAST, IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
-		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);
+		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);
 		if (aMatchingNode == null) {
 			processMatchResult(false, anIFStatement.toString());
 

@@ -115,14 +115,14 @@ public abstract class ConstructsCheck extends MethodCallCheck{
 
 	public static Boolean matchAtomicOperation(STMethod aMethod,
 			DetailAST anAST, AtomicOperation anAtomicOperation, List<DetailAST> aMatchedNodes) {
-		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
+		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, anAtomicOperation.getTokenTypes(), aMatchedNodes);
 		
 		return (aMatchingNode != null) ;
 //		return false
 	}
 	public static Boolean matchTransitiveOperation(STMethod aMethod,
 			DetailAST anAST, TransitiveOperation aTransitiveOperation, List<DetailAST> aMatchedNodes) {
-		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, aTransitiveOperation.getTokenTypes(), aMatchedNodes);
+		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, aTransitiveOperation.getTokenTypes(), aMatchedNodes);
 		if (aMatchingNode == null) {
 			return false;
 		}
@@ -231,7 +231,7 @@ public abstract class ConstructsCheck extends MethodCallCheck{
 			return false;
 		}
 //		List<Integer> aTokenTypes = Arrays.asList(new Integer[] {aType});
-		DetailAST aMatchingNode =  getFirstInOrderUnmatchedMatchingNode(anAST, aTypes, aMatchedNodes);
+		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, aTypes, aMatchedNodes);
 		return (aMatchingNode != null) ;
 			
 //		String aStringTree = anAST.toStringTree();

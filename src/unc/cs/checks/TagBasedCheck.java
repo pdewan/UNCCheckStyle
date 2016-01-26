@@ -883,7 +883,7 @@ public static boolean isProjectImport(String aFullName) {
 }
 static List<DetailAST> emptyASTList = new ArrayList();
 public static DetailAST getFirstInOrderMatchingNode(DetailAST ast, List<Integer> aType  ) {
-	return getFirstInOrderUnmatchedMatchingNode(ast, aType, emptyASTList);
+	return findFirstInOrderUnmatchedMatchingNode(ast, aType, emptyASTList);
 //	if (ast.getType() == aType)
 //		return ast;
 ////	if (ast.getChildCount() > 0) return null;
@@ -898,7 +898,32 @@ public static DetailAST getFirstInOrderMatchingNode(DetailAST ast, List<Integer>
 //		aChild = aChild.getNextSibling();		
 //	}
 }
-public static DetailAST getFirstInOrderUnmatchedMatchingNode(DetailAST ast, List<Integer> aTypes, List<DetailAST> aMatchedNodes  ) {
+public static DetailAST findFirstContainingNode(DetailAST ast, List<Integer> aTypes) {
+//	if (aast.getType() == aType &&
+	if (ast == null) {
+		return null;
+	}
+	if (aTypes.contains(ast.getType())) {
+		return ast;
+	}
+//	if (ast.getChildCount() > 0) return null;
+//	DetailAST aResult = null;
+	return findFirstContainingNode(ast.getParent(), aTypes);
+}
+// look up one level in case after that there is nothing
+// if there is then return the next one
+public static DetailAST findLastContainingNode(DetailAST ast, List<Integer> aTypes) {
+	DetailAST nextLevel = findFirstContainingNode(ast, aTypes);
+	if (nextLevel == null)
+		return null;
+	DetailAST lastLevel = findLastContainingNode(nextLevel.getParent(), aTypes);
+	if (lastLevel == null)
+		return nextLevel;
+	return lastLevel;
+}
+	
+
+public static DetailAST findFirstInOrderUnmatchedMatchingNode(DetailAST ast, List<Integer> aTypes, List<DetailAST> aMatchedNodes  ) {
 //	if (aast.getType() == aType &&
 	if (aTypes.contains(ast.getType()) &&
 
@@ -912,7 +937,7 @@ public static DetailAST getFirstInOrderUnmatchedMatchingNode(DetailAST ast, List
 	while (true) {
 		if (aChild == null)
 			return null;
-		aResult = getFirstInOrderUnmatchedMatchingNode(aChild, aTypes, aMatchedNodes);
+		aResult = findFirstInOrderUnmatchedMatchingNode(aChild, aTypes, aMatchedNodes);
 		if (aResult != null)
 			return aResult;
 //		if (aResult != noAST && 
