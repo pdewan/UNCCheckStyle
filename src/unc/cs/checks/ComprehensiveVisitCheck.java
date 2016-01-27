@@ -217,7 +217,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// }
 	// static STNameable[] emptyNameableArray = {};
 	// static List<STNameable> emptyNameableList =new ArrayList();
-
+	
 	public static STNameable[] getInterfaces(DetailAST aClassDef) {
 		List<STNameable> anInterfaces = new ArrayList();
 		int numInterfaces = 0;
@@ -1106,7 +1106,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// FullIdent aFullIndent = FullIdent.createFullIdentBelow(ast);
 //		int i = 0;
 //		int j = 0;
-		currentMethodNameAST = getLastDescendentOfFirstChild(ast);
+		currentMethodNameAST = findLastDescendentOfFirstChild(ast);
 //		String shortMethodName = currentMethodNameAST.getText();
 		shortMethodName = currentMethodNameAST.getText();
 
@@ -2401,7 +2401,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 
 	}
-	
+	public static boolean matchesRegexes (String aText, Collection<String> aRegexCollection) {
+		for (String aRegex: aRegexCollection) {
+			if (aText.matches(aRegex))
+				return true;
+		}
+		return false;
+	}
 	
 
 }

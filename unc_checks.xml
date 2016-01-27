@@ -30,7 +30,6 @@
 	<module name="TreeWalker">
 		<module name="EqualsAvoidNull" />
 		<module name="EmptyStatement" />
-		<module name="LiberalMagicNumber" />
 		<module name="SimplifyBooleanExpression" />
 		<module name="SimplifyBooleanReturn" />
 		<module name="StringLiteralEquality" />
@@ -62,6 +61,10 @@
 		<module name="NoDuplicateShortTypeName">
 		</module>
 		<module name="NoFullTypeName">
+		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="allowedSiblings" value="Math.*" />
+		
 		</module>
 
 		<module name="IllegalMethodCall">

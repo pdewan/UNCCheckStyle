@@ -168,7 +168,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 
 			return false;
 		}	
-		DetailAST anExpression = aMatchingNode.getFirstChild();
+		DetailAST anExpression = aMatchingNode.getFirstChild().getNextSibling();
 		String anExpressionText = anExpression.toStringTree();
 		String aSpecification = anIFStatement.getExpression();
 		if (aMethod != null) {
@@ -180,10 +180,12 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			return false;
 		}
 		CheckedNode aThenPart = anIFStatement.getThenPart();
-		Boolean aMatch = matchParseTree(aMethod, anAST, aThenPart, aMatchedNodes);
 		if (aThenPart == null) {
-			return null;
+			return true; // this should not really happen
 		}
+		DetailAST aThenAST = anExpression.getNextSibling().getNextSibling();
+		Boolean aMatch = matchParseTree(aMethod, aThenAST, aThenPart, aMatchedNodes);
+		
 		if (!aMatch) {
 			processMatchResult(false, aThenPart.toString());
 			return false;
@@ -191,7 +193,13 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		CheckedNode anElsePart = anIFStatement.getElsePart();
 		if (anElsePart == null)
 			return true;
-		Boolean retVal = matchParseTree(aMethod, anAST, anElsePart, aMatchedNodes);
+		if (aThenAST.getNextSibling().getType() != TokenTypes.LITERAL_ELSE) {
+			processMatchResult(false, anIFStatement.toString()); // no else part
+		}
+		DetailAST anElseAST = aThenAST.getNextSibling().getFirstChild();
+			
+		Boolean retVal = matchParseTree(aMethod, anElseAST, anElsePart, aMatchedNodes);
+	
 		processMatchResult(retVal, anElsePart.toString());
 		return retVal;
 		

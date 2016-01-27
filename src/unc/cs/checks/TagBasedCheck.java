@@ -869,7 +869,7 @@ public void maybeVisitMethodTags(DetailAST ast) {
 public void visitImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
 	 String aLongClassName = anImport.getText();
-	 String aShortClassName = getLastDescendentOfFirstChild(ast).getText();
+	 String aShortClassName = findLastDescendentOfFirstChild(ast).getText();
 
 	 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
 	 imports.add(anSTNameable);
@@ -948,7 +948,7 @@ public static DetailAST findFirstInOrderUnmatchedMatchingNode(DetailAST ast, Lis
 		aChild = aChild.getNextSibling();		
 	}
 }
-public static DetailAST getFirstInOrderMatchingNodeAfter(DetailAST ast, List<Integer> aType  ) {
+public static DetailAST findFirstInOrderMatchingNodeAfter(DetailAST ast, List<Integer> aType  ) {
 	// first see if someone below our sibling succeeds
 	DetailAST aNextSibiling = ast.getNextSibling();
 	if (aNextSibiling != null) {
@@ -962,9 +962,9 @@ public static DetailAST getFirstInOrderMatchingNodeAfter(DetailAST ast, List<Int
 	if (aParent == null) {
 		return noAST;
 	}
-	return getFirstInOrderMatchingNodeAfter(aParent, aType);
+	return findFirstInOrderMatchingNodeAfter(aParent, aType);
 }
-public static List<DetailAST>  getAllInOrderMatchingNodes(DetailAST ast, int aType ) {
+public static List<DetailAST>  findAllInOrderMatchingNodes(DetailAST ast, int aType ) {
 	 List<DetailAST> result = new ArrayList();
 	fillAllInOrderMatchingNodes(ast, aType, result);
 	return result;
@@ -981,9 +981,16 @@ public static void fillAllInOrderMatchingNodes(DetailAST ast, int aType, List<De
 		aChild = aChild.getNextSibling();		
 	}
 }
-public static DetailAST getLastDescendentOfFirstChild(DetailAST ast) {
-	DetailAST result = ast.getFirstChild();
-	while (result.getChildCount() > 0)
+public static DetailAST findLastDescendentOfFirstChild(DetailAST ast) {
+	return findLastDescendent(ast.getFirstChild());
+//	DetailAST result = ast.getFirstChild();
+//	while (result.getChildCount() > 0)
+//		result = result.getLastChild();    	
+//	return result;    	
+}
+public static DetailAST findLastDescendent(DetailAST ast) {
+	DetailAST result = ast;
+	while (result != null && result.getChildCount() > 0)
 		result = result.getLastChild();    	
 	return result;    	
 }
