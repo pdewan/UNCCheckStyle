@@ -160,6 +160,19 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		
 //		return false;
 	}
+//	public static DetailAST getExpression (DetailAST anIfAST) {
+//		return anIfAST.getFirstChild().getNextSibling();
+//	}
+//	public static DetailAST getThenPart (DetailAST anIfAST) {
+//		return getExpression(anIfAST).getNextSibling().getNextSibling();
+//	}
+//	public static DetailAST getElsePart (DetailAST anIfAST) {
+//		DetailAST aThenPart = getThenPart(anIfAST);
+//		if (aThenPart.getNextSibling().getType() != TokenTypes.LITERAL_ELSE) {
+//			return null;
+//		}
+//		return aThenPart.getNextSibling().getFirstChild();
+//	}
 	public  Boolean matchIf(STMethod aMethod,
 			DetailAST anAST, IFStatement anIFStatement, List<DetailAST> aMatchedNodes) {
 		DetailAST aMatchingNode =  findFirstInOrderUnmatchedMatchingNode(anAST, anIFStatement.getTokenTypes(), aMatchedNodes);

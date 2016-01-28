@@ -712,6 +712,10 @@ public Boolean checkIncludeExcludeTagsOfCurrentType() {
 //	return false;
 	
 }
+public Boolean checkIncludeExcludeTagsOfCurrentMethod() {
+	return checkIncludeExcludeTagsOfMethod(currentMethodComputedTags);
+	
+}
 
 public Boolean checkIncludeExcludeTagsOfMethod(List<STNameable> aCurrentMethodComputedTags) {
 	if (!hasIncludeMethodTags() && !hasExcludeMethodTags())
@@ -1023,6 +1027,19 @@ public void doBeginTree(DetailAST ast) {
 //	 	maybeCleanUpPendingChecks(ast);
 //		pendingChecks().clear();
    }
+public static DetailAST getExpression (DetailAST anIfAST) {
+	return anIfAST.getFirstChild().getNextSibling();
+}
+public static DetailAST getThenPart (DetailAST anIfAST) {
+	return getExpression(anIfAST).getNextSibling().getNextSibling();
+}
+public static DetailAST getElsePart (DetailAST anIfAST) {
+	DetailAST aThenPart = getThenPart(anIfAST);
+	if (aThenPart.getNextSibling().getType() != TokenTypes.LITERAL_ELSE) {
+		return null;
+	}
+	return aThenPart.getNextSibling().getFirstChild();
+}
 public static DetailAST getEnclosingMethodDeclaration(DetailAST anAST) {
 	return getEnclosingTokenType(anAST, TokenTypes.METHOD_DEF);
 }

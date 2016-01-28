@@ -1967,21 +1967,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return null;
 
 	}
+	protected void log (DetailAST anAST) {
+		String aTypeName = getEnclosingShortClassName(anAST);
+
+		log (anAST, currentTree, aTypeName);
+
+	}
 
 	protected void log(DetailAST ast, String... anExplanations) {
 		DetailAST aTreeAST = getEnclosingTreeDeclaration(ast);
-		// String aSourceName =
-		// shortFileName(astToFileContents.get(aTreeAST).getFilename());
-		// if (aTreeAST == currentTree) {
-		// log(ast.getLineNo(),
-		// msgKey(),
-		// aMethodName,
-		// aSourceName + ":" + ast.getLineNo());
-		// } else {
-		// log(0, msgKey(), aMethodName,
-		// aSourceName + ":"
-		// + ast.getLineNo());
-		// }
+//		String aTypeName = getEnclosingShortClassName(ast);
 		log(msgKey(), ast, aTreeAST, anExplanations);
 
 	}
@@ -1989,18 +1984,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// move this up to ComprehensiveVisitCheck
 	protected void log(DetailAST ast, DetailAST aTreeAST,
 			Object... anExplanations) {
-		// String aSourceName =
-		// shortFileName(astToFileContents.get(aTreeAST).getFilename());
-		// if (aTreeAST == currentTree) {
-		// log(ast.getLineNo(),
-		// msgKey(),
-		// aMethodName,
-		// aSourceName + ":" + ast.getLineNo());
-		// } else {
-		// log(0, msgKey(), aMethodName,
-		// aSourceName + ":"
-		// + ast.getLineNo());
-		// }
+		
 		log(msgKey(), ast, aTreeAST, anExplanations);
 
 	}
@@ -2078,49 +2062,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected void log(String aMessageKey, DetailAST ast, DetailAST aTreeAST,
 			Object... anExplanations) {
-		// if (!checkRoot) {
-		// DetailAST anSTTreeAST =
-		// getEnclosingTreeDeclaration(aMethod.getAST());
-		// String aLongFileName = anSTTreeAST ==
-		// STBuilderCheck.getSTBuilderTree()?getFileContents().getFilename():
-		//
-		// astToFileContents.get(aTreeAST)
-		// .getFilename();
-		// // make this conform to the superclass logs
-		// log(aMethod.getAST().getLineNo(),
-		// msgKey(),
-		// aMethod.getName(),
-		// shortFileName(aLongFileName)
-		// );
-		// // super.log(aMethod, aMethod.getName());
-		// return false;
-		// }
-		// String aLongFileName = "";
-		// if (aTreeAST == currentTree)
-		// aLongFileName = getFileContents().getFilename();
-		// else if (aTreeAST ==
-		// STBuilderCheck.getSingleton().getSTBuilderTree()) {
-		// aLongFileName =
-		// STBuilderCheck.getSingleton().getAstToFileContents().get(aTreeAST).getFilename();
-		// } else {
-		// astToFileContents.get(aTreeAST).getFilename();
-		// }
-		// String aLongFileName = getLongFileName(aTreeAST);
-		// //
-		// //
-		// // if (aTreeAST == currentTree)
-		// // String aLongFileName = aTreeAST ==
-		// currentTree?getFileContents().getFilename():
-		// // astToFileContents.get(aTreeAST).getFilename();
-		// String aSourceName =
-		// shortFileName(aLongFileName);
-		// Object[] anArgs = new String[anExplanations.length + 2];
-		// anArgs[0] = composeMessageKey(aMessageKey);
-		// anArgs[1] = composeSourceName(aSourceName, ast.getLineNo());
-		// for (int i = 2; i < anArgs.length; i++) {
-		// System.out.println("an explnation " + anExplanations[i-2]);
-		// anArgs[i] = anExplanations[i-2].toString();
-		// }
+		int i = 0;
 		Object[] anArgs = composeArgs(aMessageKey, aTreeAST, ast.getLineNo(),
 				anExplanations);
 
@@ -2375,13 +2317,31 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		case TokenTypes.TYPE:
 			visitTypeUse(ast);
 			return;
-		
+		case TokenTypes.LITERAL_IF:
+			visitLiteralIf(ast);
+			return;
+		case TokenTypes.LITERAL_WHILE:
+			visitLiteralWhile(ast);
+			return;
+		case TokenTypes.LITERAL_FOR:
+			visitLiteralFor(ast);
+			return;
 
 		default:
 			System.err.println(checkAndFileDescription + "Unexpected token");
 		}
 
 	}
+	protected void visitLiteralIf(DetailAST anIfAST) {
+		
+	}
+	protected void visitLiteralWhile(DetailAST anIfAST) {
+		
+	}
+	protected void visitLiteralFor(DetailAST anIfAST) {
+		
+	}
+
 	protected Map<String, String[]> typeToSpecifications = new HashMap<>();
 	
 	protected void registerSpecifications (String aType, String[] aSpecification) {

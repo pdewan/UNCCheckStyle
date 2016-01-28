@@ -66,6 +66,9 @@
 			<property name="allowedSiblings" value="Math.*" />
 		
 		</module>
+		<module name="BulkierThenCheck" >
+		
+		</module>
 
 		<module name="IllegalMethodCall">
 			<property name="disallowedCalls" value="Scanner, String" />

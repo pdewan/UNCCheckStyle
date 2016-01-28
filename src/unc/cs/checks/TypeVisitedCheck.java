@@ -97,7 +97,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		packageName = getPackageName(ast);
 
 	}
-	protected void log(DetailAST ast) {
+	protected void logType(DetailAST ast) {
 //	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
 	    log(getNameAST(ast), fullTypeName);
 
