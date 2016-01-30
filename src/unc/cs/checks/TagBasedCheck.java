@@ -486,7 +486,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 //			return aName.matches(aDescriptor) || aName.contains(aDescriptor); // allow regex
 			// do not want user scanner to match Scanner class so do not use contains
 			// allow regex
+			try {
 			return aName.matches(aDescriptor) || aShortName.matches(aDescriptor);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return true;
+			}
 
 		}
 	 
@@ -1035,7 +1040,8 @@ public static DetailAST getThenPart (DetailAST anIfAST) {
 }
 public static DetailAST getElsePart (DetailAST anIfAST) {
 	DetailAST aThenPart = getThenPart(anIfAST);
-	if (aThenPart.getNextSibling().getType() != TokenTypes.LITERAL_ELSE) {
+	DetailAST aThenSibling = aThenPart.getNextSibling();
+	if (aThenSibling == null || aThenSibling.getType() != TokenTypes.LITERAL_ELSE) {
 		return null;
 	}
 	return aThenPart.getNextSibling().getFirstChild();

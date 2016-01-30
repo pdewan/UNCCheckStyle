@@ -34,6 +34,7 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		ContinuationProcessor {
+    protected boolean inMethodOrConstructor;
 
 	// public static final String MSG_KEY = "stBuilder";
 	protected boolean isEnum;
@@ -723,23 +724,35 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// }
 	//
 	// }
-	public void visitMethod(DetailAST methodDef) {
-		processPreviousMethodData();
+	protected void visitMethod(DetailAST methodDef) {
+		processPreviousMethodData(); // this should be done in a leave method
 		currentMethodIsConstructor = false;
 		visitMethodOrConstructor(methodDef);
 		// maybeVisitMethodTags(methodDef);
 	}
 
-	public void visitConstructor(DetailAST methodDef) {
+	protected void visitConstructor(DetailAST methodDef) {
 		processPreviousMethodData();
 		currentMethodIsConstructor = true;
 		visitMethodOrConstructor(methodDef);
 		// maybeVisitMethodTags(methodDef); // shouls bw in visitMethodOr
 
 	}
+	
+	protected void leaveMethodOrConstructor (DetailAST methodDef) {
+		inMethodOrConstructor = false;
+	}
+	
+	protected void leaveMethod (DetailAST methodDef) {
+		leaveMethodOrConstructor(methodDef);
+	}
+	
+	protected void leaveConstructor (DetailAST methodDef) {
+		leaveMethodOrConstructor(methodDef);
+	}
 
 
-	public void visitMethodOrConstructor(DetailAST methodDef) {
+	protected void visitMethodOrConstructor(DetailAST methodDef) {
 		// if (currentMethodName != null) {
 		// String[] aParameterTypes = currentMethodParameterTypes.toArray(new
 		// String[0]);
@@ -754,6 +767,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// stMethods.add(anSTMethod);
 		// }
 		// processPreviousMethodData();
+		inMethodOrConstructor = true;
 		currentMethodType = "";
 		currentMethodParameterTypes.clear();
 		currentMethodParameterNames.clear();
@@ -789,7 +803,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 
-	public void visitParamDef(DetailAST paramDef) {
+	protected void visitParamDef(DetailAST paramDef) {
 		final DetailAST grandParentAST = paramDef.getParent().getParent();
 		// why this condition?
 		// if (!(grandParentAST.getType() == TokenTypes.METHOD_DEF ))
@@ -816,17 +830,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 
-	public void visitTypeParameters(DetailAST typeParameters) {
+	protected void visitTypeParameters(DetailAST typeParameters) {
 		isGeneric = true;
 
 	}
 
-	public void visitTypeArguments(DetailAST typeParameters) {
+	protected void visitTypeArguments(DetailAST typeParameters) {
 		isElaboration = true;
 
 	}
 
-	public void visitClass(DetailAST ast) {
+	protected void visitClass(DetailAST ast) {
 		visitType(ast);
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
@@ -839,7 +853,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		isInterface = false;
 	}
 
-	public void visitInterface(DetailAST ast) {
+	protected void visitInterface(DetailAST ast) {
 		visitType(ast);
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
@@ -871,15 +885,15 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// imports.add(anSTNameable);
 	// }
 
-	public void visitLCurly(DetailAST ast) {
+	protected void visitLCurly(DetailAST ast) {
 
 	}
 
-	public void visitRCurly(DetailAST ast) {
+	protected void visitRCurly(DetailAST ast) {
 
 	}
 
-	public void visitVariableOrParameterDef(DetailAST ast) {
+	protected void visitVariableOrParameterDef(DetailAST ast) {
 //		if (!checkIncludeExcludeTagsOfCurrentType())
 //			return;
 		if (ScopeUtils.inCodeBlock(ast))
@@ -992,6 +1006,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	
 	public static String typeASTToString (DetailAST parentAST) {
 		DetailAST typeDef = parentAST.findFirstToken(TokenTypes.TYPE);
+		if (typeDef == null) {
+			return "";
+		}
 
 		DetailAST firstChild = typeDef.getFirstChild();
 		String result;
@@ -1332,7 +1349,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 
-	public void visitMethodCall(DetailAST ast) {
+	protected void visitMethodCall(DetailAST ast) {
 //		if (!checkIncludeExcludeTagsOfCurrentType())
 //			return;
 		CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast,
@@ -1345,7 +1362,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// methodsCalledByCurrentMethod.add(aNormalizedParts);
 	}
 
-	public void visitConstructorCall(DetailAST ast) {
+	protected void visitConstructorCall(DetailAST ast) {
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
 		CallInfo aCallInfo = registerConstructorCallAndtoNormalizedParts(ast,
@@ -1357,7 +1374,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		methodsCalledByCurrentMethod.add(aCallInfo);
 	}
 
-	public void visitIdent(DetailAST anIdentAST) {
+	protected void visitIdent(DetailAST anIdentAST) {
 //		if (!checkIncludeExcludeTagsOfCurrentType())
 //			return;
 		if (currentMethodName == null)
@@ -2247,8 +2264,21 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		else
 		   typesInstantiatedByCurrentMethod.add(anInstantiatedNameable);
 	}
+	protected void doLeaveToken(DetailAST ast) {
+		switch (ast.getType()) {
+		case TokenTypes.METHOD_CALL:
+			leaveMethod(ast);
+			break;
+		case TokenTypes.CTOR_CALL:
+			leaveConstructor(ast);
+			break;
+		default:
+//			System.err.println(checkAndFileDescription + "Unexpected token");
+
+		}
+	}
 	
-	public void doVisitToken(DetailAST ast) {
+	protected void doVisitToken(DetailAST ast) {
 		// System.out.println("Check called:" + MSG_KEY);
 		switch (ast.getType()) {
 		case TokenTypes.PACKAGE_DEF:

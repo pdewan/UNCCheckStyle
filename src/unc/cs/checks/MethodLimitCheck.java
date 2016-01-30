@@ -39,4 +39,9 @@ public class MethodLimitCheck extends UNCCheck {
 		// TODO Auto-generated method stub
 		return MSG_KEY;
 	}
+	@Override
+	protected void doLeaveToken(DetailAST ast) {
+		// TODO Auto-generated method stub
+		
+	}
 }

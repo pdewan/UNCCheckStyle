@@ -6,8 +6,8 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class BulkierThenCheck extends ComprehensiveVisitCheck{
 	public static final String MSG_KEY = "bulkierThen";
-	protected int elsePartSize = 4;
-	protected int thenElseRatio = 3;
+	protected int maxElsePartSize = 4;
+	protected int minThenElseRatio = 3;
 
 	@Override
 	protected String msgKey() {
@@ -20,11 +20,11 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 			TokenTypes.LITERAL_IF
 			};
 	}
-	public void setElsePartSize (int anElsePartSize) {
-		elsePartSize =  anElsePartSize;
+	public void setMaxElsePartSize (int anElsePartSize) {
+		maxElsePartSize =  anElsePartSize;
 	}
-	public void setThenElseRation (int aRatio) {
-		thenElseRatio =  aRatio;
+	public void setMinThenElseRatio (int aRatio) {
+		minThenElseRatio =  aRatio;
 	}
 //	  @Override
 //	    public void visitToken(DetailAST ast)
@@ -50,10 +50,13 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 		   DetailAST aThenPart = getThenPart(anIfAST);
 		   String aThenString = aThenPart.toStringTree();
 		   String anElseString = anElsePart.toStringTree();
-		   int numStatementsInThenPart = aThenString.split(";").length;
-		   int numStatementsInElsePart = anElseString.split(";"	).length;
-		   double aThenElseRatio = ((double) aThenString.length())/anElseString.length();
-		   if (numStatementsInElsePart <= elsePartSize && aThenElseRatio >= thenElseRatio) {
+		   double numStatementsInThenPart = aThenString.split(";").length - 1; // no semiucolon means length of 1
+		   double numStatementsInElsePart = anElseString.split(";"	).length - 1;
+		   
+//		   double aThenElseRatio = ((double) numStatementsInThenPart)/numStatementsInElsePart;
+		   if (numStatementsInElsePart <= maxElsePartSize &&
+				   (numStatementsInElsePart == 0) ||
+				   numStatementsInThenPart/numStatementsInElsePart >= minThenElseRatio) {
 			   logBulkierThen(aThenPart);
 		   }
 			   

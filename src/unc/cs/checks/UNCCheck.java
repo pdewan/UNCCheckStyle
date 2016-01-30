@@ -74,7 +74,9 @@ public abstract class UNCCheck extends Check{
     	}
     }
 	
-	public abstract void doVisitToken(DetailAST ast);
+	protected abstract void doVisitToken(DetailAST ast);
+	protected abstract void doLeaveToken(DetailAST ast);
+
 	public void doFinishTree(DetailAST ast) {
 		
 	}
@@ -154,6 +156,9 @@ public abstract class UNCCheck extends Check{
 //			throw e;
 			
 		}
+	}
+	public void leaveToken(DetailAST ast) {
+		doLeaveToken(ast);
 	}
 
 	

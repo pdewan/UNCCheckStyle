@@ -39,6 +39,12 @@
 		<module name="NestedIfDepth">
 			<property name="max" value="1" />
 		</module>
+			<module name="NestedBlockDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="MethodBlockLimitCheck">
+			<property name="max" value="1" />
+		</module>
 		<module name="PackageDeclaration" />
 		<module name="AvoidStarImport">
 			<module name="HiddenField" />
@@ -66,8 +72,10 @@
 			<property name="allowedSiblings" value="Math.*" />
 		
 		</module>
-		<module name="BulkierThenCheck" >
-		
+		<module name="BulkierThen" >
+		   <property name="maxElsePartSize"  value="2" />
+		   <property name="minThenElseRatio"  value="5" />
+		   
 		</module>
 
 		<module name="IllegalMethodCall">
@@ -203,7 +211,7 @@
 			@Parser = 
 				CommandText:String | 
 				CommandObject:Runnable | 
-				Errors:*//EC,
+				Errors:* //EC,
 			
 			" />
 		</module>
