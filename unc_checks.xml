@@ -45,6 +45,8 @@
 		<module name="MethodBlockLimitCheck">
 			<property name="max" value="1" />
 		</module>
+		<module name="ThenBranchingCheck">
+		</module>
 		<module name="PackageDeclaration" />
 		<module name="AvoidStarImport">
 			<module name="HiddenField" />

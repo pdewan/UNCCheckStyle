@@ -957,6 +957,38 @@ public static DetailAST findFirstInOrderUnmatchedMatchingNode(DetailAST ast, Lis
 		aChild = aChild.getNextSibling();		
 	}
 }
+public static DetailAST findFirstInOrderMatchingNode(DetailAST ast, List<Integer> aTypes ) {
+	return findFirstInOrderUnmatchedMatchingNode(ast, aTypes, new ArrayList());
+}
+public static DetailAST findFirstInOrderMatchingNode(DetailAST ast, int aType ) {
+	return findFirstInOrderMatchingNode(ast, Arrays.asList(new Integer[] {aType}));
+}
+
+public static DetailAST findFirstInOrderUnmatchedNode(DetailAST ast, List<Integer> aTypes, List<DetailAST> aMatchedNodes  ) {
+//	if (aast.getType() == aType &&
+	if (aTypes.contains(ast.getType()) &&
+
+			!aMatchedNodes.contains(ast)) {
+		aMatchedNodes.add(ast);
+		return ast;
+	}
+//	if (ast.getChildCount() > 0) return null;
+	DetailAST aResult = null;
+	DetailAST aChild = ast.getFirstChild();
+	while (true) {
+		if (aChild == null)
+			return null;
+		aResult = findFirstInOrderUnmatchedMatchingNode(aChild, aTypes, aMatchedNodes);
+		if (aResult != null)
+			return aResult;
+//		if (aResult != noAST && 
+//				!aMatchedNodes.contains(aResult)) {
+//			aMatchedNodes.add(aResult);
+//			return aResult;
+//		}
+		aChild = aChild.getNextSibling();		
+	}
+}
 public static DetailAST findFirstInOrderMatchingNodeAfter(DetailAST ast, List<Integer> aType  ) {
 	// first see if someone below our sibling succeeds
 	DetailAST aNextSibiling = ast.getNextSibling();

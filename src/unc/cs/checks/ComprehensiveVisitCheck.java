@@ -2061,18 +2061,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// currentTree?getFileContents().getFilename():
 		// astToFileContents.get(aTreeAST).getFilename();
 		String aSourceName = shortFileName(aLongFileName);
-		Object[] anArgs = new String[anExplanations.length + 2];
+		Object[] anArgs = new String[anExplanations.length + 3];
+
+//		Object[] anArgs = new String[anExplanations.length + 2];
 		anArgs[0] = composeMessageKey(aMessageKey);
 		anArgs[1] = composeSourceName(aSourceName, aLineNo);
-		for (int i = 2; i < anArgs.length; i++) {
-			// String anExplanation = anExplanations[i-2].toString();
-			// if (anExplanation.contains("issingArgument")) {
-			// System.out.println("Missing argument arg");
-			// }
-			//
-			// System.out.println("an explnation " +
-			// anExplanations[i-2].toString());
-			anArgs[i] = anExplanations[i - 2].toString();
+		anArgs[2] = getEnclosingShortClassName(aTreeAST);
+		for (int i = 3; i < anArgs.length; i++) {
+
+//		for (int i = 2; i < anArgs.length; i++) {
+			
+//			anArgs[i] = anExplanations[i - 2].toString();
+			anArgs[i] = anExplanations[i - 3].toString();
+
 		}
 		return anArgs;
 	}

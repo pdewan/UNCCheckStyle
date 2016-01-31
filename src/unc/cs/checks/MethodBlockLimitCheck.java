@@ -159,8 +159,11 @@ public  class MethodBlockLimitCheck extends ComprehensiveVisitCheck {
 
     protected final void blockVisited(DetailAST ast, String messageId)
     {
-    	if (!inMethodOrConstructor)
+    	if (!inMethodOrConstructor ||
+    			!checkExcludeTagsOfCurrentType() ||
+    			!checkIncludeExcludeTagsOfCurrentMethod())
     		return;
+    	 
         blocksInCurrentMethod++;
 
         if (blocksInCurrentMethod > max) {
