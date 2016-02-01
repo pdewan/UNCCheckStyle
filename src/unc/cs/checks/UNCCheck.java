@@ -227,25 +227,25 @@ public abstract class UNCCheck extends Check{
     	}
     }
     protected  abstract String msgKey();
-    public static boolean isPublicAndInstance(DetailAST methodOrVariableDef) {
-		return isPublic(methodOrVariableDef) 
-				&& ! isStatic(methodOrVariableDef);
-	}
-	public static boolean isPublic(DetailAST methodOrVariableDef) {
-		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PUBLIC);
-				
-	}
-	public static boolean isStatic(DetailAST methodOrVariableDef) {
-		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_STATIC);
-				
-	}
-	public static boolean isFinal(DetailAST methodOrVariableDef) {
-		return methodOrVariableDef.branchContains(TokenTypes.FINAL);				
-	}
-	public static boolean isStaticAndNotFinal(DetailAST methodOrVariableDef) {
-		return isStatic (methodOrVariableDef)
-				&& ! isFinal(methodOrVariableDef);
-	}
+//    public static boolean isPublicAndInstance(DetailAST methodOrVariableDef) {
+//		return isPublic(methodOrVariableDef) 
+//				&& ! isStatic(methodOrVariableDef);
+//	}
+//	public static boolean isPublic(DetailAST methodOrVariableDef) {
+//		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PUBLIC);
+//				
+//	}
+//	public static boolean isStatic(DetailAST methodOrVariableDef) {
+//		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_STATIC);
+//				
+//	}
+//	public static boolean isFinal(DetailAST methodOrVariableDef) {
+//		return methodOrVariableDef.branchContains(TokenTypes.FINAL);				
+//	}
+//	public static boolean isStaticAndNotFinal(DetailAST methodOrVariableDef) {
+//		return isStatic (methodOrVariableDef)
+//				&& ! isFinal(methodOrVariableDef);
+//	}
 	
 
 }

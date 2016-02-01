@@ -107,7 +107,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodAssignsToGlobalVariable,
 //    				methodsCalledByCurrentMethod.toArray(new String[0][0]));
 			        methodsCalledByCurrentMethod.toArray(new CallInfo[0]),
-			        new ArrayList(typesInstantiatedByCurrentMethod));
+			        new ArrayList(typesInstantiatedByCurrentMethod),
+			        new ArrayList(globalsAccessedByCurrentMethod),
+			        new ArrayList(globalsAssignedByCurrentMethod)
+    				);
 
     		if (currentMethodIsConstructor)
     			stConstructors.add(anSTMethod);

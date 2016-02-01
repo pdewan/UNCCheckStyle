@@ -51,6 +51,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected boolean currentMethodAssignsToGlobalVariable;
 	// protected List<String[]> methodsCalledByCurrentMethod = new ArrayList();
 	protected List<CallInfo> methodsCalledByCurrentMethod = new ArrayList();
+	protected List<String> globalsAccessedByCurrentMethod = new ArrayList();
+	protected List<String> globalsAssignedByCurrentMethod = new ArrayList();
+
 
 	protected boolean currentMethodIsInstance;
 
@@ -100,14 +103,24 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] { TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,
-				TokenTypes.INTERFACE_DEF, TokenTypes.TYPE_ARGUMENTS,
-				TokenTypes.TYPE_PARAMETERS, TokenTypes.VARIABLE_DEF,
-				TokenTypes.PARAMETER_DEF, TokenTypes.METHOD_DEF,
-				TokenTypes.CTOR_DEF, TokenTypes.IMPORT,
-				TokenTypes.STATIC_IMPORT, TokenTypes.LCURLY, TokenTypes.RCURLY,
-				TokenTypes.METHOD_CALL, TokenTypes.IDENT, TokenTypes.ENUM_DEF,
-				TokenTypes.LITERAL_NEW};
+		return new int[] { TokenTypes.PACKAGE_DEF, 
+				TokenTypes.CLASS_DEF,
+				TokenTypes.INTERFACE_DEF, 
+				TokenTypes.TYPE_ARGUMENTS,
+				TokenTypes.TYPE_PARAMETERS, 
+				TokenTypes.VARIABLE_DEF,
+				TokenTypes.PARAMETER_DEF, 
+				TokenTypes.METHOD_DEF,
+				TokenTypes.CTOR_DEF, 
+				TokenTypes.IMPORT,
+				TokenTypes.STATIC_IMPORT, 
+				TokenTypes.LCURLY, TokenTypes.RCURLY,
+				TokenTypes.METHOD_CALL,
+				TokenTypes.IDENT, 
+				TokenTypes.ENUM_DEF,
+				TokenTypes.LITERAL_NEW,
+				TokenTypes.IDENT
+				};
 	}
 
 	// public void setIncludeTags(String[] newVal) {
@@ -422,7 +435,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			if (!aSignature.equals(MATCH_ANYTHING) && !isIdentifier(aSignature)) {
 			System.err.println("Illegal signature," + aSignature + ", missing :\n Assuming parameters and return types do not matter");
 			}
-			return new AnSTMethod(null, aSignature.trim(), null, null, null, true, true, false, null, false, null, null, false, null, null);
+			return new AnSTMethod(null, aSignature.trim(), null, null, null, true, true, false, null, false, null, null, false,
+					null, null, null, null);
 		}
 		if (aNameAndRest.length > 2) {
 			System.err.println("Illegal signature," + aSignature + ",  too many :" + aSignature);
@@ -448,7 +462,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true, true,
-				false, aReturnType, true, null, null, false, null, null);
+				false, aReturnType, true, null, null, false, null, null, null, null);
 
 	}
 
@@ -472,7 +486,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true, true,
-				false, aReturnType, true, null, null, false, null, null);
+				false, aReturnType, true, null, null, false, null, null, null, null);
 
 	}
 
@@ -773,6 +787,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		currentMethodParameterNames.clear();
 		currentMethodScope.clear();
 		methodsCalledByCurrentMethod.clear();
+		globalsAccessedByCurrentMethod.clear();
 		currentMethodAssignsToGlobalVariable = false;
 		currentMethodTags = emptyNameableList;
 		currentMethodComputedTags = emptyNameableList;
@@ -1379,19 +1394,36 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //			return;
 		if (currentMethodName == null)
 			return;
-		if (currentMethodAssignsToGlobalVariable)
+		String anIdentName = anIdentAST.getText();
+		if (!isGlobal(anIdentName))
 			return;
-		currentMethodAssignsToGlobalVariable = isGlobalVariable(anIdentAST);
+		globalsAccessedByCurrentMethod.add(anIdentName);
+
+		boolean isGlobalAssignedVariable = isGlobalAssignedVariable(anIdentAST);
+		if (isGlobalAssignedVariable) {
+			currentMethodAssignsToGlobalVariable = true; // this now redundant
+			globalsAssignedByCurrentMethod.add(anIdentName);
+
+		}
+
+//		if (currentMethodAssignsToGlobalVariable)
+//			return;
+//		
+//		
+//		currentMethodAssignsToGlobalVariable = isGlobalAssignedVariable(anIdentAST);
+		
+		
+		
 	}
 
 	/*
 	 * Code taken from anIdentAST
 	 */
-	public static boolean inAssignment(DetailAST anIdentAST) {
+	public static boolean isLHSOfAssignment(DetailAST anIdentAST) {
 		DetailAST aParentAST = anIdentAST.getParent();
 		final int parentType = aParentAST.getType();
 		if (aParentAST.getType() == TokenTypes.DOT)
-			return inAssignment(aParentAST);
+			return isLHSOfAssignment(aParentAST);
 		// TODO: is there better way to check is ast
 		// in left part of assignment?
 
@@ -1415,13 +1447,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 																// first?
 	}
 
-	public boolean isGlobalVariable(DetailAST anIdentAST) {
+	public boolean isGlobalAssignedVariable(DetailAST anIdentAST) {
 		String aName = anIdentAST.getText();
 		
 		return (lookupLocal(aName) == null || 
 				(anIdentAST.getPreviousSibling() != null && 
 					anIdentAST.getPreviousSibling().getType() == TokenTypes.LITERAL_THIS))
-				&& inAssignment(anIdentAST);
+				&& isLHSOfAssignment(anIdentAST);
 
 	}
 
@@ -1467,6 +1499,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		currentMethodAssignsToGlobalVariable = false;
 		currentMethodScope.clear();
 		methodsCalledByCurrentMethod.clear();
+		globalsAccessedByCurrentMethod.clear();
+		globalsAssignedByCurrentMethod.clear();
 		typeTags = emptyNameableList;
 		computedTypeTags = emptyNameableList;
 		typeScope.clear();
@@ -2399,6 +2433,24 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return false;
 	}
-	
+	public static boolean isPublic(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PUBLIC);
+				
+	}
+	public static boolean isStatic(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_STATIC);
+				
+	}
+	public static boolean isFinal(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.FINAL);				
+	}
+	public static boolean isStaticAndNotFinal(DetailAST methodOrVariableDef) {
+		return isStatic (methodOrVariableDef)
+				&& ! isFinal(methodOrVariableDef);
+	}
+	   public static boolean isPublicAndInstance(DetailAST methodOrVariableDef) {
+			return isPublic(methodOrVariableDef) 
+					&& ! isStatic(methodOrVariableDef);
+		}
 
 }

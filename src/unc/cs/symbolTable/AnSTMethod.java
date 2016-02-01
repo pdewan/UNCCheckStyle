@@ -33,6 +33,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	protected List<STMethod> allMethodsCalled;
 	protected List<STMethod> allCallClosure;
 	protected List<STNameable> typesInstantiated;
+	protected List<String> globalsAssigned;
+	protected List<String> globalsAccessed;
 
 	
 	public  static final String GET = "get";
@@ -54,7 +56,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			boolean isAssignsToGlobal,
 //			String[][] aMethodsCalled
 			CallInfo[] aMethodsCalled,
-			List<STNameable> aTypesInstantiated
+			List<STNameable> aTypesInstantiated,
+			List<String> aGlobalsAccessed,
+			List<String> aGlobalsAssigned
 			) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
@@ -80,6 +84,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		}
 		}
 		typesInstantiated = aTypesInstantiated;
+		globalsAssigned = aGlobalsAssigned;
+		globalsAccessed = aGlobalsAccessed;
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
