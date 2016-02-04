@@ -34,6 +34,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	protected List<STMethod> allCallClosure;
 	protected List<STNameable> typesInstantiated;
 	protected List<String> globalsAssigned;
+	
 	protected List<String> globalsAccessed;
 
 	
@@ -351,5 +352,12 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			}
 			return false;
 		}
-		
+		@Override
+		public List<String> getGlobalsAssigned() {
+			return globalsAssigned;
+		}
+		@Override
+		public List<String> getGlobalsAccessed() {
+			return globalsAccessed;
+		}
 }

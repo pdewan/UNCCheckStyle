@@ -44,4 +44,6 @@ public interface STMethod extends STNameable{
 	List<STNameable> getTypesInstantiated();
 	Boolean instantiatesType(String aShortOrLongName);
 	String[] getParameterNames();
+	List<String> getGlobalsAssigned();
+	List<String> getGlobalsAccessed();
 }

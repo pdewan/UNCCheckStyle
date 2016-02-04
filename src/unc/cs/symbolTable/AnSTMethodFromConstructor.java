@@ -171,6 +171,16 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	public String[] getParameterNames() {
 		return null;
 	}
+	@Override
+	public List<String> getGlobalsAssigned() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<String> getGlobalsAccessed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 

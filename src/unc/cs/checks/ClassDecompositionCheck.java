@@ -106,11 +106,26 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 	public Boolean matchType(String aSpecifiedType, String anActualType) {
 		return unifyingMatchesNameVariableOrTag(aSpecifiedType, anActualType, null);
 	}
+	public static <T> Set<T> intersection (List<T> aList1, List<T> aList2) {
+		
+		Set<T> aSet1 = new HashSet(aList1);
+		Set<T> aSet2 = new HashSet(aList2);
+		boolean retVal = aSet1.retainAll(aSet2);
+		return aSet1;		
+		
+	}
 	
-//	public static boolean intersect (STMethod anSTMethod1, STMethod anSTMethod2) {
-//		
-//	}
-//		
+	public static boolean acessesCommonVariables (STMethod anSTMethod1, STMethod anSTMethod2) {
+		return false;
+//		List<String> aVariables1 = anSTMethod1.getGlobalsAccessed();
+//		List<String> aVariables2 = anSTMethod2.getGlobalsAccessed();
+//		Set<String> aSet1 = new HashSet(aVariables1);
+//		Set<String> aSet2 = new HashSet(aVariables2);
+//		boolean retVal = aSet1.retainAll(aSet2);
+		
+		
+	}
+		
 	
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {

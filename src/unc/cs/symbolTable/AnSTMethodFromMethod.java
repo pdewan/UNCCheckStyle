@@ -177,6 +177,16 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public List<String> getGlobalsAssigned() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<String> getGlobalsAccessed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }
