@@ -40,7 +40,7 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 //	}
 
 	
-	protected void logMultipleCoupledSerts(DetailAST aTreeAST, List<Set<STMethod>> aFinalSets ) {
+	protected void logMultipleCoupledSets(DetailAST aTreeAST, List<Set<STMethod>> aFinalSets ) {
 		log (aTreeAST, aFinalSets.toString());
 
 	}
@@ -192,7 +192,7 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 //			return true; // the constraint does not apply to us
 		List<Set<STMethod>> aFinalSets = findUncoupledSets(anSTType); 
 		if ( aFinalSets.size() > 1) {
-			logMultipleCoupledSerts(anAST, aFinalSets);
+			logMultipleCoupledSets(anAST, aFinalSets);
 			return false;
 		}
 		return true;
