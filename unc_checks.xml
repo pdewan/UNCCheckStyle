@@ -42,10 +42,12 @@
 			<module name="NestedBlockDepth">
 			<property name="max" value="1" />
 		</module>
-		<module name="MethodBlockLimitCheck">
+		<module name="MethodBlockLimit">
 			<property name="max" value="1" />
 		</module>
-		<module name="ThenBranchingCheck">
+		<module name="ThenBranching">
+		</module>
+		<module name="ClassDecomposition">
 		</module>
 		<module name="PackageDeclaration" />
 		<module name="AvoidStarImport">

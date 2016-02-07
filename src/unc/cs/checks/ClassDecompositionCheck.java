@@ -19,7 +19,8 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
-	public static final String MSG_KEY = "expectedGlobals";
+	public static final String MSG_KEY = "classDecomposition";
+	
 
 	public int[] getDefaultTokens() {
 		return new int[] {
@@ -39,69 +40,112 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 //	}
 
 	
-	protected void logGlobalNotMatched(DetailAST aTreeAST, String aGlobal,
-			String aType) {
-		log (aTreeAST, aTreeAST, aGlobal, aType);
+	protected void logMultipleCoupledSerts(DetailAST aTreeAST, List<Set<STMethod>> aFinalSets ) {
+		log (aTreeAST, aFinalSets.toString());
 
 	}
 
-	public Boolean matchGlobals(String[] aSpecifiedGlobals,
-			STType anSTType, DetailAST aTreeAST) {
-		boolean retVal = true;
-		Set<String> anUnmatchedGlobals = new HashSet(anSTType.getDeclaredGlobals());
-		for (String aSpecifiedGlobal : aSpecifiedGlobals) {
-			String[] aGlobalAndType = aSpecifiedGlobal.split(":");
-			String aType = aGlobalAndType[1];
-			String aVariableSpecification = aGlobalAndType[0].trim();
-//			String[] aPropertiesPath = aPropertySpecification.split(".");
-			Boolean matched = matchGlobal(aVariableSpecification, maybeStripComment(aType), anUnmatchedGlobals, anSTType);
-			if (matched ==null) {
-				return null;
-			}
-//			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
-			if (!matched) {
-
-				logGlobalNotMatched(aTreeAST, aVariableSpecification, aType);
-				retVal = false;
-			}
-		}
-		return retVal;
-	}
 	
 
-	public Boolean matchGlobal(String aVariableSpecification,
-			String aTypeSpecification, Set<String> anUnmatchedGlobals, STType anSTType) {
-		Set<String> aSet = anSTType.getDeclaredGlobals();
-		int i = 0;
-		for (String aVariable : anUnmatchedGlobals) {
-			if (aVariable.matches(aVariableSpecification)) {
-				String anActualType = anSTType.getDeclaredGlobalVariableType(aVariable);
-				
-				// return
-				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
-				Boolean retVal = matchesType(aTypeSpecification, anActualType);
-						
-				if (retVal == null)
-					return null;
-				if (retVal) {
-					anUnmatchedGlobals.remove(aVariable);
-					return true;
-				} 
+	protected void initializeUncoupledSets(STType anSTType, List<Set<STMethod>> anUncoupledMethods) {
+		STMethod[] anSTMethods = anSTType.getDeclaredMethods();
+		anUncoupledMethods.clear();
+		Set<STMethod> aSeedSet = new HashSet(); 
+		anUncoupledMethods.add(aSeedSet);
+		for (STMethod anSTMethod: anSTMethods) {
+			if (!anSTMethod.isInstance()) continue;
+//			if (anSTMethod.isGetter() || anSTMethod.isSetter()) {
+			if (ignoredMethod(anSTMethod)) {
+				continue;
+			}
+			if (isSeedMethod(anSTMethod)) {
 
+				aSeedSet.add(anSTMethod);
+				continue;
+			}
+			Set<STMethod> aSet = new HashSet();
+			aSet.add(anSTMethod);
+			anUncoupledMethods.add(aSet);
+		}
+	}
+	
+	protected boolean mergeUncoupledSets(List<Set<STMethod>> anUncoupledMethods) {
+		boolean aMatched = false;
+		for (int anIndex1 = 0; anIndex1 < anUncoupledMethods.size(); anIndex1++) {
+			if (mergeUncoupledSets(anUncoupledMethods, anIndex1)) {
+				aMatched = true;
+			}
+		}
+		return aMatched;
+		
+	}
+	protected boolean mergeUncoupledSets(List<Set<STMethod>> anUncoupledMethods, int anIndex1) {
+		Set<STMethod> aSet1 = anUncoupledMethods.get(anIndex1);
+		if (aSet1.isEmpty()) {
+			return false;
+		}
+		boolean merged = false;
+		for (int anIndex2 = anIndex1 + 1; anIndex2 < anUncoupledMethods.size(); anIndex2++) {
+			Set<STMethod> aSet2 = anUncoupledMethods.get(anIndex2);
+			if (accessCommonVariables(aSet1, aSet2)) {
+				aSet1.addAll(aSet2);
+				aSet2.clear();	
+				merged = true;
+			}
+		}
+		return merged;
+		
+	}
+	
+	protected List<Set<STMethod>> findUncoupledSets (STType anSTType) {
+		List<Set<STMethod>> anUncoupledMethodSets = new ArrayList();
+		initializeUncoupledSets(anSTType, anUncoupledMethodSets);
+		while (true) {
+			boolean aMerged = mergeUncoupledSets(anUncoupledMethodSets);
+			if (!aMerged) {
+				break;
+			}
+		}
+		List<Set<STMethod>> aFinalSets = new ArrayList();
+		for (Set<STMethod> aSet:anUncoupledMethodSets) {
+			if (!aSet.isEmpty()) {
+				aFinalSets.add(aSet);
+			}
+		}
+		return aFinalSets;
+		
+
+	}
+	
+	protected boolean accessCommonVariables (Set<STMethod> aSet1, Set<STMethod> aSet2) {
+		for (STMethod aMethod1:aSet1) {
+			if (accessCommonVariables(aMethod1, aSet2))
+				return true;
+		}
+		return false;
+	}
+	
+	protected boolean accessCommonVariables (STMethod aMethod, Set<STMethod> anSTMethods) {
+		for (STMethod aMethod2:anSTMethods) {
+			if (acessesCommonVariables(aMethod, aMethod2)) {
+				return true;
 			}
 		}
 		return false;
 	}
-
+	protected boolean ignoredMethod(STMethod anSTMethod) {
+		return anSTMethod.getGlobalsAccessed().isEmpty() ||
+				!checkIncludeExcludeTagsOfMethod(Arrays.asList(anSTMethod.getComputedTags()));
+	}
 	
-
-//	public Boolean matchType(String aSpecifiedType, String aProperty,
-//			Map<String, PropertyInfo> aPropertyInfos) {
-//
-//		return matchGetter(aSpecifiedType, aProperty, aPropertyInfos);
-//
-//	}
 	
+	protected boolean isSeedMethod(STMethod anSTMethod) {
+		return 
+//				anSTMethod.getGlobalsAccessed().isEmpty() ||
+				anSTMethod.isGetter() || 
+				anSTMethod.isSetter(); 
+//				!checkIncludeExcludeTagsOfMethod(Arrays.asList(anSTMethod.getComputedTags()));
+	}
 
 	public Boolean matchType(String aSpecifiedType, String anActualType) {
 		return unifyingMatchesNameVariableOrTag(aSpecifiedType, anActualType, null);
@@ -116,9 +160,10 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 	}
 	
 	public static boolean acessesCommonVariables (STMethod anSTMethod1, STMethod anSTMethod2) {
-		return false;
-//		List<String> aVariables1 = anSTMethod1.getGlobalsAccessed();
-//		List<String> aVariables2 = anSTMethod2.getGlobalsAccessed();
+		
+		return !intersection (
+				anSTMethod1.getGlobalsAccessed(),
+				anSTMethod2.getGlobalsAccessed()).isEmpty();
 //		Set<String> aSet1 = new HashSet(aVariables1);
 //		Set<String> aSet2 = new HashSet(aVariables2);
 //		boolean retVal = aSet1.retainAll(aSet2);
@@ -141,18 +186,17 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 		if (anSTType.isEnum() ||
 				anSTType.isInterface()) // why duplicate checking for interfaces
 			return true;
-		String aSpecifiedType = findMatchingType(typeToSpecifications.keySet(),
-				anSTType);
-		if (aSpecifiedType == null)
-			return true; // the constraint does not apply to us
-		Set<String> aDeclaredGlobals = anSTType.getDeclaredGlobals();
+//		String aSpecifiedType = findMatchingType(typeToSpecifications.keySet(),
+//				anSTType);
+//		if (aSpecifiedType == null)
+//			return true; // the constraint does not apply to us
+		List<Set<STMethod>> aFinalSets = findUncoupledSets(anSTType); 
+		if ( aFinalSets.size() > 1) {
+			logMultipleCoupledSerts(anAST, aFinalSets);
+			return false;
+		}
+		return true;
 		
-
-		if (aDeclaredGlobals == null) // should not happen
-			return null;
-		String[] aSpecifiedGlobals = typeToSpecifications.get(aSpecifiedType);
-
-		return matchGlobals(aSpecifiedGlobals, anSTType, aTree);
 	}
 
 	@Override
