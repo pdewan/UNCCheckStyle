@@ -192,13 +192,13 @@
 				@CommandInterpreter = @CommandInterpreter,
 				@ConsoleSceneView = @ConsoleSceneView,
 				@ConsoleSceneView = PropertyChangeListener,				
-				@Locatable =  PropertyListenerRegistrar,
-				@BoundedShape = PropertyListenerRegistrar,
+				@Locatable =  PropertyListenerRegisterer,
+				@BoundedShape = PropertyListenerRegisterer,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
 				@BridgeSceneController = MouseListener | KeyListener,
-				@ObservableCommandIntepreter = PropertyListenerRegistrar				
+				@ObservableCommandIntepreter = PropertyListenerRegisterer				
 				"/>
 		</module>
 		<module name="ExpectedSuperTypes">

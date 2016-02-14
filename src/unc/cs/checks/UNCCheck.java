@@ -158,7 +158,18 @@ public abstract class UNCCheck extends Check{
 		}
 	}
 	public void leaveToken(DetailAST ast) {
+		if (errorOccurred)
+    		return;
+		try {
 		doLeaveToken(ast);
+		} catch (Exception e) {
+			e.printStackTrace();
+			errorOccurred = true;
+
+//			findConsole().newMessageStream().println("Stack:" + e.getStackTrace());
+			log(ast, ERROR_KEY, "Visit token:" + checkAndFileDescription + " " + e.getMessage());
+			consoleOut(e.getMessage() + " Description:" + checkAndFileDescription + "Stack:\n" + toString(e.getStackTrace()));
+		}
 	}
 
 	

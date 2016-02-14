@@ -29,7 +29,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 
 
 
-	protected Map<String, String[]> typeToSpecifications = new HashMap<>();
+//	protected Map<String, String[]> typeToSpecifications = new HashMap<>();
 //	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
 
 
@@ -106,7 +106,8 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 				aCaller = null;
 				aType = aSpecification.trim();
 			}
-			List<STMethod> anInstantiatingMethods = anSTType.getInstantiatingMethods(aType);
+			String aTypeWithoutComment = maybeStripComment(aType);
+			List<STMethod> anInstantiatingMethods = anSTType.getInstantiatingMethods(aTypeWithoutComment);
 			if (anInstantiatingMethods == null || anInstantiatingMethods.contains(null)) {
 				returnNull = true;
 				

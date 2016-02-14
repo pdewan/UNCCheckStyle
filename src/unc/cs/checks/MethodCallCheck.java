@@ -62,7 +62,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	}
     // "fail" if method matches
 	
-	protected abstract boolean returnValueOnMatch();
+//	protected abstract boolean returnValueOnMatch();
     String matchedSignature;
 	@Override
 	protected Boolean check(STType aCallingType, DetailAST ast,

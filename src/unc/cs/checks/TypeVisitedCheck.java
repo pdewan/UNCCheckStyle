@@ -1,5 +1,7 @@
 package unc.cs.checks;
 
+import java.util.Stack;
+
 import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
@@ -18,8 +20,16 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected DetailAST typeAST;
 	protected DetailAST typeNameAST;
 	protected STNameable typeNameable;
+	protected Stack<String> fullTypeNameStack = new Stack();
+	protected Stack<String> shortTypeNameStack = new Stack();
+	protected Stack<DetailAST> typeNameASTStack = new Stack();
+	protected Stack<STNameable> typeNameableStack = new Stack();
+	protected Stack<DetailAST> typeASTStack = new Stack();
+	protected Stack<Boolean> isGenericStack = new Stack();
+
+
 //	protected STNameable packageNameable;
-	protected boolean isGeneric;
+	protected Boolean isGeneric;
 	@Override
     public void doBeginTree(DetailAST ast) {
         packageName = DEFAULT_PACKAGE;
@@ -50,6 +60,9 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //			 fullTypeName = packageName + "." + shortTypeName;
 //			 typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
 	 }
+	 public void leaveType(DetailAST ast) {
+		 leaveTypeMinimal(ast);
+	 }
 	 protected void visitTypeMinimal(DetailAST ast) { 
 //		 DetailAST generic = ast.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
 //		 generic = ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);
@@ -64,7 +77,55 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 			 shortTypeName = typeNameAST.getText();
 			 fullTypeName = packageName + "." + shortTypeName;
 			 typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
+		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+	 
+		    typeASTStack.push(typeAST);
+		    typeNameASTStack.push(typeNameAST);
+		    isGenericStack.push(isGeneric);
+		    shortTypeNameStack.push(shortTypeName);		    
+			 fullTypeNameStack.push(fullTypeName);
+			 typeNameableStack.push(typeNameable);
+		}
+
 //			aFullTypeName = aFullName;
+	 }
+	 
+	 public static <T> T myPop (Stack<T> aStack) {
+		 if (aStack.isEmpty()) {
+			 System.err.println ("empty stack!");
+			 return null;
+		 }
+		 aStack.pop();
+		 if (aStack.isEmpty())
+			 return null;
+		 return aStack.peek();
+	 }
+	 
+	 // this may be danderous as have assumed one class per file so far
+	 // and finishTree might assume these values to be set
+	 // so not calling it
+	 protected void leaveTypeMinimal (DetailAST ast) {
+		 if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+			 typeAST = myPop(typeASTStack);
+//		 typeASTStack.pop();
+//		 typeAST = typeASTStack.peek();
+			 typeNameAST = myPop(typeNameASTStack);
+//	    	typeNameASTStack.pop();
+//	    	typeNameAST = typeNameASTStack.peek();
+			 isGeneric = myPop(isGenericStack);
+//	    	isGenericStack.pop();
+//	    	isGeneric = isGenericStack.peek();
+//	    	isGeneric =  (typeNameAST.getNextSibling().getType() == TokenTypes.TYPE_PARAMETERS);
+			 shortTypeName = myPop(shortTypeNameStack);
+//			 shortTypeNameStack.pop();
+//			 shortTypeName = shortTypeNameStack.peek();
+			fullTypeName = myPop(fullTypeNameStack);
+//			fullTypeNameStack.pop();
+//			fullTypeName = fullTypeNameStack.peek();
+			typeNameable = myPop(typeNameableStack);
+//			typeNameableStack.pop();
+//			typeNameable = typeNameableStack.peek();
+		 }
 	 }
 //	 public void visitEnum(DetailAST ast) {  
 ////	    	

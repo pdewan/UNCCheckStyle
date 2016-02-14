@@ -278,13 +278,13 @@
 				@CommandInterpreter = @CommandInterpreter,
 				@ConsoleSceneView = @ConsoleSceneView,
 				@ConsoleSceneView = PropertyChangeListener,				
-				@Locatable =  PropertyListenerRegistrer,
-				@BoundedShape = PropertyListenerRegistrer,
+				@Locatable =  PropertyListenerRegisterer,
+				@BoundedShape = PropertyListenerRegisterer,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
 				@BridgeSceneController = MouseListener | KeyListener,
-				@ObservableCommandIntepreter = PropertyListenerRegistrer,
+				@ObservableCommandIntepreter = PropertyListenerRegisterer,
 				@SayCommand = Runnable,
 				@MoveCommand = Runnable,
 				@PassCommand = Runnable,
@@ -299,7 +299,7 @@
 				@CommandList = @CommandList | Runnable,
 				@Animator = @Animator,
 				@AnimatingCommand = Runnable,
-				@BridgeScene = 	PropertyListenerRegistrer			
+				@BridgeScene = 	PropertyListenerRegisterer			
 				" />
 		</module>
 		<module name="ExpectedSuperTypes">

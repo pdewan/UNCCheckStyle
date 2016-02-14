@@ -37,6 +37,7 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 //	                throw new IllegalStateException(ast.toString());
 //	        }
 //	    }
+	public static final String STATEMENT_SEPARATOR = ";|for|if|while|switch";
 	   protected void visitLiteralIf(DetailAST anIfAST)
 	    {
 		   if (!checkExcludeTagsOfCurrentType() ||
@@ -50,8 +51,8 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 		   DetailAST aThenPart = getThenPart(anIfAST);
 		   String aThenString = aThenPart.toStringTree();
 		   String anElseString = anElsePart.toStringTree();
-		   double numStatementsInThenPart = aThenString.split(";").length - 1; // no semiucolon means length of 1
-		   double numStatementsInElsePart = anElseString.split(";"	).length - 1;
+		   double numStatementsInThenPart = aThenString.split(STATEMENT_SEPARATOR).length - 1; // no semiucolon means length of 1
+		   double numStatementsInElsePart = anElseString.split(STATEMENT_SEPARATOR).length - 1;
 		   
 //		   double aThenElseRatio = ((double) numStatementsInThenPart)/numStatementsInElsePart;
 		   if (numStatementsInElsePart <= maxElsePartSize &&

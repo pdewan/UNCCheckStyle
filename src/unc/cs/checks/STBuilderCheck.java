@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import unc.cs.symbolTable.AnSTType;
@@ -29,21 +30,35 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected STType currentSTType;
 	protected List<STMethod> stMethods = new ArrayList();
+	protected Stack<List<STMethod>> stMethodsStack = new Stack();
+
 	protected List<STMethod> stConstructors = new ArrayList();
+	protected Stack<List<STMethod>> stConstructorsStack = new Stack();
+
 	public static final String MSG_KEY = "stBuilder";
 	static String[] projectPackagePrefixes = {"assignment", "project", "homework"};
 	protected static String[] existingClasses = {};
+	public static Collection<String> existingClassesShortNamesCollection = new HashSet();
 	protected static Collection<String> existingClassesCollection = new HashSet();
 	boolean importsAsExistingClasses = false;
 	 DetailAST sTBuilderTree = null; // make it non static at some point
 	protected static STBuilderCheck singleton;
+	protected boolean visitInnerClasses = false;
+	
 	
 	
 	public STBuilderCheck() {
 		singleton =this;
 	}
+	public void setVisitInnerClasses(boolean newVal) {
+		visitInnerClasses = newVal;
+	}
+	public boolean getVisitInnerClasses() {
+		return visitInnerClasses;
+	}
 	protected static void processExistingClasses() {
 		for (String aClassName:existingClasses) {
+			existingClassesShortNamesCollection.add(toShortTypeName(aClassName));
 			processExistingClass(aClassName);
 //			if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aClassName) != null)
 //				continue;
@@ -69,6 +84,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 				continue;
 			processExistingClass(aClassName.getName());			
 		}
+	}
+	
+	public Collection<String> getExistingClassShortNameCollection() {
+		return existingClassesShortNamesCollection;
 	}
 	
 	protected static void processExistingClass(String aClassName) {
@@ -146,18 +165,67 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     	return existingClasses;
     }
 		
+    @Override
+	public void doFinishTree(DetailAST ast) {
+		if (!getVisitInnerClasses() && checkIncludeExcludeTagsOfCurrentType()) {
+			// System.out.println("finish tree called:" + ast + " "
+			// + getFileContents().getFilename());
+			if (currentMethodName != null)
+				processPreviousMethodData();
+			processMethodAndClassData();
+		}
+		super.doFinishTree(ast);
 		
+
+	}	
+    
 
     public void doBeginTree(DetailAST ast) {  
  		 super.doBeginTree(ast); 
  		 astToFileContents.put(ast, getFileContents());
 // 		 System.out.println("STBuilder" + checkAndFileDescription);
  		 	currentSTType = null;
+ 		 	if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
  		 	stMethods.clear();
  		 	stConstructors.clear();
+ 		 	}
  		 	sTBuilderTree = ast;
  		 	
  	    }
+   @Override
+   public void visitType(DetailAST ast) {
+	   super.visitType(ast);
+	   if (getVisitInnerClasses()) {
+		// we want them stacked so allocate data structures
+		   stMethods = new ArrayList(); 
+		   stConstructors = new ArrayList();
+		   stMethodsStack.push(stMethods);
+		   stConstructorsStack.push(stConstructors);
+	   }
+   }
+	@Override
+	public void leaveType(DetailAST ast) {
+		if (!getVisitInnerClasses())
+			return;
+		if (checkIncludeExcludeTagsOfCurrentType()) {
+			// System.out.println("finish tree called:" + ast + " "
+			// + getFileContents().getFilename());
+			if (currentMethodName != null)
+				processPreviousMethodData();
+			processMethodAndClassData();
+		}
+		super.leaveType(ast);
+		if (getVisitInnerClasses()) {
+			stMethods = myPop(stMethodsStack);
+//		stMethodsStack.pop();
+//		stMethods = stMethodsStack.peek();
+			stConstructors = myPop(stConstructorsStack);
+
+//		stConstructorsStack.pop();
+//		stConstructors = stConstructorsStack.peek();
+		}
+		
+	}
 	public DetailAST getSTBuilderTree() {
 		return sTBuilderTree;
 	}
@@ -239,6 +307,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //    protected static DetailAST getEnumAST(DetailAST anEnumDef) {
 //    	return anEnumDef.getNextSibling();
 //    }
+	
+
 	 
 	  protected void processMethodAndClassData() {
 		  processImports();

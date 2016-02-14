@@ -46,6 +46,9 @@ public  class ClassIsGenericCheck extends STClassVisitedComprehensively {
 
 
 	protected Boolean typeCheck(STType anSTClass) {
+		if (typeAST == null) {
+			return false;
+		}
 		DetailAST generic = typeAST.findFirstToken(TokenTypes.TYPE_PARAMETERS);
 				return generic != null;
 	}

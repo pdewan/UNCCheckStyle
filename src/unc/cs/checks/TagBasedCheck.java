@@ -509,6 +509,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			return true;
 		if (aDescriptor.startsWith(TAG_STRING)) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+			if (anSTType == null) {
+				return false;
+			}
 //			STNameable[] checkTags = anSTType.getAllComputedTags();
 			STNameable[] checkTags = anSTType.getComputedTags();
 
@@ -698,7 +701,14 @@ public static Boolean matchesType(String aDescriptor, String aShortClassName) {
 
 	return matchesAllAndedSpecificationTag(aTags, aTag);
 }
-public Boolean checkIncludeExcludeTagsOfCurrentType() {
+
+protected boolean inferTag() {
+	return false;
+}
+
+protected Boolean checkIncludeExcludeTagsOfCurrentType() {
+	if (inferTag())
+		return true;
 	if (!hasIncludeTypeTags() && !hasExcludeTypeTags())
 		return true; // all tags checked in this case
 //		return false; // no tags checked in this case

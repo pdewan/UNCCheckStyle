@@ -834,14 +834,22 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 //					return null;
 //				else
 //					continue;
+			int i = 0;
 			List<STNameable> anInterfaceTypes = getAllTypes(anInterface, anSTType);
 			if (anInterfaceTypes == null) {
-				if (anSTType.waitForSuperTypeToBeBuilt())
+				if (TagBasedCheck.isExternalClass(TypeVisitedCheck
+						.toShortTypeName(anInterface.getName()))) {
+//					result.add(anInterface);
+					anInterfaceTypes = new ArrayList();
+					anInterfaceTypes.add(anInterface);
+				}
+				else if (anSTType.waitForSuperTypeToBeBuilt())
 					return null;
 				else
 					continue;
 			}
-			result.addAll(anInterfaceTypes);
+//			result.addAll(anInterfaceTypes);
+			addAllNonDuplicates(result, anInterfaceTypes);
 		}
 		STNameable aSuperClass = anSTType.getSuperClass();
 //		STType anSTSuperClass = SymbolTableFactory.getOrCreateSymbolTable()

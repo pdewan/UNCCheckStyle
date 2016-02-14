@@ -43,7 +43,7 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aFullName);
 		STType anSTType = getSTType(aTreeAST);
 		if (!doCheck(anSTType))
-			return true;
+			return true;		
 		Boolean aTypeCheck = typeCheck(anSTType);
 		if (aTypeCheck == null)
 			return null;
@@ -52,12 +52,21 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 		return aTypeCheck;
 		
 	}
+	@Override
+	public void leaveType(DetailAST ast) {
+		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+			maybeAddToPendingTypeChecks(ast);
+		}
+		super.leaveType(ast);
+	}
 	public void doFinishTree(DetailAST ast) {
 		
 //		if (fullTypeName == null) {
 //			return; // interface or come other non class
 //		}
+		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
 		maybeAddToPendingTypeChecks(ast);
+		}
 		super.doFinishTree(ast);
 
 	}

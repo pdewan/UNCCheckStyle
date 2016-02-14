@@ -110,7 +110,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 	    	
 	 }
 	 protected abstract boolean methodEffectCheck(STMethod anSTMethod) ;
-	 protected abstract boolean stopOnFailure(); // vs. stop on success
+//	 protected abstract boolean stopOnFailure(); // vs. stop on success
 	 
 	 protected Boolean checkCalledMethod (STMethod aPossibleCalledMethod) {
 //		 if (!shouldVisitCalledMethod(aPossibleCalledMethod))

@@ -122,8 +122,8 @@
 				@CommandInterpreter = @CommandInterpreter,
 				@ConsoleSceneView = @ConsoleSceneView,
 				@ConsoleSceneView = PropertyChangeListener,				
-				@Locatable =  PropertyListenerRegistrar,
-				@BoundedShape = PropertyListenerRegistrar,
+				@Locatable =  PropertyListenerRegisterer,
+				@BoundedShape = PropertyListenerRegisterer,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				"/>

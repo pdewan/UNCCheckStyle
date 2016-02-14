@@ -17,6 +17,8 @@
 			<property name="includeTypeTags" value="*" />
 
 			<property name="severity" value="info" />
+			<property name="visitInnerClasses" value="true" />
+			
 			<property name="projectPackagePrefixes" value="main, test,lectures,mp, grail" />
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
@@ -236,7 +238,7 @@
 		<module name="ExpectedSignatures">
 			<property name="expectedSignatures"
 				value="
-				@Angle= @move:int;int->*| @scale:double->*, 
+				@Angle= @move:int;int->*| @scale:double->*//EC, 
 				@Avatar= @move:int;int->* | @scale:double->*, 
 				@BridgeScene= 
 					@scroll:int->* | 
@@ -276,9 +278,9 @@
 				 	@parseRepeat:*->Runnable |						
 				 	@parseCommandList:*->Runnable |						
 				 	@parseNumber:*->* |
-				 	@parseRotateLeftArm:*->Runnable |
-				 	@parseRotateRightArm:*->Runnable |
-				 	@parseSleep:*->Runnable |
+				 	@parseRotateLeftArm:*->Runnable//EC |
+				 	@parseRotateRightArm:*->Runnable//EC |
+				 	@parseSleep:*->Runnable//EC |
 					@parseDefine:*->Runnable//EC |
 					@parseCall:*->Runnable//EC |
 					@parseThread:*->Runnable//EC,
@@ -313,12 +315,12 @@
 			<property name="instantiations"
 				value="				
 				* =
-					@ScannerBean |
-					@Parser |
+					@ScannerBean//EC |
+					@Parser//EC |
 					@BridgeScene |
-					@Table |
-					@CommandInterpreter |
-					ABroadcastingClearanceManager 
+					@Table//EC |
+					@CommandInterpreter//EC |
+					ABroadcastingClearanceManager//EC 
 				
 				" />
 		</module>
@@ -377,13 +379,13 @@
 				@CommandInterpreter = @CommandInterpreter,
 				@ConsoleSceneView = @ConsoleSceneView,
 				@ConsoleSceneView = PropertyChangeListener,				
-				@Locatable =  PropertyListenerRegistrer,
-				@BoundedShape = PropertyListenerRegistrer,
+				@Locatable =  PropertyListenerRegisterer,
+				@BoundedShape = PropertyListenerRegisterer,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
 				@BridgeSceneController = MouseListener | KeyListener,
-				@ObservableCommandIntepreter = PropertyListenerRegistrer,
+				@ObservableCommandIntepreter = PropertyListenerRegisterer,
 				@SayCommand = Runnable,
 				@MoveCommand = Runnable,
 				@PassCommand = Runnable,
@@ -400,7 +402,7 @@
 				@AnimatingCommand = Runnable,
 				@CoordinatingCommand = Runnable,
 				@CoordinatedCommand = Runnable,
-				@BridgeScene = 	PropertyListenerRegistrer,
+				@BridgeScene = 	PropertyListenerRegisterer,
 				@UndoCommand = Runnable,
 				@RedoCommand = Runnable			
 				" />

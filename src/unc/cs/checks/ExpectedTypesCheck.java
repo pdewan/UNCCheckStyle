@@ -150,6 +150,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	
 	abstract protected List<STNameable> getTypes(STType anSTType) ;
 	public Boolean matchTypes(STType anSTType, List<String> aSpecifiedInterfaces, DetailAST aTree) {
+//		int i = 0;
 		List<STNameable> aClassNames = getTypes(anSTType);
 		if (aClassNames == null) {
 			return null;

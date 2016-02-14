@@ -302,7 +302,7 @@
 				@CommandInterpreter = @CommandInterpreter,
 				@ConsoleSceneView = @ConsoleSceneView,
 				@ConsoleSceneView = PropertyChangeListener,				
-				@Locatable =  PropertyListenerRegistrer,
+				@Locatable =  PropertyListenerRegisterer,
 				@BoundedShape = PropertyListenerRegistrer,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,

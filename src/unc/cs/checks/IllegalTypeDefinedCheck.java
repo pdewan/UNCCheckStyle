@@ -38,24 +38,29 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 
     }
-	public void doVisitToken(DetailAST ast) {
-		
-		switch (ast.getType()) {
-		case TokenTypes.PACKAGE_DEF: 
-			visitPackage(ast);
-			return;
-		case TokenTypes.CLASS_DEF:
-		case TokenTypes.INTERFACE_DEF:
-			if (fullTypeName == null)
+	@Override
+	public void leaveType(DetailAST ast) {
+    	super.leaveType(ast);
 
-			visitType(ast);
-			return;
-		
-		default:
-			System.err.println(checkAndFileDescription + "Unexpected token");
-		}
-		
-	}
+    }
+//	public void doVisitToken(DetailAST ast) {
+//		
+//		switch (ast.getType()) {
+//		case TokenTypes.PACKAGE_DEF: 
+//			visitPackage(ast);
+//			return;
+//		case TokenTypes.CLASS_DEF:
+//		case TokenTypes.INTERFACE_DEF:
+//			if (fullTypeName == null)
+//
+//			visitType(ast);
+//			return;
+//		
+//		default:
+//			System.err.println(checkAndFileDescription + "Unexpected token");
+//		}
+//		
+//	}
 	@Override
 	protected String msgKey() {
 		// TODO Auto-generated method stub
