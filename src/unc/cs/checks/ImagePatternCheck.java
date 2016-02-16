@@ -30,7 +30,7 @@ public class ImagePatternCheck extends LocatableShapePatternCheck {
 		return ALTERNATE_IMAGE_PATTERN;
 	}
 	protected String imageShapePattern() {
-		return locatablePattern() + "|"  + imageProperties();
+		return locatablePattern() + BASIC_SET_MEMBER_SEPARATOR + imageProperties();
 	}
 	@Override
 	public String composeProperties() {

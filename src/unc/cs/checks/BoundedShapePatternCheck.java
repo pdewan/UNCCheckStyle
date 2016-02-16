@@ -28,7 +28,9 @@ public abstract class BoundedShapePatternCheck extends LocatableShapePatternChec
 		}
 		
 		protected String boundedShapePattern() {
-			return locatablePattern() + "|"  + boundsProperties();
+//			return locatablePattern() + "|"  + boundsProperties();
+			return locatablePattern() + BASIC_SET_MEMBER_SEPARATOR + boundsProperties();
+
 		}
 		@Override
 		public String composeProperties() {

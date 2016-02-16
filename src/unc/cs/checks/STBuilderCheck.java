@@ -126,7 +126,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
     				currentMethodType,
     				currentMethodIsVisible,
     				currentMethodTags.toArray(dummyArray),
-    				currentMethodComputedTags.toArray(dummyArray),    			
+//    				currentMethodComputedTags.toArray(dummyArray),  
+    				computedAndDerivedMethodTags().toArray(dummyArray),
     				currentMethodAssignsToGlobalVariable,
 //    				methodsCalledByCurrentMethod.toArray(new String[0][0]));
 			        methodsCalledByCurrentMethod.toArray(new CallInfo[0]),
@@ -335,6 +336,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected List<STNameable> computedAndDerivedTypeTags() {
 		List<STNameable> result = computedTypeTags();
 		List<STNameable> derivedTags = derivedTags(typeAST);
+		result.addAll(derivedTags);
+		return result;
+	}
+	protected List<STNameable> computedAndDerivedMethodTags() {
+		List<STNameable> result = currentMethodTags;
+		List<STNameable> derivedTags = derivedTags(currentMethodAST);
 		result.addAll(derivedTags);
 		return result;
 	}

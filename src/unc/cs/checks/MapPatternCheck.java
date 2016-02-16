@@ -19,8 +19,10 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public  class MapPatternCheck extends ExpectedSignaturesCheck {
 	
-	public static final String MAP_SPECIFICATION = "@MAP_PATTERN" + TYPE_SEPARATOR + "get:$K->$V | put:$K;$V->* ";
-    /**
+//	public static final String MAP_SPECIFICATION = "@MAP_PATTERN" + TYPE_SEPARATOR + "get:$K->$V | put:$K;$V->* ";
+	public static final String MAP_SPECIFICATION = "@MAP_PATTERN" + TYPE_SEPARATOR + "get:$K->$V" + BASIC_SET_MEMBER_SEPARATOR + "put:$K;$V->* ";
+
+	/**
      * A key is pointing to the warning message text in "messages.properties"
      * file.
      */

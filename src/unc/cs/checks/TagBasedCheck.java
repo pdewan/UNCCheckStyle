@@ -27,7 +27,11 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final String MATCH_ANYTHING = "*";
 
 	public static final String TYPE_SEPARATOR = "=";
-	public static final String SET_MEMBER_SEPARATOR = "\\|";
+	public static final String BASIC_SET_MEMBER_SEPARATOR = "|";
+
+//	public static final String SET_MEMBER_SEPARATOR = "\\|";
+	public static final String SET_MEMBER_SEPARATOR = "\\" + BASIC_SET_MEMBER_SEPARATOR;
+
 	public static final String AND_SYMBOL = "\\+";
 
 

@@ -30,7 +30,7 @@ public class StringShapePatternCheck extends LocatableShapePatternCheck {
 		return ALTERNATE_STRING_PATTERN;
 	}
 	protected String stringShapePattern() {
-		return locatablePattern() + "|"  + stringProperties();
+		return locatablePattern() + BASIC_SET_MEMBER_SEPARATOR + stringProperties();
 	}
 	@Override
 	public String composeProperties() {

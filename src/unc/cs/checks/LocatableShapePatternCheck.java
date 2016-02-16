@@ -26,7 +26,9 @@ public abstract class LocatableShapePatternCheck extends BeanPatternCheck {
 	
 	protected String locatablePattern() {
 //		return LOCATABLE_PATTERN ;
-		return TAG_STRING +composePatternName() + TYPE_SEPARATOR + "X:int | Y:int";
+//		return TAG_STRING +composePatternName() + TYPE_SEPARATOR + "X:int | Y:int";
+		return TAG_STRING +composePatternName() + TYPE_SEPARATOR + "X:int" + BASIC_SET_MEMBER_SEPARATOR + "Y:int";
+
 	}
 	@Override
 	public String composeProperties() {
