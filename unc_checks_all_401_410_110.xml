@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+	editor -->
+<!-- Checkstyle-Configuration: Test Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+
+<module name="unc.tools.checkstyle.AnExtendibleChecker">
+
+	<property name="severity" value="warning" />
+
+
+	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
+		<property name="severity" value="info" />
+
+		<module name="STBuilder">
+			<property name="includeTypeTags" value="*" />
+
+			<property name="severity" value="info" />
+			<property name="visitInnerClasses" value="true" />
+			
+			<property name="projectPackagePrefixes" value="main, test,lectures,mp, grail" />
+			<property name="existingClasses"
+				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
+			<property name="importsAsExistingClasses" value="true" />
+			<property name="derivedTags"
+				value="
+			ArrayList = 
+				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] int.* //has int variable |
+				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] \( \[\[.*\] String\[.*\].*//has String[] variable | 
+				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty |				
+				\( CLASS_DEF.*new\[.*\] String\[.*\].*//allocates a Strng array,
+			LinkedList =
+				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty |			
+				\( CLASS_DEF.*next(.*)//has next somehere in text,
+			MainList =				
+				\( CLASS_DEF.*METHOD_DEF.*main\[.*\] \(\[.*\] \( PARAMETERS.*TYPE.*String.*//has main method,
+			ListAbstraction =
+				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty |
+				\( CLASS_DEF.*\( EXPR\[.*\] \( \(\[.*\] \( .\[.*\] imp\[.*\] empty.*//calls remote empty,
+			ListInterface =
+				\( INTERFACE_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty, 
+			" />
+
+		</module>
+
+	</module>
+
+
+	<module name="TreeWalker">
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+			<module name="NestedBlockDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="MethodBlockLimit">
+			<property name="max" value="1" />
+		</module>
+		<module name="ThenBranching">
+		</module>
+		<module name="ClassDecomposition">
+		</module>
+		<module name="PackageDeclaration" />
+		<module name="AvoidStarImport">
+			<module name="HiddenField" />
+
+		</module>
+
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces" />
+		<module name="MultipleStringLiterals" />
+
+		<module name="NoDuplicateShortTypeName">
+		</module>
+		<module name="NoFullTypeName">
+		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="allowedSiblings" value="Math.*" />
+		
+		</module>
+		<module name="BulkierThen" >
+		   <property name="maxElsePartSize"  value="2" />
+		   <property name="minThenElseRatio"  value="5" />
+		   
+		</module>
+
+		<module name="IllegalMethodCall">
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="String.substring, String.charAt, String.length, String.toLowerCase, String.equals, String.equalsIgnoreCase, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
+		</module>
+		<module name="UnnecessaryMethodCall">
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="String.substring, String.charAt, String.length, String.equals, String.equalsIgnoreCase, String.toLowerCase, Scanner.nextLine, Scanner.close" />
+		</module>
+
+		<module name="IllegalInitCall">
+			<property name="includeTypeTags" value="*" />
+		</module>
+		<module name="IllegalComponentInstantiation">
+			<property name="includeTypeTags" value="*" />
+		</module>
+		<module name="IllegalTypeImported">
+			<property name="legalPrefixes"
+				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.beans" />
+		</module>
+		<module name="IllegalTypeDefined">
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
+		</module>
+		<module name="ClassDefined">
+			<property name="severity" value="info" />
+			<property name="expectedTypes"
+				value="
+			main.Assignment(.*), 
+			ScanningIterator//EC,
+			@ScannerBean, 
+			@Number, 
+			@Word, 
+			@Quote, 
+			@Start, 
+			@End, 
+			@Plus//EC, 
+			@Minus//EC,
+			@move, 
+			@say, 
+			@rotateLeftArm//EC, 
+			@rotateRightArm//EC,  
+			@repeat, 
+			@define//EC, 
+			@call//EC,  
+			@thread//EC, 
+			@wait//EC, 
+			@proceedAll//EC,  
+			@sleep//EC,  
+			@undo//EC, 
+			@redo//EC, 
+			@approach,
+			@pass,
+			@fail,
+			@RotatingLine, 
+			@Angle, 
+			@Avatar, 
+			@BridgeScene, 
+			@Locatable, 
+			@BoundedShape, 
+			@Table, 
+			@CommandInterpreter,
+			@ConsoleSceneView,
+			@InheritingBridgeScenePainter//No EC,
+			@ObservableBridgeScenePainter//EC,
+			@PaintListener,
+			@BridgeSceneController,
+			@CommandInterpreterController,
+			@ObservableCommandInterpreter,
+			@SayCommand,
+			@MoveCommand,
+			@PassCommand,
+			@Animator,
+			@AnimatingCommand,
+			@FailCommand,
+			@ApproachCommand,
+			@RepeatCommand,
+			@CommandList,
+			@RotateLeftArm//EC,
+			@RotateRightArm//EC,
+			@Sleep//EC,
+			@Define//EC,
+			@Call//EC,
+			@Thread//EC,			
+			@DefineCommand//EC,
+			@CallCommand//EC,
+			@ThreadCommand//EC,
+			@Parser,
+			@ScanningException,
+			@ParsingException,
+			@BroadcastingClearanceManager,			
+			@SingletonsCreator,
+			@CustomSwingTextFieldFactory,
+			@UndoCommand//EC,
+			@RedoCommand//EC
+			
+			" />
+		</module>
+
+
+		<module name="ExpectedGetters">
+			<property name="expectedProperties"
+				value="@ScannerBean= 
+				ScannedString:String | 
+				Tokens:.*\[\] | 
+				TokenList:@ClearableHistory//EC |
+				TokenList:@LIST_PATTERN,				
+			@Word= Input:String | Value:String, 
+			@Number= Input:String | Value:int, 
+			@Quote= Input:String, 
+			@Start= Input:String, 
+			@End= Input:String, 
+			@Plus= Input:String, 
+			@Minus= Input:String, 
+			@Angle= 
+				LeftLine:@LINE_PATTERN | 
+				RightLine:@LINE_PATTERN, 
+			@Avatar= Text:@STRING_PATTERN | Head:@IMAGE_PATTERN | Arms:@Angle | Legs:@Angle, 
+			@BridgeScene= Arthur:@Avatar | Galahad:@Avatar | Lancelot:@Avatar | Robin:@Avatar | Guard:@Avatar | Gorge:* | KnightArea:* | GuardArea:* | Occupied:boolean |KnightTurn:boolean, 
+			@CommandInterpreter = Command:String,
+			@CommandInterpreterController = 
+				TextField:JTextField | 
+				MenuItem:JMenuItem | 
+				Button:JButton |
+				Say: JButton |
+				Approach: JButton |
+				Pass: JButton |
+				Fail: JButton,
+			@ProgressBarCreator =  ProgressBar:JProgressBar | Slider:JSlider,
+			@Parser = 
+				CommandText:String | 
+				CommandObject:Runnable | 
+				Errors:* //EC,
+			
+			" />
+		</module>
+
+		<module name="ExpectedGlobals">
+			<property name="expectedGlobals"
+				value="
+			Assignment1 = 
+				(.*):int\[\] |
+				(.*):int |
+				(.*):int |
+				(.*):int,
+			ScanningIterator =
+				(.*):String, 
+			" />
+		</module>
+
+		<module name="ExpectedSignatures">
+			<property name="expectedSignatures"
+				value="
+				@Angle= @move:int;int->*| @scale:double->*//EC, 
+				@Avatar= @move:int;int->* | @scale:double->*, 
+				@BridgeScene= 
+					@scroll:int->* | 
+					@approach:@Avatar->*| 
+					@say:String->* | 
+					@passed:->* | 
+					@failed:->*	| 
+					pre((.*)):->boolean,
+				@CommandInterpreter = 
+					 
+					@asynchronousGalahad:->void	|
+					@asynchronousLancelot:->void |		
+					@asynchronousRobin:->void |	
+					@asynchronousArthur:->void |
+					@asynchronousGuard:->void |
+					@waitingGalahad:->void	|
+					@waitingLancelot:->void |		
+					@waitingRobin:->void |	
+					@waitingArthur:->void |
+					@waitingGuard:->void |
+					@startAnimation:->void |
+					@lockstepGalahad:->void	|
+					@lockstepLancelot:->void |		
+					@lockstepRobin:->void |	
+					@lockstepArthur:->void |
+					@lockstepGuard:->void,
+										
+				@Animator = @animateAvatar:@Avatar->void,
+				@CommandList = @add:@Runnable->void,
+				@Parser = 
+				    @parseSay:*->Runnable | 
+					@parseMove:*->Runnable |
+				  	@parseCommand:*->Runnable |						
+				  	@parseApproach:*->Runnable |						
+				 	@parsePass:*->Runnable |						
+				 	@parseFail:*->Runnable |						
+				 	@parseRepeat:*->Runnable |						
+				 	@parseCommandList:*->Runnable |						
+				 	@parseNumber:*->* |
+				 	@parseRotateLeftArm:*->Runnable//EC |
+				 	@parseRotateRightArm:*->Runnable//EC |
+				 	@parseSleep:*->Runnable//EC |
+					@parseDefine:*->Runnable//EC |
+					@parseCall:*->Runnable//EC |
+					@parseThread:*->Runnable//EC,
+				@SingletonsCreator =
+					@scannerFactoryMethod:->@ScannerBean |
+					@parserFactoryMethod:->@Parser |
+					@bridgeSceneFactoryMethod:->@BridgeScene |
+					@avatarTableFactoryMethod:->@Table |
+					@commandInterpreterFactoryMethod:->@CommandInterpreter |
+					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager, 
+					
+				
+				" />
+		</module>
+		<module name="ExpectedClassInstantiations">
+			<property name="instantiations"
+				value="
+				
+				@SingletonsCreator =
+					@scannerFactoryMethod:->@ScannerBean#@ScannerBean |
+					@parserFactoryMethod:->@Parser#@Parser |
+					@bridgeSceneFactoryMethod:->@BridgeScene#@BridgeScene |
+					@avatarTableFactoryMethod:->@Table#@Table |
+					@commandInterpreterFactoryMethod:->@CommandInterpreter#@CommandInterpreter |
+					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager#ABroadcastingClearanceManager, 
+				
+				" />
+		</module>
+		<module name="InvalidClassInstantiation">
+			<property name="includeTypeTags" value="*" />
+			<property name="excludeTypeTags" value="@SingletonsCreator" />
+			<property name="instantiations"
+				value="				
+				* =
+					@ScannerBean//EC |
+					@Parser//EC |
+					@BridgeScene |
+					@Table//EC |
+					@CommandInterpreter//EC |
+					ABroadcastingClearanceManager//EC 
+				
+				" />
+		</module>
+		<module name="ExpectedDeclaredSignatures">
+			<property name="expectedSignatures"
+				value="
+				IteratingScanner =
+				   	indexOf:String;char;int->int // EC,				   	
+				Assignment1 = 
+					main:String\[\]->void |
+					indexOf:String;char;int->int // No EC |
+					scanString:String->void |
+					computeSumAndProduct:->void |
+					print:->void,					
+				@InheritingBridgeScenePainter=paint:Graphics(.*)->void,
+				@ObservableBridgeScenePainter=
+					paint:Graphics(.*)->void |
+					@addPaintListener:@PaintListener->void
+					,
+				@PaintListener=paint:Graphics(.*)->void,
+				@CustomSwingTextFieldFactory=createJTextField:String->JTextField, 								
+				" />
+		</module>
+
+		<module name="ExpectedConstructors">
+			<property name="expectedSignatures"
+				value="@BridgeScene =:, 
+				@Angle=:, 
+				@CommandInterpreter = :@BridgeScene,
+				@Parser = :@BridgeScene,
+				@ConsoleSceneView = :@BridgeScene,
+				@InheritingBridgeScenePainter = :@BridgeScene,
+				@BridgeSceneController = :@BridgeScene,
+				@CommandInterpreterController = :@CommandInterpreter,
+				@MoveCommmand = :@Avatar; int; int,
+				@SayCommand = :@BridgeScene; String,
+				@FailCommand = :@BridgeScene,
+				@PassCommand = :@BridgeScene,
+				@ApproachCommand = :@BridgeScene;@Avatar,
+				@RepeatCommand = :int;@Runnable,
+				@RotateLeftArmCommand = :@Avatar; int,
+				@RotateRightArmCommand = :@Avatar; int,
+				@SleepCommand = :long,
+				@DefineCommand = :String;@Runnable;@Table,	
+				@ThreadCommand = :String;@Table,
+												
+				" />
+		</module>
+		<module name="ExpectedInterfaces">
+			<property name="expectedInterfaces"
+				value="
+				ScanningIterator=Iterator,
+				@Angle= @Angle, 
+				@Avatar=@Avatar, 
+				@ScannerBean = @ScannerBean,
+				@CommandInterpreter = @CommandInterpreter,
+				@ConsoleSceneView = @ConsoleSceneView,
+				@ConsoleSceneView = PropertyChangeListener,				
+				@Locatable =  PropertyListenerRegisterer,
+				@BoundedShape = PropertyListenerRegisterer,
+				@Locatable =  @Locatable,
+				@BoundedShape = @BoundedShape,
+				@PaintListener = @PaintListener,
+				@BridgeSceneController = MouseListener | KeyListener,
+				@ObservableCommandIntepreter = PropertyListenerRegisterer,
+				@SayCommand = Runnable,
+				@MoveCommand = Runnable,
+				@PassCommand = Runnable,
+				@FailCommand = Runnable,
+				@ApproachCommand = Runnable,
+				@RotateLeftArmCommand = Runnable,
+				@RotateRigtArmCommand = Runnable,
+				@SleepCommand = Runnable,
+				@DefineCommand = Runnable,
+				@CallCommand = Runnable,
+				@ThreadCommand = Runnable,								
+				@CommandList = @CommandList | Runnable,
+				@Animator = @Animator,
+				@AnimatingCommand = Runnable,
+				@CoordinatingCommand = Runnable,
+				@CoordinatedCommand = Runnable,
+				@BridgeScene = 	PropertyListenerRegisterer,
+				@UndoCommand = Runnable,
+				@RedoCommand = Runnable			
+				" />
+		</module>
+		<module name="ExpectedSuperTypes">
+			<property name="expectedSuperTypes"
+				value="
+				@LINE_PATTERN= @BoundedShape, 
+				@STRING_PATTERN= @Locatable, 
+				@IMAGE_PATTERN= @Locatable, 
+				@LABEL_PATTERN = @BoundedShape, 
+				@BoundedShape=@Locatable,
+				@InheritingBridgeScenePainter=Component,
+				@ObservableBridgeScenePainter=Component,
+				@ScanningException=IOException,
+				@ParsingException=IOException,
+				@CustomSwingTextFieldFactory=SwingTextFieldFactory,
+				" />
+		</module>
+		<module name="InvalidSuperTypes">
+			<property name="invalidSuperTypes"
+				value="
+				@BridgeSceneController= 
+					@ObservableBridgeScenePainter | 
+					@InheritingBridgeScenePainter,	
+				@InheritingBridgeScenePainter= @BridgeSceneController,
+				@ObservableBridgeScenePainter = @BridgeSceneController,
+				@STRING_PATTERN= @IMAGE_PATTERN, 
+				@IMAGE_PATTERN = @STRING_PATTERN,
+				@LINE_PATTERN = @STRING_PATTERN,
+				@STRING_PATTERN = @LINE_PATTERN,
+				@IMAGE_PATTERN = @LINE_PATTERN
+				
+				" />
+		</module>
+
+		<module name="MissingMethodCall">
+			<property name="expectedCalls"
+				value="
+				ScanningIterator =
+				    next#indexOf:String;char;int->int |
+					indexOf#String!charAt:int->char  |
+					indexOf#String!length:->int  ,	
+					
+				Assignment(.*) = 
+					scanString#indexOf:String;char;int->int // No EC |
+					scanString#String!length:->int// No EC |
+					iteratingScanString#Iterator!next:->String // EC |
+					iteratingScanString#Iterator!hasNext:->void //EC |					
+					indexOf#String!charAt:int->char // No EC  |
+					indexOf#String!length:->int // No EC  |					
+					main#scanString:String->void |
+					main#computeSumAndProduct:String->void |
+					print#System.out.print:String->void |
+					main#print:->void,	
+				@CommandInterpreter = 							
+					 		@Table!put:(.*);(.*) -> (.*) |
+					 		@BridgeScene!getArthur:->(.*) |
+					 		@BridgeScene!getLancelot:->(.*) |
+					 		@BridgeScene!getRobin:->(.*) |
+					 		@BridgeScene!getGalahad:->(.*) |
+					 		@BridgeScene!getGuard:->(.*) |
+					 		@Parser!setCommandText:String->void |
+					 		@Parser!getCommandObject:->Runnable |
+					 		@Parser!getErrors:->* |
+					 		@SingletonsCreator!@parserFactoryMethod:->@Parser |
+					 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene |
+					 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table |
+					 		BroadcastingClearanceManager!proceedAll:->void
+					 		,
+					  		
+				 @Avatar=  
+				 	@STRING_PATTERN!setX:int->void) | 
+				 	@Angle!move:int;int->void
+				 	, 
+				 @BridgeScene = 
+				 	@Avatar!@move:int;int->void | 
+				 	@approach#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
+				 	@say#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
+				 	@passed#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
+				 	@failed#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
+				 	,		
+				
+				 @Locatable = 
+				 	setX#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
+				 	setY#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) 
+				 ,
+				 @BoundedShape = 
+				 	setWidth#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*) |
+				 	setHeight#(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
+				 	,
+				 @ConsoleSceneView = 
+				 						(.*)!addPropertyChangeListener:PropertyChangeListener->void |
+				 						propertyChange#(.*)!(.*)println:*->void |
+				 						(.*)!getArthur:-> @Avatar |
+				 						(.*)!getLancelot:-> @Avatar |
+				 						(.*)!getRobin:-> @Avatar |
+				 						(.*)!getGalahad:-> @Avatar |				 						
+				 						(.*)!getArms:-> @Angle|
+				 						(.*)!getLegs:-> @Angle |
+				 						(.*)!getLeftLine:-> @LINE_PATTERN |
+				 						(.*)!getRightLine:-> @LINE_PATTERN |
+				 						(.*)!getText:->@STRING_PATTERN
+				 						,
+				 @InheritingBridgeScenePainter = 
+				 						paint#Graphics(.*)!draw(.*):*->(.*) |
+				 						paint#super!paint:Graphics->void(.*) |
+				 						(.*)!getArthur:-> @Avatar |
+				 						(.*)!getLancelot:-> @Avatar |
+				 						(.*)!getRobin:-> @Avatar |
+				 						(.*)!getGalahad:-> @Avatar |
+				 						(.*)!getArms:-> @Angle|
+				 						(.*)!getLegs:-> @Angle |
+				 						(.*)!getLeftLine:-> @LINE_PATTERN |
+				 						(.*)!getRightLine:-> @LINE_PATTERN |				 						
+				 						(.*)!getText:->@STRING_PATTERN |
+				 						propertyChange#repaint:->void,
+				 
+				 @ObservableBridgeScenePainter =
+				 						paint#PaintListener!paint:Graphics->void
+				 						,
+				 @BridgeSceneController = 
+				 						@BridgeScene!getArthur:-> @Avatar | 
+				 						@BridgeScene!getGalahad:-> @Avatar	|
+				 						@BridgeScene!getLancelot:-> @Avatar	|	
+				 						@BridgeScene!getRobin:-> @Avatar	
+				 						,
+				 @ObservableCommandInterpreter = 
+				 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
+				 						,
+				 
+				 @PaintListener = 
+				 	Graphics(.*)!draw(.*):*->(.*),
+				 @AnimatingCommand = 
+				 	@Animator!@animateAvatar:@Avatar->void |
+				 	BroadcastingClearanceManager!waitForProceed:->void,
+				 @Animator = 
+				    ThreadSupport!sleep:long->void, 
+				 @CoordinatingAnimatingCommand = 
+				 	@CoordinatingAnimator!@animateAvatar:@Avatar->void,
+				 @CoordinatingAnimator = 
+				 	BroadcastingClearanceManager!proceedAll:->void,
+				 @CoordinatedAnimatingCommand =
+				 	@CoordinatedAnimator!@animateAvatar:@Avatar->void,
+				 @CoordinatedAnimator = 
+				 	BroadcastingClearanceManager!waitForProceed:->void,
+				 @ApproachCommand = @BridgeScene!@approach:@Avatar->*,
+				 @FailCommand = @BridgeScene!@failed:->*,
+				 @PassCommand = @BridgeScene!@passed:->*,
+				 @SayCommand = @BridgeScene!@say:String->*,			 
+				 @CommandList = Runnable!run:->void,
+				 @Parser = 
+				 	@setCommandText#@ScannerBean!setScannedString:String->void |		
+				 	@setCommandText#@ScannerBean!getTokenList:String->void |	 
+				 	@setCommandText#@ScannerBean!getTokens:String->void |					 			 
+				 	@setCommandText#@parseCommandList:*->Runnable |				 
+				 	@parseCommandList#@parseCommand:*->Runnable |
+				 	@parseCommand#@parseSay:*->Runnable |
+				 	@parseCommand#@parseApproach:*->Runnable |						
+				 	@parseCommand#@parsePass:*->Runnable |						
+				 	@parseCommand#@parseFail:*->Runnable |						
+				 	@parseCommand#@parseRepeat:*->Runnable |						
+				 	@parseCommand#@parseNumber:*->*|
+				 	@parseCommand#@parseRotateLeftArm:*->Runnable |
+				 	@parseCommand#@parseRotateRightArm:*->Runnable |
+					@parseCommand#@parseDefine:*->Runnable |
+					@parseCommand#@parseCall:*->Runnable |
+					@parseCommand#@parseThread:*->Runnable |
+				 	@parseCommand#@parseSleep:*->Runnable |
+				 	@ScanningException!getMessage:->String |
+				 	@ParsingException!getMessage:->String |
+				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
+				 	
+				 @RotateLeftArmCommand = run#@Avatar!@rotateLeftArm:int->void,
+				 @RotateRightArmCommand = run#@Avatar!@rotateRightArm:int->void,
+				 @SleepCommand = run#@ThreadSupport!sleep:long->void,
+				 @DefineCommand = run#@Table!put:Object;Object->*,
+				 @CallCommand = run#@Table!get:Object->Object,				 
+				 @ThreadCommand = run#@Table!get:Object->Object | Thread!start:->void,
+			     
+				 			 						
+				 						
+				 " />
+		</module>
+
+		<module name="ExpectedPattern">
+			<property name="expectedPattern"
+				value="
+				@Table= MAP_PATTERN, 
+				@Angle= BEAN_PATTERN
+				" />
+		</module>
+
+
+
+		<module name="FunctionAssignsGlobal">
+			<property name="includeTypeTags" value="*" />
+			<property name="excludeTypeTags" value="@SingletonsCreator" />
+			<property name="excludeMethodTags"
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*), parse(.*)" />
+
+		</module>
+
+		<module name="SetterAssignsGlobal">
+		</module>
+		<module name="MissingActualProperty">
+		</module>
+		<module name="MissingActualEditableProperty">
+		</module>
+		<module name="ClassHasAtLeastOneInterface">
+		</module>
+		<module name="ClassHasOneInterface">
+		</module>
+		<module name="VariableHasClassType">
+
+		</module>
+
+		<module name="LinePattern">
+		</module>
+		<module name="OvalPattern">
+		</module>
+		<module name="RectanglePattern">
+		</module>
+		<module name="StringShapePattern">
+		</module>
+		<module name="PointPattern">
+		</module>
+		<module name="ImagePattern">
+		</module>
+		<module name="VectorPattern">
+		</module>
+		<module name="ListPattern">
+		</module>
+		<module name="MapPattern">
+		</module>
+
+		<module name="NoStructuredSetter">
+		</module>
+		<module name="IllegalPropertyNotification">
+			<property name="excludeProperties" value="this" />
+		</module>
+		<module name="ClassIsGeneric">
+			<property name="includeTypeTags" value="Table" />
+		</module>
+
+		<module name="PeerCommonProperties">
+			<property name="includeTypeTags"
+				value="@move, @say, @rotateLeftArm, @rotateRightArm,  @repeat, @define, @call,  @thread, @wait, @proceedAll,  @sleep,  @undo, @redo, @LINE_PATTERN, @IMAGE_PATTERN, @STRING_PATTERN" />
+			<property name="includeSets"
+				value="@move | @say | @rotateLeftArm | @rotateRightArm |  @repeat | @define | @call |  @thread | @wait | @proceedAll |  @sleep |  @undo | @redo, @LINE_PATTERN | @IMAGE_PATTERN | @STRING_PATTERN" />
+		</module>
+		<module name="InvalidPackageName">
+		</module>
+
+		<module name="ExpectedParseTree">
+			<property name="expectedStatements"
+				value="
+				Factorial= 
+					BODY (.*)-(.*)-(.*) |
+					main#CALL $0%(.*)-(.*)$1(.*) |					
+					factorial#BODY (.*)-(.*)$0(.*)-(.*)$1(.*)$0(.*)-(.*)$1(.*) |					
+					factorial#CALL $0%(.*)-(.*)$1(.*) |
+					factorial#IF (.*)n(.*)0(.*) CALL $0%(.*)-(.*)$1(.*) |					
+					main#CALL factorial CALL System.out.println:String->void,				
+					 
+				" />
+		</module>
+		<module name="ExpectedConstructs">
+			<property name="expectedConstructs"
+				value="
+				Factorial= 					
+					factorial#FOR IF CALL|				
+					 
+				" />
+		</module>
+
+	</module>
+</module>
+
