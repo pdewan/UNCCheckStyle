@@ -876,8 +876,29 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected void visitClass(DetailAST ast) {
 		visitType(ast);
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+		// moving to leave so we can fill symbol table correctly
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
+//		STNameable[] superTypes = getSuperTypes(ast);
+//		if (superTypes.length == 0)
+//			superClass = null;
+//		else
+//			superClass = superTypes[0];
+//		interfaces = getInterfaces(ast);
+//		isInterface = false;
+	}
+
+	protected void visitInterface(DetailAST ast) {
+		visitType(ast);
+		// moving to leave so we can fill symbol table correctly
+//		if (!checkIncludeExcludeTagsOfCurrentType())
+//			return;
+//		superClass = null;
+//		interfaces = getSuperTypes(ast);
+//		isInterface = true;
+	}
+	protected void leaveClass(DetailAST ast) {
+		if (checkIncludeExcludeTagsOfCurrentType()) {		
 		STNameable[] superTypes = getSuperTypes(ast);
 		if (superTypes.length == 0)
 			superClass = null;
@@ -885,15 +906,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			superClass = superTypes[0];
 		interfaces = getInterfaces(ast);
 		isInterface = false;
-	}
+		}
+		leaveType(ast);
 
-	protected void visitInterface(DetailAST ast) {
-		visitType(ast);
-		if (!checkIncludeExcludeTagsOfCurrentType())
-			return;
+		
+	}
+	
+    protected void leaveInterface(DetailAST ast) {
+    	if (checkIncludeExcludeTagsOfCurrentType()) {
 		superClass = null;
 		interfaces = getSuperTypes(ast);
 		isInterface = true;
+    	}
+    	leaveType(ast);
+
 	}
 
 	// public static boolean isProjectImport(String aFullName) {
@@ -1700,7 +1726,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	protected void maybeAddToPendingTypeChecks(DetailAST ast) {
-		int i = 0;
+		int i = 1;
 		if (!checkIncludeExcludeTagsOfCurrentType())
 			return;
 		specificationVariablesToUnifiedValues.clear();
@@ -2341,13 +2367,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			typesInstantiatedByCurrentMethod.add(anInstantiatedNameable);
 	}
 	
-	protected void leaveClass(DetailAST ast) {
-		leaveType(ast);
-	}
 	
-    protected void leaveInterface(DetailAST ast) {
-    	leaveType(ast);
-	}
 
 	protected void doLeaveToken(DetailAST ast) {
 		switch (ast.getType()) {

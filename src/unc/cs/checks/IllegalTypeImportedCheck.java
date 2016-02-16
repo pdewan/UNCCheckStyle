@@ -123,24 +123,44 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 	 protected Boolean inLegalPrefixes(String importText, String myClassName) {
 		 return legalPrefixes != null && legalPrefixes.size() > 0 && isPrefix(importText, legalPrefixes, myClassName);
 	 }
-
+	
+	 /*
+	  * if project import, then not illegal
+	  * if a tag then not illegal
+	  * if an illegal prefix, then illegal
+	  * if  in legal prefixes, not illegal
+	  * 
+	  */
 	 protected Boolean isIllegalImport(String importText, String myClassName) {
-		 return !(STBuilderCheck.isProjectImport(importText)
-				|| importText.endsWith("Tags") // to allow bootstrapping for tag annotations
-		        || !inIllegalPrefixes(importText, myClassName)
-		        || inLegalPrefixes(importText, myClassName));
-			 		
+		 if (inLegalPrefixes(importText, myClassName))
+			 return false;
+		 if (inIllegalPrefixes(importText, myClassName))
+			 return true;
+		 return !STBuilderCheck.isProjectImport(importText) && 
+				 !importText.endsWith("Tags"); //to allow bootstrapping for tag annotations
 		 
 			 
-//		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
-//			 return isPrefix(importText, illegalPrefixes, myClassName);
-//		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 
-//			 return !isPrefix(importText, legalPrefixes, myClassName);
-//		 else
-//			 return false;
 			 
 		 			 
 	  }
+
+//	 protected Boolean isIllegalImport(String importText, String myClassName) {
+//		 return !(STBuilderCheck.isProjectImport(importText) // if project import then check the rest, if  not a projecct import t
+//				|| importText.endsWith("Tags") // to allow bootstrapping for tag annotations
+//		        || !inIllegalPrefixes(importText, myClassName)
+//		        || inLegalPrefixes(importText, myClassName));
+//			 		
+//		 
+//			 
+////		 if (illegalPrefixes != null && illegalPrefixes.size() > 1)
+////			 return isPrefix(importText, illegalPrefixes, myClassName);
+////		 else if (legalPrefixes != null && legalPrefixes.size() > 1) 
+////			 return !isPrefix(importText, legalPrefixes, myClassName);
+////		 else
+////			 return false;
+//			 
+//		 			 
+//	  }
 	@Override
 	protected String msgKey() {
 		// TODO Auto-generated method stub

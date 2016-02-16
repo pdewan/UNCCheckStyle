@@ -28,7 +28,7 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 	public void visitPackage(DetailAST ast) {
 		super.visitPackage(ast);
 		String[] prefixes = STBuilderCheck.getProjectPackagePrefixes();
-		if (prefixes == null || prefixes.length == 0) {
+		if (prefixes == null || prefixes.length == 0 || (prefixes.length == 1 && "*".equals(prefixes[0]))) {
 			return;			
 		}
 		if (packageName == null) {

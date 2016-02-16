@@ -8,9 +8,9 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public abstract class STClassVisitedComprehensively extends STTypeVisitedComprehensively {
-	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF,  TokenTypes.PACKAGE_DEF};
-	} 
+//	public int[] getDefaultTokens() {
+//		return new int[] {TokenTypes.CLASS_DEF,  TokenTypes.PACKAGE_DEF};
+//	} 
 	
 	public STClassVisitedComprehensively() {
 

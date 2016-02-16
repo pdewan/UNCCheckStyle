@@ -23,7 +23,7 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {
-//				TokenTypes.CLASS_DEF,
+				TokenTypes.CLASS_DEF,
 				};
 	}
 	

@@ -365,7 +365,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public static String maybeStripComment(String aString) {	 
 	 	int aCommentStart = aString.indexOf("//");
 	 	if (aCommentStart < 0)
-	 		return aString;
+	 		return aString.trim();
 	 	return aString.substring(0, aCommentStart).trim();
 	 }
  public static String maybeStripAt(String aString) {
@@ -465,6 +465,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	
 }
  public Boolean unifyingMatchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
+	 if (aDescriptor == null) {
+		 return true;
+	 }
 	 aDescriptor = aDescriptor.trim();
 	 if (aDescriptor.equals(MATCH_ANYTHING)) {
 	 	 return true;
@@ -897,7 +900,7 @@ public void visitImport(DetailAST ast) {
 }
 public static boolean isProjectImport(String aFullName) {
 	 for (String aPrefix:STBuilderCheck.getProjectPackagePrefixes())
-		 if (aFullName.startsWith(aPrefix)) return true;
+		 if (aPrefix.equals("*") || aFullName.startsWith(aPrefix)) return true;
 	 return false;
 }
 static List<DetailAST> emptyASTList = new ArrayList();
@@ -1142,6 +1145,7 @@ public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 }
 public static String getFullTypeName(DetailAST aTree) {
 	String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
+	int i = 0;
 	DetailAST aPackageAST = getEnclosingPackageDeclaration(aTree);
 	String aPackageName = DEFAULT_PACKAGE;
 	if (aPackageAST != null)
@@ -1149,16 +1153,33 @@ public static String getFullTypeName(DetailAST aTree) {
 	return aPackageName + "." + aTypeName;
 }
 public static STType getSTType(DetailAST aTreeAST) {
+	int i = 0;
 	String aFullName = getFullTypeName(aTreeAST);
 //	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 //	if (anSTType == null) {
 //		System.out.println("Null symbol table entry for:" + aFullName);
 //	}
 //	return anSTType;
-	return SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
+	STType result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
+	if (result == null && STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(toShortTypeName(aFullName));
+		
+	}
+	return result;
+	
 }
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
-	DetailAST result = getEnclosingClassDeclaration(anAST);
+//	DetailAST result = null;
+	if (anAST.getType() == TokenTypes.INTERFACE_DEF) {
+		return getEnclosingInterfaceDeclaration(anAST);
+	}
+	if (anAST.getType() == TokenTypes.ENUM_DEF) {
+		return getEnclosingEnumDeclaration(anAST);
+	}
+	if (anAST.getType() == TokenTypes.CLASS_DEF) {
+		return getEnclosingClassDeclaration(anAST);
+	}
+	DetailAST result =		getEnclosingClassDeclaration(anAST);
 	if (result != null)
 		return result;
 	result = getEnclosingInterfaceDeclaration(anAST);

@@ -31,6 +31,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected STType currentSTType;
 	protected List<STMethod> stMethods = new ArrayList();
 	protected Stack<List<STMethod>> stMethodsStack = new Stack();
+	protected List<STNameable> derivedTags = new ArrayList();
 
 	protected List<STMethod> stConstructors = new ArrayList();
 	protected Stack<List<STMethod>> stConstructorsStack = new Stack();
@@ -45,6 +46,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	protected static STBuilderCheck singleton;
 	protected boolean visitInnerClasses = false;
 	
+	public void setDerivedTags (String[] aDerivedTagsSpecifications) {
+		setExpectedTypesAndSpecifications(aDerivedTagsSpecifications);
+	}
 	
 	
 	public STBuilderCheck() {
@@ -201,8 +205,18 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 		   stConstructors = new ArrayList();
 		   stMethodsStack.push(stMethods);
 		   stConstructorsStack.push(stConstructors);
+			typeTagsInitialized = false; // recompute them
+
 	   }
    }
+   @Override
+	protected void leaveClass(DetailAST ast) {
+		super.leaveClass(ast);
+	}
+   @Override
+  	protected void leaveInterface(DetailAST ast) {
+  		super.leaveInterface(ast);
+  	}
 	@Override
 	public void leaveType(DetailAST ast) {
 		if (!getVisitInnerClasses())
@@ -308,7 +322,37 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 //    	return anEnumDef.getNextSibling();
 //    }
 	
-
+	public static boolean isDerivedTag (String aText, String[] aPatterns) {
+		for (String aPattern: aPatterns) {
+			String anActualPattern = maybeStripComment(aPattern);
+			if (!aText.matches(anActualPattern)) {
+				return false; // expecrt all patterns 
+			}
+		}
+		return true;
+	}
+	
+	protected List<STNameable> computedAndDerivedTypeTags() {
+		List<STNameable> result = computedTypeTags();
+		List<STNameable> derivedTags = derivedTags(typeAST);
+		result.addAll(derivedTags);
+		return result;
+	}
+	
+	 protected List<STNameable> derivedTags (DetailAST anAST) {
+		 derivedTags.clear();
+		 if (typeToSpecifications.isEmpty()) {
+			 return derivedTags;
+		 }
+		 String aText = anAST.toStringTree().trim();
+		 for (String aKey:typeToSpecifications.keySet()) {
+			 if (isDerivedTag(aText, typeToSpecifications.get(aKey))) {
+				 derivedTags.add(new AnSTNameable(aKey));
+			 }
+		 }
+		 return derivedTags;
+			 
+	 }
 	 
 	  protected void processMethodAndClassData() {
 		  processImports();
@@ -330,7 +374,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    			propertyNames.toArray(dummyArray),
 	    			editablePropertyNames.toArray(dummyArray),
 	    			typeTags().toArray(dummyArray),
-	    			computedTypeTags().toArray(dummyArray),
+//	    			computedTypeTags().toArray(dummyArray),
+	    			computedAndDerivedTypeTags().toArray(dummyArray),
+
 	    			imports.toArray(dummyArray),
 	    			globalVariables.toArray(dummyArray),
 	    			new HashMap<>(globalVariableToCall),
@@ -364,5 +410,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck{
 	    	super.doVisitToken(ast);
 	    }
 	    
+	    public static void main (String[] args) {
+	    	System.out.println ("[200]".matches("(.*)\\[(.*)\\](.*)"));
+	    }
 
 }

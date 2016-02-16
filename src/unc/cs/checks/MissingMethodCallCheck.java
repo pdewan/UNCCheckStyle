@@ -56,13 +56,33 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 	protected boolean returnValueOnMatch() {
 		return true;
 	}
+//	public void doFinishTree(DetailAST ast) {
+//		// STType anSTType =
+//		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+//		// for (STMethod aMethod: anSTType.getMethods()) {
+//		// visitMethod(anSTType, aMethod);
+//		// }
+//		maybeAddToPendingTypeChecks(ast);
+//		super.doFinishTree(ast);
+//
+//	}
+	@Override
+	public void leaveType(DetailAST ast) {
+		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+			maybeAddToPendingTypeChecks(ast);
+		}
+		super.leaveType(ast);
+	}
 	public void doFinishTree(DetailAST ast) {
 		// STType anSTType =
 		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		// for (STMethod aMethod: anSTType.getMethods()) {
 		// visitMethod(anSTType, aMethod);
 		// }
+		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+
 		maybeAddToPendingTypeChecks(ast);
+		}
 		super.doFinishTree(ast);
 
 	}
@@ -73,7 +93,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
-		STType anSTType = getSTType(aTree);
+		STType anSTType = getSTType(anAST);
 
 		if (anSTType.isEnum())
 			return true;

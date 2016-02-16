@@ -36,8 +36,8 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //	public static final String SEPARATOR = ">";
 	public int[] getDefaultTokens() {
 		return new int[] {
-//				TokenTypes.PACKAGE_DEF,
-//				TokenTypes.CLASS_DEF
+				TokenTypes.PACKAGE_DEF,
+				TokenTypes.CLASS_DEF
 				};
 	}
 //	public void visitClass(DetailAST ast) {
@@ -80,7 +80,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
-		STType anSTType = getSTType(aTree);
+		STType anSTType = getSTType(anAST);
 
 		if (anSTType.isEnum() || anSTType.isInterface())
 			return true;
@@ -157,12 +157,32 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 		return returnValue;
 	}
 	
+//	public void doFinishTree(DetailAST ast) {
+//		
+////		if (fullTypeName == null) {
+////			return; // interface or come other non class
+////		}
+//		maybeAddToPendingTypeChecks(ast);
+//		super.doFinishTree(ast);
+//
+//	}
+	@Override
+	public void leaveType(DetailAST ast) {
+		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+			maybeAddToPendingTypeChecks(ast);
+		}
+		super.leaveType(ast);
+	}
 	public void doFinishTree(DetailAST ast) {
-		
-//		if (fullTypeName == null) {
-//			return; // interface or come other non class
-//		}
+		// STType anSTType =
+		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+		// for (STMethod aMethod: anSTType.getMethods()) {
+		// visitMethod(anSTType, aMethod);
+		// }
+		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+
 		maybeAddToPendingTypeChecks(ast);
+		}
 		super.doFinishTree(ast);
 
 	}

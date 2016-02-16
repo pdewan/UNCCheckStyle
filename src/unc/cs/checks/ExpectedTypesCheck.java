@@ -27,7 +27,8 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //	public static final String SEPARATOR = ">";
 	public int[] getDefaultTokens() {
 		return new int[] {
-//				TokenTypes.CLASS_DEF,
+				TokenTypes.CLASS_DEF,
+				TokenTypes.INTERFACE_DEF
 				};
 	}
 	
@@ -81,11 +82,11 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 
 	}
 	
-	protected void logTypeNotMatched(DetailAST aTreeAST, String aType) {
+	protected void logTypeNotMatched(DetailAST aTypeAST, DetailAST aTreeAST, String aType) {
 //		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 //				.getFilename());
-		String aTypeName = getName(getEnclosingTypeDeclaration(aTreeAST));
-		super.log(aTreeAST, aTreeAST, aType, aTypeName);
+		String aTypeName = getName(getEnclosingTypeDeclaration(aTypeAST));
+		super.log(aTypeAST, aTreeAST, aType, aTypeName);
 //		if (aTreeAST == currentTree) {
 //			DetailAST aLoggedAST = aTreeAST;
 //			log(aLoggedAST.getLineNo(),  msgKey(), aSignature, aTypeName, aSourceName);
@@ -102,7 +103,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 
 	
 	public Boolean matchType(List<String> aSpecifications,
-			List<String> aTypes, DetailAST aTreeAST) {
+			List<String> aTypes, DetailAST aTypeAST, DetailAST aTreeAST) {
 		Boolean retVal = true;
 		
 		for (String aSpecification : aSpecifications) {
@@ -120,7 +121,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //				retVal = false;
 //			}
 			if ((!hasMatched && logOnNoMatch()) || (hasMatched && !logOnNoMatch())) {
-				logTypeNotMatched(aTreeAST, aSpecification);
+				logTypeNotMatched(aTypeAST, aTreeAST, aSpecification);
 				if (retVal != null)
 					retVal = false;
 			}
@@ -150,13 +151,13 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	
 	abstract protected List<STNameable> getTypes(STType anSTType) ;
 	public Boolean matchTypes(STType anSTType, List<String> aSpecifiedInterfaces, DetailAST aTree) {
-//		int i = 0;
+		int i = 0;
 		List<STNameable> aClassNames = getTypes(anSTType);
 		if (aClassNames == null) {
 			return null;
 		}
 		
-		return matchType(aSpecifiedInterfaces, toNames(aClassNames), aTree);
+		return matchType(aSpecifiedInterfaces, toNames(aClassNames), anSTType.getAST(), aTree);
 	}
 	
 //	abstract boolean doCheck(STType anSTType) ;
@@ -166,7 +167,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
-		STType anSTType = getSTType(aTree);
+		STType anSTType = getSTType(anAST);
 
 		if (anSTType.isEnum())
 			return true;
@@ -191,13 +192,33 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 		// TODO Auto-generated method stub
 		return MSG_KEY;
 	}
+//	public void doFinishTree(DetailAST ast) {
+//		// STType anSTType =
+//		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+//		// for (STMethod aMethod: anSTType.getMethods()) {
+//		// visitMethod(anSTType, aMethod);
+//		// }
+//		maybeAddToPendingTypeChecks(ast);
+//		super.doFinishTree(ast);
+//
+//	}
+	@Override
+	public void leaveType(DetailAST ast) {
+		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+			maybeAddToPendingTypeChecks(ast);
+		}
+		super.leaveType(ast);
+	}
 	public void doFinishTree(DetailAST ast) {
 		// STType anSTType =
 		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
 		// for (STMethod aMethod: anSTType.getMethods()) {
 		// visitMethod(anSTType, aMethod);
 		// }
+		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+
 		maybeAddToPendingTypeChecks(ast);
+		}
 		super.doFinishTree(ast);
 
 	}

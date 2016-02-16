@@ -15,9 +15,9 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //	
 	public int[] getDefaultTokens() {
 		return new int[] {
-//				TokenTypes.CLASS_DEF, 
-//				TokenTypes.INTERFACE_DEF, 
-//				TokenTypes.PACKAGE_DEF
+				TokenTypes.CLASS_DEF, 
+				TokenTypes.INTERFACE_DEF, 
+				TokenTypes.PACKAGE_DEF
 				};
 	} 
 
@@ -41,14 +41,15 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //    		 aPackageName = getPackageName(aPackageAST);
 //    	String aFullName = aPackageName + "." + aTypeName;
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aFullName);
-		STType anSTType = getSTType(aTreeAST);
+		STType anSTType = getSTType(ast);
+		int i = 0;
 		if (!doCheck(anSTType))
 			return true;		
 		Boolean aTypeCheck = typeCheck(anSTType);
 		if (aTypeCheck == null)
 			return null;
 		if (!aTypeCheck)
-    		log(ast, aTreeAST);
+    		log(ast, aTreeAST, anSTType.getName());
 		return aTypeCheck;
 		
 	}
