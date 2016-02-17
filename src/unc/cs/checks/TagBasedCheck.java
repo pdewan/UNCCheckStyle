@@ -22,15 +22,19 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class TagBasedCheck extends TypeVisitedCheck{
+	public static final String COMMENT_START = "//";
 	public static final char TAG_CHAR = '@';
 	public static final String TAG_STRING = "" + TAG_CHAR;
 	public static final String MATCH_ANYTHING = "*";
 
 	public static final String TYPE_SEPARATOR = "=";
-	public static final String BASIC_SET_MEMBER_SEPARATOR = "|";
+//	public static final String BASIC_SET_MEMBER_SEPARATOR = "|";
+	public static final String BASIC_SET_MEMBER_SEPARATOR = "AND";
+
 
 //	public static final String SET_MEMBER_SEPARATOR = "\\|";
-	public static final String SET_MEMBER_SEPARATOR = "\\" + BASIC_SET_MEMBER_SEPARATOR;
+//	public static final String SET_MEMBER_SEPARATOR = "\\" + BASIC_SET_MEMBER_SEPARATOR;
+	public static final String SET_MEMBER_SEPARATOR = BASIC_SET_MEMBER_SEPARATOR;
 
 	public static final String AND_SYMBOL = "\\+";
 
@@ -45,7 +49,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected List<STNameable> typeTags;
 	protected List<STNameable> computedTypeTags;
 	protected STNameable pattern;
-	protected List<STNameable> currentMethodTags;
+	protected List<STNameable> currentMethodTags = emptyList;
 	protected List<STNameable> currentMethodComputedTags;
 	static STNameable[] emptyNameableArray = {};
  	static List<STNameable> emptyNameableList =new ArrayList();
@@ -367,7 +371,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  	return aString;
  }
  public static String maybeStripComment(String aString) {	 
-	 	int aCommentStart = aString.indexOf("//");
+	 	int aCommentStart = aString.indexOf(COMMENT_START);
 	 	if (aCommentStart < 0)
 	 		return aString.trim();
 	 	return aString.substring(0, aCommentStart).trim();
@@ -887,7 +891,7 @@ public void maybeVisitTypeTags(DetailAST ast) {
 public void maybeVisitMethodTags(DetailAST ast) {  
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {
-		currentMethodTags = emptyArrayList;
+		currentMethodTags.clear();;
 		return;
 	}
 	currentMethodTags = getArrayLiterals(annotationAST);

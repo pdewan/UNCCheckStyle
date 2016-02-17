@@ -398,7 +398,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public static void addAllNoDuplicates(List anOriginal, List aNew) {
 		for (Object newElement : aNew) {
-			if (anOriginal.contains(aNew))
+			if (anOriginal.contains(newElement))
 				continue;
 			anOriginal.add(newElement);
 		}
@@ -2497,7 +2497,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public void setExpectedSpecificationOfType(String aPattern) {
 		String[] extractTypeAndSpecification = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSpecification[0].trim();
-		String[] aSpecifications = extractTypeAndSpecification[1].split("\\|");
+		String[] aSpecifications = extractTypeAndSpecification[1].split(SET_MEMBER_SEPARATOR);
 		// typeToSpecification.put(aType, aSpecification);
 		registerSpecifications(aType, aSpecifications);
 	}

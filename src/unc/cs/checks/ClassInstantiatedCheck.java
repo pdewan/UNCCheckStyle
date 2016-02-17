@@ -93,7 +93,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 		boolean returnNull = false; 
 		boolean returnValue = true;
 		for (String aSpecification:aSpecifications) {
-//			int i = 0;
+			int i = 0;
 			String aCaller = null;
 			STMethod aCallerSpecifiedMethod = null;
 			String aType;
