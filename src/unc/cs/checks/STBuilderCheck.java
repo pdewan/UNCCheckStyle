@@ -361,7 +361,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		if (typeToSpecifications.isEmpty()) {
 			return derivedTags;
 		}
-		String aText = anAST.toStringTree().trim();
+		String aText = toStringList(anAST).trim();
 		for (String aKey : typeToSpecifications.keySet()) {
 			if (isDerivedTag(anAST, aText, typeToSpecifications.get(aKey))) {
 				derivedTags.add(new AnSTNameable(aKey));

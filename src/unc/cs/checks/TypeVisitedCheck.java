@@ -1,5 +1,9 @@
 package unc.cs.checks;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
 import unc.cs.symbolTable.AnSTNameable;
@@ -200,8 +204,101 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 			aShortTypeName = aTypeName.substring(aDotIndex + 1);
 		return aShortTypeName;
 	}
+	public static final Integer[] ignoreTokenTypesArray = {
+		TokenTypes.MODIFIERS,
+		TokenTypes.TYPE,
+		TokenTypes.PARAMETERS,
+		TokenTypes.PARAMETER_DEF,
+		TokenTypes.OBJBLOCK,
+		TokenTypes.ELIST
+	};
+	public static final List<Integer> ignoreTokenTypesList =  Arrays.asList (ignoreTokenTypesArray);
+	public static final Set<Integer> ignoreTokenTypesSet =  new HashSet(ignoreTokenTypesList);
   
+	public static final Integer[] infixTokenTypesArray = {
+		TokenTypes.ASSIGN,
+		TokenTypes.EQUAL,
+		TokenTypes.NOT_EQUAL,
+		TokenTypes.PLUS,
+		TokenTypes.PLUS_ASSIGN,
+		TokenTypes.MINUS,
+		TokenTypes.MINUS_ASSIGN,
+		TokenTypes.DIV,
+		TokenTypes.DIV_ASSIGN,
+		TokenTypes.STAR,
+		TokenTypes.STAR_ASSIGN,
+		TokenTypes.BAND,
+		TokenTypes.BAND_ASSIGN,
+		TokenTypes.BOR,
+		TokenTypes.BOR_ASSIGN,
+		TokenTypes.LOR,
+		TokenTypes.LAND,
+		TokenTypes.SL_ASSIGN,
+		TokenTypes.SR_ASSIGN,		
+		TokenTypes.DOT,
+		
+	};
+	public static final List<Integer> infixTokenTypesList =  Arrays.asList (infixTokenTypesArray);
+	public static final Set<Integer> infixTokenTypesSet =  new HashSet(infixTokenTypesList);
 	
-	
-    
+	public static String toStringListPrefix(DetailAST anAST) {
+		DetailAST t = anAST;
+		String ts = "";
+		boolean printSelf = !ignoreTokenTypesSet.contains(anAST.getType());
+		// boolean printInfix =
+		// printSelf?infixTokenTypesSet.contains(anAST.getType()):false;
+		// boolean printPrefix = printSelf && !printInfix;
+
+		// if (t.getFirstChild() != null) ts += " (";
+		// if (printPrefix
+		if (printSelf)
+			ts += " " + t.getText();
+		if (t.getFirstChild() != null) {
+			ts += toStringListPrefix(t.getFirstChild());
+		}
+		// if (printInfix)
+		// ts += " " + t.getText();
+		// if (t.getFirstChild() != null) ts += " )";
+		if (t.getNextSibling() != null) {
+			ts += toStringListPrefix(t.getNextSibling());
+		}
+		return ts;
+	}
+	public static String toStringListPrefixOrInfix(DetailAST anAST) {
+		String ts = "";
+		boolean printSelf = !ignoreTokenTypesSet.contains(anAST.getType());
+		 boolean printInfix =
+		 printSelf?infixTokenTypesSet.contains(anAST.getType()):false;
+		 boolean printPrefix = printSelf && !printInfix;
+
+		// if (t.getFirstChild() != null) ts += " (";
+		// if (printPrefix
+		if (printPrefix)
+			ts += " " + anAST.getText();
+		if (anAST.getFirstChild() != null) {
+			ts += toStringListPrefixOrInfix(anAST.getFirstChild());
+			 if (printInfix) {
+				 ts += " " + anAST.getText();
+			 }
+			 DetailAST child = anAST.getFirstChild().getNextSibling();
+			 while (child != null) {
+					ts += toStringListPrefixOrInfix(child);
+					child = child.getNextSibling();
+
+			 }
+			
+		}
+		// if (printInfix)
+		// ts += " " + t.getText();
+		// if (t.getFirstChild() != null) ts += " )";
+		
+//		if (t.getNextSibling() != null) {
+//			ts += toStringList(t.getNextSibling());
+//		}
+		return ts;
+	}
+	public static String toStringList(DetailAST anAST) {
+		return toStringListPrefixOrInfix(anAST);
+	}
+
 }
