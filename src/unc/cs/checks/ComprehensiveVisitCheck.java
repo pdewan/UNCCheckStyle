@@ -952,17 +952,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected void visitRCurly(DetailAST ast) {
 
 	}
-
-	protected void visitVariableOrParameterDef(DetailAST ast) {
-		// if (!checkIncludeExcludeTagsOfCurrentType())
-		// return;
-		if (ScopeUtils.inCodeBlock(ast))
-			// ||
-			// ast.getParent().getType() == TokenTypes.LITERAL_CATCH)
-			addToMethodScope(ast);
-		else
-			addToTypeScope(ast);
-	}
+	// not used, so delete it
+//	protected void visitVariableOrParameterDef(DetailAST ast) {
+//		// if (!checkIncludeExcludeTagsOfCurrentType())
+//		// return;
+//		if (ScopeUtils.inCodeBlock(ast))
+//			// ||
+//			// ast.getParent().getType() == TokenTypes.LITERAL_CATCH)
+//			addToMethodScope(ast);
+//		else
+//			addToTypeScope(ast);
+//	}
 
 	public static boolean isArrayIndex(String aVariable) {
 		return aVariable != null && aVariable.endsWith("]");
@@ -1004,9 +1004,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return typeScope.get(aVariable);
 	}
 
-	public void visitVariableDef(DetailAST paramOrVarDef) {
-
-		visitVariableOrParameterDef(paramOrVarDef);
+	public void visitVariableDef(DetailAST ast) {
+		if (ScopeUtils.inCodeBlock(ast)) {
+			// ||
+			// ast.getParent().getType() == TokenTypes.LITERAL_CATCH)
+			addToMethodScope(ast);
+		} else {
+			addToTypeScope(ast);
+		}
+		
+//		visitVariableOrParameterDef(paramOrVarDef);
 		// code moved to addToScope
 		// if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
 		// final DetailAST aTypeParent = paramOrVarDef

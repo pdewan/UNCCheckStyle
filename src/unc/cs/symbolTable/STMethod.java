@@ -24,6 +24,7 @@ public interface STMethod extends STNameable{
 	boolean isParsedMethod();
 	STNameable[] getComputedTags();
 	STType getDeclaringSTType();
+	void setDeclaringSTType(STType declaringSTType);
 	void addCaller(STMethod aMethod);
 	public Set<STMethod> getAllCalledMethods();
 	public Set<STMethod> getAllCallingMethods() ;
@@ -34,7 +35,6 @@ public interface STMethod extends STNameable{
 	Boolean callsInternally(STMethod anSTMethod);
 	Boolean calls(STMethod anSTMethod);
 	boolean isConstructor();
-	void setDeclaringSTType(STType declaringSTType);
 	List<STMethod> getLocalMethodsCalled();
 	void fillLocalCallClosure(List<STMethod> aList);
 	List<STMethod> getAllMethodsCalled();
