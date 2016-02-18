@@ -332,9 +332,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				}
 				if (!hasTaggedMethod(anActualPattern)) {
 					return false;
-				} else {
-					return false;
-				}
+				} 
 			} else if (!aText.matches(anActualPattern)) {
 				return false; // expecrt all patterns 
 			}
@@ -362,6 +360,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			return derivedTags;
 		}
 		String aText = toStringList(anAST).trim();
+		int i = 1;
 		for (String aKey : typeToSpecifications.keySet()) {
 			if (isDerivedTag(anAST, aText, typeToSpecifications.get(aKey))) {
 				derivedTags.add(new AnSTNameable(aKey));
@@ -434,6 +433,19 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	public static void main(String[] args) {
 		System.out.println("[200]".matches("(.*)\\[(.*)\\](.*)"));
+		//METHOD_DEF public static void main ( [ String ] args ) { EXPR new java . util . ArrayList ( ) ; VARIABLE_DEF Queue qL EXPR new Queue ( EXPR "links" ) = ; VARIABLE_DEF Queue qA EXPR new Queue ( EXPR "array" ) = ; VARIABLE_DEF String item EXPR [ args EXPR 0 ] = ; EXPR ( qL . enq EXPR item ) ; EXPR ( qA . enq EXPR item ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( qL . enq EXPR [ args EXPR i ] ) ; EXPR ( qA . enq EXPR [ args EXPR i ] ) ; } for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; } }
+		//METHOD_DEF public int numElements ( ) { return EXPR ( imp . size ) ;
+		System.out.println ("METHOD_DEF public int numElements ( ) { return EXPR ( imp . size ) ;".
+				matches("METHOD_DEF .* int (size|numElements).*"));
+		System.out.println ("METHOD_DEF public static| void main ( [ String ] args ) { EXPR new java . util . ArrayList ( ) ; VARIABLE_DEF Queue qL EXPR new Queue ( EXPR \"links\" ) = ; VARIABLE_DEF Queue qA EXPR new Queue ( EXPR \"array\" ) = ; VARIABLE_DEF String item EXPR [ args EXPR 0 ] = ; EXPR ( qL . enq EXPR item ) ; EXPR ( qA . enq EXPR item ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( qL . enq EXPR [ args EXPR i ] ) ; EXPR ( qA . enq EXPR [ args EXPR i ] ) ; } for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; } }".
+
+//				matches("METHOD_DEF [(public static)|(static public)] void main.*"));
+		matches("METHOD_DEF .* void main.*"));
+//METHOD_DEF public boolean empty ( ) { return EXPR ( imp . empty ) ; } }
+//		METHOD_DEF int size ( ) ;
+		System.out.println ("VARIABLE_DEF private [ String ]".matches("VARIABLE_DEF (private |protected )*\\[ String \\].*"));
+		
+		
 	}
 
 }

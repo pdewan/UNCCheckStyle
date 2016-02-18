@@ -26,27 +26,27 @@
 			<property name="derivedTags"
 				value="
 			empty =
-				\( METHOD_DEF.*\( TYPE\[.*\] boolean\[.*\] \) empty.*//declares a boolean method called empty,
+				METHOD_DEF.*boolean empty .*//declares a boolean method called empty,
 			size =
-				\( METHOD_DEF.*\( TYPE\[.*\] int\[.*\] \) [size|numElements].*//declares an int method called size or numlements,
+				METHOD_DEF.*int (size|numElements) .*//declares an int method called size or numlements,
 			main =
-				\( METHOD_DEF.*\( TYPE\[.*\] void\[.*\] \) main\[.*\] \(\[.*\] \( PARAMETERS.*TYPE.*String.*,			
+				METHOD_DEF.*void main .*// declares a main method returning void with some modifiers,			
 			ListArray = 
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] int.* //has int variable AND
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] \( \[\[.*\] String\[.*\].*//has String[] variable AND 
+				CLASS_DEF.*VARIABLE_DEF int .*//has an int variable AND
+				CLASS_DEF.*VARIABLE_DEF (private |protected )*\[ String \].*//has String[] variable AND 
 				@empty//has empty method AND 
-				\( CLASS_DEF.*new\[.*\] String\[.*\].*//allocates a Strng array,
+				CLASS_DEF.*new String \[.*\].*//allocates a String array,				
 			ListLinked =
 				@empty AND
-				\( CLASS_DEF.*next(.*)//has next somehere in text,
+				CLASS_DEF.*next.*//has next somehere in text,
 			ListMain =
 				@main,				
 			QueueAbstraction =
 				@empty AND
-				\( CLASS_DEF.*\( EXPR\[.*\] \( \(\[.*\] \( .\[.*\] imp\[.*\] empty.*//calls remote empty,
+				CLASS_DEF.*\. empty .*//calls remote empty,
 			ListInterface =
-				\( INTERFACE_DEF.* AND
-				@empty,
+				INTERFACE_DEF .* // starts with interface AND
+				@empty//has empty,
 			" />
 
 		</module>
