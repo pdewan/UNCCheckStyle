@@ -300,5 +300,8 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	public static String toStringList(DetailAST anAST) {
 		return toStringListPrefixOrInfix(anAST);
 	}
+	protected boolean getVisitInnerClasses() {
+		return STBuilderCheck.getSingleton().getVisitInnerClasses();
+	}
 
 }

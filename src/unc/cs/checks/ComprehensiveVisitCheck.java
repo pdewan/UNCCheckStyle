@@ -690,7 +690,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// }
 
 	public void visitType(DetailAST typeDef) {
+		if (getVisitInnerClasses()) {
+			 initializeTypeState();
+		 }
 		super.visitType(typeDef);
+		
 		// this should move to minimal
 		maybeVisitStructurePattern(typeDef);
 		// why this?
@@ -700,8 +704,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		maybeVisitPropertyNames(typeDef);
 		maybeVisitEditablePropertyNames(typeDef);
 		maybeVisitTypeTags(typeDef);
-		// FullIdent aFullIdent = CheckUtils.createFullType(ast);
-		// typeName = aFullIdent.getText();
+		
+		 
+		
 	}
 
 	public STNameable getPattern(String aShortClassName) {
@@ -911,6 +916,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		
 	}
+	
 	
     protected void leaveInterface(DetailAST ast) {
     	if (checkIncludeExcludeTagsOfCurrentType()) {
@@ -1561,16 +1567,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		pendingChecks().clear(); // this is needed to allocate a new entry
 
 	}
-
-	@Override
-	public void doBeginTree(DetailAST ast) {
-		super.doBeginTree(ast);
-		currentMethodName = null;
-		currentMethodAssignsToGlobalVariable = false;
-		currentMethodScope.clear();
-		methodsCalledByCurrentMethod.clear();
-		globalsAccessedByCurrentMethod.clear();
-		globalsAssignedByCurrentMethod.clear();
+	
+	protected void initializeTypeState() {
 		typeTags = emptyNameableList;
 		computedTypeTags = emptyNameableList;
 		typeScope.clear();
@@ -1588,10 +1586,49 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		globalVariableToCall.clear();
 		globalVariableToType.clear();
 		globalVariableToRHS.clear();
-		currentTree = ast;
 		typeTagsInitialized = false;
 		propertyNames = emptyArrayList;
 		editablePropertyNames = emptyArrayList;
+	}
+
+	@Override
+	public void doBeginTree(DetailAST ast) {
+		super.doBeginTree(ast);
+		// method initializations, should be in visit method
+		currentMethodName = null;
+		currentMethodAssignsToGlobalVariable = false;
+		currentMethodScope.clear();
+		methodsCalledByCurrentMethod.clear();
+		globalsAccessedByCurrentMethod.clear();
+		globalsAssignedByCurrentMethod.clear();
+		
+		// type initializations
+		if (!getVisitInnerClasses())
+			initializeTypeState();
+//		typeTags = emptyNameableList;
+//		computedTypeTags = emptyNameableList;
+//		typeScope.clear();
+//		fullTypeName = null;
+//		shortTypeName = null;
+//		isInterface = false;
+//		isEnum = false;
+//		isGeneric = false;
+//		isElaboration = false;
+//		// stMethods.clear();
+//		imports.clear();
+//		globalVariables.clear();
+//		typesInstantiated.clear();
+//		typesInstantiatedByCurrentMethod.clear();
+//		globalVariableToCall.clear();
+//		globalVariableToType.clear();
+//		globalVariableToRHS.clear();
+//		typeTagsInitialized = false;
+//		propertyNames = emptyArrayList;
+//		editablePropertyNames = emptyArrayList;
+		
+		currentTree = ast;
+
+		
 		maybeCleanUpPendingChecks(ast);
 		// pendingChecks().clear();
 	}
