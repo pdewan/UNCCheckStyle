@@ -29,9 +29,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected STMethod[] inits;
 //	protected Map<String, PropertyInfo> actualPropertyInfo = new HashMap();
 //	protected List<STMethod> declaredInits = new ArrayList();
-	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
-	protected Map<String, String> globalVariableToType = new HashMap();
-	protected Map<String, DetailAST> globalVariableToRHS = new HashMap();
+	protected List<STVariable>	globalSTVariables;
+	protected Map<String, List<CallInfo>> globalVariableToCall ;
+	protected Map<String, String> globalVariableToType ;
+	protected Map<String, DetailAST> globalVariableToRHS ;
 	protected List<CallInfo> methodsCalled = new ArrayList();
 	protected List<CallInfo> allMethodsCalled ;
 
@@ -63,7 +64,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			Map<String, List<CallInfo>> aGlobalVariableToCall,
 			Map<String, String> aGlobalVariableToType,
 			Map<String, DetailAST> aGlobalVariableToRHS,
-			List<STNameable> aTypesInstantiated
+			List<STNameable> aTypesInstantiated,
+			List<STVariable> aGlobalSTVariables
 			) {
 		super(ast, name);
 		this.declaredMethods = declaredMethods;
@@ -94,6 +96,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			}
 		}
 		typesInstantiated = aTypesInstantiated;
+		globalSTVariables = aGlobalSTVariables;
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
