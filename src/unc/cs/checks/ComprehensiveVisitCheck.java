@@ -356,7 +356,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			return new AnSTMethod(null, aSignature.trim(), null, null, null,
 					true, true, false, null, false, null, null, false, null,
-					null, null, null);
+					null, null, null, null, null);
 		}
 		if (aNameAndRest.length > 2) {
 			System.err.println("Illegal signature," + aSignature
@@ -384,7 +384,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, aReturnType, true, null, null, false, null, null,
-				null, null);
+				null, null, null, null);
 
 	}
 
@@ -409,7 +409,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, aReturnType, true, null, null, false, null, null,
-				null, null);
+				null, null, null, null);
 
 	}
 
@@ -1424,11 +1424,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		String anIdentName = anIdentAST.getText();
 		if (!isGlobal(anIdentName))
 			return;
+		if (!globalsAccessedByCurrentMethod.contains(anIdentName))
 		globalsAccessedByCurrentMethod.add(anIdentName);
 
 		boolean isGlobalAssignedVariable = isGlobalAssignedVariable(anIdentAST);
 		if (isGlobalAssignedVariable) {
 			currentMethodAssignsToGlobalVariable = true; // this now redundant
+			if (!globalsAssignedByCurrentMethod.contains(anIdentName))
+
 			globalsAssignedByCurrentMethod.add(anIdentName);
 
 		}

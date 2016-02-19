@@ -36,11 +36,16 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	protected List<String> globalsAssigned;
 	
 	protected List<String> globalsAccessed;
+	
+	protected List<STVariable> localSTVariables;
+	protected List<STVariable> parameterSTVariables;
 
 	
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 	public static final String INIT = "init";
+	
+	static List<STNameable> anEmptyList = new ArrayList();
 	
 	public AnSTMethod(
 			DetailAST ast, 
@@ -59,7 +64,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			CallInfo[] aMethodsCalled,
 			List<STNameable> aTypesInstantiated,
 			List<String> aGlobalsAccessed,
-			List<String> aGlobalsAssigned
+			List<String> aGlobalsAssigned,
+			List<STVariable> aLocalVariables,
+			List<STVariable> aParameters
 			) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
@@ -87,6 +94,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		typesInstantiated = aTypesInstantiated;
 		globalsAssigned = aGlobalsAssigned;
 		globalsAccessed = aGlobalsAccessed;
+		localSTVariables = aLocalVariables;
+		parameterSTVariables = aParameters;
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();

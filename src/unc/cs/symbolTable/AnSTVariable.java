@@ -1,5 +1,7 @@
 package unc.cs.symbolTable;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTVariable extends AnSTNameable implements STVariable{
@@ -21,6 +23,12 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 			STNameable[] aTags
 			) {
 		super(ast, aName);
+		typeName = aTypeName;
+		anRHS = rhs;
+		tags = aTags;
+		variableKind = aVariableKind;
+		isFinal = ComprehensiveVisitCheck.isFinal(ast);
+		isInstance = !ComprehensiveVisitCheck.isStatic(ast);
 		
 	}
 

@@ -145,7 +145,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					methodsCalledByCurrentMethod.toArray(new CallInfo[0]),
 					new ArrayList(typesInstantiatedByCurrentMethod),
 					new ArrayList(globalsAccessedByCurrentMethod),
-					new ArrayList(globalsAssignedByCurrentMethod));
+					new ArrayList(globalsAssignedByCurrentMethod),
+					new ArrayList(localSTVariables),
+					new ArrayList(parameterSTVariables)
+					);
 
 			if (currentMethodIsConstructor)
 				stConstructors.add(anSTMethod);
@@ -260,7 +263,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		return sTBuilderTree;
 	}
 
-//	STNameable[] dummyArray = new STNameable[0];
+	STNameable[] dummyArray = new STNameable[0];
+	
 
 	protected static void addSTType(STType anSTClass) {
 		if (!anSTClass.isEnum()) {
