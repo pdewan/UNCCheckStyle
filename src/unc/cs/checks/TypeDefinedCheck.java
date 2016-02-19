@@ -64,7 +64,7 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     			unmatchedTypes.remove(anExpectedClassOrTag);
     			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
 //    			log(currentTree, msgKey(), shortTypeName, unmatchedClasses.toString());
-    			log(currentTree, anExpectedClassOrTag, unmatchedTypes.toString());
+    			log(aTypeAST, anExpectedClassOrTag, unmatchedTypes.toString());
     		}
     	}
 //    		

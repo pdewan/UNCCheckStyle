@@ -133,6 +133,15 @@
 			@QueueAbstraction
 			
 			" />
+			
+		</module>
+			<module name="InterfaceDefined">
+			<property name="severity" value="info" />
+			<property name="expectedTypes"
+				value="
+			@ListInterface
+			
+			" />
 		</module>
 
 
