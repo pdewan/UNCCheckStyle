@@ -11,7 +11,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class InterfaceDefinedCheck extends TypeDefinedCheck{
-	
+	public static final String MSG_KEY = "interfaceDefined";
+
 //	public static final String MSG_KEY = "classDefined";
 //	protected List<String> expectedClasses = new ArrayList();	
 //	protected List<String> unmatchedClasses = new ArrayList();

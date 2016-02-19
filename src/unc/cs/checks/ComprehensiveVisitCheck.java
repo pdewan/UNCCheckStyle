@@ -2160,7 +2160,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return aMessageKey + ":";
 	}
 
-	protected Object[] composeArgs(String aMessageKey, DetailAST aTreeAST,
+	protected Object[] composeArgs(String aMessageKey, DetailAST anAST, DetailAST aTreeAST,
 			int aLineNo, Object... anExplanations) {
 		String aLongFileName = getLongFileName(aTreeAST);
 		//
@@ -2175,7 +2175,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// Object[] anArgs = new String[anExplanations.length + 2];
 		anArgs[0] = composeMessageKey(aMessageKey);
 		anArgs[1] = composeSourceName(aSourceName, aLineNo);
-		anArgs[2] = getEnclosingShortClassName(aTreeAST);
+		anArgs[2] = getEnclosingShortClassName(anAST);
 		for (int i = 3; i < anArgs.length; i++) {
 
 			// for (int i = 2; i < anArgs.length; i++) {
@@ -2190,7 +2190,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected void log(String aMessageKey, DetailAST ast, DetailAST aTreeAST,
 			Object... anExplanations) {
 		int i = 0;
-		Object[] anArgs = composeArgs(aMessageKey, aTreeAST, ast.getLineNo(),
+		Object[] anArgs = composeArgs(aMessageKey, ast, aTreeAST, ast.getLineNo(),
 				anExplanations);
 
 		// String aSourceName =
@@ -2281,7 +2281,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// System.out.println("an explnation " + anExplanations[i-2]);
 		// anArgs[i] = anExplanations[i-2].toString();
 		// }
-		Object[] anArgs = composeArgs(aMessageKey, aTreeAST, ast.getLineNo(),
+		Object[] anArgs = composeArgs(aMessageKey, aTreeAST, aTreeAST, ast.getLineNo(),
 				anExplanations);
 
 		// String aSourceName =

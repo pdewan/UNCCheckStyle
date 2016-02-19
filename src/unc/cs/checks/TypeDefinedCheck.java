@@ -62,9 +62,11 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     			tagMatches.put(fullTypeName, anExpectedClassOrTag);
 //    			matchedTypes.add(fullTypeName);
     			unmatchedTypes.remove(anExpectedClassOrTag);
-    			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
+//    			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
+//    			String aTypeName = 	 getName(getEnclosingTypeDeclaration(aTypeAST));
+
 //    			log(currentTree, msgKey(), shortTypeName, unmatchedClasses.toString());
-    			log(aTypeAST, anExpectedClassOrTag, unmatchedTypes.toString());
+    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString());
     		}
     	}
 //    		
