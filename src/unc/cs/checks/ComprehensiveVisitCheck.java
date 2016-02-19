@@ -120,114 +120,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				TokenTypes.LITERAL_NEW, TokenTypes.IDENT };
 	}
 
-	// public void setIncludeTags(String[] newVal) {
-	// this.includeTags = new HashSet(Arrays.asList(newVal));
-	// }
-	// public void setExcludeTags(String[] newVal) {
-	// this.excludeTags = new HashSet(Arrays.asList(newVal));
-	// }
-	//
-	// public boolean hasExcludeTags() {
-	// return excludeTags != null && excludeTags.size() > 1;
-	// }
-	//
-	// public boolean hasIncludeTags() {
-	// return includeTags != null && includeTags.size() > 1;
-	// }
-	//
-	// public static boolean contains (Collection<String> aTags, String aTag) {
-	// for (String aStoredTag:aTags) {
-	// if (matchesStoredTag(aStoredTag, aTag))
-	// return true;
-	// }
-	// return false;
-	// }
-	//
-	// public boolean checkTagOfCurrentType(String aTag) {
-	// if (hasIncludeTags()) {
-	// return contains(includeTags, aTag);
-	// } else { // we know it has exclude tags
-	// return !contains(excludeTags, aTag);
-	// }
-	// }
-	// public boolean checkIncludeTagOfCurrentType(String aTag) {
-	// return includeTags.contains(aTag);
-	//
-	// }
-	// public boolean checkExcludeTagOfCurrentType(String aTag) {
-	// return !excludeTags.contains(aTag);
-	//
-	// }
-	// public boolean checkIncludeTagOfCurrentType(String aTag) {
-	// if (
-	// return includeTags.contains(aTag);
-	// } else { // we know it has exclude tags
-	// return !excludeTags.contains(aTag);
-	// }
-	// }
-
-	// public boolean checkTagsOfCurrentType() {
-	// if (!hasIncludeTags() && !hasExcludeTags())
-	// return true; // all tags checked in this case
-	// if (fullTypeName == null) {
-	// System.err.println("Check called without type name being populated");
-	// return true;
-	// }
-	// // STType anSTType =
-	// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
-	// // STNameable[] aCurrentTags = anSTType.getTags();
-	// List<STNameable> aCurrentTags = typeTags;
-	// for (STNameable aCurrentTag:aCurrentTags) {
-	// if (checkTagOfCurrentType(aCurrentTag.getName()))
-	// return true;
-	// }
-	// return false;
-	//
-	// }
-	// public static Boolean hasTag(STNameable[] aTags, String aTag) {
-	// for (STNameable anSTNameable:aTags) {
-	// if (anSTNameable.getName().equals(aTag)) return true;
-	//
-	// }
-	// return false;
-	// }
-	// public boolean checkIncludeTagsOfCurrentType() {
-	// if (!hasIncludeTags() && !hasExcludeTags())
-	// return true; // all tags checked in this case
-	// if (fullTypeName == null) {
-	// System.err.println("Check called without type name being populated");
-	// return true;
-	// }
-	// STType anSTType =
-	// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
-	// STNameable[] aCurrentTags = anSTType.getTags();
-	// if (hasIncludeTags())
-	// return checkIncludeTagsOfCurrentType(aCurrentTags);
-	// else
-	// return checkExcludeTagsOfCurrentType(aCurrentTags);
-	// }
-	// // if anyone says exclude, exclude
-	// public boolean checkExcludeTagsOfCurrentType(STNameable[] aCurrentTags) {
-	//
-	// for (STNameable aCurrentTag:aCurrentTags) {
-	// if (checkExcludeTagOfCurrentType(aCurrentTag.getName()))
-	// return true;
-	// }
-	// return false;
-	//
-	// }
-	// // if anyone says include, include
-	// public boolean checkIncludeTagsOfCurrentType(STNameable[] aCurrentTags) {
-	//
-	// for (STNameable aCurrentTag:aCurrentTags) {
-	// if (checkIncludeTagOfCurrentType(aCurrentTag.getName()))
-	// return true;
-	// }
-	// return false;
-	//
-	// }
-	// static STNameable[] emptyNameableArray = {};
-	// static List<STNameable> emptyNameableList =new ArrayList();
+	
 
 	public static STNameable[] getInterfaces(DetailAST aClassDef) {
 		List<STNameable> anInterfaces = new ArrayList();
@@ -876,7 +769,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			text = text + "[]";
 		currentMethodParameterTypes.add(text);
 		currentMethodParameterNames.add(aParameterName);
-		addToMethodScope(paramDef); // add a parameter to say param and return value perhaps
+		addToMethodScope(paramDef, VariableKind.PARAMETER); // add a parameter to say param and return value perhaps
 
 	}
 
@@ -1025,33 +918,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (ScopeUtils.inCodeBlock(ast)) {
 			// ||
 			// ast.getParent().getType() == TokenTypes.LITERAL_CATCH)
-			addToMethodScope(ast);
+			addToMethodScope(ast, VariableKind.LOCAL);
 		} else {
 			addToTypeScope(ast);
 		}
-		
-//		visitVariableOrParameterDef(paramOrVarDef);
-		// code moved to addToScope
-		// if (!ScopeUtils.inCodeBlock(paramOrVarDef)) {
-		// final DetailAST aTypeParent = paramOrVarDef
-		// .findFirstToken(TokenTypes.TYPE);
-		// FullIdent aTypeIdent = FullIdent.createFullIdentBelow(aTypeParent);
-		// final DetailAST anIdentifier = paramOrVarDef
-		// .findFirstToken(TokenTypes.IDENT);
-		// DetailAST aMaybeAssign = anIdentifier.getNextSibling();
-		// if (aMaybeAssign != null && aMaybeAssign.getType() ==
-		// TokenTypes.ASSIGN) {
-		// DetailAST anRHS = aMaybeAssign.getFirstChild();
-		// globalVariableToRHS.put(anIdentifier.getText(),anRHS);
-		// }
-		//
-		// ;
-		// STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
-		// anIdentifier.getText(), aTypeIdent.getText());
-		// globalVariables.add(anSTNameable);
-		// globalVariableToType.put(anIdentifier.getText(),
-		// aTypeIdent.getText());
-		// }
+
 
 	}
 
@@ -1063,15 +934,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// This is really kludgy, what aot for parameters etc. we need to open and
 	// close scopes.
 	// actually we are only looking at granparents that are methods
-	public void addToMethodScope(DetailAST paramOrVarDef) {
-		// final DetailAST aType =
-		// paramOrVarDef.findFirstToken(TokenTypes.TYPE);
-		// final DetailAST anIdentifier =
-		// paramOrVarDef.findFirstToken(TokenTypes.IDENT);
-		// final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
-		// currentMethodScope.put(anIdentifier.getText(),
-		// anIdentifierType.getText());
-		addToScope(paramOrVarDef, currentMethodScope);
+	public void addToMethodScope(DetailAST paramOrVarDef, VariableKind aVariableKind) {
+
+		addToScope(paramOrVarDef, currentMethodScope, aVariableKind);
 	}
 
 	public static String getTypeName(DetailAST paramOrVarDef) {
@@ -1107,8 +972,72 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return result;
 	}
 	STNameable[] dummyArray = new STNameable[0];
+	public void createSTVariable (DetailAST paramOrVarDef,DetailAST anIdentifier, String aTypeName,  VariableKind aVariableKind) {
+		DetailAST anRHS = null;
+		DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+		if (aMaybeAssign != null
+				&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
+			anRHS = aMaybeAssign.getFirstChild();
+		}
+		STVariable anSTVariable = new AnSTVariable (
+				paramOrVarDef, 
+				anIdentifier.getText(), 
+				aTypeName, anRHS, 
+				aVariableKind, 
+				getAllTags(paramOrVarDef, anIdentifier, aTypeName).toArray(dummyArray)
+				);
+		switch (aVariableKind) {
+		case GLOBAL:
+			globalSTVariables.add(anSTVariable);
+			break;
+		case LOCAL:
+			localSTVariables.add(anSTVariable);
+			break;
+		case PARAMETER:
+			parameterSTVariables.add(anSTVariable);
+			break;
+		}
+		
+	}
+	public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope, VariableKind aVariableKind) {
+		int i = 0;
+		
+		final DetailAST anIdentifier = paramOrVarDef
+				.findFirstToken(TokenTypes.IDENT);
+		
+		String aTypeName = getTypeName(paramOrVarDef);
 
-	public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope) {
+		aScope.put(anIdentifier.getText(), aTypeName);
+		createSTVariable(paramOrVarDef, anIdentifier, aTypeName, aVariableKind);
+		
+		if (aScope == typeScope) {
+			// this code should go eventually
+			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+			DetailAST anRHS = null;
+			if (aMaybeAssign != null
+					&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
+				anRHS = aMaybeAssign.getFirstChild();
+				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
+			}
+
+			;
+			// this code should go eventually
+			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
+					anIdentifier.getText(), aTypeName);
+			globalVariables.add(anSTNameable);
+			globalVariableToType.put(anIdentifier.getText(), aTypeName);
+//			STVariable anSTVariable = new AnSTVariable (
+//					paramOrVarDef, 
+//					anIdentifier.getText(), 
+//					aTypeName, anRHS, 
+//					VariableKind.GLOBAL, 
+//					getAllTags(paramOrVarDef, anIdentifier, aTypeName).toArray(dummyArray)
+//					);
+
+		}
+	}
+	
+	public void addToScopeOld(DetailAST paramOrVarDef, Map<String, String> aScope, VariableKind aVariableKind) {
 		int i = 0;
 		// final DetailAST aType =
 		// paramOrVarDef.findFirstToken(TokenTypes.TYPE);
@@ -1153,7 +1082,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public void addToTypeScope(DetailAST paramOrVarDef) {
 
-		addToScope(paramOrVarDef, typeScope);
+		addToScope(paramOrVarDef, typeScope, VariableKind.GLOBAL);
 	}
 
 	public Boolean isGlobal(String aName) {
