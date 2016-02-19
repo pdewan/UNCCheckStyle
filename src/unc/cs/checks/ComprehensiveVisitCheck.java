@@ -16,12 +16,15 @@ import unc.cs.symbolTable.AnSTMethodFromMethod;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
+import unc.cs.symbolTable.AnSTVariable;
 import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
+import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.cs.symbolTable.VariableKind;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -68,7 +71,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// protected List<STNameable> typeTags;
 	// protected List<STNameable> currentMethodTags;
 	protected Map<String, String> typeScope = new HashMap();
+	protected List<STVariable> globalSTVariables = new ArrayList();
+	protected List<STVariable> localSTVariables = new ArrayList();
+	protected List<STVariable> parameterSTVariables = new ArrayList();
+
+
 	protected List<STNameable> globalVariables = new ArrayList();
+	
 	protected Map<String, String> globalVariableToType = new HashMap();
 	protected Map<String, DetailAST> globalVariableToRHS = new HashMap();
 
@@ -810,6 +819,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		currentMethodParameterTypes.clear();
 		currentMethodParameterNames.clear();
 		currentMethodScope.clear();
+		localSTVariables.clear();
+		parameterSTVariables.clear();
 		methodsCalledByCurrentMethod.clear();
 		globalsAccessedByCurrentMethod.clear();
 		currentMethodAssignsToGlobalVariable = false;
@@ -865,7 +876,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			text = text + "[]";
 		currentMethodParameterTypes.add(text);
 		currentMethodParameterNames.add(aParameterName);
-		addToMethodScope(paramDef);
+		addToMethodScope(paramDef); // add a parameter to say param and return value perhaps
 
 	}
 
@@ -1095,6 +1106,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return result;
 	}
+	STNameable[] dummyArray = new STNameable[0];
 
 	public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope) {
 		int i = 0;
@@ -1116,9 +1128,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			// final DetailAST anIdentifier = paramOrVarDef
 			// .findFirstToken(TokenTypes.IDENT);
 			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+			DetailAST anRHS = null;
 			if (aMaybeAssign != null
 					&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
-				DetailAST anRHS = aMaybeAssign.getFirstChild();
+				anRHS = aMaybeAssign.getFirstChild();
 				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
 			}
 
@@ -1127,6 +1140,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					anIdentifier.getText(), aTypeName);
 			globalVariables.add(anSTNameable);
 			globalVariableToType.put(anIdentifier.getText(), aTypeName);
+			STVariable anSTVariable = new AnSTVariable (
+					paramOrVarDef, 
+					anIdentifier.getText(), 
+					aTypeName, anRHS, 
+					VariableKind.GLOBAL, 
+					getAllTags(paramOrVarDef, anIdentifier, aTypeName).toArray(dummyArray)
+					);
 
 		}
 	}
@@ -1581,6 +1601,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// stMethods.clear();
 		imports.clear();
 		globalVariables.clear();
+		globalSTVariables.clear();
 		typesInstantiated.clear();
 		typesInstantiatedByCurrentMethod.clear();
 		globalVariableToCall.clear();
@@ -2092,10 +2113,22 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public void visitTypeUse(DetailAST ast) {
 
 	}
-
+	public static List<STNameable> getComputedAndExplicitTags (DetailAST ast, DetailAST aNameAST, String aTypeName) {
+		List<STNameable> explicitTags = getExplicitTags(ast);
+		STNameable aVariableNameable = new AnSTNameable(aNameAST, aNameAST.getText());
+		STNameable aTypeNameable = new AnSTNameable(aTypeName);
+		explicitTags.add(aVariableNameable);
+		explicitTags.add(aTypeNameable);
+		return explicitTags;
+		
+		
+	}
+	protected  List<STNameable> getAllTags(DetailAST anAST, DetailAST aNameAST, String aTypeName ) {
+		return getComputedAndExplicitTags(anAST, aNameAST, aTypeName);
+	}
 	public void maybeVisitMethodTags(DetailAST ast) {
 		super.maybeVisitMethodTags(ast);
-		List<STNameable> aComputedList = new ArrayList(currentMethodTags);
+		List<STNameable> aComputedList = new ArrayList(currentMethodTags); // do we need a new list if we use toArray later?
 		aComputedList.add(new AnSTNameable(currentMethodNameAST,
 				currentMethodName));
 		currentMethodComputedTags = aComputedList;

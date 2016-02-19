@@ -50,6 +50,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected List<STNameable> computedTypeTags;
 	protected STNameable pattern;
 	protected List<STNameable> currentMethodTags = emptyList;
+	protected List<STNameable> currentVariableTags = emptyList;
+
 	protected List<STNameable> currentMethodComputedTags;
 	static STNameable[] emptyNameableArray = {};
  	static List<STNameable> emptyNameableList =new ArrayList();
@@ -888,6 +890,15 @@ public void maybeVisitTypeTags(DetailAST ast) {
 //	}
 //	typeTags = getArrayLiterals(annotationAST);
 //}
+static protected List<STNameable> emptyNameables = new ArrayList();
+public static List<STNameable> getExplicitTags(DetailAST ast) {
+	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");	
+	if (annotationAST == null) {
+		emptyNameableList.clear(); // it may have been changed by compuyted and derived tags
+		return emptyNameableList;
+	}
+	return getArrayLiterals(annotationAST); // allocating new list and reusing old list in 
+}
 public void maybeVisitMethodTags(DetailAST ast) {  
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {
@@ -896,6 +907,7 @@ public void maybeVisitMethodTags(DetailAST ast) {
 	}
 	currentMethodTags = getArrayLiterals(annotationAST);
 }
+
 public void visitImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
 	 String aLongClassName = anImport.getText();

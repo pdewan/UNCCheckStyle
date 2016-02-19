@@ -260,7 +260,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		return sTBuilderTree;
 	}
 
-	STNameable[] dummyArray = new STNameable[0];
+//	STNameable[] dummyArray = new STNameable[0];
 
 	protected static void addSTType(STType anSTClass) {
 		if (!anSTClass.isEnum()) {
@@ -350,6 +350,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected List<STNameable> computedAndDerivedMethodTags() {
 		List<STNameable> result = currentMethodComputedTags;
 		List<STNameable> derivedTags = derivedTags(currentMethodAST);
+		addAllNoDuplicates(result, derivedTags);
+		return result;
+	}
+	@Override
+	protected  List<STNameable> getAllTags(DetailAST anAST, DetailAST aNameAST, String aTypeName ) {
+		return getComputedDerivedAndExplicitTags(anAST, aNameAST, aTypeName);
+	}
+	protected  List<STNameable> getComputedDerivedAndExplicitTags(DetailAST anAST, DetailAST aNameAST, String aTypeName ) {
+		List<STNameable> result = getComputedAndExplicitTags(anAST, aNameAST, aTypeName);
+		List<STNameable> derivedTags = derivedTags(anAST);
 		addAllNoDuplicates(result, derivedTags);
 		return result;
 	}
