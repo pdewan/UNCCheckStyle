@@ -93,7 +93,13 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
+		int i = 0;
 		STType anSTType = getSTType(anAST);
+		
+		if (anSTType == null) {
+			System.err.println ("Did not find sttype for " + fullTypeName);
+			return true;
+		}
 
 		if (anSTType.isEnum())
 			return true;

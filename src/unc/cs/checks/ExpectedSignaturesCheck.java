@@ -43,6 +43,10 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public void setExpectedSignaturesOfType(String aPattern) {
 		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSignatures[0].trim();
+		if (extractTypeAndSignatures.length < 2) {
+			System.err.println ("Illegal pattern:" + aPattern + " does not have: " + TYPE_SEPARATOR);
+			return;
+		}
 		String[] aSignatures = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
 		
 		typeToSignatures.put(aType, aSignatures);
@@ -352,7 +356,10 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		} else {
 			anSTType =getSTType(aTree);
 		}
-
+		if (anSTType == null) {
+			System.err.println ("Did not find sttype for " + anAST);
+			return true;
+		}
 		if (anSTType.isEnum() || anSTType.isInterface()) // do not want to tag interface methods
 			return true;
 //		if (!visitType(anSTType)) {

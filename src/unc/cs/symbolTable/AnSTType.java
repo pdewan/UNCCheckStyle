@@ -31,8 +31,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected List<STMethod> declaredInits = new ArrayList();
 	protected List<STVariable>	globalSTVariables;
 	protected Map<String, List<CallInfo>> globalVariableToCall ;
-	protected Map<String, String> globalVariableToType ;
-	protected Map<String, DetailAST> globalVariableToRHS ;
+//	protected Map<String, String> globalVariableToType ;
+//	protected Map<String, DetailAST> globalVariableToRHS ;
 	protected List<CallInfo> methodsCalled = new ArrayList();
 	protected List<CallInfo> allMethodsCalled ;
 
@@ -62,8 +62,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] anImports,
 			STNameable[] aFields,
 			Map<String, List<CallInfo>> aGlobalVariableToCall,
-			Map<String, String> aGlobalVariableToType,
-			Map<String, DetailAST> aGlobalVariableToRHS,
+//			Map<String, String> aGlobalVariableToType,
+//			Map<String, DetailAST> aGlobalVariableToRHS,
 			List<STNameable> aTypesInstantiated,
 			List<STVariable> aGlobalSTVariables
 			) {
@@ -84,9 +84,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		imports = anImports;
 		declaredFields = aFields;
 		globalVariableToCall = aGlobalVariableToCall;
-		globalVariableToRHS = aGlobalVariableToRHS;
+//		globalVariableToRHS = aGlobalVariableToRHS;
 		computedTags = aComputedTags;
-		globalVariableToType = aGlobalVariableToType;
+//		globalVariableToType = aGlobalVariableToType;
 		if (!isInterface) {
 			for (STMethod aMethod:declaredMethods) {
 				methodsCalled.addAll(Arrays.asList(aMethod.getMethodsCalled()));
@@ -795,18 +795,31 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	public boolean isEnum() {
 		return isEnum;
 	}
+//	@Override
+//	public Set<String> getDeclaredGlobals() {
+//		return globalVariableToType.keySet();
+//	}
 	@Override
-	public Set<String> getDeclaredGlobals() {
-		return globalVariableToType.keySet();
+	public List<STVariable> getDeclaredSTGlobals() {
+		return globalSTVariables;
 	}
 	@Override
-	public String getDeclaredGlobalVariableType(String aGlobal) {
-		return globalVariableToType.get(aGlobal);
+	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
+//		STVariable result = null;
+		for (STVariable anSTVariable:globalSTVariables) {
+			if (anSTVariable.getName().equals(aGlobal))
+				return anSTVariable;
+		}
+		return null;
 	}
-	@Override
-	public DetailAST getDeclaredGlobalVariableToRHS(String aGlobal) {
-		return globalVariableToRHS.get(aGlobal);
-	}
+//	@Override
+//	public String getDeclaredGlobalVariableType(String aGlobal) {
+//		return globalVariableToType.get(aGlobal);
+//	}
+//	@Override
+//	public DetailAST getDeclaredGlobalVariableToRHS(String aGlobal) {
+//		return globalVariableToRHS.get(aGlobal);
+//	}
 	@Override
 	public List<CallInfo> getMethodsCalled() {
 		return methodsCalled;
@@ -894,4 +907,6 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		}
 		return result;
 	}
+
+
 }

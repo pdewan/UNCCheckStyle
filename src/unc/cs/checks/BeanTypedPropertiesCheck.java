@@ -45,12 +45,21 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //	}
 
 	public void setExpectedPropertiesOfType(String aPattern) {
+//		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
+//		String aType = extractTypeAndProperties[0].trim();
+//		String[] aProperties = extractTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+//
+//		typeToProperty.put(aType, aProperties);
+		setExpectedPropertiesOfType(typeToProperty, aPattern);
+		
+	}
+	public void setExpectedPropertiesOfType(Map<String, String[]> aTypeToProperty, String aPattern) {
 		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndProperties[0].trim();
 //		String[] aProperties = extractTypeAndProperties[1].split("\\|");
 		String[] aProperties = extractTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
 
-		typeToProperty.put(aType, aProperties);
+		aTypeToProperty.put(aType, aProperties);
 	}
 
 	/*

@@ -246,21 +246,21 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 
-
-	@Override
-	public Set<String> getDeclaredGlobals() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-
-
-	@Override
-	public String getDeclaredGlobalVariableType(String aGlobal) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//
+//	@Override
+//	public Set<String> getDeclaredGlobals() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//
+//
+//
+//	@Override
+//	public String getDeclaredGlobalVariableType(String aGlobal) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 
 
 
@@ -308,8 +308,26 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 
+//	@Override
+//	public DetailAST getDeclaredGlobalVariableToRHS(String aGlobal) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+
+
+
+
 	@Override
-	public DetailAST getDeclaredGlobalVariableToRHS(String aGlobal) {
+	public List<STVariable> getDeclaredSTGlobals() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
+	@Override
+	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
 		// TODO Auto-generated method stub
 		return null;
 	}

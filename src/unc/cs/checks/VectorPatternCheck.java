@@ -20,7 +20,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public  class VectorPatternCheck extends ExpectedSignaturesCheck {
 	
 //	public static final String VECTOR_SPECIFICATION = "@VECTOR_PATTERN" + TYPE_SEPARATOR + "elementAt:int->$T | size:->int ";
-	public static final String VECTOR_SPECIFICATION = "@VECTOR_PATTERN" + BASIC_SET_MEMBER_SEPARATOR + "elementAt:int->$T | size:->int ";
+	public static final String VECTOR_SPECIFICATION = "@VECTOR_PATTERN" + TYPE_SEPARATOR + "elementAt:int->$T " +BASIC_SET_MEMBER_SEPARATOR + " size:->int ";
 
 	/**
      * A key is pointing to the warning message text in "messages.properties"

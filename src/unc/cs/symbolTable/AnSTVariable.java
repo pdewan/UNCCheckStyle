@@ -24,7 +24,7 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 			) {
 		super(ast, aName);
 		typeName = aTypeName;
-		anRHS = rhs;
+		rhs = anRHS;
 		tags = aTags;
 		variableKind = aVariableKind;
 		isFinal = ComprehensiveVisitCheck.isFinal(ast);

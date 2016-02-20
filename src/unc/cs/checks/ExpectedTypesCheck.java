@@ -168,7 +168,10 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(anAST);
-
+		if (anSTType == null) {
+			System.err.println ("Did not find sttype for " + anAST);
+			return true;
+		}
 		if (anSTType.isEnum())
 			return true;
 		boolean doCheck = doCheck(anSTType);

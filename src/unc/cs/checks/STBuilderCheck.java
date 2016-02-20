@@ -301,8 +301,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		STType anSTClass = new AnSTType(anEnumDef, anEnumName, emptyMethods,
 				emptyMethods, emptyTypes, null, packageName, false, false,
 				false, true, null, dummyArray, dummyArray, dummyArray,
-				dummyArray, dummyArray, dummyArray, new HashMap(),
-				new HashMap(), new HashMap(), new ArrayList(), new ArrayList());
+				dummyArray, dummyArray, dummyArray, 
+				new HashMap(),
+//				new HashMap(), 
+//				new HashMap(), 
+				new ArrayList(), 
+				new ArrayList());
 
 		// anSTClass.introspect();
 		// anSTClass.findDelegateTypes();
@@ -413,10 +417,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				computedAndDerivedTypeTags().toArray(dummyArray),
 
 				imports.toArray(dummyArray),
-				globalVariables.toArray(dummyArray), new HashMap<>(
-						globalVariableToCall), new HashMap<>(
-						globalVariableToType), new HashMap<>(
-						globalVariableToRHS),
+				globalVariables.toArray(dummyArray), 
+				new HashMap<>(	globalVariableToCall), 
+//				new HashMap<>(globalVariableToType),
+//				new HashMap<>(globalVariableToRHS),
 				new ArrayList<>(typesInstantiated),
 				new ArrayList(globalSTVariables)
 				);

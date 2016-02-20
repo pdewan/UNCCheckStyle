@@ -16,6 +16,7 @@ import java.util.Set;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
+import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
@@ -47,16 +48,18 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 	}
 
 	
-	protected void logGlobalNotMatched(DetailAST aTreeAST, String aGlobal,
+	protected void logGlobalNotMatched(DetailAST aTypeAST, DetailAST aTreeAST, String aGlobal,
 			String aType) {
-		log (aTreeAST, aTreeAST, aGlobal, aType);
+		log (aTypeAST, aTreeAST, aGlobal, aType);
 
 	}
 
 	public Boolean matchGlobals(String[] aSpecifiedGlobals,
 			STType anSTType, DetailAST aTreeAST) {
 		boolean retVal = true;
-		Set<String> anUnmatchedGlobals = new HashSet(anSTType.getDeclaredGlobals());
+//		Set<String> anUnmatchedGlobals = new HashSet(anSTType.getDeclaredGlobals());
+		Set<STVariable> anUnmatchedGlobals = new HashSet(anSTType.getDeclaredSTGlobals());
+
 		for (String aSpecifiedGlobal : aSpecifiedGlobals) {
 			String[] aGlobalAndType = aSpecifiedGlobal.split(":");
 			String aType = aGlobalAndType[1];
@@ -69,21 +72,31 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 //			if (!matchProperty(aType, aPropertySpecification, aPropertyInfos)) {
 			if (!matched) {
 
-				logGlobalNotMatched(aTreeAST, aVariableSpecification, aType);
+				logGlobalNotMatched(anSTType.getAST(), aTreeAST, aVariableSpecification, aType);
 				retVal = false;
 			}
 		}
 		return retVal;
 	}
 	
+	protected boolean matchesVariable(STVariable anSTVariable, String aDescriptor) {
+//		return anSTVariable.getName().matches(aVariableSpecification);
+		return unifyingMatchesNameVariableOrTag(aDescriptor, anSTVariable.getName(), anSTVariable.getTags());
+	}
+	
 
 	public Boolean matchGlobal(String aVariableSpecification,
-			String aTypeSpecification, Set<String> anUnmatchedGlobals, STType anSTType) {
-		Set<String> aSet = anSTType.getDeclaredGlobals();
+			String aTypeSpecification, Set<STVariable> anUnmatchedGlobals, STType anSTType) {
+//		Set<String> aSet = anSTType.getDeclaredGlobals();
+		List<STVariable> aSet = anSTType.getDeclaredSTGlobals();
+
 		int i = 0;
-		for (String aVariable : anUnmatchedGlobals) {
-			if (aVariable.matches(aVariableSpecification)) {
-				String anActualType = anSTType.getDeclaredGlobalVariableType(aVariable);
+		for (STVariable aVariable : anUnmatchedGlobals) {
+			
+			if (matchesVariable(aVariable, aVariableSpecification)) {
+//				String anActualType = anSTType.getDeclaredGlobalVariableType(aVariable);
+				String anActualType = aVariable.getType();
+
 				
 				// return
 				// aSpecifiedType.equalsIgnoreCase(aPropertyInfos.get(aProperty).getGetter().getReturnType());
@@ -134,11 +147,11 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 				anSTType);
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
-		Set<String> aDeclaredGlobals = anSTType.getDeclaredGlobals();
-		
-
-		if (aDeclaredGlobals == null) // should not happen
-			return null;
+//		Set<String> aDeclaredGlobals = anSTType.getDeclaredGlobals();
+//		
+//
+//		if (aDeclaredGlobals == null) // should not happen
+//			return null;
 		String[] aSpecifiedGlobals = typeToSpecifications.get(aSpecifiedType);
 
 		return matchGlobals(aSpecifiedGlobals, anSTType, aTree);

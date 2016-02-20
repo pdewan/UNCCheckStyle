@@ -1112,19 +1112,19 @@ public static DetailAST getElsePart (DetailAST anIfAST) {
 	return aThenPart.getNextSibling().getFirstChild();
 }
 public static DetailAST getEnclosingMethodDeclaration(DetailAST anAST) {
-	return getEnclosingTokenType(anAST, TokenTypes.METHOD_DEF);
+	return getEnclosingOrRightTokenType(anAST, TokenTypes.METHOD_DEF);
 }
 
 
 
 public static DetailAST getEnclosingClassDeclaration(DetailAST anAST) {
-	return getEnclosingTokenType(anAST, TokenTypes.CLASS_DEF);
+	return getEnclosingOrRightTokenType(anAST, TokenTypes.CLASS_DEF);
 }
 public static DetailAST getEnclosingPackageDeclaration(DetailAST anAST) {
-	return getEnclosingTokenType(anAST, TokenTypes.PACKAGE_DEF);
+	return getEnclosingOrLeftTokenType(anAST, TokenTypes.PACKAGE_DEF);
 }
 public static DetailAST getEnclosingInterfaceDeclaration(DetailAST anAST) {
-	return getEnclosingTokenType(anAST, TokenTypes.INTERFACE_DEF);
+	return getEnclosingOrRightTokenType(anAST, TokenTypes.INTERFACE_DEF);
 }
 public static DetailAST getEnclosingTreeDeclaration(DetailAST anAST) {
 	DetailAST root = anAST;
@@ -1165,7 +1165,7 @@ public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 }
 public static String getFullTypeName(DetailAST aTree) {
 	String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
-	int i = 0;
+	int i = 1;
 	DetailAST aPackageAST = getEnclosingPackageDeclaration(aTree);
 	String aPackageName = DEFAULT_PACKAGE;
 	if (aPackageAST != null)
@@ -1173,7 +1173,7 @@ public static String getFullTypeName(DetailAST aTree) {
 	return aPackageName + "." + aTypeName;
 }
 public static STType getSTType(DetailAST aTreeAST) {
-	int i = 0;
+	int i = 1;
 	String aFullName = getFullTypeName(aTreeAST);
 //	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 //	if (anSTType == null) {
@@ -1227,14 +1227,39 @@ public static String getEnclosingMethodName(DetailAST anAST) {
 	return getName(getEnclosingMethodDeclaration(anAST));
 }
 // not physically but logically enclosing
-public static DetailAST getEnclosingTokenType(DetailAST anAST, int aTokenType) {
+public static DetailAST getEnclosingOrRightTokenType(DetailAST anAST, int aTokenType) {
 	if (anAST == null) return null;
 	if (anAST.getType() == aTokenType) return anAST;
 	DetailAST aParent = anAST.getParent();
 	if (aParent != null)
-	   return getEnclosingTokenType(aParent, aTokenType);
+	   return getEnclosingOrRightTokenType(aParent, aTokenType);
 	return 
 			getFirstRightSiblingTokenType(anAST, aTokenType);
+//			getFirstLeftSiblingTokenType(anAST, aTokenType);
+
+}
+public static DetailAST getEnclosingOrLeftTokenType(DetailAST anAST, int aTokenType) {
+	if (anAST == null) return null;
+	if (anAST.getType() == aTokenType) return anAST;
+	DetailAST aParent = anAST.getParent();
+	if (aParent != null)
+	   return getEnclosingOrRightTokenType(aParent, aTokenType);
+	return 
+			getFirstLeftSiblingTokenType(anAST, aTokenType);
+//			getFirstLeftSiblingTokenType(anAST, aTokenType);
+
+}
+//public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aTokenType) {
+//	if (anAST == null) return null;
+//	if (anAST.getType() == aTokenType) return anAST;
+//	return getFirstRightSiblingTokenType(anAST.getNextSibling(), aTokenType);
+//	
+//}
+public static DetailAST getFirstLeftSiblingTokenType(DetailAST anAST, int aTokenType) {
+	if (anAST == null) return null;
+	if (anAST.getType() == aTokenType) return anAST;
+	return getFirstLeftSiblingTokenType(anAST.getPreviousSibling(), aTokenType);
+	
 }
 public static DetailAST getFirstRightSiblingTokenType(DetailAST anAST, int aTokenType) {
 	if (anAST == null) return null;

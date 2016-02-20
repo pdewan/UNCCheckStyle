@@ -12,6 +12,7 @@ import unc.cs.symbolTable.AnAbstractSTType;
 import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STType;
+import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -79,9 +80,13 @@ public  class IllegalPropertyNotificationCheck extends MethodCallVisitedCheck {
     	
     	if (aPropertySpecifier.getType() == TokenTypes.IDENT) {
     		String anIdentName = aPropertySpecifier.getText();
-    		
-    		DetailAST anRHS = anSTType.getDeclaredGlobalVariableToRHS(anIdentName);
-    		if (anRHS == null) {
+    		STVariable anSTVariable = anSTType.getDeclaredGlobalSTVariable(anIdentName);
+    		DetailAST anRHS = null;
+    		if (anSTVariable != null) {
+    			 anRHS = anSTVariable.getRHS();
+    		}
+//    		DetailAST anRHS = anSTType.getDeclaredGlobalVariableToRHS(anIdentName);
+    		if (anSTVariable == null || anRHS == null) {
     		log (INVALID_KEY, aPropertySpecifier, aTreeAST, aPropertySpecifierText );
     		return true; // do not wnat super class to give error with msgKey();
     		} else {

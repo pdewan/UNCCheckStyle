@@ -20,7 +20,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public  class ListPatternCheck extends ExpectedSignaturesCheck {
 	
 //	public static final String LIST_SPECIFICATION = "@LIST_PATTERN" + TYPE_SEPARATOR + "get:int->$T | size:->int ";
-	public static final String LIST_SPECIFICATION = "@LIST_PATTERN" + TYPE_SEPARATOR + "get:int->$T" + BASIC_SET_MEMBER_SEPARATOR + "size:->int ";
+	public static final String LIST_SPECIFICATION = "@LIST_PATTERN" + TYPE_SEPARATOR + "get:int->$T " + BASIC_SET_MEMBER_SEPARATOR + " size:->int ";
 
 	/**
      * A key is pointing to the warning message text in "messages.properties"

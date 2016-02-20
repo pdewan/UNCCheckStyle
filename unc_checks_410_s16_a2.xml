@@ -25,21 +25,28 @@
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="derivedTags"
 				value="
+			empty =
+				METHOD_DEF.*boolean empty .*//declares a boolean method called empty,
+			size =
+				METHOD_DEF.*int (size|numElements) .*//declares an int method called size or numlements,
+			main =
+				METHOD_DEF.*void main .*// declares a main method returning void with some modifiers,			
 			ListArray = 
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] int.* //has int variable |
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] \( \[\[.*\] String\[.*\].*//has String[] variable | 
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty |				
-				\( CLASS_DEF.*new\[.*\] String\[.*\].*//allocates a Strng array,
+				CLASS_DEF.*VARIABLE_DEF int .*//has an int variable AND
+				CLASS_DEF.*VARIABLE_DEF (private |protected )*\[ String \].*//has String[] variable AND 
+				@empty//has empty method AND 
+				CLASS_DEF.*new String \[.*\].*//allocates a String array,				
 			ListLinked =
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty |			
-				\( CLASS_DEF.*next(.*)//has next somehere in text,
-			ListMain =				
-				\( CLASS_DEF.*METHOD_DEF.*main\[.*\] \(\[.*\] \( PARAMETERS.*TYPE.*String.*//has main method,
+				@empty AND
+				CLASS_DEF.*next.*//has next somehere in text,
+			ListMain =
+				@main,				
 			QueueAbstraction =
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty |
-				\( CLASS_DEF.*\( EXPR\[.*\] \( \(\[.*\] \( .\[.*\] imp\[.*\] empty.*//calls remote empty,
+				@empty AND
+				CLASS_DEF.*\. empty .*//calls remote empty,
 			ListInterface =
-				\( INTERFACE_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty, 
+				INTERFACE_DEF .* // starts with interface AND
+				@empty//has empty,
 			" />
 
 		</module>
@@ -126,6 +133,15 @@
 			@QueueAbstraction
 			
 			" />
+			
+		</module>
+			<module name="InterfaceDefined">
+			<property name="severity" value="info" />
+			<property name="expectedTypes"
+				value="
+			@ListInterface
+			
+			" />
 		</module>
 
 
@@ -135,17 +151,17 @@
 			<property name="expectedSignatures"
 				value="
 				@ListArray= 
-					empty:->boolean | 
-					size:->int | 
+					@empty:->boolean AND 
+					@size:->int AND 
 					.*:int->void,
 				@ListLinked= 
-					empty:->boolean | 
-					size:->int | 
+					@empty:->boolean AND 
+					@size:->int AND 
 					.*:int->void,
 				@QueueAbstraction= 
-					.*:String->void | 
-					deq.*:->void |
-					size:->int |
+					.*:String->void AND 
+					deq.*:->void AND
+					@size:->int AND
 					empty:->boolean, 
 						
 								
@@ -155,7 +171,7 @@
 			<property name="instantiations"
 				value="				
 				@QueueAbstraction=
-					@ListArray |					
+					@ListArray AND					
 					@ListLinked, 
 				@ListMain =
 					@QueueAbstraction
@@ -177,9 +193,9 @@
 			<property name="expectedCalls"
 				value="
 				QueueAbstraction=
-				    empty#@ListInterface!empty |
-				    deq.*#@ListInterface!.*:int->void|
-					size#@ListInterface!size ,					
+				    @empty#@ListInterface!@empty AND
+				    deq.*#@ListInterface!.*:int->void AND
+					@size#@ListInterface!@size ,					
 						 						
 				 						
 				 " />
