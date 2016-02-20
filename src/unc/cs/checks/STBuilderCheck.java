@@ -49,7 +49,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected boolean visitInnerClasses = false;
 
 	public void setDerivedTags(String[] aDerivedTagsSpecifications) {
-		setExpectedTypesAndSpecifications(aDerivedTagsSpecifications);
+		setExpectedTypesAndSpecifications(typeToSpecifications, aDerivedTagsSpecifications);
 	}
 
 	public STBuilderCheck() {

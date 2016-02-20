@@ -52,8 +52,8 @@ public abstract class ConstructsCheck extends MethodCallCheck{
 
 	}
 	
-	protected void registerSpecifications (String aType, String[] aSpecifications) {
-		super.registerSpecifications(aType, aSpecifications);
+	protected void registerSpecifications (Map<String, String[]> aTypeToSpecifications,String aType, String[] aSpecifications) {
+		super.registerSpecifications(aTypeToSpecifications, aType, aSpecifications);
 		for (String aSpecification:aSpecifications) {
 			MethodStrings aMethodStrings = toMethodStrings(aSpecification);
 			specificationToMethodStrings.put(aSpecification, aMethodStrings);

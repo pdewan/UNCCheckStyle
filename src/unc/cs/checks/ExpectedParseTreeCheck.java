@@ -41,8 +41,8 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 
 	}
 	
-	protected void registerSpecifications (String aType, String[] aSpecifications) {
-		super.registerSpecifications(aType, aSpecifications);
+	protected void registerSpecifications (Map<String, String[]> aTypeToSpecifications, String aType, String[] aSpecifications) {
+		super.registerSpecifications(aTypeToSpecifications, aType, aSpecifications);
 		for (String aSpecification:aSpecifications) {
 			MethodParseTree aParseTree = toMethodParseTree(aSpecification);
 			specificationToParseTree.put(aSpecification, aParseTree);
@@ -345,7 +345,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		for (String aSpecification : aSpecifications) {
 			currentSpecification = aSpecification;
 			MethodParseTree aMethodParseTree = specificationToParseTree
-					.get(aSpecification);
+					.get(aSpecification);			
 			STMethod aSpecifiedMethod = aMethodParseTree.getMethod();
 			CheckedNode aStatement = aMethodParseTree.getParseTree();
 			if (aSpecifiedMethod == null) {

@@ -25,21 +25,28 @@
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="derivedTags"
 				value="
-			ArrayList = 
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] int.* //has int variable AND
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] \( \[\[.*\] String\[.*\].*//has String[] variable AND 
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty AND				
-				\( CLASS_DEF.*new\[.*\] String\[.*\].*//allocates a Strng array,
-			LinkedList =
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty AND			
-				\( CLASS_DEF.*next(.*)//has next somehere in text,
-			MainList =				
-				\( CLASS_DEF.*METHOD_DEF.*main\[.*\] \(\[.*\] \( PARAMETERS.*TYPE.*String.*//has main method,
-			ListAbstraction =
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty AND
-				\( CLASS_DEF.*\( EXPR\[.*\] \( \(\[.*\] \( .\[.*\] imp\[.*\] empty.*//calls remote empty,
+			empty =
+				METHOD_DEF.*boolean empty .*//declares a boolean method called empty,
+			size =
+				METHOD_DEF.*int (size|numElements) .*//declares an int method called size or numlements,
+			main =
+				METHOD_DEF.*void main .*// declares a main method returning void with some modifiers,			
+			ListArray = 
+				CLASS_DEF.*VARIABLE_DEF int .*//has an int variable AND
+				CLASS_DEF.*VARIABLE_DEF (private |protected )*\[ String \].*//has String[] variable AND 
+				@empty//has empty method AND 
+				CLASS_DEF.*new String \[.*\].*//allocates a String array,				
+			ListLinked =
+				@empty AND
+				CLASS_DEF.*next.*//has next somehere in text,
+			ListMain =
+				@main,				
+			QueueAbstraction =
+				@empty AND
+				CLASS_DEF.*\. empty .*//calls remote empty,
 			ListInterface =
-				\( INTERFACE_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty, 
+				INTERFACE_DEF .* // starts with interface AND
+				@empty//has empty,
 			" />
 
 		</module>
@@ -121,7 +128,7 @@
 		</module>
 		<module name="IllegalTypeImported">
 			<property name="legalPrefixes"
-				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.beans" />
+				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.awt, java.beans" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"

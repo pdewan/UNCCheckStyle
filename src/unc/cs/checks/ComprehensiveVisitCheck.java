@@ -2499,24 +2499,37 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected Map<String, String[]> typeToSpecifications = new HashMap<>();
 
+	protected void registerSpecifications(Map<String, String[]> aTypeToSpecifications, String aType, String[] aSpecification) {
+		aTypeToSpecifications.put(aType, aSpecification);
+	}
+	
 	protected void registerSpecifications(String aType, String[] aSpecification) {
-		typeToSpecifications.put(aType, aSpecification);
+		registerSpecifications(typeToSpecifications, aType, aSpecification);
 	}
 
-	public void setExpectedSpecificationOfType(String aPattern) {
+	public void setExpectedSpecificationOfType(Map<String, String[]> aTypeToSpecifications, String aPattern) {
 		String[] extractTypeAndSpecification = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSpecification[0].trim();
 		String[] aSpecifications = extractTypeAndSpecification[1].split(SET_MEMBER_SEPARATOR);
 		// typeToSpecification.put(aType, aSpecification);
-		registerSpecifications(aType, aSpecifications);
+		registerSpecifications(aTypeToSpecifications, aType, aSpecifications);
 	}
 
-	public void setExpectedTypesAndSpecifications(String[] aPatterns) {
+	public void setExpectedTypesAndSpecifications(Map<String, String[]> aTypeToSpecifications, String[] aPatterns) {
 		for (String aPattern : aPatterns) {
-			setExpectedSpecificationOfType(aPattern);
+			setExpectedSpecificationOfType(aTypeToSpecifications, aPattern);
 		}
-
 	}
+	
+	public void setExpectedTypesAndSpecifications( String[] aPatterns) {
+		setExpectedTypesAndSpecifications(typeToSpecifications, aPatterns);
+	}
+	
+//	public void setExpectedTypesAndSpecifications(Map<String, String[]> aTypeToSpecifications, String[] aPatterns) {
+//		for (String aPattern : aPatterns) {
+//			setExpectedSpecificationOfType(aTypeToSpecifications, aPattern);
+//		}
+//	}
 
 	public static boolean matchesRegexes(String aText,
 			Collection<String> aRegexCollection) {
