@@ -37,6 +37,11 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		ContinuationProcessor {
+	public static final String CLASS_START = "CLASS_DEF ";
+	public static final String INTERFACE_START = "INTERFACE_DEF ";
+	public static final String METHOD_START = "METHOD_DEF ";
+	public static final String VARIABLE_START = "VARIABLE_DEF ";
+	public static final String PARAMETER_START = "PARAMETER_DEF ";
 	protected boolean inMethodOrConstructor;
 
 	// public static final String MSG_KEY = "stBuilder";
@@ -984,7 +989,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				anIdentifier.getText(), 
 				aTypeName, anRHS, 
 				aVariableKind, 
-				getAllTags(paramOrVarDef, anIdentifier, aTypeName).toArray(dummyArray)
+				getAllTags(paramOrVarDef, 
+						anIdentifier, 
+						aTypeName, 
+						(aVariableKind == VariableKind.PARAMETER)?PARAMETER_START:VARIABLE_START)
+						.toArray(dummyArray)
 				);
 		switch (aVariableKind) {
 		case GLOBAL:
@@ -1074,7 +1083,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					anIdentifier.getText(), 
 					aTypeName, anRHS, 
 					VariableKind.GLOBAL, 
-					getAllTags(paramOrVarDef, anIdentifier, aTypeName).toArray(dummyArray)
+					getAllTags(paramOrVarDef, anIdentifier, aTypeName, VARIABLE_START).toArray(dummyArray)
 					);
 
 		}
@@ -2055,7 +2064,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		
 		
 	}
-	protected  List<STNameable> getAllTags(DetailAST anAST, DetailAST aNameAST, String aTypeName ) {
+	protected  List<STNameable> getAllTags(DetailAST anAST, DetailAST aNameAST, String aTypeName, String aStart ) {
 		return getComputedAndExplicitTags(anAST, aNameAST, aTypeName);
 	}
 	public void maybeVisitMethodTags(DetailAST ast) {

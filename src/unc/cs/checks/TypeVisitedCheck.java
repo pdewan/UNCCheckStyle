@@ -208,7 +208,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		TokenTypes.MODIFIERS,
 		TokenTypes.TYPE,
 		TokenTypes.PARAMETERS,
-		TokenTypes.PARAMETER_DEF,
+//		TokenTypes.PARAMETER_DEF,
 		TokenTypes.OBJBLOCK,
 		TokenTypes.ELIST
 	};

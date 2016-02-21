@@ -18,29 +18,53 @@
 
 			<property name="severity" value="info" />
 			<property name="visitInnerClasses" value="true" />
-			
+
 			<property name="projectPackagePrefixes" value="main, test,lectures,mp, grail" />
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
 			<property name="importsAsExistingClasses" value="true" />
-			<property name="derivedTags"
-				value="
-			ArrayList = 
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] int.* //has int variable AND
-				\( CLASS_DEF.*VARIABLE_DEF.*\( TYPE\[.*\] \( \[\[.*\] String\[.*\].*//has String[] variable AND 
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty AND				
-				\( CLASS_DEF.*new\[.*\] String\[.*\].*//allocates a Strng array,
-			LinkedList =
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty AND			
-				\( CLASS_DEF.*next(.*)//has next somehere in text,
-			MainList =				
-				\( CLASS_DEF.*METHOD_DEF.*main\[.*\] \(\[.*\] \( PARAMETERS.*TYPE.*String.*//has main method,
-			ListAbstraction =
-				\( CLASS_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty AND
-				\( CLASS_DEF.*\( EXPR\[.*\] \( \(\[.*\] \( .\[.*\] imp\[.*\] empty.*//calls remote empty,
-			ListInterface =
-				\( INTERFACE_DEF.*METHOD_DEF.*boolean\[.*\] \) empty.*//declares a boolean method called empty, 
+			<property name="derivedVariableTags"
+				value="			
+			intVar = 
+				.*int .*//has an int variable,
+			stringArray =
+				(private |protected )*\[ String \].*//has String[] variable,				
+				
 			" />
+			<property name="derivedMethodTags"
+				value="
+			empty =
+				.*boolean empty .*//declares a boolean method called empty,
+			size =
+				.*int (size|numElements) .*//declares an int method called size or numlements,
+			main =
+				.*void main .*// declares a main method returning void with some modifiers,			
+			
+			" />
+			<property name="derivedClassTags"
+				value="			
+			ListArray = 
+				@intVar AND
+				@stringArray AND
+				@empty//has empty method AND 
+				.*new String \[.*\].*//allocates a String array,				
+			ListLinked =
+				@empty AND
+				.*next.*//has next somehere in text,
+			ListMain =
+				@main,				
+			QueueAbstraction =
+				@empty AND
+				.*\. empty .*//calls remote empty,
+			
+			" />
+			<property name="derivedInterfaceTags"
+				value="			
+			ListInterface =
+				@empty//has empty,
+			" />
+			
+		
 
 		</module>
 
@@ -59,7 +83,7 @@
 		<module name="NestedIfDepth">
 			<property name="max" value="1" />
 		</module>
-			<module name="NestedBlockDepth">
+		<module name="NestedBlockDepth">
 			<property name="max" value="1" />
 		</module>
 		<module name="MethodBlockLimit">
@@ -92,14 +116,14 @@
 		</module>
 		<module name="NoFullTypeName">
 		</module>
-		<module name="LiberalMagicNumber" >
+		<module name="LiberalMagicNumber">
 			<property name="allowedSiblings" value="Math.*" />
-		
+
 		</module>
-		<module name="BulkierThen" >
-		   <property name="maxElsePartSize"  value="2" />
-		   <property name="minThenElseRatio"  value="5" />
-		   
+		<module name="BulkierThen">
+			<property name="maxElsePartSize" value="2" />
+			<property name="minThenElseRatio" value="5" />
+
 		</module>
 
 		<module name="IllegalMethodCall">
@@ -121,7 +145,7 @@
 		</module>
 		<module name="IllegalTypeImported">
 			<property name="legalPrefixes"
-				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.beans" />
+				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.awt, java.beans" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"

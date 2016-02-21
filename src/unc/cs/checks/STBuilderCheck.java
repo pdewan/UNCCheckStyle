@@ -7,10 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
-import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
 import unc.cs.symbolTable.AnSTNameable;
@@ -19,6 +17,7 @@ import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
+import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
@@ -29,6 +28,10 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class STBuilderCheck extends ComprehensiveVisitCheck {
+	
+	protected Map<String, Map<String, String[]>> startToSpecification = new HashMap<>();
+
+
 	protected STType currentSTType;
 	protected List<STMethod> stMethods = new ArrayList();
 	protected Stack<List<STMethod>> stMethodsStack = new Stack();
@@ -47,13 +50,44 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	DetailAST sTBuilderTree = null; // make it non static at some point
 	protected static STBuilderCheck singleton;
 	protected boolean visitInnerClasses = false;
+	protected Map<String, String[]> classToSpecifications = new HashMap<>();
+	protected Map<String, String[]> interfaceToSpecifications = new HashMap<>();
 
-	public void setDerivedTags(String[] aDerivedTagsSpecifications) {
-		setExpectedTypesAndSpecifications(typeToSpecifications, aDerivedTagsSpecifications);
+	protected Map<String, String[]> methodToSpecifications = new HashMap<>();
+	protected Map<String, String[]> variableToSpecifications = new HashMap<>();
+	protected Map<String, String[]> parameterToSpecifications = new HashMap<>();
+
+
+	public void setDerivedTypeTags(String[] aDerivedTagsSpecifications) {
+		setExpectedTypesAndSpecifications(classToSpecifications, aDerivedTagsSpecifications);
+		setExpectedTypesAndSpecifications(interfaceToSpecifications, aDerivedTagsSpecifications);
+
 	}
+	public void setDerivedClassTags(String[] aDerivedTagsSpecifications) {
+		setExpectedTypesAndSpecifications(classToSpecifications, aDerivedTagsSpecifications);
+
+	}
+	public void setDerivedInterfaceTags(String[] aDerivedTagsSpecifications) {
+		setExpectedTypesAndSpecifications(interfaceToSpecifications, aDerivedTagsSpecifications);
+
+	}
+
+	public void setDerivedMethodTags(String[] aDerivedTagsSpecifications) {
+		setExpectedTypesAndSpecifications(methodToSpecifications, aDerivedTagsSpecifications);
+	}
+	public void setDerivedVariableTags(String[] aDerivedTagsSpecifications) {
+		setExpectedTypesAndSpecifications(variableToSpecifications, aDerivedTagsSpecifications);
+	}
+
 
 	public STBuilderCheck() {
 		singleton = this;
+		startToSpecification.put(CLASS_START, classToSpecifications);
+		startToSpecification.put(INTERFACE_START, interfaceToSpecifications);
+		startToSpecification.put(METHOD_START, methodToSpecifications);
+		startToSpecification.put(VARIABLE_START, variableToSpecifications);
+		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
+
 	}
 
 	public void setVisitInnerClasses(boolean newVal) {
@@ -330,7 +364,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	// return anEnumDef.getNextSibling();
 	// }
 
-	public  boolean isDerivedTag (DetailAST anAST, String aText, String[] aPatterns) {
+	public  boolean isDerivedTag (DetailAST anAST, String aText, String[] aPatterns, String aPatternPrefix) {
 		int i = 0;
 		for (String aPattern: aPatterns) {
 			String anActualPattern = maybeStripComment(aPattern);
@@ -338,49 +372,67 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				if (!(anAST.getType() == TokenTypes.CLASS_DEF || anAST.getType() == TokenTypes.INTERFACE_DEF)) {
 					return false;
 				}
-				if (!hasTaggedMethod(anActualPattern)) {
+				if (!hasTaggedMember(anActualPattern)) {
 					return false;
 				} 
-			} else if (!aText.matches(anActualPattern)) {
+			} else if (!aText.matches(aPatternPrefix + anActualPattern)) {
 				return false; // expecrt all patterns 
 			}
 		}
 		return true;
 	}
+//	public  boolean isDerivedTag (DetailAST anAST, String aText, String[] aPatterns, String aPatternPrefix) {
+//		int i = 0;
+//		for (String aPattern: aPatterns) {
+//			String anActualPattern = maybeStripComment(aPattern);
+//			if (anActualPattern.startsWith(TAG_STRING)) {
+//				if (!(anAST.getType() == TokenTypes.CLASS_DEF || anAST.getType() == TokenTypes.INTERFACE_DEF)) {
+//					return false;
+//				}
+//				if (!hasTaggedMethod(anActualPattern)) {
+//					return false;
+//				} 
+//			} else if (!aText.matches(anActualPattern)) {
+//				return false; // expecrt all patterns 
+//			}
+//		}
+//		return true;
+//	}
 
 	protected List<STNameable> computedAndDerivedTypeTags() {
 		List<STNameable> result = computedTypeTags();
-		List<STNameable> derivedTags = derivedTags(typeAST);
+		List<STNameable> derivedTags = derivedTags(typeAST, isInterface?INTERFACE_START:CLASS_START);
 		addAllNoDuplicates(result, derivedTags);
 		return result;
 	}
 
 	protected List<STNameable> computedAndDerivedMethodTags() {
 		List<STNameable> result = currentMethodComputedTags;
-		List<STNameable> derivedTags = derivedTags(currentMethodAST);
+		List<STNameable> derivedTags = derivedTags(currentMethodAST, METHOD_START);
 		addAllNoDuplicates(result, derivedTags);
 		return result;
 	}
 	@Override
-	protected  List<STNameable> getAllTags(DetailAST anAST, DetailAST aNameAST, String aTypeName ) {
-		return getComputedDerivedAndExplicitTags(anAST, aNameAST, aTypeName);
+	protected  List<STNameable> getAllTags(DetailAST anAST, DetailAST aNameAST, String aTypeName, String aStart ) {
+		return getComputedDerivedAndExplicitTags(anAST, aNameAST, aTypeName, aStart);
 	}
-	protected  List<STNameable> getComputedDerivedAndExplicitTags(DetailAST anAST, DetailAST aNameAST, String aTypeName ) {
+	protected  List<STNameable> getComputedDerivedAndExplicitTags(DetailAST anAST, DetailAST aNameAST, String aTypeName, String aStart ) {
 		List<STNameable> result = getComputedAndExplicitTags(anAST, aNameAST, aTypeName);
-		List<STNameable> derivedTags = derivedTags(anAST);
+		List<STNameable> derivedTags = derivedTags(anAST, aStart);
 		addAllNoDuplicates(result, derivedTags);
 		return result;
 	}
 
-	protected List<STNameable> derivedTags(DetailAST anAST) {
+	protected List<STNameable> derivedTags(DetailAST anAST, String aPatternPrefix) {
 		derivedTags.clear();
-		if (typeToSpecifications.isEmpty()) {
+		Map<String, String[]> constructToSpecifications = startToSpecification.get(aPatternPrefix);
+		if (constructToSpecifications.isEmpty()) {
 			return derivedTags;
 		}
 		String aText = toStringList(anAST).trim();
 		int i = 1;
-		for (String aKey : typeToSpecifications.keySet()) {
-			if (isDerivedTag(anAST, aText, typeToSpecifications.get(aKey))) {
+		for (String aKey : constructToSpecifications.keySet()) {
+			if (isDerivedTag(anAST, aText, constructToSpecifications.get(aKey), aPatternPrefix)) {
 				derivedTags.add(new AnSTNameable(aKey));
 			}
 		}
@@ -395,6 +447,21 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			}
 		}
 		return null;
+	}
+	protected STVariable getTaggedVariable(String aTag, List<STVariable> aVariables) {
+		for (STVariable aVariable : aVariables) {
+			if (hasTag(aVariable.getTags(), aTag)) {
+				return aVariable;
+			}
+		}
+		return null;
+	}
+	protected boolean hasTaggedVariable(String aTag, List<STVariable> aVariables) {
+		return getTaggedVariable(aTag, aVariables) != null;
+	}
+	
+	protected boolean hasTaggedMember(String aTag) {
+		return hasTaggedMethod(aTag) || hasTaggedVariable(aTag, globalSTVariables);
 	}
 
 	protected boolean hasTaggedMethod(String aTag) {

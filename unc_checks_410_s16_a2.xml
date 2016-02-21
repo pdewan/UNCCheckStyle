@@ -23,29 +23,44 @@
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
 			<property name="importsAsExistingClasses" value="true" />
-			<property name="derivedTags"
+			<property name="derivedVariableTags"
+				value="			
+			intVar = 
+				.*int .*//has an int variable,
+			stringArray =
+				(private |protected )*\[ String \].*//has String[] variable,				
+				
+			" />
+			<property name="derivedMethodTags"
 				value="
 			empty =
-				METHOD_DEF.*boolean empty .*//declares a boolean method called empty,
+				.*boolean empty .*//declares a boolean method called empty,
 			size =
-				METHOD_DEF.*int (size|numElements) .*//declares an int method called size or numlements,
+				.*int (size|numElements) .*//declares an int method called size or numlements,
 			main =
-				METHOD_DEF.*void main .*// declares a main method returning void with some modifiers,			
+				.*void main .*// declares a main method returning void with some modifiers,			
+			
+			" />
+			<property name="derivedClassTags"
+				value="			
 			ListArray = 
-				CLASS_DEF.*VARIABLE_DEF int .*//has an int variable AND
-				CLASS_DEF.*VARIABLE_DEF (private |protected )*\[ String \].*//has String[] variable AND 
+				@intVar AND
+				@stringArray AND
 				@empty//has empty method AND 
-				CLASS_DEF.*new String \[.*\].*//allocates a String array,				
+				.*new String \[.*\].*//allocates a String array,				
 			ListLinked =
 				@empty AND
-				CLASS_DEF.*next.*//has next somehere in text,
+				.*next.*//has next somehere in text,
 			ListMain =
 				@main,				
 			QueueAbstraction =
 				@empty AND
-				CLASS_DEF.*\. empty .*//calls remote empty,
+				.*\. empty .*//calls remote empty,
+			
+			" />
+			<property name="derivedInterfaceTags"
+				value="			
 			ListInterface =
-				INTERFACE_DEF .* // starts with interface AND
 				@empty//has empty,
 			" />
 
