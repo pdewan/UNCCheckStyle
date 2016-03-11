@@ -487,6 +487,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	// protected List emptyArrayList = new ArrayList();
 	public void maybeVisitPropertyNames(DetailAST ast) {
+//		if (isEnum)
+//			return;
 		// not putting dependency on OE
 		DetailAST annotationAST = AnnotationUtility.getAnnotation(ast,
 				"PropertyNames");
@@ -498,6 +500,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public void maybeVisitEditablePropertyNames(DetailAST ast) {
+//		if (isEnum) {
+//			return;
+//		}
 		DetailAST annotationAST = AnnotationUtility.getAnnotation(ast,
 				"EditablePropertyNames");
 		if (annotationAST == null) {
@@ -569,6 +574,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// }
 
 	public void visitEnumDef(DetailAST anEnumDef) {
+		visitType(anEnumDef);
+//		propertyNames = emptyArrayList; //no properties
 		isEnum = true;
 		typeNameAST = getEnumNameAST(anEnumDef);
 		// shortTypeName = getEnumName(anEnumDef);
@@ -832,6 +839,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		superClass = null;
 		interfaces = getSuperTypes(ast);
 		isInterface = true;
+    	}
+    	leaveType(ast);
+
+	}
+    protected void leaveEnum(DetailAST ast) {
+    	if (checkIncludeExcludeTagsOfCurrentType()) {
+	
+		isEnum = true;
     	}
     	leaveType(ast);
 
@@ -2400,6 +2415,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			break;
 		case TokenTypes.CLASS_DEF:
 			leaveClass(ast);
+			break;
+		case TokenTypes.ENUM_DEF:
+			leaveEnum(ast);
 			break;
 		default:
 			// System.err.println(checkAndFileDescription + "Unexpected token");
