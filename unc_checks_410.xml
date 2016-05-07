@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+	editor -->
+<!-- Checkstyle-Configuration: Test Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+
+<module name="unc.tools.checkstyle.AnExtendibleChecker">
+
+	<property name="severity" value="warning" />
+
+
+	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
+		<property name="severity" value="info" />
+
+		<module name="STBuilder">
+			<property name="includeTypeTags" value="*" />
+
+			<property name="severity" value="info" />
+			<property name="visitInnerClasses" value="true" />
+			
+			<property name="projectPackagePrefixes" value="*" />
+			<property name="existingClasses"
+				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
+			<property name="importsAsExistingClasses" value="true" />
+			<property name="derivedVariableTags"
+				value="			
+			intVar = 
+				.*int .*//has an int variable,
+			stringArray =
+				(private |protected )*\[ String \].*//has String[] variable,				
+				
+			" />
+			<property name="derivedMethodTags"
+				value="
+			empty =
+				.*boolean empty .*//declares a boolean method called empty,
+			size =
+				.*int (size|numElements) .*//declares an int method called size or numlements,
+			main =
+				.*void main .*// declares a main method returning void with some modifiers,			
+			
+			" />
+			<property name="derivedClassTags"
+				value="			
+			ListArray = 
+				@intVar AND
+				@stringArray AND
+				@empty//has empty method AND 
+				.*new String \[.*\].*//allocates a String array,				
+			ListLinked =
+				@empty AND
+				.*next.*//has next somehere in text,
+			ListMain =
+				@main,				
+			QueueAbstraction =
+				@empty AND
+				.*\. empty .*//calls remote empty,
+			
+			" />
+			<property name="derivedInterfaceTags"
+				value="			
+			ListInterface =
+				@empty//has empty,
+			" />
+
+		</module>
+
+	</module>
+
+
+	<module name="TreeWalker">
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+			<module name="NestedBlockDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="MethodBlockLimit">
+			<property name="max" value="1" />
+		</module>
+		<module name="ThenBranching">
+		</module>
+		<module name="ClassDecomposition">
+		</module>
+		<module name="PackageDeclaration" />
+		<module name="AvoidStarImport">
+			<module name="HiddenField" />
+
+		</module>
+
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces" />
+		<module name="MultipleStringLiterals" />
+
+		<module name="NoDuplicateShortTypeName">
+		</module>
+		<module name="NoFullTypeName">
+		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="allowedSiblings" value="Math.*" />
+		
+		</module>
+		<module name="BulkierThen" >
+		   <property name="maxElsePartSize"  value="2" />
+		   <property name="minThenElseRatio"  value="5" />
+		   
+		</module>
+
+		<module name="ClassHasAtLeastOneInterface">
+		</module>
+		<module name="ClassHasOneInterface">
+		</module>
+		<module name="VariableHasClassType">
+
+		</module>
+	
+		<module name="IllegalTypeImported">
+			<property name="illegalPrefixes"
+				value="java.util" />
+		</module>
+	
+		
+		<module name="ClassDefined">
+			<property name="severity" value="info" />
+			<property name="expectedTypes"
+				value="
+			@ListArray, 
+			@ListLinked,
+			@ListMain, 
+			@QueueAbstraction
+			
+			" />
+			
+		</module>
+			<module name="InterfaceDefined">
+			<property name="severity" value="info" />
+			<property name="expectedTypes"
+				value="
+			@ListInterface
+			
+			" />
+		</module>
+
+
+		
+
+		<module name="ExpectedSignatures">
+			<property name="expectedSignatures"
+				value="
+				@ListArray= 
+					@empty:->boolean AND 
+					@size:->int AND 
+					.*:int->void,
+				@ListLinked= 
+					@empty:->boolean AND 
+					@size:->int AND 
+					.*:int->void,
+				@QueueAbstraction= 
+					.*:String->void AND 
+					deq.*:->void AND
+					@size:->int AND
+					empty:->boolean, 
+						
+								
+				" />
+		</module>
+		<module name="ExpectedClassInstantiations">
+			<property name="instantiations"
+				value="				
+				@QueueAbstraction=
+					@ListArray AND					
+					@ListLinked, 
+				@ListMain =
+					@QueueAbstraction
+				
+				" />
+		</module>
+
+		
+		<module name="ExpectedInterfaces">
+			<property name="expectedInterfaces"
+				value="
+				@ListLinked= @ListInterface, 
+				@ListArray=@ListInterface					
+				" />
+		</module>
+		
+
+		<module name="MissingMethodCall">
+			<property name="expectedCalls"
+				value="
+				QueueAbstraction=
+				    @empty#@ListInterface!@empty AND
+				    deq.*#@ListInterface!.*:int->void AND
+					@size#@ListInterface!@size ,					
+						 						
+				 						
+				 " />
+		</module>
+
+		
+		<module name="FunctionAssignsGlobal">
+			<property name="includeTypeTags" value="*" />
+			<property name="excludeTypeTags" value="@SingletonsCreator" />
+			<property name="excludeMethodTags"
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*), parse(.*)" />
+
+		</module>
+
+		<module name="SetterAssignsGlobal">
+		</module>
+		
+		
+		
+
+	</module>
+</module>
+

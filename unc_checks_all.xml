@@ -94,13 +94,13 @@
 			<property name="expectedCalls"
 				value="
 				@CommandInterpreter = 							
-					 		@Parser!setCommandText:String->void |
-					 		@Parser!getCommandObject:->Runnable |
+					 		@Parser!setCommandText:String->void AND
+					 		@Parser!getCommandObject:->Runnable AND
 					 		@Parser!getErrors:->*
 					 		,
 				 @Parser = 
-				 	@parseCommandList#@parseCommand:*->Runnable |				 						
-				 	@parseSay:*->Runnable |
+				 	@parseCommandList#@parseCommand:*->Runnable AND				 						
+				 	@parseSay:*->Runnable AND
 				 	@parseSleep:*->Runnable
 				 			 						
 				 						
@@ -153,16 +153,16 @@
 		</module>
 		<module name="ExpectedGetters">
 			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
-			<property name="expectedProperties" value="@Tag1= P1:int | P2:int" />
+			<property name="expectedProperties" value="@Tag1= P1:int AND P2:int" />
 		</module>
 		<module name="ExpectedSetters">
 			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
-			<property name="expectedProperties" value="@Tag1 = P1:int | P2:int | Foo:@Tag1" />
+			<property name="expectedProperties" value="@Tag1 = P1:int AND P2:int AND Foo:@Tag1" />
 		</module>
 		<module name="ExpectedSignatures">
 			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
 			<property name="expectedSignatures"
-				value="@Vector = elementAt:int->$T | setElementAt:int; $T->void | size:->int " />
+				value="@Vector = elementAt:int->$T AND setElementAt:int; $T->void AND size:->int " />
 		</module>
 		<!-- <module name="LineLength"> <property name="max" value="${maxLineLength}"/> 
 			</module> -->
@@ -213,12 +213,12 @@
 		<!-- <module name="ISATypes" /> -->
 		<module name="PeerCommonSignatures">
 			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
-			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />
+			<property name="includeSets" value="@Tag1 AND @Tag2, @IMAGE_PATTERNAND@LINE_PATTERN" />
 			<property name="excludeSignatures" value="*:->Foo" />
 		</module>
 		<module name="PeerCommonProperties">
 			<property name="includeTypeTags" value="@Tag1, @Tag2, @Tag3+@Tag4" />			
-			<property name="includeSets" value="@Tag1 | @Tag2, @IMAGE_PATTERN|@LINE_PATTERN" />		
+			<property name="includeSets" value="@Tag1 AND @Tag2, @IMAGE_PATTERNAND@LINE_PATTERN" />		
 		    <property name="excludeProperties" value="*:int" />
 		  </module>
 		<module name="NoStructuredSetter">
@@ -245,7 +245,7 @@
 
 
 		<!-- <module name="Regexp"> <property name="format" value="(interface [a-zA-Z0-9 
-			&lt;&gt;,\./*?[\s]]* \{)|((@Immutable|@ThreadSafe|@NotThreadSafe)(.*[\n])*.*(class|enum) 
+			&lt;&gt;,\./*?[\s]]* \{)AND((@ImmutableAND@ThreadSafeAND@NotThreadSafe)(.*[\n])*.*(classANDenum) 
 			[a-zA-Z0-9\s&lt;&gt;,\./*?]* \{)" /> <property name="message" value="Classes 
 			should be annotated with @Immutable, @ThreadSafe or @NotThreadSafe" /> <property 
 			name="illegalPattern" value="false" /> </module> -->

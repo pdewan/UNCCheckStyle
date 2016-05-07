@@ -134,20 +134,20 @@
 		
 		<module name="ExpectedGetters">
 			<property name="expectedProperties" value=
-			"@ScannerBean= ScannedString:String | Tokens:.*\[\] | TokenList:@LIST_PATTERN | TokenList:@ClearableHistory, 
-			@Word= Input:String | Value:String, 
-			@Number= Input:String | Value:int, 
+			"@ScannerBean= ScannedString:String AND Tokens:.*\[\] AND TokenList:@LIST_PATTERN AND TokenList:@ClearableHistory, 
+			@Word= Input:String AND Value:String, 
+			@Number= Input:String AND Value:int, 
 			@Quote= Input:String, 
 			@Start= Input:String, 
 			@End= Input:String, 
 			@Plus= Input:String, 
 			@Minus= Input:String, 
-			@Angle= LeftLine:@LINE_PATTERN | RightLine:@LINE_PATTERN, 
-			@Avatar= Text:@STRING_PATTERN | Head:@IMAGE_PATTERN | Arms:@Angle | Legs:@Angle, 
-			@BridgeScene= Arthur:@Avatar | Galahad:@Avatar | Lancelot:@Avatar | Robin:@Avatar | Guard:@Avatar | Gorge:* | KnightArea:* | GuardArea:* | Occupied:boolean |KnightTurn:boolean, 
+			@Angle= LeftLine:@LINE_PATTERN AND RightLine:@LINE_PATTERN, 
+			@Avatar= Text:@STRING_PATTERN AND Head:@IMAGE_PATTERN AND Arms:@Angle AND Legs:@Angle, 
+			@BridgeScene= Arthur:@Avatar AND Galahad:@Avatar AND Lancelot:@Avatar AND Robin:@Avatar AND Guard:@Avatar AND Gorge:* AND KnightArea:* AND GuardArea:* AND Occupied:boolean ANDKnightTurn:boolean, 
 			@CommandInterpreter = Command:String,
-			@CommandInterpreterController = TextField:JTextField | MenuItem:JMenuItem | Button:JButton,
-			@ProgressBarCreator =  ProgressBar:JProgressBar | Slider:JSlider
+			@CommandInterpreterController = TextField:JTextField AND MenuItem:JMenuItem AND Button:JButton,
+			@ProgressBarCreator =  ProgressBar:JProgressBar AND Slider:JSlider
 			" />
 		</module>
 		<module name="ExpectedSetters">
@@ -156,9 +156,9 @@
 		<module name="ExpectedSignatures">
 			<property name="expectedSignatures"
 				value="
-				@Angle= @move:int;int->*| @scale:double->*, 
-				@Avatar= @move:int;int->* | @scale:double->*, 
-				@BridgeScene= @scroll:int->* | @approach:@Avatar->*| @say:String->* | @passed:->* | @failed:->*				
+				@Angle= @move:int;int->*AND @scale:double->*, 
+				@Avatar= @move:int;int->* AND @scale:double->*, 
+				@BridgeScene= @scroll:int->* AND @approach:@Avatar->*AND @say:String->* AND @passed:->* AND @failed:->*				
 				" />
 		</module>
 		<module name="ExpectedDeclaredSignatures">
@@ -166,7 +166,7 @@
 				value="
 				@InheritingBridgeScenePainter=paint:Graphics(.*)->void,
 				@ObservableBridgeScenePainter=paint:Graphics(.*)->void,
-				@PaintListener=paint:Graphics(.*)->void |@addPaintListener:@PaintListener->void				
+				@PaintListener=paint:Graphics(.*)->void AND@addPaintListener:@PaintListener->void				
 								
 				" />
 		</module>
@@ -197,7 +197,7 @@
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
-				@BridgeSceneController = MouseListener | KeyListener,
+				@BridgeSceneController = MouseListener AND KeyListener,
 				@ObservableCommandIntepreter = PropertyListenerRegisterer				
 				"/>
 		</module>
@@ -218,37 +218,37 @@
 			<property name="expectedCalls"
 				value="
 				@CommandInterpreter = 
-							(.*)!move:(int;int)->void |
-							(.*)!setString:String->void |
-					 		@Table!get:(.*)->(.*) |
-					 		@Table!put:(.*);(.*) -> (.*) |
+							(.*)!move:(int;int)->void AND
+							(.*)!setString:String->void AND
+					 		@Table!get:(.*)->(.*) AND
+					 		@Table!put:(.*);(.*) -> (.*) AND
 					 		@BridgeScene!getArthur:->(.*),					 		
-				 @Avatar=  @STRING_PATTERN!setX:int->void) | @Angle!move:int;int->void, 
+				 @Avatar=  @STRING_PATTERN!setX:int->void) AND @Angle!move:int;int->void, 
 				 @BridgeScene = @Avatar!@move:int;->void,
 				 @Locatable = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @BoundedShape = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @ConsoleSceneView = (.*)!addPropertyChangeListener:PropertyChangeListener->void) |
-				 						(.*)!getArms:-> @Angle|
-				 						(.*)!getLegs:-> @Angle |
-				 						(.*)!getLeftLine:-> @LINE_PATTERN |
-				 						(.*)!getRightLine:-> @LINE_PATTERN |
+				 @ConsoleSceneView = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+				 						(.*)!getArms:-> @AngleAND
+				 						(.*)!getLegs:-> @Angle AND
+				 						(.*)!getLeftLine:-> @LINE_PATTERN AND
+				 						(.*)!getRightLine:-> @LINE_PATTERN AND
 				 						(.*)!getText:->@STRING_PATTERN,
-				 @InheritingBridgeScenePainter = (.*)!addPropertyChangeListener:PropertyChangeListener->void) |
-				 						(.*)!getArms:-> @Angle|
-				 						(.*)!getLegs:-> @Angle |
-				 						(.*)!getLeftLine:-> @LINE_PATTERN |
-				 						(.*)!getRightLine:-> @LINE_PATTERN |
+				 @InheritingBridgeScenePainter = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+				 						(.*)!getArms:-> @AngleAND
+				 						(.*)!getLegs:-> @Angle AND
+				 						(.*)!getLeftLine:-> @LINE_PATTERN AND
+				 						(.*)!getRightLine:-> @LINE_PATTERN AND
 				 						(.*)!getText:->@STRING_PATTERN,
 				 
 				 @BridgeSceneController = 
-				 						@BridgeScene!getArthur:-> @Avatar | 
-				 						@BridgeScene!getGalahad:-> @Avatar	|
-				 						@BridgeScene!getLancelot:-> @Avatar	|	
-				 						@BridgeScene!getRobin:-> @Avatar	|
+				 						@BridgeScene!getArthur:-> @Avatar AND 
+				 						@BridgeScene!getGalahad:-> @Avatar	AND
+				 						@BridgeScene!getLancelot:-> @Avatar	AND	
+				 						@BridgeScene!getRobin:-> @Avatar	AND
 				 						@Avatar!move:int; int->void,
 				 @ObservableCommandInterpreter = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @InheritingBridgeScenePainter = 
-				 	Graphics(.*)!draw(.*):*->(.*) |
+				 	Graphics(.*)!draw(.*):*->(.*) AND
 				 	super!paint:Graphics->void(.*),
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*)  						
@@ -312,7 +312,7 @@
 
 	      <module name="PeerCommonProperties">
 			<property name="includeTypeTags" value="@move, @say, @rotateLeftArm, @rotateRightArm,  @repeat, @define, @call,  @thread, @wait, @proceedAll,  @sleep,  @undo, @redo, @LINE_PATTERN, @IMAGE_PATTERN, @STRING_PATTERN" />			
-			<property name="includeSets" value="@move | @say | @rotateLeftArm | @rotateRightArm |  @repeat | @define | @call |  @thread | @wait | @proceedAll |  @sleep |  @undo | @redo, @LINE_PATTERN | @IMAGE_PATTERN | @STRING_PATTERN" />		
+			<property name="includeSets" value="@move AND @say AND @rotateLeftArm AND @rotateRightArm AND  @repeat AND @define AND @call AND  @thread AND @wait AND @proceedAll AND  @sleep AND  @undo AND @redo, @LINE_PATTERN AND @IMAGE_PATTERN AND @STRING_PATTERN" />		
 		  </module>
 		  <module name="InvalidPackageName">
 		</module>

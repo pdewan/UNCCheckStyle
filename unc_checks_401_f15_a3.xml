@@ -95,7 +95,7 @@
 		</module>
 		
 		<module name="ExpectedGetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String, @Word= Input:String | Value:String, @Number= Input:String | Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String" />
+			<property name="expectedProperties" value="@ScannerBean= ScannedString:String, @Word= Input:String AND Value:String, @Number= Input:String AND Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String" />
 		</module>
 		<module name="ExpectedSetters">
 			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
