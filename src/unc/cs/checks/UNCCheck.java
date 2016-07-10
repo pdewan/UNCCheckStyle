@@ -1,6 +1,7 @@
 package unc.cs.checks;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,12 +11,15 @@ import org.eclipse.ui.console.IConsole;
 import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 
+import unc.tools.checkstyle.AConsentFormVetoer;
+
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public abstract class UNCCheck extends Check{
+	public static long NEW_CHEKCKS_THRESHOLD = 60000; // a minute
 	protected boolean isPackageInfo = false;
 	protected String checkAndFileDescription = "";
 	protected static boolean errorOccurred;
@@ -25,6 +29,12 @@ public abstract class UNCCheck extends Check{
 	protected boolean notInPlugIn;
 	protected boolean deferLogging;
 	protected List<LogObject> log = new ArrayList();
+	protected static long lastExecutionTime; // for all checks
+	protected static String projectDirectory;
+	public static String checkDirectory;
+	protected static String consentFileName;
+	protected static boolean consentFormSigned;
+	protected static boolean consentFormShown;
 	  protected MessageConsole findConsole() {
 		  if (notInPlugIn)
 			  return null;
@@ -35,6 +45,26 @@ public abstract class UNCCheck extends Check{
 		  } catch (Exception e) {
 			  return null;
 		  }
+	  }
+	  protected void maybeSaveProjectDirectory(String aFileName) {
+		  if (projectDirectory != null)
+			  return;
+		  int anIndex = aFileName.indexOf("src");
+		  if (anIndex < 0) {
+			  return;
+		  }
+		  projectDirectory = aFileName.substring(0, anIndex - 1);
+		  checkDirectory = projectDirectory+ "/" + AConsentFormVetoer.LOG_DIRECTORY;
+		  consentFileName = checkDirectory + "/" + AConsentFormVetoer.CONSENT_FILE_NAME;
+		  
+		  
+	  }
+	  protected void maybeAskForConsent() {
+		  if (consentFormShown)
+			  return;
+		  consentFormSigned = AConsentFormVetoer.checkConstentForm(consentFileName);
+		  consentFormShown = true;
+			  
 	  }
 	  protected void consoleOut(String aString) {
 		  if (notInPlugIn)
@@ -87,24 +117,35 @@ public abstract class UNCCheck extends Check{
    
 	
     public void beginTree(DetailAST ast) { 
-    	if (errorOccurred)
+    	if (vetoChecks())
     		return;
     	try {
+    		long aCurrentExecutionTime = System.currentTimeMillis();
+    		if (aCurrentExecutionTime - lastExecutionTime > NEW_CHEKCKS_THRESHOLD) {
+    			System.out.println ("New set of checks at:" + new Date(aCurrentExecutionTime));
+    		}
     		isPackageInfo = false;
     		String aFileName = getFileContents().getFilename();
     		if (aFileName.endsWith("package-info.java")) {
     			isPackageInfo = true;
     			return;
     		}
-    
-    		checkAndFileDescription = "Check:" + this + " ast:" + ast + " " + getFileContents().getFilename();
+    		
+    		
+//    		checkAndFileDescription = "Check:" + this + " ast:" + ast + " " + getFileContents().getFilename();
+    		checkAndFileDescription = "Check:" + this + " ast:" + ast + " " + aFileName;
+
+    		maybeSaveProjectDirectory(aFileName);
+    		maybeAskForConsent();
+    		if (vetoChecks())
+    			return;
 //			System.out.println ("begin tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
 //			}
 			doBeginTree(ast);
 //			System.out.println ("Begin tree ended from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
-
+			lastExecutionTime = aCurrentExecutionTime;
 			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
@@ -128,7 +169,7 @@ public abstract class UNCCheck extends Check{
     }
 
 	public void finishTree(DetailAST ast) {
-		if (errorOccurred)
+		if (vetoChecks())
     		return;
 		try {
 //			System.out.println ("finish tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
@@ -158,7 +199,7 @@ public abstract class UNCCheck extends Check{
 		}
 	}
 	public void leaveToken(DetailAST ast) {
-		if (errorOccurred)
+		if (vetoChecks())
     		return;
 		try {
 		doLeaveToken(ast);
@@ -172,9 +213,14 @@ public abstract class UNCCheck extends Check{
 		}
 	}
 
-	
+	protected boolean vetoChecks() {
+		return errorOccurred || 
+				(consentFormShown && !consentFormSigned);
+	}
 	public void visitToken(DetailAST ast) {
-		if (errorOccurred)
+//		if (errorOccurred)
+		if (vetoChecks())
+
     		return;
 		try {
 			if (isPackageInfo)

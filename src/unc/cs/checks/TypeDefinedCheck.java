@@ -21,6 +21,7 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	protected Map<String, String> tagMatches = new HashMap();
 //	protected Set<String> matchedTypes = new HashSet();
 	protected boolean overlappingTags;
+	protected boolean shownMissingClasses = false;
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -62,11 +63,17 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     			tagMatches.put(fullTypeName, anExpectedClassOrTag);
 //    			matchedTypes.add(fullTypeName);
     			unmatchedTypes.remove(anExpectedClassOrTag);
+    			if (shownMissingClasses) {
+        			log(ast, anExpectedClassOrTag);
+
+    			} else {
 //    			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
 //    			String aTypeName = 	 getName(getEnclosingTypeDeclaration(aTypeAST));
 
 //    			log(currentTree, msgKey(), shortTypeName, unmatchedClasses.toString());
     			log(ast, anExpectedClassOrTag, unmatchedTypes.toString());
+    			shownMissingClasses = true;
+    			}
     		}
     	}
 //    		
