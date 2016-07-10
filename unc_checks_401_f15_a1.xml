@@ -21,6 +21,8 @@
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
+			<property name="checksName"
+				value="401_f15_A1" />
 
 		</module>
 

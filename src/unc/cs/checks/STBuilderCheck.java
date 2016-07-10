@@ -43,6 +43,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "stBuilder";
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework" };
+	protected static String checksName = "Assignments";
 	protected static String[] existingClasses = {};
 	public static Collection<String> existingClassesShortNamesCollection = new HashSet();
 	protected static Collection<String> existingClassesCollection = new HashSet();
@@ -205,6 +206,14 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		existingClasses = aClasses;
 		existingClassesCollection = Arrays.asList(existingClasses);
 		processExistingClasses();
+	}
+	
+	public void setChecksName(String newValue) {
+		checksName = newValue;
+		
+	}
+	public static String getChecksName() {
+		return checksName;
 	}
 
 	public boolean getImportsAsExistingClasses() {

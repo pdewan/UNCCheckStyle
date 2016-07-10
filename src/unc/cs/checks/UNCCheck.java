@@ -31,6 +31,7 @@ public abstract class UNCCheck extends Check{
 	protected List<LogObject> log = new ArrayList();
 	protected static long lastExecutionTime; // for all checks
 	protected static String projectDirectory;
+	protected String currentFile;
 	public static String checkDirectory;
 	protected static String consentFileName;
 	protected static boolean consentFormSigned;
@@ -58,6 +59,13 @@ public abstract class UNCCheck extends Check{
 		  consentFileName = checkDirectory + "/" + AConsentFormVetoer.CONSENT_FILE_NAME;
 		  
 		  
+	  }
+	  protected void saveFileName(String aFileName) {
+		  int anIndex = aFileName.indexOf("src");
+		  if (anIndex < 0) {
+			  return;
+		  }
+		  currentFile = aFileName.substring(anIndex + "src".length() + 1);
 	  }
 	  protected void maybeAskForConsent() {
 		  if (consentFormShown)
