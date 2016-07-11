@@ -12,6 +12,8 @@ import org.eclipse.ui.console.IConsoleManager;
 import org.eclipse.ui.console.MessageConsole;
 
 import unc.tools.checkstyle.AConsentFormVetoer;
+import unc.tools.checkstyle.CheckStyleLogManager;
+import unc.tools.checkstyle.CheckStyleLogManagerFactory;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -36,7 +38,7 @@ public abstract class UNCCheck extends Check{
 	protected static String consentFileName;
 	protected static boolean consentFormSigned;
 	protected static boolean consentFormShown;
-	Integer sequenceNumber;
+	static Integer sequenceNumber;
 	  protected MessageConsole findConsole() {
 		  if (notInPlugIn)
 			  return null;
@@ -49,18 +51,24 @@ public abstract class UNCCheck extends Check{
 		  }
 	  }
 	  protected void maybeSaveProjectDirectory(String aFileName) {
-		  if (projectDirectory != null)
-			  return;
+//		  if (projectDirectory != null)
+//			  return;
 		  int anIndex = aFileName.indexOf("src");
 		  if (anIndex < 0) {
 			  return;
 		  }
-		  projectDirectory = aFileName.substring(0, anIndex - 1);
+		  String aNewProjectDirectory = aFileName.substring(0, anIndex - 1);
+		  if (aNewProjectDirectory.equals(projectDirectory)) {
+			  return;
+		  }
+		  projectDirectory = aNewProjectDirectory;
 		  checkDirectory = projectDirectory+ "/" + AConsentFormVetoer.LOG_DIRECTORY;
 		  consentFileName = checkDirectory + "/" + AConsentFormVetoer.CONSENT_FILE_NAME;
+		  CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().maybeNewProjectDirectory(projectDirectory, STBuilderCheck.getChecksName());
 		  
 		  
 	  }
+	 
 	  protected void saveFileName(String aFileName) {
 		  int anIndex = aFileName.indexOf("src");
 		  if (anIndex < 0) {
@@ -107,6 +115,8 @@ public abstract class UNCCheck extends Check{
 //		System.out.println("key:" + key);
 		try {
         log(line, key, args);
+        CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().newLog(sequenceNumber, currentFile, 0, 0, key, args);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -153,6 +163,9 @@ public abstract class UNCCheck extends Check{
     		maybeAskForConsent();
     		if (vetoChecks())
     			return;
+    		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().maybeNewProjectDirectory(projectDirectory, STBuilderCheck.getChecksName());
+    		saveFileName(aFileName);
+    		
 //			System.out.println ("begin tree called from:" + this + " ast:" + ast + " " + getFileContents().getFilename());
 //			if (ast.getType() == TokenTypes.LITERAL_NEW) {
 //				System.out.println ("found new");
@@ -295,6 +308,7 @@ public abstract class UNCCheck extends Check{
 				
 				
         log(lineNo, colNo, key, args);
+        CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().newLog(sequenceNumber, currentFile, lineNo, colNo, key, args);
     	}
     }
     protected  abstract String msgKey();

@@ -29,7 +29,8 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	int  lastSequenceNumber;
 	int filesWithLastSequenceNumber;
 	protected Map<String, Set<String>> fileNameToLastPhaseMessages = new HashMap(); // for garbage collection
-
+	protected String projectDirectry = null;
+	protected int lastReadSequenceNumber = -1;// we will add 1 + current sequence number to it
 	
 	
 	protected boolean isNewMessage (String aFileName, String aMessage) {
@@ -38,12 +39,48 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //			aMessages = new HashSet();
 //			fileNameToMessages.put(aFileName, aMessages);
 //		}
-		return aMessages != null && aMessages.contains(aMessage);
+		return aMessages == null || !aMessages.contains(aMessage);
 		
+	}
+	protected boolean isNewCheckAllFilesCommand() {
+		int aNumTotaFiles = fileNameToMessages.size();
+		int aNumLastPhaseFiles = fileNameToLastPhaseMessages.size();
+		return aNumTotaFiles == aNumLastPhaseFiles || 
+				aNumLastPhaseFiles > 1; // check all will have more than one file
+		
+	}
+	protected void logDeletedMessages (Set<String> aDeletedMessages) {
+		for (String aDeletedMessage:aDeletedMessages) {
+			appendLine(toString(false, lastSequenceNumber + lastReadSequenceNumber + 1, aDeletedMessage));
+		}
+		
+	}
+
+	protected void mergeWithLastPhase(Set<String> anOriginalMessages, Set<String> aNewMessages) {
+		Set<String> aDeletedMessages = new HashSet(anOriginalMessages);	
+		if (aNewMessages != null) {
+			aDeletedMessages.removeAll(aNewMessages);
+			anOriginalMessages.retainAll(aNewMessages);
+		}
+		logDeletedMessages(aDeletedMessages);
+		
+	}
+
+	protected void mergeWithLastPhase() {
+		for (String aFileName:fileNameToMessages.keySet()) {
+			Set<String> anOriginalMessages = fileNameToMessages.get(aFileName);
+			Set<String> aNewMessages = fileNameToLastPhaseMessages.get(aFileName);
+			mergeWithLastPhase(anOriginalMessages, aNewMessages);
+		}
 	}
 	protected void maybeProcessLastPhase(int aSequenceNumber) {
 		if (lastSequenceNumber == aSequenceNumber)
 			return;
+		lastSequenceNumber = aSequenceNumber;
+		if (isNewCheckAllFilesCommand()) {
+			
+		}
+		
 		
 	}
 	protected void processNewMessage (int aSequenceNumber, String aFileName, String aMessage) {
@@ -69,11 +106,11 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			return;
 		}
 		appendLine(toString(true, aSequenceNumber, aMessage));
+		processNewMessage(aSequenceNumber, aFileName, aMessage);
 		
-		
-        if (aSequenceNumber == lastSequenceNumber) {
-			
-		}
+//        if (aSequenceNumber == lastSequenceNumber) {
+//			
+//		}
 		
 	}
 	public void readLog (boolean isAddition, int aSequenceNumber,  String aFileName, String key,
@@ -92,6 +129,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 				System.err.println("Log inconsistency, not in log: " + aMessage);
 			}
 		}
+		lastReadSequenceNumber = aSequenceNumber;
 		
 	}
 	
@@ -130,12 +168,23 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	static StringBuilder messageBuilder = new StringBuilder();
 
 	public static String toMessage (String aFileName,  String key,
-            Object... arg) {
-		
+            Object... anArgs) {
+		messageBuilder.setLength(0);
 		messageBuilder.append (aFileName);
 		messageBuilder.append ("," + key);
-		for (Object anArg:arg){
-			messageBuilder.append ("," + arg);
+		for (Object anArg:anArgs){
+			if (anArg == null)
+				continue;
+			String anArgString = anArg.toString();
+			if (
+					anArgString.contains(key) || 
+					anArgString.startsWith("(") ||
+					aFileName.contains(anArgString)
+					)
+					
+				continue;
+				
+			messageBuilder.append ("," + anArg);
 		}
 		return messageBuilder.toString();
 		
@@ -158,7 +207,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			 String aFileName = aParts[FILE_NAME_INDEX];
 			 String aKey = aParts[KEY_INDEX];
 			 String[] anArgs = new String[aParts.length - ARGS_INDEX];
-			 for (int i = ARGS_INDEX; i < aParts.length - ARGS_INDEX; i++) {
+			 for (int i = ARGS_INDEX; i < aParts.length; i++) {
 				 anArgs[i - ARGS_INDEX] = aParts[i];
 			 }
 			 readLog(anIsAddition, aSequenceNumber, aFileName, aKey, anArgs);
@@ -216,6 +265,33 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		 return result;
 	 
 	 }
+	@Override
+	public void checkStyleStarted() {
+		projectDirectry = null;
+	}
+	@Override
+	public void maybeNewProjectDirectory(String aProjectDirectory, String aChecksName) {
+		if (aProjectDirectory.equals(projectDirectry))
+			return;
+		projectDirectry = aProjectDirectory;
+//		if (logFileName == null)
+		logFileName = aProjectDirectory + "/" + AConsentFormVetoer.LOG_DIRECTORY + "/" + aChecksName + ".csv";
+//		out = null;
+//		bufWriter = null;
+//		mergeWithLastPhase();
+//		fileNameToLastPhaseMessages.clear();
+//		fileNameToMessages.clear();
+		reset();
+		readLogFile();
+	}
+	
+	protected void reset() {
+		out = null;
+		bufWriter = null;
+		mergeWithLastPhase();
+		fileNameToLastPhaseMessages.clear();
+		fileNameToMessages.clear();
+	}
 	
 	 
 //	 public static void main (String[] args) {

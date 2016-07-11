@@ -19,6 +19,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.CheckStyleLogManagerFactory;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -88,6 +89,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(METHOD_START, methodToSpecifications);
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
+		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
 
 	}
 
