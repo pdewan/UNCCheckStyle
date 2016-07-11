@@ -36,6 +36,7 @@ public abstract class UNCCheck extends Check{
 	protected static String consentFileName;
 	protected static boolean consentFormSigned;
 	protected static boolean consentFormShown;
+	Integer sequenceNumber;
 	  protected MessageConsole findConsole() {
 		  if (notInPlugIn)
 			  return null;
@@ -130,6 +131,11 @@ public abstract class UNCCheck extends Check{
     	try {
     		long aCurrentExecutionTime = System.currentTimeMillis();
     		if (aCurrentExecutionTime - lastExecutionTime > NEW_CHEKCKS_THRESHOLD) {
+    			if (sequenceNumber == null) {
+    				sequenceNumber = 0;
+    			} else {
+    				sequenceNumber++;
+    			}
     			System.out.println ("New set of checks at:" + new Date(aCurrentExecutionTime));
     		}
     		isPackageInfo = false;
