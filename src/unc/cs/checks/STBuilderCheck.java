@@ -89,6 +89,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(METHOD_START, methodToSpecifications);
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
+//		setCheckOnBuild(true); //make symboltable incrementally
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
 
 	}
@@ -199,6 +200,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void setProjectPackagePrefixes(String[] aPrefixes) {
 		projectPackagePrefixes = aPrefixes;
 	}
+	
 
 	public static String[] getProjectPackagePrefixes() {
 		return projectPackagePrefixes;

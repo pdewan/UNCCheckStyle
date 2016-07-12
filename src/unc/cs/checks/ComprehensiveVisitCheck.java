@@ -2177,6 +2177,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// return "(" + aFileName + anAST.getLineNo() + ")";
 	// }
 	protected String composeSourceName(String aFileName, int aLineNo) {
+		if (aFileName.isEmpty()) return aFileName;
 		return "(" + aFileName + ":" + aLineNo + ")";
 	}
 
@@ -2195,11 +2196,18 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// astToFileContents.get(aTreeAST).getFilename();
 		String aSourceName = shortFileName(aLongFileName);
 		Object[] anArgs = new String[anExplanations.length + 3];
+		
 
 		// Object[] anArgs = new String[anExplanations.length + 2];
 		anArgs[0] = composeMessageKey(aMessageKey);
+		if (aSourceName.isEmpty()){
+			anArgs[1] = aSourceName;
+			anArgs[2] = aSourceName;
+			
+		} else {
 		anArgs[1] = composeSourceName(aSourceName, aLineNo);
 		anArgs[2] = getEnclosingShortClassName(anAST);
+		}
 		for (int i = 3; i < anArgs.length; i++) {
 
 			// for (int i = 2; i < anArgs.length; i++) {

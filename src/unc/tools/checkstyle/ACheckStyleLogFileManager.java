@@ -26,8 +26,9 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	protected  BufferedWriter bufWriter;
 	protected String logFileName;
 	protected Map<String, Set<String>> fileNameToMessages = new HashMap();
-	int  lastSequenceNumber;
+	int  lastSequenceNumber = -1;
 	int filesWithLastSequenceNumber;
+	protected boolean wasLastPhaseAutoBuild = true;
 	protected Map<String, Set<String>> fileNameToLastPhaseMessages = new HashMap(); // for garbage collection
 	protected String projectDirectry = null;
 	protected int lastReadSequenceNumber = -1;// we will add 1 + current sequence number to it
@@ -42,11 +43,11 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		return aMessages == null || !aMessages.contains(aMessage);
 		
 	}
-	protected boolean isNewCheckAllFilesCommand() {
-		int aNumTotaFiles = fileNameToMessages.size();
-		int aNumLastPhaseFiles = fileNameToLastPhaseMessages.size();
-		return aNumTotaFiles == aNumLastPhaseFiles || 
-				aNumLastPhaseFiles > 1; // check all will have more than one file
+	protected boolean wasPreviousPhaseCheckAll(boolean isAutoBuild,int aFilesInLastPhase) {
+		int aNumTotalFiles = fileNameToMessages.size();
+//		int aNumLastPhaseFiles = fileNameToLastPhaseMessages.size();
+		return aNumTotalFiles == aFilesInLastPhase || 
+				aFilesInLastPhase > 1; // check all will have more than one file
 		
 	}
 	protected void logDeletedMessages (Set<String> aDeletedMessages) {
@@ -57,10 +58,14 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	}
 
 	protected void mergeWithLastPhase(Set<String> anOriginalMessages, Set<String> aNewMessages) {
+		if (anOriginalMessages == null)
+			return;
 		Set<String> aDeletedMessages = new HashSet(anOriginalMessages);	
 		if (aNewMessages != null) {
 			aDeletedMessages.removeAll(aNewMessages);
 			anOriginalMessages.retainAll(aNewMessages);
+		} else {
+			anOriginalMessages.clear(); // we are deleting all messages
 		}
 		logDeletedMessages(aDeletedMessages);
 		
@@ -73,17 +78,53 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			mergeWithLastPhase(anOriginalMessages, aNewMessages);
 		}
 	}
-	protected void maybeProcessLastPhase(int aSequenceNumber) {
+	protected void incermentalMergeWithLastPhase(Set<String> aFilesInLastPhase) {
+		System.out.println("Merging with last phase");
+		for (String aFileName:aFilesInLastPhase) { // only the files we received errors from
+			Set<String> anOriginalMessages = fileNameToMessages.get(aFileName);
+			Set<String> aNewMessages = fileNameToLastPhaseMessages.get(aFileName);
+			mergeWithLastPhase(anOriginalMessages, aNewMessages);
+		}
+	}
+	protected void maybeProcessLastPhase(int aSequenceNumber, boolean anIsAutoBuild, Set<String> aFilesInLastPhase) {
 		if (lastSequenceNumber == aSequenceNumber)
 			return;
+//		System.out.println (" new check phase with files in last phase:" + aFilesInLastPhase);
 		lastSequenceNumber = aSequenceNumber;
-		if (isNewCheckAllFilesCommand()) {
-			
+//		if (wasPreviousPhaseCheckAll(anIsAutoBuild, aFilesInLastPhase)) {
+//			System.out.println ("Previous command was  check all command:");
+//			mergeWithLastPhase();
+//		}
+		if (!wasLastPhaseAutoBuild) {
+		incermentalMergeWithLastPhase(aFilesInLastPhase);
 		}
+		wasLastPhaseAutoBuild = anIsAutoBuild;
+		fileNameToLastPhaseMessages.clear();
 		
 		
 	}
-	protected void processNewMessage (int aSequenceNumber, String aFileName, String aMessage) {
+	@Override
+	public void newSequenceNumber(int aSequenceNumber, boolean isAutoBuild,
+			Set<String> aFilesInLastPhase) {
+		System.out.println("New sequence number:" + aSequenceNumber + "isAuroBuild:" + isAutoBuild + " num files" + aFilesInLastPhase.size());
+		maybeProcessLastPhase(aSequenceNumber, isAutoBuild, aFilesInLastPhase);
+
+	
+		
+	}
+	protected void processNewMessage (int aSequenceNumber, boolean isAutoBuild, Set<String> aFilesInLastPhase, String aFileName, String aMessage) {
+//		maybeProcessLastPhase(aSequenceNumber, isAutoBuild, aFilesInLastPhase);
+		Set<String> aLastMessages = fileNameToLastPhaseMessages.get(aFileName);
+		if (aLastMessages == null) {
+			aLastMessages = new HashSet();
+			fileNameToLastPhaseMessages.put(aFileName, aLastMessages);
+	    }
+		aLastMessages.add(aMessage);
+		if (!isNewMessage(aFileName, aMessage)) {
+			return;
+		}
+		appendLine(toString(true, lastSequenceNumber + lastReadSequenceNumber + 1, aMessage));
+
 		Set<String> aMessages = fileNameToMessages.get(aFileName);
 		if (aMessages == null) {
 			aMessages = new HashSet();
@@ -91,22 +132,22 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	    }
 		
 		aMessages.add(aMessage);
-		Set<String> aLastMessages = fileNameToLastPhaseMessages.get(aFileName);
-		if (aLastMessages == null) {
-			aLastMessages = new HashSet();
-			fileNameToLastPhaseMessages.put(aFileName, aLastMessages);
-	    }
-		aLastMessages.add(aMessage);
+//		Set<String> aLastMessages = fileNameToLastPhaseMessages.get(aFileName);
+//		if (aLastMessages == null) {
+//			aLastMessages = new HashSet();
+//			fileNameToLastPhaseMessages.put(aFileName, aLastMessages);
+//	    }
+//		aLastMessages.add(aMessage);
 	}
-	public void newLog (int aSequenceNumber, String aFileName, int lineNo, int colNo, String key,
+	public void newLog (int aSequenceNumber, boolean isAutoBuild, Set<String> aFilesInLastPhase, String aFileName, int lineNo, int colNo, String key,
             Object... arg) {
 		
 		String aMessage = toMessage(aFileName, key, arg);
-		if (!isNewMessage(aFileName, aMessage)) {
-			return;
-		}
-		appendLine(toString(true, aSequenceNumber, aMessage));
-		processNewMessage(aSequenceNumber, aFileName, aMessage);
+//		if (!isNewMessage(aFileName, aMessage)) {
+//			return;
+//		}
+//		appendLine(toString(true, aSequenceNumber, aMessage));
+		processNewMessage(aSequenceNumber, isAutoBuild, aFilesInLastPhase, aFileName, aMessage);
 		
 //        if (aSequenceNumber == lastSequenceNumber) {
 //			
@@ -150,21 +191,21 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		
 	}
 	
-	public static String toString (boolean isAddition, int aSequenceNumber, String aFileName,  String key,
-            Object... arg) {
-		Date aDate = new Date(System.currentTimeMillis());
-		stringBuilder.setLength(0);
-		stringBuilder.append("" + aSequenceNumber);
-		stringBuilder.append(aDate.toString());
-		stringBuilder.append("," + toMessage(aFileName, key, arg));
-//		stringBuilder.append ("," + aFileName);
-//		stringBuilder.append ("," + key);
-//		for (Object anArg:arg){
-//			stringBuilder.append ("," + arg);
-//		}
-		return stringBuilder.toString();
-		
-	}
+//	public static String toString (boolean isAddition, int aSequenceNumber, String aFileName,  String key,
+//            Object... arg) {
+//		Date aDate = new Date(System.currentTimeMillis());
+//		stringBuilder.setLength(0);
+//		stringBuilder.append("" + aSequenceNumber);
+//		stringBuilder.append(aDate.toString());
+//		stringBuilder.append("," + toMessage(aFileName, key, arg));
+////		stringBuilder.append ("," + aFileName);
+////		stringBuilder.append ("," + key);
+////		for (Object anArg:arg){
+////			stringBuilder.append ("," + arg);
+////		}
+//		return stringBuilder.toString();
+//		
+//	}
 	static StringBuilder messageBuilder = new StringBuilder();
 
 	public static String toMessage (String aFileName,  String key,
@@ -201,6 +242,9 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		 List<String> aLines = toTextLines(logFileName);
 		 for (String aLine:aLines) {
 			 String[] aParts = aLine.split(",");
+			 if (aParts.length < ARGS_INDEX) {
+				 continue; // perhaps a blank line
+			 }
 			 int aSequenceNumber = Integer.parseInt(aParts[SEQUENCE_NUMBER_INDEX]);
 			 Date aDate = new Date( aParts[DATE_INDEX]);
 			 Boolean anIsAddition = Boolean.parseBoolean(aParts[IS_ADDITION_INDEX]);
@@ -292,6 +336,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		fileNameToLastPhaseMessages.clear();
 		fileNameToMessages.clear();
 	}
+	
 	
 	 
 //	 public static void main (String[] args) {

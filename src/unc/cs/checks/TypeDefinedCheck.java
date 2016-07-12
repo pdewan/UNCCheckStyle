@@ -20,8 +20,8 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	protected List<String> unmatchedTypes = new ArrayList();
 	protected Map<String, String> tagMatches = new HashMap();
 //	protected Set<String> matchedTypes = new HashSet();
-	protected boolean overlappingTags;
-	protected boolean shownMissingClasses = false;
+	protected boolean overlappingTags = true;
+//	protected boolean shownMissingClasses = true;
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -42,6 +42,11 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	public void visitType(DetailAST ast) {  
 		
     	super.visitType(ast);
+//    	if (shownMissingClasses) {
+//			log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
+//			shownMissingClasses = false;
+//
+//		} 
     	Boolean check = checkIncludeExcludeTagsOfCurrentType();
     	if (check == null)
     		return;
@@ -63,17 +68,17 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     			tagMatches.put(fullTypeName, anExpectedClassOrTag);
 //    			matchedTypes.add(fullTypeName);
     			unmatchedTypes.remove(anExpectedClassOrTag);
-    			if (shownMissingClasses) {
-        			log(ast, anExpectedClassOrTag);
+//    			if (shownMissingClasses) {
+//    				log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
+//        			shownMissingClasses = false;
+//
+//    			} 
+//    			else {
 
-    			} else {
-//    			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
-//    			String aTypeName = 	 getName(getEnclosingTypeDeclaration(aTypeAST));
-
-//    			log(currentTree, msgKey(), shortTypeName, unmatchedClasses.toString());
-    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString());
-    			shownMissingClasses = true;
-    			}
+//    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
+    			log(ast, anExpectedClassOrTag);
+//
+//    			}
     		}
     	}
 //    		
