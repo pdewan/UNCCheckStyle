@@ -158,4 +158,10 @@ public class ASymbolTable implements SymbolTable{
 	public List<STType> getAllSTTypes() {
 		return new ArrayList(typeNameToSTClass.values());
 	}
+	@Override
+	public void clear() {
+		methodCallToAST.clear();
+		typeNameToSTClass.clear();
+		
+	}
 }

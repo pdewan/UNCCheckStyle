@@ -149,6 +149,9 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 			if (anSTType == null)
 				return true; //benefit of doubt with duplicate names
 		}
+		if (anSTType == null) {
+			System.err.println("No ST Type for:" + fullTypeName);
+		}
 		STMethod[] anSTMethods = anSTType.getDeclaredMethods(aMethodName);
 		for (STMethod anSTMethod:anSTMethods) {
 			if (anSTMethod.isInit() || !anSTMethod.isInstance() || anSTMethod.isConstructor())

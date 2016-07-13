@@ -230,6 +230,28 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		return messageBuilder.toString();
 		
 	}
+//	public static String toMessage (String aFileName,  String key,
+//            Object... anArgs) {
+//		messageBuilder.setLength(0);
+//		messageBuilder.append (aFileName);
+//		messageBuilder.append ("," + key);
+//		for (Object anArg:anArgs){
+//			if (anArg == null)
+//				continue;
+//			String anArgString = anArg.toString();
+//			if (
+//					anArgString.contains(key) || 
+//					anArgString.startsWith("(") ||
+//					aFileName.contains(anArgString)
+//					)
+//					
+//				continue;
+//				
+//			messageBuilder.append ("," + anArg);
+//		}
+//		return messageBuilder.toString();
+//		
+//	}
 	public static int SEQUENCE_NUMBER_INDEX = 0;
 	public static int DATE_INDEX = 1;
 	public static int IS_ADDITION_INDEX = 2;
@@ -317,6 +339,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	public void maybeNewProjectDirectory(String aProjectDirectory, String aChecksName) {
 		if (aProjectDirectory.equals(projectDirectry))
 			return;
+		reset();
 		projectDirectry = aProjectDirectory;
 //		if (logFileName == null)
 		logFileName = aProjectDirectory + "/" + AConsentFormVetoer.LOG_DIRECTORY + "/" + aChecksName + ".csv";
@@ -325,16 +348,32 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //		mergeWithLastPhase();
 //		fileNameToLastPhaseMessages.clear();
 //		fileNameToMessages.clear();
-		reset();
+//		reset();
 		readLogFile();
 	}
 	
 	protected void reset() {
+		if (out != null)
+		out.close();
+		if (bufWriter != null) {
+		try {
+			bufWriter.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
 		out = null;
 		bufWriter = null;
-		mergeWithLastPhase();
+//		mergeWithLastPhase();
 		fileNameToLastPhaseMessages.clear();
 		fileNameToMessages.clear();
+		lastSequenceNumber = -1;
+		filesWithLastSequenceNumber = 0;
+		wasLastPhaseAutoBuild = true;
+		lastReadSequenceNumber = -1;// we will add 1 + current sequence number to it
+		
+		
 	}
 	
 	

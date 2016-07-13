@@ -125,7 +125,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				TokenTypes.LITERAL_NEW, TokenTypes.IDENT };
 	}
 
-	
+	protected void resetProject() {
+		super.resetProject();
+		astToPendingChecks.clear();
+		astToContinuationData.clear();
+
+		astToFileContents.clear();;
+		fileNameToTree.clear();
+		
+	}
+
 
 	public static STNameable[] getInterfaces(DetailAST aClassDef) {
 		List<STNameable> anInterfaces = new ArrayList();
@@ -2227,16 +2236,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		// String aSourceName =
 		// shortFileName(astToFileContents.get(aTreeAST).getFilename());
-		if (aTreeAST == currentTree) {
-			// if (anExplanation != null) {
+		if (aTreeAST == currentTree) { // standard form?
 			extendibleLog(ast.getLineNo(),
-			// ast.getColumnNo(),
-			// msgKey(),
+		
 					aMessageKey, anArgs
-			// aMessageKey,
-			// // aSourceName + ":" + ast.getLineNo(),
-			// composeSourceName(aSourceName, ast),
-			// anExplanations
+			
 			);
 			// } else {
 			// log(ast.getLineNo(),
@@ -2244,15 +2248,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			// aMessageKey,
 			// aSourceName + ":" + ast.getLineNo());
 			// }
-		} else {
-			// if (anExplanation != null) {
+		} else { // standard form?
 			extendibleLog(0,
-			// aSourceName + ":" + ast.getLineNo(),
-			// msgKey(),
+	
 					aMessageKey, anArgs
-			// aMessageKey,
-			// composeSourceName(aSourceName, ast),
-			// anExplanations
+			
 			);
 			// } else {
 			// log(0,
@@ -2318,16 +2318,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		// String aSourceName =
 		// shortFileName(astToFileContents.get(aTreeAST).getFilename());
-		if (aTreeAST == currentTree) {
+		if (aTreeAST == currentTree) { // standard form?
 			// if (anExplanation != null) {
 			extendibleLog(ast.getLineNo(),
-			// ast.getColumnNo(),
-			// msgKey(),
+	
 					aMessageKey, anArgs
-			// aMessageKey,
-			// // aSourceName + ":" + ast.getLineNo(),
-			// composeSourceName(aSourceName, ast),
-			// anExplanations
+			
 			);
 			// } else {
 			// log(ast.getLineNo(),
@@ -2338,12 +2334,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		} else {
 			// if (anExplanation != null) {
 			extendibleLog(0,
-			// aSourceName + ":" + ast.getLineNo(),
-			// msgKey(),
+		
 					aMessageKey, anArgs
-			// aMessageKey,
-			// composeSourceName(aSourceName, ast),
-			// anExplanations
+			
 			);
 			// } else {
 			// log(0,

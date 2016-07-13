@@ -1,20 +1,30 @@
 package unc.cs.symbolTable;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import unc.tools.checkstyle.ProjectDirectoryHolder;
+
 
 public class SymbolTableFactory {
-	static SymbolTable symbolTable;
+	static Map<String, SymbolTable> projectToSymbolTable = new HashMap<>();
 	
 	public static SymbolTable getOrCreateSymbolTable() {
-		if (symbolTable == null)
-			symbolTable = new ASymbolTable();
-		return symbolTable;
+		String aProjectDirectory = ProjectDirectoryHolder.getCurrentProjectDirectory();
+		SymbolTable aSymbolTable = projectToSymbolTable.get(aProjectDirectory);
+		if (aSymbolTable == null) {
+			aSymbolTable = new ASymbolTable();
+			projectToSymbolTable.put(aProjectDirectory, aSymbolTable);
+		}
+		return aSymbolTable;
 	}
 
 	public static SymbolTable getSymbolTable() {
-		return symbolTable;
+		return projectToSymbolTable.get(ProjectDirectoryHolder.getCurrentProjectDirectory());
 	}
 
 	public static void setSymbolTable(SymbolTable newValue) {
-		SymbolTableFactory.symbolTable = newValue;
+		String aProjectDirectory = ProjectDirectoryHolder.getCurrentProjectDirectory();
+		projectToSymbolTable.put(aProjectDirectory, newValue);
 	}
 }

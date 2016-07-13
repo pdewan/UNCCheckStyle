@@ -27,4 +27,5 @@ public interface SymbolTable {
 	List<STType> getAllSTTypes();
 	List<String> getAllInterfaceNames();
 	List<String> getAllClassNames();
+	void clear();
 }

@@ -72,7 +72,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //					shortFileName(aLongFileName)
 //					);
 //			super.log(aMethod, aMethod.getName());
-			super.log(aMethod.getAST(), aMethod.getName());
+			super.log(aMethod.getAST(), aMethod.getName()); // standard form?
 			return  false;
 		} 
 		return true;

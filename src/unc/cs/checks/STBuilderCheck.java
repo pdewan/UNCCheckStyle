@@ -19,6 +19,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
@@ -58,6 +59,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected Map<String, String[]> methodToSpecifications = new HashMap<>();
 	protected Map<String, String[]> variableToSpecifications = new HashMap<>();
 	protected Map<String, String[]> parameterToSpecifications = new HashMap<>();
+	protected boolean existingClassesFilled = false;
 
 
 	public void setDerivedTypeTags(String[] aDerivedTagsSpecifications) {
@@ -89,9 +91,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(METHOD_START, methodToSpecifications);
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
-//		setCheckOnBuild(true); //make symboltable incrementally
+		setCheckOnBuild(true); //make symboltable incrementally
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
 
+	}
+	protected void newProjectDirectory(String aNewProjectDirectory) {
+		super.newProjectDirectory(aNewProjectDirectory);
+		maybeProcessExistingClasses();
+//		System.out.println ("Clearing symbol table");
+//		SymbolTableFactory.getOrCreateSymbolTable().clear();
+		
 	}
 
 	public void setVisitInnerClasses(boolean newVal) {
@@ -101,7 +110,14 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public boolean getVisitInnerClasses() {
 		return visitInnerClasses;
 	}
+	protected void maybeProcessExistingClasses() {
+		if (existingClassesFilled) {
+			return;
+		}
+		processExistingClasses();
+		existingClassesFilled = true;
 
+	}
 	protected static void processExistingClasses() {
 		for (String aClassName : existingClasses) {
 			existingClassesShortNamesCollection
@@ -209,7 +225,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void setExistingClasses(String[] aClasses) {
 		existingClasses = aClasses;
 		existingClassesCollection = Arrays.asList(existingClasses);
-		processExistingClasses();
+//		processExistingClasses();
 	}
 	
 	public void setChecksName(String newValue) {
@@ -325,6 +341,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		}
 		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 		// anSTClass.getName(), anSTClass);
+		if (aName.startsWith("test")) {
+			System.out.println("Putting class:" + aName);
+		}
 		SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass()
 				.put(aName, anSTClass);
 		// log (typeNameAST.getLineNo(), msgKey(), fullTypeName);

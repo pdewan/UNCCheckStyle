@@ -43,7 +43,21 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //		return new int[] {TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,  
 //						TokenTypes.INTERFACE_DEF, TokenTypes.METHOD_DEF, TokenTypes.PARAMETER_DEF };
 //	}
-	
+	protected void resetProject() {
+		super.resetProject();
+		fullTypeName = null;
+		shortTypeName = null;
+		typeAST = null;
+		typeNameAST = null;
+		typeNameable = null;
+		fullTypeNameStack.clear();
+		shortTypeNameStack.clear();
+		typeNameASTStack.clear();
+		typeNameableStack.clear();;
+		typeASTStack.clear();
+		isGenericStack.clear();
+		
+	}
 	
 	public boolean maybeVisitPackage(DetailAST ast) {
 		if (ast.getType() == TokenTypes.PACKAGE_DEF) {

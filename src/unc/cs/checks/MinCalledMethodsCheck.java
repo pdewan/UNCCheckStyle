@@ -48,6 +48,10 @@ public class MinCalledMethodsCheck extends ComprehensiveVisitCheck {
     	super.visitType(ast);    	
     	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
     			getSTClassByFullName(fullTypeName);
+    	if (anSTClass == null) {
+    		System.err.println("No ST Clas for:" + fullTypeName);
+    		return;
+    	}
     	STMethod[] anSTMethods = anSTClass.getDeclaredMethods();
     	int aMaxMethods = 0;
     	for (STMethod aMethod:anSTMethods) {

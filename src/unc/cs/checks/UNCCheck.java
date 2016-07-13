@@ -16,6 +16,7 @@ import org.eclipse.ui.console.MessageConsole;
 import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManager;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
+import unc.tools.checkstyle.ProjectDirectoryHolder;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -35,7 +36,7 @@ public abstract class UNCCheck extends Check {
 	protected boolean deferLogging;
 	protected List<LogObject> log = new ArrayList();
 	protected static long lastExecutionTime; // for all checks
-	protected static String projectDirectory;
+//	protected static String projectDirectory;
 	protected String currentFile;
 	public static String checkDirectory;
 	protected static String consentFileName;
@@ -61,6 +62,37 @@ public abstract class UNCCheck extends Check {
 			return null;
 		}
 	}
+	
+	protected void resetProject() {
+		lastExecutionTime = 0;
+		currentFile = null;
+		checkDirectory = null;
+		String consentFileName = null;
+		consentFormSigned  = false;
+		consentFormShown = false;
+		sequenceNumber = null;
+		numFilesInLastPhase = null;
+		filesInCurrentPhase.clear();
+		filesInLastPhase.clear();
+//		projectDirectory = null;
+		ProjectDirectoryHolder.setCurrentProjectDirectory(null);
+		checkDirectory = null;
+		consentFileName = null;
+		
+	}
+	protected void newProjectDirectory(String aNewProjectDirectory) {
+		resetProject();
+//		projectDirectory = aNewProjectDirectory;
+		ProjectDirectoryHolder.setCurrentProjectDirectory(aNewProjectDirectory);
+
+		checkDirectory = aNewProjectDirectory + "/"
+				+ AConsentFormVetoer.LOG_DIRECTORY;
+		consentFileName = checkDirectory + "/"
+				+ AConsentFormVetoer.CONSENT_FILE_NAME;
+		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
+				.maybeNewProjectDirectory(aNewProjectDirectory,
+						STBuilderCheck.getChecksName());
+	}
 
 	protected void maybeSaveProjectDirectory(String aFileName) {
 		// if (projectDirectory != null)
@@ -70,17 +102,18 @@ public abstract class UNCCheck extends Check {
 			return;
 		}
 		String aNewProjectDirectory = aFileName.substring(0, anIndex - 1);
-		if (aNewProjectDirectory.equals(projectDirectory)) {
+		if (aNewProjectDirectory.equals(ProjectDirectoryHolder.getCurrentProjectDirectory())) {
 			return;
 		}
-		projectDirectory = aNewProjectDirectory;
-		checkDirectory = projectDirectory + "/"
-				+ AConsentFormVetoer.LOG_DIRECTORY;
-		consentFileName = checkDirectory + "/"
-				+ AConsentFormVetoer.CONSENT_FILE_NAME;
-		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
-				.maybeNewProjectDirectory(projectDirectory,
-						STBuilderCheck.getChecksName());
+		newProjectDirectory(aNewProjectDirectory);
+//		projectDirectory = aNewProjectDirectory;
+//		checkDirectory = projectDirectory + "/"
+//				+ AConsentFormVetoer.LOG_DIRECTORY;
+//		consentFileName = checkDirectory + "/"
+//				+ AConsentFormVetoer.CONSENT_FILE_NAME;
+//		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
+//				.maybeNewProjectDirectory(projectDirectory,
+//						STBuilderCheck.getChecksName());
 
 	}
 
@@ -128,6 +161,27 @@ public abstract class UNCCheck extends Check {
 		MessageConsole myConsole = new MessageConsole(name, null);
 		conMan.addConsoles(new IConsole[] { myConsole });
 		return myConsole;
+	}
+	
+	protected void newSequenceNumber() {
+
+		filesInLastPhase = filesInCurrentPhase;
+		filesInCurrentPhase = new HashSet();
+
+		if (sequenceNumber == null) {
+			sequenceNumber = 0;
+		} else {
+			sequenceNumber++;
+		}
+		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
+				.newSequenceNumber(sequenceNumber, isAutoBuild,
+						filesInLastPhase);
+		// System.out.println ("New set of checks at:" + new
+		// Date(aCurrentExecutionTime));
+
+		// else {
+		// // filesInCurrentPhase;
+		// }
 	}
 
 	public final void extendibleLog(int line, String key, Object... args) {
@@ -178,17 +232,18 @@ public abstract class UNCCheck extends Check {
 			if (
 			// isAutoBuild ||
 			aCurrentExecutionTime - lastExecutionTime > NEW_CHEKCKS_THRESHOLD) {
-				filesInLastPhase = filesInCurrentPhase;
-				filesInCurrentPhase = new HashSet();
-
-				if (sequenceNumber == null) {
-					sequenceNumber = 0;
-				} else {
-					sequenceNumber++;
-				}
-				CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
-						.newSequenceNumber(sequenceNumber, isAutoBuild,
-								filesInLastPhase);
+				newSequenceNumber();
+//				filesInLastPhase = filesInCurrentPhase;
+//				filesInCurrentPhase = new HashSet();
+//
+//				if (sequenceNumber == null) {
+//					sequenceNumber = 0;
+//				} else {
+//					sequenceNumber++;
+//				}
+//				CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
+//						.newSequenceNumber(sequenceNumber, isAutoBuild,
+//								filesInLastPhase);
 				// System.out.println ("New set of checks at:" + new
 				// Date(aCurrentExecutionTime));
 			}
@@ -218,7 +273,7 @@ public abstract class UNCCheck extends Check {
 			if (vetoChecks())
 				return;
 			CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
-					.maybeNewProjectDirectory(projectDirectory,
+					.maybeNewProjectDirectory(ProjectDirectoryHolder.getCurrentProjectDirectory(),
 							STBuilderCheck.getChecksName());
 			saveFileName(aFileName);
 
