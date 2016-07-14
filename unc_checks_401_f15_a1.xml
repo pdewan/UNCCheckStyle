@@ -106,7 +106,9 @@
 			<property name="severity" value="info" />
 			<property name="expectedTypes" value="main.Assignment(.*)" />
 		</module>
-		
+		<module name="InterfaceDefined">
+			<property name="severity" value="info" />
+		</module>
 		
 		<module name="FunctionAssignsGlobal">
 			<property name="excludeMethodTags"

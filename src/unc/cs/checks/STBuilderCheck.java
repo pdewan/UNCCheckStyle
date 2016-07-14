@@ -45,7 +45,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "stBuilder";
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework" };
-	protected static String checksName = "Assignments";
+	protected static String checksName;
 	protected static String[] existingClasses = {};
 	public static Collection<String> existingClassesShortNamesCollection = new HashSet();
 	protected static Collection<String> existingClassesCollection = new HashSet();
@@ -91,6 +91,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(METHOD_START, methodToSpecifications);
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
+		System.out.println ("Setting checks name to:" + "Assignments" );
+		checksName =  "Assignments";;
 		setCheckOnBuild(true); //make symboltable incrementally
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
 
@@ -341,9 +343,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		}
 		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 		// anSTClass.getName(), anSTClass);
-		if (aName.startsWith("test")) {
-			System.out.println("Putting class:" + aName);
-		}
+//		if (aName.startsWith("test")) {
+//			System.out.println("Putting class:" + aName);
+//		}
 		SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass()
 				.put(aName, anSTClass);
 		// log (typeNameAST.getLineNo(), msgKey(), fullTypeName);

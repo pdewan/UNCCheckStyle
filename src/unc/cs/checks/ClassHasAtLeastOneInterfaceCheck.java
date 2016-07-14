@@ -25,43 +25,13 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 	public  ClassHasAtLeastOneInterfaceCheck () {
 		
 	}
-//	public int[] getDefaultTokens() {
-//		return new int[] {
-////				TokenTypes.CLASS_DEF, 
-////				TokenTypes.INTERFACE_DEF, 
-////				TokenTypes.PACKAGE_DEF
-//				};
-//	}
-//	@Override
-//	public int[] getDefaultTokens() {
-//		return new int[] { TokenTypes.CLASS_DEF };
-//	}
-//	@Override
-//    public void visitClass(DetailAST typeDef) { 
-//		super.visitClass(typeDef);
-//    	
-//		STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
-//    			getSTClassByFullName(fullTypeName);
-//    	if (!typeCheck(anSTClass))
-//    		log(typeDef);
-//
-//    }
-//	
-//	protected void log(DetailAST ast) {
-//	    log(getNameAST(ast).getLineNo(), msgKey(), fullTypeName);
-//    }
 
 
 	protected Boolean typeCheck(STType anSTClass) {
-//		if (anSTClass.isInterface())
-//			return true;
-//		if (anSTClass.getName().contains("Vertical") || anSTClass.getName().contains("Anim")) {
-////			System.out.println(" Let us check sizes:");
-//			
-//			System.out.println ("Signatures:" );
-//			
-//		}
-		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
+
+//		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
+		List<String> aSignatures = anSTClass.getDeclaredPublicInstanceSignatures();
+
 		if (aSignatures == null)
 			return null;
 		if (aSignatures.size() == 0)

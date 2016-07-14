@@ -13,9 +13,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class ClassDefinedCheck extends TypeDefinedCheck{
 	
 	public static final String MSG_KEY = "classDefined";
-//	protected List<String> expectedClasses = new ArrayList();	
-//	protected List<String> unmatchedClasses = new ArrayList();
-//	protected boolean overlappingTags;
+
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {

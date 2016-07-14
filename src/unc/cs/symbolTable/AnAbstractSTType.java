@@ -1412,6 +1412,18 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		}
 		return result;
 	}
+	@Override
+	public List<String> getDeclaredPublicInstanceSignatures() {
+		List<String> result = new ArrayList();
+		STMethod[] anSTMethods = getDeclaredMethods();
+		if (anSTMethods == null)
+			return null;
+		for (STMethod anSTMethod : anSTMethods) {
+			if (anSTMethod.isPublic() && anSTMethod.isInstance())
+				result.add(anSTMethod.getSignature());
+		}
+		return result;
+	}
 	public List<String> computeInstanceSignatures() {
 		List<String> result = new ArrayList();
 		STMethod[] anSTMethods = getMethods();

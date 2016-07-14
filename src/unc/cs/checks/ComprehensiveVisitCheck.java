@@ -2215,7 +2215,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			
 		} else {
 		anArgs[1] = composeSourceName(aSourceName, aLineNo);
-		anArgs[2] = getEnclosingShortClassName(anAST);
+//		anArgs[2] = getEnclosingShortClassName(anAST);
+		anArgs[2] = getEnclosingShortTypeName(anAST);
+
+		if (anArgs[2] == null) {
+			anArgs[2] = aSourceName;
+		}
 		}
 		for (int i = 3; i < anArgs.length; i++) {
 

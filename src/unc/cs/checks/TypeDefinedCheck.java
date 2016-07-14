@@ -21,6 +21,7 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	protected Map<String, String> tagMatches = new HashMap();
 //	protected Set<String> matchedTypes = new HashSet();
 	protected boolean overlappingTags = true;
+	protected boolean logNoMacthes = true;
 //	protected boolean shownMissingClasses = true;
 //	@Override
 //	public int[] getDefaultTokens() {
@@ -30,6 +31,9 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 ////				TokenTypes.ANNOTATION,
 //				};
 //	}
+	public TypeDefinedCheck() {
+		checkOnBuild = true;
+	}
 	public void setExpectedTypes(String[] anExpectedClasses) {
 		expectedTypes = Arrays.asList(anExpectedClasses);
 		unmatchedTypes = new ArrayList(expectedTypes);		
@@ -39,6 +43,11 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 		overlappingTags = newVal;		
 	}
 	
+	public void setLogNoMatches(boolean newVal) {
+		logNoMacthes = newVal;
+	}
+	
+
 	public void visitType(DetailAST ast) {  
 		
     	super.visitType(ast);
@@ -61,8 +70,7 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     		}
     	}
     	
-//			log(currentTree, msgKey(), shortTypeName, expectedClasses.toString());
-
+    	boolean aFoundMatch = false;
     	for (String anExpectedClassOrTag:checkTags) {
     		if ( matchesMyType(maybeStripComment(anExpectedClassOrTag))) {
     			tagMatches.put(fullTypeName, anExpectedClassOrTag);
@@ -77,10 +85,15 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
     			log(ast, anExpectedClassOrTag);
+    			aFoundMatch = false;
 //
 //    			}
     		}
+    		
     	}
+    	if (!aFoundMatch && logNoMacthes) {
+			log(ast, "No Expected Tag");
+		}
 //    		
 //    		
 //    	}

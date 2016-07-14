@@ -46,34 +46,23 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 //		return (anSTClass.isInterface() || anSTClass.getInterfaces().length <= 1);
 //	}
 	protected Boolean typeCheck(STType anSTClass) {
-//		if (anSTClass.isInterface())
-//			return true;
-		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
-		if (aSignatures == null)
-			return null;
-		if (aSignatures.size() == 0)
-			return true;
-		
-//		return anSTClass.getInterfaces().length != 0; 
-//		return (anSTClass.isInterface() || 
-//		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
-//		if (anAllInterfaces == null)
+
+//		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
+//		List<String> aSignatures = anSTClass.getDeclaredPublicInstanceSignatures();
+
+//		if (aSignatures == null)
 //			return null;
-//		return anAllInterfaces. size() <= 1; // 0 will be flagged by at least one interface check
+//		if (aSignatures.size() == 0)
+//			return true;
+//		
+//
+//		if (anSTClass.getName().contains("AnOval")) {
+//			System.out.println ("found oval");
+//		}
 		STNameable[] anInterfaces = anSTClass.getDeclaredInterfaces();
 		if (anInterfaces == null)
 			return null;
-//		if (anInterfaces.length <= 1)
-//			return true;
-//		STNameable aSuperTypename = anSTClass.getSuperClass();
-//		STType aSuperSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSuperTypename.getName());
-//		if (aSuperSTType == null) {
-//			return null;
-//		}
-//		List<String> aSuperSignatures = aSuperSTType.getPublicInstanceSignatures();
-//		if (aSuperSignatures == null)
-//			return null;
-//		return aSuperSignatures.size() == aSignatures.size();
+
 		return anInterfaces.length <= 1; // 0 will be flagged by at least one interface check
 
 	}

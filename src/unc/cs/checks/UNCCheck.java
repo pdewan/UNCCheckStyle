@@ -16,6 +16,7 @@ import org.eclipse.ui.console.MessageConsole;
 import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManager;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
+import unc.tools.checkstyle.ChecksNameHolder;
 import unc.tools.checkstyle.ProjectDirectoryHolder;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -45,6 +46,7 @@ public abstract class UNCCheck extends Check {
 	static Integer sequenceNumber;
 	static Integer numFilesInLastPhase;
 	static Set<String> filesInCurrentPhase = new HashSet();
+	static Set<String> allFilesInProject = new HashSet();
 	static Set<String> filesInLastPhase = new HashSet();
 	 boolean isAutoBuild;
 	protected  boolean checkOnBuild = false;
@@ -73,6 +75,7 @@ public abstract class UNCCheck extends Check {
 		sequenceNumber = null;
 		numFilesInLastPhase = null;
 		filesInCurrentPhase.clear();
+		allFilesInProject.clear();
 		filesInLastPhase.clear();
 //		projectDirectory = null;
 		ProjectDirectoryHolder.setCurrentProjectDirectory(null);
@@ -91,21 +94,24 @@ public abstract class UNCCheck extends Check {
 				+ AConsentFormVetoer.CONSENT_FILE_NAME;
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
 				.maybeNewProjectDirectory(aNewProjectDirectory,
-						STBuilderCheck.getChecksName());
+//						STBuilderCheck.getChecksName()
+						ChecksNameHolder.getChecksName()
+						);
 	}
 
-	protected void maybeSaveProjectDirectory(String aFileName) {
+	protected boolean maybeSaveProjectDirectory(String aFileName) {
 		// if (projectDirectory != null)
 		// return;
 		int anIndex = aFileName.indexOf("src");
 		if (anIndex < 0) {
-			return;
+			return false;
 		}
 		String aNewProjectDirectory = aFileName.substring(0, anIndex - 1);
 		if (aNewProjectDirectory.equals(ProjectDirectoryHolder.getCurrentProjectDirectory())) {
-			return;
+			return false;
 		}
 		newProjectDirectory(aNewProjectDirectory);
+		return true;
 //		projectDirectory = aNewProjectDirectory;
 //		checkDirectory = projectDirectory + "/"
 //				+ AConsentFormVetoer.LOG_DIRECTORY;
@@ -124,6 +130,8 @@ public abstract class UNCCheck extends Check {
 		}
 		currentFile = aFileName.substring(anIndex + "src".length() + 1);
 		filesInCurrentPhase.add(currentFile);
+		allFilesInProject.add(currentFile);
+//		System.out.println("added file:" + currentFile);
 //		if (filesInCurrentPhase.size() > 0)
 //		System.out.println ("num files in current phase:" + filesInCurrentPhase.size());
 	}
@@ -166,8 +174,14 @@ public abstract class UNCCheck extends Check {
 	protected void newSequenceNumber() {
 
 		filesInLastPhase = filesInCurrentPhase;
+		Set<String> aFilesNotInLastPhase = new HashSet(allFilesInProject);
+		aFilesNotInLastPhase.removeAll(filesInLastPhase);
+		if (aFilesNotInLastPhase.size() > 0) {
+			System.err.println ("Missing files:" + aFilesNotInLastPhase);
+			System.err.println("Actual files:" + filesInLastPhase);
+		}
 		filesInCurrentPhase = new HashSet();
-
+//		System.out.println("Rsetting current phase files:");
 		if (sequenceNumber == null) {
 			sequenceNumber = 0;
 		} else {
@@ -220,37 +234,42 @@ public abstract class UNCCheck extends Check {
 		return aSecondLastElement.toString().contains("Build");
 
 	}
+	protected void maybeNewSequenceNumber() {
+		long aCurrentExecutionTime = System.currentTimeMillis();
+//		isAutoBuild = isAutoBuild();
+		long aTimeDelta = aCurrentExecutionTime - lastExecutionTime;
+		if (
+		// isAutoBuild ||
+		aTimeDelta > NEW_CHEKCKS_THRESHOLD) {
+			System.out.println("Time delta:" + aTimeDelta);
+			newSequenceNumber();
 
+		}
+		
+		lastExecutionTime = aCurrentExecutionTime;
+	}
 	public void beginTree(DetailAST ast) {
-		if (vetoChecks())
-			return;
+//		if (vetoChecks())
+//			return;
 		try {
-
-			long aCurrentExecutionTime = System.currentTimeMillis();
+//			maybeAskForConsent();
+			if (vetoChecks())
+				return;
+//			maybeNewSequenceNumber();
+//			long aCurrentExecutionTime = System.currentTimeMillis();
+////			isAutoBuild = isAutoBuild();
+//			long aTimeDelta = aCurrentExecutionTime - lastExecutionTime;
+//			if (
+//			// isAutoBuild ||
+//			aTimeDelta > NEW_CHEKCKS_THRESHOLD) {
+//				System.out.println("Time delta:" + aTimeDelta);
+//				newSequenceNumber();
+//
+//			}
+//			
+//			lastExecutionTime = aCurrentExecutionTime;
 			isAutoBuild = isAutoBuild();
 
-			if (
-			// isAutoBuild ||
-			aCurrentExecutionTime - lastExecutionTime > NEW_CHEKCKS_THRESHOLD) {
-				newSequenceNumber();
-//				filesInLastPhase = filesInCurrentPhase;
-//				filesInCurrentPhase = new HashSet();
-//
-//				if (sequenceNumber == null) {
-//					sequenceNumber = 0;
-//				} else {
-//					sequenceNumber++;
-//				}
-//				CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
-//						.newSequenceNumber(sequenceNumber, isAutoBuild,
-//								filesInLastPhase);
-				// System.out.println ("New set of checks at:" + new
-				// Date(aCurrentExecutionTime));
-			}
-			// else {
-			// // filesInCurrentPhase;
-			// }
-			lastExecutionTime = aCurrentExecutionTime;
 			if (isAutoBuild && !isCheckOnBuild()) {
 				visitedTree = false;
 				return;
@@ -258,6 +277,8 @@ public abstract class UNCCheck extends Check {
 			visitedTree = true;
 			isPackageInfo = false;
 			String aFileName = getFileContents().getFilename();
+			if (!fileNameCheck(aFileName))
+				return;
 			if (aFileName.endsWith("package-info.java")) {
 				isPackageInfo = true;
 				return;
@@ -269,13 +290,32 @@ public abstract class UNCCheck extends Check {
 					+ aFileName;
 
 			maybeSaveProjectDirectory(aFileName);
+			
+//			long aCurrentExecutionTime = System.currentTimeMillis();
+//			isAutoBuild = isAutoBuild();
+//			long aTimeDelta = aCurrentExecutionTime - lastExecutionTime;
+//			if (
+//					// isAutoBuild ||
+//					aTimeDelta > NEW_CHEKCKS_THRESHOLD) {
+//						System.out.println("Time delta:" + aTimeDelta);
+//						newSequenceNumber();
+//
+//					}
+//					
+//					lastExecutionTime = aCurrentExecutionTime;
 			maybeAskForConsent();
-			if (vetoChecks())
-				return;
+//			if (vetoChecks())
+//				return;
+			maybeNewSequenceNumber(); // which should go first?
 			CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
 					.maybeNewProjectDirectory(ProjectDirectoryHolder.getCurrentProjectDirectory(),
-							STBuilderCheck.getChecksName());
+//							STBuilderCheck.getChecksName()
+							ChecksNameHolder.getChecksName()
+							);
 			saveFileName(aFileName);
+//			maybeNewSequenceNumber(); // which should go first?
+
+//			maybeNewSequenceNumber();
 
 			// System.out.println ("begin tree called from:" + this + " ast:" +
 			// ast + " " + getFileContents().getFilename());
@@ -367,9 +407,20 @@ public abstract class UNCCheck extends Check {
 					+ toString(e.getStackTrace()));
 		}
 	}
-
+	protected boolean errorCheck() {
+		return errorOccurred;
+	}
+	protected boolean consentCheck() {
+		return consentFormShown && !consentFormSigned;
+	}
 	protected boolean vetoChecks() {
-		return errorOccurred || (consentFormShown && !consentFormSigned);
+		return errorCheck() && consentCheck();
+//		return errorOccurred || 
+//				(consentFormShown && !consentFormSigned);
+	}
+	// file set check gets all files
+	protected boolean fileNameCheck(String aFileName) {
+		return aFileName.endsWith(".java");
 	}
 
 	public void visitToken(DetailAST ast) {

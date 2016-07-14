@@ -82,4 +82,5 @@ public interface STType extends STNameable{
 	List<CallInfo> getAllMethodsCalled();
 //	DetailAST getDeclaredGlobalVariableToRHS(String aGlobal);
 	List<STVariable> getDeclaredSTGlobals();
+	List<String> getDeclaredPublicInstanceSignatures();
 }
