@@ -12,7 +12,11 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 
 	}
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.PACKAGE_DEF};
+		return new int[] {
+				TokenTypes.PACKAGE_DEF,
+//				TokenTypes.CLASS_DEF,
+//				TokenTypes.INTERFACE_DEF
+				};
 	} 
 	public void doVisitToken(DetailAST ast) {		
 		switch (ast.getType()) {
@@ -25,8 +29,10 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 		}
 		
 	}
+	boolean badPackage;
 	public void visitPackage(DetailAST ast) {
 		super.visitPackage(ast);
+		badPackage = false;
 		String[] prefixes = STBuilderCheck.getProjectPackagePrefixes();
 		if (prefixes == null || prefixes.length == 0 || (prefixes.length == 1 && "*".equals(prefixes[0]))) {
 			return;			
@@ -40,7 +46,7 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 			}
 		}
 		
-		log(ast,  packageName, Arrays.asList(prefixes).toString());
+		log(ast,  packageName, Arrays.asList(prefixes).toString().replaceAll(",", " "));
 		
 
 	}

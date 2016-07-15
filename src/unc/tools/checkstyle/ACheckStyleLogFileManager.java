@@ -86,24 +86,24 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	protected void batchMergeWithLastPhase(Set<String> aFilesInLastPhase) {
 //		System.out.println("Merging with last phase");
 		if (aFilesInLastPhase.size() < fileNameToMessages.size()) {
-			for (String aKeyName:fileNameToMessages.keySet()) {
-				boolean foundKey = false;
-				for (String aFileName:aFilesInLastPhase) {
-					if (aFileName.contains(aKeyName)) {
-						foundKey = true;
-						break;
-					}
-				}
+//			for (String aKeyName:fileNameToMessages.keySet()) {
+//				boolean foundKey = false;
+//				for (String aFileName:aFilesInLastPhase) {
+//					if (aFileName.contains(aKeyName)) {
+//						foundKey = true;
+//						break;
+//					}
+//				}
 //				if (!foundKey) {
 //					System.err.println ("Not found key:" + aKeyName);
 //					System.out.println("Messages with key:" + fileNameToMessages.get(aKeyName));
 //				}
-			}
-//			Set<String> missingFiles = new HashSet(fileNameToMessages.keySet());.key
-//			missingFiles.removeAll(aFilesInLastPhase);			
-			System.err.println("files in last phase: " + aFilesInLastPhase.size() + " < files with messages " +  fileNameToMessages.size() + ", not doing merge");
-//			System.out.println ("Missing files:" + missingFiles);
-			return;
+//			}
+			Set<String> missingFiles = new HashSet(fileNameToMessages.keySet());
+			missingFiles.removeAll(aFilesInLastPhase);			
+			System.out.println("files in last phase: " + aFilesInLastPhase.size() + " < files with messages " +  fileNameToMessages.size() + ", not doing merge");
+			System.out.println ("Missing files:" + missingFiles);
+//			return;
 		}
 //		int aNumFilesInLastPhase = aFilesInLastPhase.size();
 		// total files visited should be at least as many as total number of erroneous files

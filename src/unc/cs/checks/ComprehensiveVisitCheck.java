@@ -2180,16 +2180,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (aFileContents != null) {
 			return aFileContents.getFilename();
 		} else {
-			String anASTName = getName(getEnclosingTypeDeclaration(aTreeAST));
-			Map<DetailAST, FileContents> aTable = ProjectSTBuilderHolder.getSTBuilder().getAstToFileContents();
-		
-			for (DetailAST aKey:aTable.keySet()) {
-				FileContents aFileContents2 = aTable.get(aKey);
-				String aFileName = aFileContents2.getFilename();
-				if (aFileName.contains("Illegal")) {
-					System.out.println("Found illegal");
-				}
-			}
+			System.err.println("Could not find long file name");
+//			String anASTName = getName(getEnclosingTypeDeclaration(aTreeAST));
+//			Map<DetailAST, FileContents> aTable = ProjectSTBuilderHolder.getSTBuilder().getAstToFileContents();
+//		
+//			for (DetailAST aKey:aTable.keySet()) {
+//				FileContents aFileContents2 = aTable.get(aKey);
+//				String aFileName = aFileContents2.getFilename();
+//				if (aFileName.contains("Illegal")) {
+//					System.out.println("Found illegal");
+//				}
+//			}
 		}
 		return "";
 	}
