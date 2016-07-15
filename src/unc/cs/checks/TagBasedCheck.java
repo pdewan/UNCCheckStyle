@@ -20,6 +20,7 @@ import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final String COMMENT_START = "//";
@@ -1181,12 +1182,49 @@ public static STType getSTType(DetailAST aTreeAST) {
 //	}
 //	return anSTType;
 	STType result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
-	if (result == null && STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+	if (result == null && ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 		result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(toShortTypeName(aFullName));
 		
 	}
 	return result;
 	
+}
+public static DetailAST getOutermostTypeDeclaration (DetailAST ast) {
+	DetailAST anEnclosingType = getEnclosingTypeDeclaration(ast);
+	if (anEnclosingType == null) {
+		return null; // this should never happen on first call
+	}
+	DetailAST aPreviousAST = anEnclosingType.getPreviousSibling(); 
+	if (aPreviousAST == null || aPreviousAST.getType() == TokenTypes.IMPORT || aPreviousAST.getType() == TokenTypes.PACKAGE_DEF) // just check if it is class def?
+		return anEnclosingType; // this means no package
+	DetailAST anAncestorType = getOutermostTypeDeclaration(aPreviousAST); // keep going left till you find one
+	if (anAncestorType == null) {
+		DetailAST aParentAST = anEnclosingType.getParent();
+		if (aParentAST == null)
+			return anEnclosingType;
+		anAncestorType = getOutermostOrEnclosingTypeDeclaration(aParentAST);
+	}
+	if (anAncestorType == null)
+		return anEnclosingType;
+	return anAncestorType;
+//	DetailAST aParent = ast.getParent();
+//	if (aParent == null) {
+//		// this must be the type, but still et us call getenclosing
+//		return getEnclosingTypeDeclaration(ast);
+//	}
+//	DetailAST aParentType = getEnclosingTypeDeclaration(aParent);
+//	if (aParentType == null)
+//		return getEnclosingTypeDeclaration(ast); // topMost
+//	// we have a type here, let us try its parent
+//	return getOutermostTypeDeclaration(aParentType); //go to parent and try again
+}
+public static DetailAST getOutermostOrEnclosingTypeDeclaration(DetailAST ast) {
+	if (ProjectSTBuilderHolder.getSTBuilder().visitInnerClasses)
+		return getEnclosingTypeDeclaration(ast);
+	return getOutermostTypeDeclaration(ast);
+}
+public static String getOutermostOrEnclosingShortTypeName(DetailAST ast) {
+	return getName(getOutermostOrEnclosingTypeDeclaration(ast));
 }
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 //	DetailAST result = null;

@@ -19,8 +19,16 @@ public class ClassDefinedCheck extends TypeDefinedCheck{
 		return new int[] {
 				TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
+				TokenTypes.INTERFACE_DEF
 //				TokenTypes.ANNOTATION,
 				};
+	}
+	protected void visitInterface(DetailAST ast) { // get the full type name
+		super.visitType(ast);
+	}
+	protected void visitClass(DetailAST ast) { // get the full type name
+		super.visitType(ast);
+		super.visitClassOrInterface(ast);
 	}
 //	public void setExpectedClasses(String[] anExpectedClasses) {
 //		expectedClasses = Arrays.asList(anExpectedClasses);

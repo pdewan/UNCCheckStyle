@@ -14,12 +14,12 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //	public static final String MSG_KEY = "setterAssignsGlobal";	
-	
+	// so we get full type name in logging
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {
-//				TokenTypes.CLASS_DEF, 
-//				TokenTypes.PACKAGE_DEF
+				TokenTypes.CLASS_DEF, 
+				TokenTypes.PACKAGE_DEF
 				};
 	} 
 

@@ -30,7 +30,7 @@ import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
-public class STBuilderCheck extends ComprehensiveVisitCheck {
+public class CopyOfSTBuilderCheck extends ComprehensiveVisitCheck {
 
 	protected Map<String, Map<String, String[]>> startToSpecification = new HashMap<>();
 
@@ -43,9 +43,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected List<STMethod> stConstructors = new ArrayList();
 	protected Stack<List<STMethod>> stConstructorsStack = new Stack();
 
-//	public static final String MSG_KEY = "stBuilder";
-	public static final String MSG_KEY = "typeDefined";
-
+	public static final String MSG_KEY = "stBuilder";
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework" };
 	protected String checksName;
@@ -54,7 +52,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected  Collection<String> existingClassesCollection = new HashSet();
 	boolean importsAsExistingClasses = false;
 	DetailAST sTBuilderTree = null; // make it non static at some point
-	protected static STBuilderCheck latestInstance;
+	protected static CopyOfSTBuilderCheck latestInstance;
 	protected boolean visitInnerClasses = false;
 	protected Map<String, String[]> classToSpecifications = new HashMap<>();
 	protected Map<String, String[]> interfaceToSpecifications = new HashMap<>();
@@ -63,14 +61,6 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected Map<String, String[]> variableToSpecifications = new HashMap<>();
 	protected Map<String, String[]> parameterToSpecifications = new HashMap<>();
 	protected boolean existingClassesFilled = false;
-	
-	// type defined
-	protected List<String> expectedTypes = new ArrayList();	
-	protected List<String> unmatchedTypes = new ArrayList();
-	protected Map<String, String> tagMatches = new HashMap();
-//	protected Set<String> matchedTypes = new HashSet();
-	protected boolean overlappingTags = true;
-	protected boolean logNoMacthes = true;
 
 
 	public void setDerivedTypeTags(String[] aDerivedTagsSpecifications) {
@@ -95,7 +85,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	}
 
 
-	public STBuilderCheck() {
+	public CopyOfSTBuilderCheck() {
 		latestInstance = this;
 		startToSpecification.put(CLASS_START, classToSpecifications);
 		startToSpecification.put(INTERFACE_START, interfaceToSpecifications);
@@ -152,7 +142,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		}
 	}
 
-	public static STBuilderCheck getLatestInstance() {
+	public static CopyOfSTBuilderCheck getLatestInstance() {
 		return latestInstance;
 	}
 
@@ -271,7 +261,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			processMethodAndClassData();
 		}
 		super.doFinishTree(ast);
-//		super.log(ast, "testing st builder");
+		super.log(ast, "testing st builder");
 
 	}
 
@@ -300,7 +290,6 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			typeTagsInitialized = false; // recompute them
 
 		}
-		visitClassOrInterface(ast);
 	}
 
 	@Override
@@ -564,83 +553,6 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void doVisitToken(DetailAST ast) {
 		super.doVisitToken(ast);
 	}
-	// from type visited
-	public void setExpectedTypes(String[] anExpectedClasses) {
-		expectedTypes = Arrays.asList(anExpectedClasses);
-		unmatchedTypes = new ArrayList(expectedTypes);		
-	}
-	
-	public void setOverlappingTags(boolean newVal) {
-		overlappingTags = newVal;		
-	}
-	
-	public void setLogNoMatches(boolean newVal) {
-		logNoMacthes = newVal;
-	}
-    public void visitClassOrInterface(DetailAST ast) {  
-		
-//    	super.visitType(ast);
-//    	if (fullTypeName.contains("ListImp")) {
-//    		System.out.println ("found inner interface");
-//    	}
-//    	if (shownMissingClasses) {
-//			log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
-//			shownMissingClasses = false;
-//
-//		} 
-    	Boolean check = checkIncludeExcludeTagsOfCurrentType();
-    	if (check == null)
-    		return;
-    	if (!check)
-    		return;
-    	List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
-//    	System.out.println("Checking full type name: " + fullTypeName);
-    	if (tagMatches.containsKey(fullTypeName)) {
-    		tagMatches.remove(fullTypeName);
-    		if (!overlappingTags) {
-    			unmatchedTypes.remove(tagMatches.get(fullTypeName));
-    		}
-    	}
-    	
-    	boolean aFoundMatch = false;
-    	for (String anExpectedClassOrTag:checkTags) {
-    		if ( matchesMyType(maybeStripComment(anExpectedClassOrTag))) {
-    			tagMatches.put(fullTypeName, anExpectedClassOrTag);
-//    			matchedTypes.add(fullTypeName);
-    			unmatchedTypes.remove(anExpectedClassOrTag);
-//    			if (shownMissingClasses) {
-//    				log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
-//        			shownMissingClasses = false;
-//
-//    			} 
-//    			else {
-
-//    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
-    			log(ast, anExpectedClassOrTag);
-    			aFoundMatch = true;
-//
-//    			}
-    		}
-    		
-    	}
-    	if (!aFoundMatch && logNoMacthes) {
-			log(ast, "No Expected Tag");
-		}
-//    		
-//    		
-//    	}
-//    	
-//    	for (String anExpectedClassOrTag:expectedClasses) {
-//    		if ( matchesMyType(anExpectedClassOrTag)) {
-////    			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
-//    			log(currentTree, msgKey(), shortTypeName, expectedClasses.toString());
-//    		}
-//    		
-//    		
-//    	}
-
-
-    }
 
 	public static void main(String[] args) {
 		System.out.println("[200]".matches("(.*)\\[(.*)\\](.*)"));
@@ -658,6 +570,5 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		
 		
 	}
-	
 
 }

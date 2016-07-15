@@ -18,6 +18,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 public  class MissingMethodCallCheck extends MethodCallCheck {
 	public static final String MSG_KEY = "missingMethodCall";
@@ -68,7 +69,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //	}
 	@Override
 	public void leaveType(DetailAST ast) {
-		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 			maybeAddToPendingTypeChecks(ast);
 		}
 		super.leaveType(ast);
@@ -79,7 +80,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		// for (STMethod aMethod: anSTType.getMethods()) {
 		// visitMethod(anSTType, aMethod);
 		// }
-		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (!ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 
 		maybeAddToPendingTypeChecks(ast);
 		}

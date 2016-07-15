@@ -58,6 +58,9 @@ public class MinCalledMethodsCheck extends ComprehensiveVisitCheck {
     		aMaxMethods = Math.max(aMethod.getAllInternallyCalledMethods().size(), aMaxMethods);   		
     	}
     	if (aMaxMethods < minCalledMethods) {
+    		if (fullTypeName.contains("Cell")) {
+    			System.out.println("Found inner class:");
+    		}
 //          log(ast.getLineNo(), msgKey(), min);
           log(ast, currentTree, aMaxMethods, minCalledMethods);
         }

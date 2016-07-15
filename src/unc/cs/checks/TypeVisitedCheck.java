@@ -9,6 +9,7 @@ import java.util.Stack;
 import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -93,9 +94,16 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	    	typeNameAST = ast.findFirstToken(TokenTypes.IDENT);
 	    	isGeneric =  (typeNameAST.getNextSibling().getType() == TokenTypes.TYPE_PARAMETERS);
 			 shortTypeName = typeNameAST.getText();
+//			 if (shortTypeName.contains("Bridge")) {
+//				 System.out.println ("found outer class");
+//			 }
+//			 if (shortTypeName.contains("ListImp")) {
+//				 System.out.println("inner interface");
+//			 }
 			 fullTypeName = packageName + "." + shortTypeName;
+			 
 			 typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
-		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 	 
 		    typeASTStack.push(typeAST);
 		    typeNameASTStack.push(typeNameAST);
@@ -123,7 +131,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	 // and finishTree might assume these values to be set
 	 // so not calling it
 	 protected void leaveTypeMinimal (DetailAST ast) {
-		 if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		 if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 			 typeAST = myPop(typeASTStack);
 //		 typeASTStack.pop();
 //		 typeAST = typeASTStack.peek();
@@ -315,7 +323,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		return toStringListPrefixOrInfix(anAST);
 	}
 	protected boolean getVisitInnerClasses() {
-		return STBuilderCheck.getSingleton().getVisitInnerClasses();
+		return ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses();
 	}
 
 }

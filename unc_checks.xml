@@ -21,76 +21,6 @@
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, java.lang.Thread" />
 			<property name="importsAsExistingClasses" value="true" />
-
-		</module>
-
-	</module>
-
-
-	<module name="TreeWalker">
-		<module name="EqualsAvoidNull" />
-		<module name="EmptyStatement" />
-		<module name="MagicNumber" />
-		<module name="SimplifyBooleanExpression" />
-		<module name="SimplifyBooleanReturn" />
-		<module name="StringLiteralEquality" />
-		<module name="NestedForDepth">
-			<property name="max" value="1" />
-		</module>
-		<module name="NestedIfDepth">
-			<property name="max" value="1" />
-		</module>
-		<module name="PackageDeclaration" />
-		<module name="AvoidStarImport">
-			<module name="HiddenField" />
-
-		</module>
-
-		<module name="VisibilityModifier">
-			<property name="packageAllowed" value="true" />
-			<property name="protectedAllowed" value="true" />
-		</module>
-		<module name="ConstantName" />
-		<module name="TypeName" />
-		<module name="MethodName" />
-		<module name="LocalVariableName" />
-		<module name="MemberName" />
-		<module name="StaticVariableName" />
-		<module name="NeedBraces" />
-		<module name="MultipleStringLiterals" />
-
-		<module name="NoDuplicateShortTypeName">
-		</module>
-		<module name="NoFullTypeName">
-		</module>
-
-		<module name="IllegalMethodCall">
-			<property name="disallowedCalls" value="Scanner, String" />
-			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.toLowerCase, String.equals, String.equalsIgnoreCase, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
-		</module>
-		<module name="UnnecessaryMethodCall">
-			<property name="disallowedCalls" value="Scanner, String" />
-			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.equals, String.equalsIgnoreCase, String.toLowerCase, Scanner.nextLine, Scanner.close" />
-		</module>
-
-		<module name="IllegalInitCall">
-			<property name="includeTypeTags" value="*" />
-		</module>
-		<module name="IllegalComponentInstantiation">
-			<property name="includeTypeTags" value="*" />
-		</module>
-		<module name="IllegalTypeImported">
-			<property name="legalPrefixes"
-				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.beans" />
-		</module>
-		<module name="IllegalTypeDefined">
-			<property name="illegalTypeNames"
-				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
-		</module>
-		<module name="ClassDefined">
-			<property name="severity" value="info" />
 			<property name="expectedTypes"
 				value="
 			main.Assignment(.*), 
@@ -161,79 +91,75 @@
 			@RedoCommand
 			
 			" />
+
 		</module>
-		<module name="InterfaceDefined">
-			<property name="severity" value="info" />
-			<property name="expectedTypes"
-				value="		
-			@ScannerBean, 
-			@Number, 
-			@Word, 
-			@Quote, 
-			@Start, 
-			@End, 
-			@Plus, 
-			@Minus,
-			@move, 
-			@say, 
-			@rotateLeftArm, 
-			@rotateRightArm,  
-			@repeat, 
-			@define, 
-			@call,  
-			@thread, 
-			@wait, 
-			@proceedAll,  
-			@sleep,  
-			@undo, 
-			@redo, 
-			@approach,
-			@pass,
-			@fail,
-			@RotatingLine, 
-			@Angle, 
-			@Avatar, 
-			@BridgeScene, 
-			@Locatable, 
-			@BoundedShape, 
-			@Table, 
-			@CommandInterpreter,
-			@ConsoleSceneView,
-			@InheritingBridgeScenePainter,
-			@ObservableBridgeScenePainter,
-			@PaintListener,
-			@BridgeSceneController,
-			@CommandInterpreterController,
-			@ObservableCommandInterpreter,
-			@SayCommand,
-			@MoveCommand,
-			@PassCommand,
-			@Animator,
-			@AnimatingCommand,
-			@FailCommand,
-			@ApproachCommand,
-			@RepeatCommand,
-			@CommandList,
-			@RotateLeftArm,
-			@RotateRightArm,
-			@Sleep,
-			@Define,
-			@Call,
-			@Thread,			
-			@DefineCommand,
-			@CallCommand,
-			@ThreadCommand,
-			@Parser,
-			@ScanningException,
-			@ParsingException,
-			@BroadcastingClearanceManager,			
-			@SingletonsCreator,
-			@CustomSwingTextFieldFactory,
-			@UndoCommand,
-			@RedoCommand
-			
-			" />
+
+	</module>
+
+
+	<module name="TreeWalker">
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="MagicNumber" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
 		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="PackageDeclaration" />
+		<module name="AvoidStarImport">
+			<module name="HiddenField" />
+
+		</module>
+
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces" />
+		<module name="MultipleStringLiterals" />
+
+		<module name="NoDuplicateShortTypeName">
+		</module>
+		<module name="NoFullTypeName">
+		</module>
+
+		<module name="IllegalMethodCall">
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="String.substring, String.charAt, String.length, String.toLowerCase, String.equals, String.equalsIgnoreCase, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
+		</module>
+		<module name="UnnecessaryMethodCall">
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="String.substring, String.charAt, String.length, String.equals, String.equalsIgnoreCase, String.toLowerCase, Scanner.nextLine, Scanner.close" />
+		</module>
+
+		<module name="IllegalInitCall">
+			<property name="includeTypeTags" value="*" />
+		</module>
+		<module name="IllegalComponentInstantiation">
+			<property name="includeTypeTags" value="*" />
+		</module>
+		<module name="IllegalTypeImported">
+			<property name="legalPrefixes"
+				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.beans" />
+		</module>
+		<module name="IllegalTypeDefined">
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
+		</module>
+		
 
 		<module name="ExpectedGetters">
 			<property name="expectedProperties"

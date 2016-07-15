@@ -68,6 +68,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			List<STVariable> aGlobalSTVariables
 			) {
 		super(ast, name);
+//		if (name.contains("Cell")) {
+//			System.out.println (" found an inner class");
+//		}
 		this.declaredMethods = declaredMethods;
 		this.declaredConstructors = aDeclaredConstructors;
 		this.declaredInterfaces = interfaces;

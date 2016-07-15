@@ -53,7 +53,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	protected void logDeletedMessages (String aFileName, Set<String> aDeletedMessages) {
 		for (String aDeletedMessage:aDeletedMessages) {
 			appendLine(toString(false, lastSequenceNumber + lastReadSequenceNumber + 1, aFileName, aDeletedMessage));
-			System.out.println("Deleting:" + aDeletedMessage + " with key" + aFileName );
+//			System.out.println("Deleting:" + aDeletedMessage + " with key" + aFileName );
 		}
 		
 	}
@@ -61,10 +61,10 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	protected void mergeWithLastPhase(String aFileName,Set<String> anOriginalMessages, Set<String> aNewMessages) {
 		if (anOriginalMessages == null)
 			return;
-		if (aFileName.contains("Illegal")) {
-			System.out.println (" origina:" + anOriginalMessages);
-			System.out.println (" new:" + aNewMessages);
-		}
+//		if (aFileName.contains("Illegal")) {
+//			System.out.println (" origina:" + anOriginalMessages);
+//			System.out.println (" new:" + aNewMessages);
+//		}
 		Set<String> aDeletedMessages = new HashSet(anOriginalMessages);	
 		if (aNewMessages != null) {
 			aDeletedMessages.removeAll(aNewMessages);
@@ -83,8 +83,28 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			mergeWithLastPhase(aFileName,anOriginalMessages, aNewMessages);
 		}
 	}
-	protected void incrmentalMergeWithLastPhase(Set<String> aFilesInLastPhase) {
-		System.out.println("Merging with last phase");
+	protected void batchMergeWithLastPhase(Set<String> aFilesInLastPhase) {
+//		System.out.println("Merging with last phase");
+		if (aFilesInLastPhase.size() < fileNameToMessages.size()) {
+			for (String aKeyName:fileNameToMessages.keySet()) {
+				boolean foundKey = false;
+				for (String aFileName:aFilesInLastPhase) {
+					if (aFileName.contains(aKeyName)) {
+						foundKey = true;
+						break;
+					}
+				}
+//				if (!foundKey) {
+//					System.err.println ("Not found key:" + aKeyName);
+//					System.out.println("Messages with key:" + fileNameToMessages.get(aKeyName));
+//				}
+			}
+//			Set<String> missingFiles = new HashSet(fileNameToMessages.keySet());.key
+//			missingFiles.removeAll(aFilesInLastPhase);			
+			System.err.println("files in last phase: " + aFilesInLastPhase.size() + " < files with messages " +  fileNameToMessages.size() + ", not doing merge");
+//			System.out.println ("Missing files:" + missingFiles);
+			return;
+		}
 //		int aNumFilesInLastPhase = aFilesInLastPhase.size();
 		// total files visited should be at least as many as total number of erroneous files
 		// sometimes checkstyle has two fewer files
@@ -94,6 +114,18 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //		}
 //		for (String aFileName:aFilesInLastPhase) { // only the files we received errors from
 		for (String aFileName:fileNameToMessages.keySet()) { 
+			
+			Set<String> anOriginalMessages = fileNameToMessages.get(aFileName);
+			Set<String> aNewMessages = fileNameToLastPhaseMessages.get(aFileName);
+			mergeWithLastPhase(aFileName, anOriginalMessages, aNewMessages);
+		}
+	}
+	
+	protected void incrementalMergeWithLastPhase(Set<String> aFilesInLastPhase) {
+		System.out.println("Merging with last phase");
+
+		for (String aFileName:aFilesInLastPhase) { // only the files we received errors from
+//		for (String aFileName:fileNameToMessages.keySet()) { 
 			
 			Set<String> anOriginalMessages = fileNameToMessages.get(aFileName);
 			Set<String> aNewMessages = fileNameToLastPhaseMessages.get(aFileName);
@@ -119,9 +151,10 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //			double aFractionInNewPhase
 //			if (numFiles)
 
-		incrmentalMergeWithLastPhase(aFilesInLastPhase);
+		batchMergeWithLastPhase(aFilesInLastPhase);
 		}
 		wasLastPhaseAutoBuild = anIsAutoBuild;
+//		System.out.println("lasy phase was built auto?" + wasLastPhaseAutoBuild);
 		fileNameToLastPhaseMessages.clear();
 		
 		
@@ -129,7 +162,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	@Override
 	public void newSequenceNumber(int aSequenceNumber, boolean isAutoBuild,
 			Set<String> aFilesInLastPhase) {
-		System.out.println("New sequence number:" + aSequenceNumber + "isAuroBuild:" + isAutoBuild + " num files" + aFilesInLastPhase.size());
+//		System.out.println("New sequence number:" + aSequenceNumber + "isAuroBuild:" + isAutoBuild + " num files" + aFilesInLastPhase.size());
 		maybeProcessLastPhase(aSequenceNumber, isAutoBuild, aFilesInLastPhase);
 
 	
@@ -153,7 +186,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			aMessages = new HashSet();
 			fileNameToMessages.put(aKeyName, aMessages);
 	    }
-		System.out.println (aMessage + " not found for key " + aKeyName);
+//		System.out.println (aMessage + " not found for key:" + aKeyName + ":");
 		aMessages.add(aMessage);
 //		Set<String> aLastMessages = fileNameToLastPhaseMessages.get(aFileName);
 //		if (aLastMessages == null) {
@@ -201,20 +234,25 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //		}
 //	}
 	protected String keyName(boolean isLive, String aFileName, Object... arg) {
+		String retVal = null;
 		int anArgIndex = isLive?2:0;
 		if (arg == null)
 			return aFileName;
 		Object classNameArg = null;
 		try {
-		return arg != null 
+		retVal = arg != null 
 				&& arg.length > anArgIndex 
 				&& arg[anArgIndex] != null
 				?arg[anArgIndex].toString():
 					aFileName;
 		} catch (NullPointerException e) {
 			e.printStackTrace();
-			return aFileName;
+			retVal = aFileName;
 		}
+		if (retVal.isEmpty() || retVal.equals(" ")) {
+			System.err.println(" Empty key:" +  retVal);
+		}
+		return retVal;
 	}
 //	protected String keyNameLoggedMessage(String aFileName, Object... arg) {
 //		if (arg == null)
@@ -258,7 +296,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			anExistingMessages = new HashSet();
 			fileNameToMessages.put(aFileName, anExistingMessages);
 		}
-		System.out.println ("reading message" + aMessage + " for key:" + aFileName);
+//		System.out.println ("reading message" + aMessage + " for key:" + aFileName);
 		if (isAddition) {
 			anExistingMessages.add(aMessage);
 		} else {
@@ -388,7 +426,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		 }
 	 }
 	void appendLine(String aLine) {
-		System.out.println("logging:" + aLine);
+//		System.out.println("logging:" + aLine);
 		maybeCreateOrLoadAppendableFile(logFileName);
 		out.println(aLine);
 		out.flush();

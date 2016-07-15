@@ -19,6 +19,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 	// move this to a super class
@@ -168,7 +169,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //	}
 	@Override
 	public void leaveType(DetailAST ast) {
-		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 			maybeAddToPendingTypeChecks(ast);
 		}
 		super.leaveType(ast);
@@ -179,7 +180,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 		// for (STMethod aMethod: anSTType.getMethods()) {
 		// visitMethod(anSTType, aMethod);
 		// }
-		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (!ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 
 		maybeAddToPendingTypeChecks(ast);
 		}

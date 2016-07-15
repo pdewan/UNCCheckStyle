@@ -7,14 +7,14 @@ import unc.cs.checks.STBuilderCheck;
 import unc.tools.checkstyle.ProjectDirectoryHolder;
 
 
-public class ChecksNameHolder {
-	static Map<String, String> projectToChecksName = new HashMap<>();
+public class ProjectSTBuilderHolder {
+	static Map<String, STBuilderCheck> projectToChecksName = new HashMap<>();
 	
-	public static String getChecksName() {
+	public static STBuilderCheck getSTBuilder() {
 		String aProjectDirectory = ProjectDirectoryHolder.getCurrentProjectDirectory();
-		String aChecksName = projectToChecksName.get(aProjectDirectory);
+		STBuilderCheck aChecksName = projectToChecksName.get(aProjectDirectory);
 		if (aChecksName == null) {
-			aChecksName = STBuilderCheck.getChecksName();
+			aChecksName = STBuilderCheck.getLatestInstance();
 			projectToChecksName.put(aProjectDirectory, aChecksName);
 		}
 		return aChecksName;

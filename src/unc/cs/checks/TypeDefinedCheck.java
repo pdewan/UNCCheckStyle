@@ -48,9 +48,12 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
 	}
 	
 
-	public void visitType(DetailAST ast) {  
+	public void visitClassOrInterface(DetailAST ast) {  
 		
-    	super.visitType(ast);
+//    	super.visitType(ast);
+//    	if (fullTypeName.contains("ListImp")) {
+//    		System.out.println ("found inner interface");
+//    	}
 //    	if (shownMissingClasses) {
 //			log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
 //			shownMissingClasses = false;

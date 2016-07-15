@@ -2,6 +2,7 @@ package unc.cs.checks;
 
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
@@ -59,7 +60,7 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 	}
 	@Override
 	public void leaveType(DetailAST ast) {
-		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 			maybeAddToPendingTypeChecks(ast);
 		}
 		super.leaveType(ast);
@@ -69,7 +70,7 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //		if (fullTypeName == null) {
 //			return; // interface or come other non class
 //		}
-		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (!ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 		maybeAddToPendingTypeChecks(ast);
 		}
 		super.doFinishTree(ast);

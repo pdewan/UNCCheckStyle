@@ -25,8 +25,8 @@ public class AFileBasedCheckStyleLogFileManager extends ACheckStyleLogFileManage
 	protected String keyName(String aFileName, Object... arg) {
 		return aFileName;
 	}
-	protected void incrmentalMergeWithLastPhase(Set<String> aFilesInLastPhase) {
-		System.out.println("Merging with last phase");
+	protected void batchMergeWithLastPhase(Set<String> aFilesInLastPhase) {
+//		System.out.println("Merging with last phase");
 		for (String aFileName:aFilesInLastPhase) { // only the files we received errors from
 //		for (String aFileName:fileNameToMessages.keySet()) { 
 

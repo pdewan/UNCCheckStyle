@@ -20,9 +20,17 @@ public class InterfaceDefinedCheck extends TypeDefinedCheck{
 	public int[] getDefaultTokens() {
 		return new int[] {
 				TokenTypes.PACKAGE_DEF,
+				TokenTypes.CLASS_DEF, // for inner classes
 				TokenTypes.INTERFACE_DEF,
 //				TokenTypes.ANNOTATION,
 				};
+	}
+	protected void visitClass(DetailAST ast) { // get the full type name
+		super.visitType(ast);
+	}
+	protected void visitInterface(DetailAST ast) { // get the full type name
+		super.visitType(ast);
+		super.visitClassOrInterface(ast);
 	}
 
 	@Override

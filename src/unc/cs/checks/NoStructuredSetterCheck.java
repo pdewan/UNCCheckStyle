@@ -19,12 +19,13 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "noStructuredSetter";
 //	protected Set<String> excludeStructuredTypes = new HashSet();
 
-	
+	// so we get full type name in logging
+
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] { 
-//				TokenTypes.PACKAGE_DEF, 
-//				TokenTypes.CLASS_DEF,
+				TokenTypes.PACKAGE_DEF, 
+				TokenTypes.CLASS_DEF,
 //				 TokenTypes.INTERFACE_DEF,
 //				 TokenTypes.ENUM_DEF
 				
@@ -46,7 +47,8 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 		
 	}
 public void doFinishTree(DetailAST ast) {
-		
+		if (fullTypeName == null)
+			return; // we are an interface
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);
 
@@ -121,6 +123,9 @@ public void doFinishTree(DetailAST ast) {
 				continue;
 			DetailAST aSetterAST = aSetter.getAST();
 //			log(aSetterAST.getLineNo(), msgKey(), aPropertyName, aType);
+//			if (aPropertyName.contains("Bar")) {
+//				System.out.println ("foud bar");
+//			}
 			log(aSetterAST, aPropertyName, aType);
 			retVal = false;
 		}

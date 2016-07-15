@@ -13,8 +13,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class FunctionAssignsGlobalCheck extends MethodEffectCheck{
 	public static final String MSG_KEY = "functionAssignsGlobal";	
 	
-	
-//	@Override
+//	// so we get full type name
+////	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
 //	} 

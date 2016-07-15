@@ -16,7 +16,7 @@ import org.eclipse.ui.console.MessageConsole;
 import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManager;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
-import unc.tools.checkstyle.ChecksNameHolder;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 import unc.tools.checkstyle.ProjectDirectoryHolder;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -95,7 +95,7 @@ public abstract class UNCCheck extends Check {
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
 				.maybeNewProjectDirectory(aNewProjectDirectory,
 //						STBuilderCheck.getChecksName()
-						ChecksNameHolder.getChecksName()
+						ProjectSTBuilderHolder.getSTBuilder().getChecksName()
 						);
 	}
 
@@ -174,12 +174,12 @@ public abstract class UNCCheck extends Check {
 	protected void newSequenceNumber() {
 
 		filesInLastPhase = filesInCurrentPhase;
-		Set<String> aFilesNotInLastPhase = new HashSet(allFilesInProject);
-		aFilesNotInLastPhase.removeAll(filesInLastPhase);
-		if (aFilesNotInLastPhase.size() > 0) {
-			System.err.println ("Missing files:" + aFilesNotInLastPhase);
-			System.err.println("Actual files:" + filesInLastPhase);
-		}
+//		Set<String> aFilesNotInLastPhase = new HashSet(allFilesInProject);
+//		aFilesNotInLastPhase.removeAll(filesInLastPhase);
+//		if (aFilesNotInLastPhase.size() > 0) {
+//			System.err.println ("Missing files:" + aFilesNotInLastPhase);
+//			System.err.println("Actual files:" + filesInLastPhase);
+//		}
 		filesInCurrentPhase = new HashSet();
 //		System.out.println("Rsetting current phase files:");
 		if (sequenceNumber == null) {
@@ -241,7 +241,7 @@ public abstract class UNCCheck extends Check {
 		if (
 		// isAutoBuild ||
 		aTimeDelta > NEW_CHEKCKS_THRESHOLD) {
-			System.out.println("Time delta:" + aTimeDelta);
+//			System.out.println("Time delta:" + aTimeDelta);
 			newSequenceNumber();
 
 		}
@@ -310,7 +310,7 @@ public abstract class UNCCheck extends Check {
 			CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
 					.maybeNewProjectDirectory(ProjectDirectoryHolder.getCurrentProjectDirectory(),
 //							STBuilderCheck.getChecksName()
-							ChecksNameHolder.getChecksName()
+							ProjectSTBuilderHolder.getSTBuilder().getChecksName()
 							);
 			saveFileName(aFileName);
 //			maybeNewSequenceNumber(); // which should go first?

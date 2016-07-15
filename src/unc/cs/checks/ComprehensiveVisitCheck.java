@@ -25,6 +25,7 @@ import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
 import unc.cs.symbolTable.VariableKind;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -2174,10 +2175,21 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (aFileContents != null) {
 			return aFileContents.getFilename();
 		}
-		aFileContents = STBuilderCheck.getSingleton().getAstToFileContents()
+		aFileContents = ProjectSTBuilderHolder.getSTBuilder().getAstToFileContents()
 				.get(aTreeAST);
 		if (aFileContents != null) {
 			return aFileContents.getFilename();
+		} else {
+			String anASTName = getName(getEnclosingTypeDeclaration(aTreeAST));
+			Map<DetailAST, FileContents> aTable = ProjectSTBuilderHolder.getSTBuilder().getAstToFileContents();
+		
+			for (DetailAST aKey:aTable.keySet()) {
+				FileContents aFileContents2 = aTable.get(aKey);
+				String aFileName = aFileContents2.getFilename();
+				if (aFileName.contains("Illegal")) {
+					System.out.println("Found illegal");
+				}
+			}
 		}
 		return "";
 	}
@@ -2216,7 +2228,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		} else {
 		anArgs[1] = composeSourceName(aSourceName, aLineNo);
 //		anArgs[2] = getEnclosingShortClassName(anAST);
-		anArgs[2] = getEnclosingShortTypeName(anAST);
+//		anArgs[2] = getEnclosingShortTypeName(anAST);
+		anArgs[2] = getOutermostOrEnclosingShortTypeName(anAST);
+//		DetailAST anEnclosingTypeAST = getEnclosingTypeDeclaration(anAST);
+//		String  anEnclosingTypeName = getEnclosingShortTypeName(anEnclosingTypeAST);
+		if (anArgs[2] == null || anArgs[2].toString().isEmpty()) {
+			System.out.println("Empty name");
+		}
+//		if (anArgs[2].toString().contains("Bridge")) {
+//			System.out.println("Found Bridge");
+//		}
 
 		if (anArgs[2] == null) {
 			anArgs[2] = aSourceName;
@@ -2439,14 +2460,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			return;
 		case TokenTypes.CLASS_DEF:
 			if (fullTypeName == null // outer class
-			|| STBuilderCheck.getSingleton().getVisitInnerClasses()) // avoid inner class if we haev visited
+			|| ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) // avoid inner class if we haev visited
 										
 				visitClass(ast);
 			return;
 		case TokenTypes.INTERFACE_DEF:
 			if (fullTypeName == null // avoid inner class if we have visited
 										// outer class
-				|| STBuilderCheck.getSingleton().getVisitInnerClasses())
+				|| ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses())
 
 				visitInterface(ast);
 			return;

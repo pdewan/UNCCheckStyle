@@ -13,6 +13,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public class SetterAssignsGlobalCheck extends MethodEffectCheck{
 	public static final String MSG_KEY = "setterAssignsGlobal";	
 	
+//	// to get type name
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};

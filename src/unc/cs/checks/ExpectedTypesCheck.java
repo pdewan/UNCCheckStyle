@@ -17,6 +17,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //	public static final String MSG_KEY = "expectedInterfaces";
@@ -207,7 +208,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //	}
 	@Override
 	public void leaveType(DetailAST ast) {
-		if (STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 			maybeAddToPendingTypeChecks(ast);
 		}
 		super.leaveType(ast);
@@ -218,7 +219,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 		// for (STMethod aMethod: anSTType.getMethods()) {
 		// visitMethod(anSTType, aMethod);
 		// }
-		if (!STBuilderCheck.getSingleton().getVisitInnerClasses()) {
+		if (!ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 
 		maybeAddToPendingTypeChecks(ast);
 		}
