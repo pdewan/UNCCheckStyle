@@ -102,7 +102,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(METHOD_START, methodToSpecifications);
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
-		System.out.println ("Setting checks name to:" + "Assignments" );
+//		System.out.println ("Setting checks name to:" + "Assignments" );
 		checksName =  "Assignments";;
 		setCheckOnBuild(true); //make symboltable incrementally
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
