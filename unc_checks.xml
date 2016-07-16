@@ -129,7 +129,7 @@
 		<module name="NeedBraces" />
 		<module name="MultipleStringLiterals" />
 
-		<module name="NoDuplicateShortTypeName">
+		<module name="DuplicateShortTypeName">
 		</module>
 		<module name="NoFullTypeName">
 		</module>

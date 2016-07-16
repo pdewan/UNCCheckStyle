@@ -8,7 +8,7 @@ import unc.cs.symbolTable.SymbolTableFactory;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-public class NoDuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
+public class DuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "noDuplicateShortTypeName";
 	@Override
 	public int[] getDefaultTokens() {
