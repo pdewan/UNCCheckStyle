@@ -100,7 +100,7 @@
 	<module name="TreeWalker">
 		<module name="EqualsAvoidNull" />
 		<module name="EmptyStatement" />
-		<module name="MagicNumber" />
+		<module name="LiberalMagicNumber" />
 		<module name="SimplifyBooleanExpression" />
 		<module name="SimplifyBooleanReturn" />
 		<module name="StringLiteralEquality" />
