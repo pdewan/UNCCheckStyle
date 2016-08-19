@@ -29,9 +29,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	// get full name
 	public int[] getDefaultTokens() {
 		return new int[] {
-//				 TokenTypes.PACKAGE_DEF,
+				 TokenTypes.PACKAGE_DEF,
 				TokenTypes.CLASS_DEF,
-				TokenTypes.INTERFACE_DEF,
+//				TokenTypes.INTERFACE_DEF,
 
 				};
 

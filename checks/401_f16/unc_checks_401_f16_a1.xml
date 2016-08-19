@@ -6,6 +6,7 @@
 
 
 <module name="unc.tools.checkstyle.AnExtendibleChecker">
+		
 
 	<property name="severity" value="warning" />
 
@@ -17,20 +18,64 @@
 			<property name="includeTypeTags" value="*" />
 
 			<property name="severity" value="info" />
-			<property name="projectPackagePrefixes" value="test,lectures,mp, main, grail" />
+			<property name="projectPackagePrefixes" value="test,lectures, main, grail" />
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
 				value="401_f16_A1" />
-			<property name="expectedTypes" value="main.Assignment(.*)" />				
+			<property name="expectedTypes" value="
+				main.Assignment(.*),
+				mp.scanner.ScanningIterator//EC
+				" />				
 
 		</module>
+		
 
 	</module>
 
 
 	<module name="TreeWalker">
+		<module name="ExpectedDeclaredSignatures">
+				<property name="expectedSignatures"
+					value="
+					main.Assignment(.*) = 
+						processInput:->void AND
+						scanString:String->void AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC,
+					grail.scanner.ScanningIterator=
+						indexOf:String;char;int->void AND
+						indexOfNot:String;char;int->void//EC	
+					" />
+			</module>
+			<module name="MissingMethodCall">
+			<property name="expectedCalls"
+				value="
+				main.Assignment(.*) = 
+						processInput:->void AND
+						scanString:String->void AND
+						indexOf:String;char;int->void AND
+						indexOfNot:String;char;int->void//EC AND
+						(.*)!hasNext:->boolean//EC AND
+						(.*)!next:->String//EC,
+				mp.scanner.ScanningIterator=
+						indexOf:String;char;int->void AND
+						indexOfNot:String;char;int->void//EC
+						" />
+			</module>
+		<module name="ExpectedConstructors">
+			<property name="expectedSignatures"
+				value="
+				mp.scanner.ScanningIterator =:String,												
+				" />
+		</module>
+		<module name="ExpectedInterfaces">
+			<property name="expectedInterfaces"
+				value="
+				ScanningIterator = Iterator//EC
+				" />
+		</module>				
 		<module name="EqualsAvoidNull" />
 		<module name="EmptyStatement" />
 		<module name="MagicNumber" />
@@ -65,11 +110,7 @@
 			<property name="minDeclaredMethods" value="2" />
 		</module>
 		
-		<module name="MinCalledMethods">
-			<property name="minCalledMethods" value="1" />
-		</module>
-
-
+		
 		<module name="DuplicateShortTypeName">
 			<property name="includeTypeTags" value="*" />
 		</module>
@@ -87,7 +128,7 @@
 			<property name="exceptionCalls"
 				value="String.substring, String.charAt, String.length, Scanner.nextLine, Scanner.close" />
 		</module>
-
+		
 		
 		<module name="IllegalTypeImported">
 			<property name="illegalPrefixes" value="*" />
