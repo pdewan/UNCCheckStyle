@@ -52,7 +52,12 @@ public abstract class UNCCheck extends Check {
 	protected  boolean checkOnBuild = false;
 	boolean visitedTree = true;
 
-
+	public UNCCheck() {
+		initCheck();
+	}
+	protected void initCheck() {
+		findConsole();
+	}
 	protected MessageConsole findConsole() {
 		if (notInPlugIn)
 			return null;
@@ -137,6 +142,9 @@ public abstract class UNCCheck extends Check {
 	}
 
 	protected void maybeAskForConsent() {
+		System.out.println("Ask for consent: Checking if in plugin:" + notInPlugIn);
+		if (notInPlugIn)
+			return; // we are grading in server
 		if (consentFormShown)
 			return;
 		consentFormSigned = AConsentFormVetoer
