@@ -22,6 +22,7 @@ import java.util.Set;
 
 
 public class ACheckStyleLogFileManager implements CheckStyleLogManager {
+	public static final String SUBMISSION_FOLDER_NAME = "Submission attachment(s)";
 	protected  PrintWriter out = null;
 	protected  BufferedWriter bufWriter;
 	protected String logFileName;
@@ -440,6 +441,9 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	        String aFullFileName = aFileName;
 	        File aFile = new File(aFullFileName);
 	        boolean aNewFile = !aFile.exists();
+	        if (aNewFile) {
+	        	aFile.getParentFile().mkdirs();
+	        }
 	        try {
 	            bufWriter
 	                    = Files.newBufferedWriter(
@@ -481,6 +485,13 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	public void checkStyleStarted() {
 		projectDirectry = null;
 	}
+	protected static String logDirectory(String aProjectDirectory) {
+		int aSubmisssionAttachmentIndex = aProjectDirectory.indexOf(SUBMISSION_FOLDER_NAME);
+		if (aSubmisssionAttachmentIndex < 0) {
+			return aProjectDirectory;
+		}
+		return aProjectDirectory.substring(0, aSubmisssionAttachmentIndex + SUBMISSION_FOLDER_NAME.length() + 1); // get the last slash also
+	}
 	@Override
 	public void maybeNewProjectDirectory(String aProjectDirectory, String aChecksName) {
 		if (aProjectDirectory.equals(projectDirectry))
@@ -488,7 +499,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 		reset();
 		projectDirectry = aProjectDirectory;
 //		if (logFileName == null)
-		logFileName = aProjectDirectory + "/" + AConsentFormVetoer.LOG_DIRECTORY + "/" + aChecksName + ".csv";
+		logFileName = logDirectory(aProjectDirectory) + "/" + AConsentFormVetoer.LOG_DIRECTORY + "/" + aChecksName + ".csv";
 //		out = null;
 //		bufWriter = null;
 //		mergeWithLastPhase();
@@ -524,8 +535,9 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	
 	
 	 
-//	 public static void main (String[] args) {
-//		 String[] anArray = {"hello", "goodbye"};
-//		 System.out.println(Arrays.toString(anArray));
-//	 }
+	 public static void main (String[] args) {
+		 String aLogDirectory = logDirectory("D:/dewan_backup/Java/Grader/Test Data/Comp401F16/Assignment1/All, Correct (acorrect)/Submission attachment(s)/Assignment1/Assignment1/");
+		 aLogDirectory = logDirectory("D:/dewan_backup/Java/Grader/Test Data/Comp401F16/Assignment1/");
+	 
+	 }
 }

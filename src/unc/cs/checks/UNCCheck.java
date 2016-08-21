@@ -142,7 +142,7 @@ public abstract class UNCCheck extends Check {
 	}
 
 	protected void maybeAskForConsent() {
-		System.out.println("Ask for consent: Checking if in plugin:" + notInPlugIn);
+//		System.out.println("Ask for consent: Checking if in plugin:" + notInPlugIn);
 		if (notInPlugIn)
 			return; // we are grading in server
 		if (consentFormShown)
@@ -285,6 +285,12 @@ public abstract class UNCCheck extends Check {
 			visitedTree = true;
 			isPackageInfo = false;
 			String aFileName = getFileContents().getFilename();
+//			if (aFileName.contains("ndo")) {
+//				System.out.println ("found undo");
+//			}
+//			if (aFileName.contains("main")) {
+//				System.out.println ("Found main");
+//			}
 			if (!fileNameCheck(aFileName))
 				return;
 			if (aFileName.endsWith("package-info.java")) {

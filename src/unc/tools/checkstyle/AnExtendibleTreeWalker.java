@@ -57,7 +57,8 @@ public  class AnExtendibleTreeWalker
     extends AbstractFileSetCheck {
 	TreeWalker delegate;
 	Object delegateCache;
-	Method cacheAlreadyChecked;
+	Method cacheCheckedOk;
+//	Method cacheAlreadyChecked;
 	Method delegateProcessFiltered;
 //	Method cacheDestroy;
 
@@ -90,12 +91,17 @@ public  class AnExtendibleTreeWalker
 			
 			delegateCache = delegateCacheField.get(delegate);
 			Class delegateCacheClass = delegateCache.getClass();
-			cacheAlreadyChecked = delegateCacheClass.getDeclaredMethod
-					("alreadyChecked", new Class[]{String.class, Long.TYPE});
+//			cacheAlreadyChecked = delegateCacheClass.getDeclaredMethod
+//					("alreadyChecked", new Class[]{String.class, Long.TYPE});
+////			cacheDestroy = delegateCacheClass.getDeclaredMethod
+////					("destroy");
+//			cacheAlreadyChecked.setAccessible(true);
+//			System.out.println (" found the methods");
+			cacheCheckedOk = delegateCacheClass.getDeclaredMethod
+					("checkedOk", new Class[]{String.class, Long.TYPE});
 //			cacheDestroy = delegateCacheClass.getDeclaredMethod
 //					("destroy");
-			cacheAlreadyChecked.setAccessible(true);
-//			System.out.println (" found the methods");
+			cacheCheckedOk.setAccessible(true);
 			
 			
 
@@ -115,24 +121,59 @@ public  class AnExtendibleTreeWalker
 		// TODO Auto-generated constructor stub
 	}
 	
-
+	protected boolean ignoreCache(File file) {
+		return false;
+		// this stuff seems superfluous as teh delegate processFiltered will make the check
+//        final long timestamp = file.lastModified();
+//        final String fileName = file.getPath();
+//      
+//        try {
+//		return (Boolean) cacheAlreadyChecked.invoke(delegateCache, 
+//				new Object[] {fileName, timestamp})	        
+////		        if (cache.alreadyChecked(fileName, timestamp)
+//					         || !Utils.fileExtensionMatches(file, getFileExtensions());
+//        } catch (IllegalAccessException | IllegalArgumentException
+//				| InvocationTargetException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//        	return false;
+//
+//		}
+	}
 	@Override
 	protected void processFiltered(File file, List<String> lines) {
+		// No need for this as teh delegate does the check itself, we do not need to access it
+//		if (ignoreFile(file)) {
+//			return;
+//
+//		}
 		
 		
-	
-		
-		    // check if already checked and passed the file
-	        final String fileName = file.getPath();
-	        final long timestamp = file.lastModified();
+//	
+//		
+//		    // check if already checked and passed the file
+//	        final String fileName = file.getPath();
+//	        final long timestamp = file.lastModified();
      
 	        try {
-				if ((Boolean) cacheAlreadyChecked.invoke(delegateCache, 
-						new Object[] {fileName, timestamp})	        
-//	        if (cache.alreadyChecked(fileName, timestamp)
-				         || !Utils.fileExtensionMatches(file, getFileExtensions())) {
-				    return;
-				}
+	        	if (ignoreCache(file)) {
+	        		// fool the delegate to think the file is not checked even it if it is
+	    	        final long timestamp = file.lastModified() - 1; 
+	    	        final String fileName = file.getPath();
+
+	    	        cacheCheckedOk.invoke(delegateCache, 
+							new Object[] {fileName, timestamp});
+
+	    			
+	    		}
+	        	
+//	        	// we are not setting the cache, the delegate is, so we do not need this
+//				if ((Boolean) cacheAlreadyChecked.invoke(delegateCache, 
+//						new Object[] {fileName, timestamp})	        
+////	        if (cache.alreadyChecked(fileName, timestamp)
+//				         || !Utils.fileExtensionMatches(file, getFileExtensions())) {
+//				    return;
+//				}
 				delegateProcessFiltered.invoke(delegate, new Object[] {file, lines});
 			} catch (IllegalAccessException | IllegalArgumentException
 					| InvocationTargetException e) {
@@ -143,6 +184,34 @@ public  class AnExtendibleTreeWalker
 	   
 		
 	}
+//	@Override
+//	protected void processFiltered(File file, List<String> lines) {
+//		
+//		
+//	
+//		
+//		    // check if already checked and passed the file
+//	        final String fileName = file.getPath();
+//	        final long timestamp = file.lastModified();
+//     
+//	        try {
+//	        	// we are not setting the cache
+//				if ((Boolean) cacheAlreadyChecked.invoke(delegateCache, 
+//						new Object[] {fileName, timestamp})	        
+////	        if (cache.alreadyChecked(fileName, timestamp)
+//				         || !Utils.fileExtensionMatches(file, getFileExtensions())) {
+//				    return;
+//				}
+//				delegateProcessFiltered.invoke(delegate, new Object[] {file, lines});
+//			} catch (IllegalAccessException | IllegalArgumentException
+//					| InvocationTargetException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//
+//	   
+//		
+//	}
 	@Override
     public void finishLocalSetup() {
 		delegate.finishLocalSetup();	    

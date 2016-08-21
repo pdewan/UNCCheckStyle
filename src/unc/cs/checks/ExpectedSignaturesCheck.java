@@ -366,12 +366,17 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 //		if (!visitType(anSTType)) {
 //			return true;
 //		}
+//		if (anSTType.toString().contains("ss")) {
+//			System.out.println ("Found Ass");
+//		}
 		// this is redundant based on above check,but let us keep
 		if (!doCheck(anSTType)) {
 			return true;
 		}
+		
 		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
 				anSTType);
+		
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
 		List<STMethod> aSpecifiedSignatures = typeToMethods.get(aSpecifiedType);
@@ -402,6 +407,10 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		}
 		super.doFinishTree(ast);
 
+	}
+	@Override
+	public void beginTree(DetailAST ast) {
+		super.beginTree(ast);
 	}
 
 //	@Override

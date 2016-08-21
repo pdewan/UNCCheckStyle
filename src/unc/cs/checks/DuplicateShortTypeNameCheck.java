@@ -1,5 +1,6 @@
 package unc.cs.checks;
 
+import java.util.Arrays;
 import java.util.List;
 
 import unc.cs.symbolTable.SymbolTable;
@@ -9,7 +10,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class DuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
-	public static final String MSG_KEY = "noDuplicateShortTypeName";
+	public static final String MSG_KEY = "duplicateShortTypeName";
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.PACKAGE_DEF, 
@@ -56,7 +57,8 @@ public class DuplicateShortTypeNameCheck extends ComprehensiveVisitCheck {
 //					aTypeNameAST.getText());
 //			System.out.println("dupliicateshortname:" + aFullTypeName);
 			log(aTypeNameAST,
-					aTypeNameAST.getText());
+					aMatches.toString());
+//					aTypeNameAST.getText());
 		}			
 //		SymbolTableFactory.getOrCreateSymbolTable().getInterfaceNameToAST().put(packageName + "." + aTypeName, ast);
 		

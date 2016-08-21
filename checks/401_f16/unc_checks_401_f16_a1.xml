@@ -16,7 +16,6 @@
 
 		<module name="STBuilder">
 			<property name="includeTypeTags" value="*" />
-
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="test,lectures, main, grail" />
 			<property name="existingClasses"
@@ -35,11 +34,15 @@
 	</module>
 
 
-	<module name="TreeWalker">
+	<module name="unc.tools.checkstyle.ANonCachingTreeWalker">
+		<property name="severity" value="warning" />
+	
 		<module name="ExpectedDeclaredSignatures">
+				<property name="severity" value="warning" />
+		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment(.*) = 
+					main.Assignment1 = 
 						processInput:->void AND
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -50,9 +53,10 @@
 					" />
 			</module>
 			<module name="MissingMethodCall">
+			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment(.*) = 
+				main.Assignment1 = 
 						processInput:->void AND
 						scanString:String->void AND
 						indexOf:String;char;int->void AND
@@ -64,21 +68,79 @@
 						indexOfNot:String;char;int->void//EC
 						" />
 			</module>
+			
 		<module name="ExpectedConstructors">
+			<property name="severity" value="warning" />		
 			<property name="expectedSignatures"
 				value="
 				mp.scanner.ScanningIterator =:String,												
 				" />
 		</module>
+		
 		<module name="ExpectedInterfaces">
+			<property name="severity" value="warning" />		
 			<property name="expectedInterfaces"
 				value="
 				ScanningIterator = Iterator//EC
 				" />
 		</module>				
+		
+		
+		<module name="DuplicateShortTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+		
+		<module name="NoFullTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+
+		<module name="IllegalMethodCall">		
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="String.substring, String.charAt, String.length, String.equals, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
+		</module>
+		
+		<module name="UnnecessaryMethodCall">
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="String.substring, String.charAt, String.length, Scanner.nextLine, Scanner.close" />
+		</module>
+		
+		
+		<module name="IllegalTypeImported">
+			<property name="severity" value="warning" />
+			<property name="illegalPrefixes" value="*" />
+			<property name="legalPrefixes"
+				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util.List, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.Iterator, java.util.NoSuchElementException" />
+		</module>
+		
+		<module name="IllegalTypeDefined">
+			<property name="severity" value="warning" />
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
+		</module>
+		
+		<module name="FunctionAssignsGlobal">
+			<property name="severity" value="warning" />
+			<property name="excludeMethodTags"
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+
+		</module>
+		
+ 		<module name="InvalidPackageName">
+			<property name="severity" value="warning" />
+		</module>
+
+
+	</module>
+	<module name="TreeWalker">		
 		<module name="EqualsAvoidNull" />
 		<module name="EmptyStatement" />
-		<module name="MagicNumber" />
+		<module name="LiberalMagicNumber" />
 		<module name="SimplifyBooleanExpression" />
 		<module name="SimplifyBooleanReturn" />
 		<module name="StringLiteralEquality" />
@@ -89,10 +151,9 @@
 			<property name="max" value="1" />
 		</module>
 		<module name="PackageDeclaration" />		
-		<module name="AvoidStarImport">
+		<module name="AvoidStarImport" />
 		<module name="HiddenField"/>
 
-		</module>
 		
 		<module name="VisibilityModifier">
 			<property name="packageAllowed" value="true" />
@@ -105,49 +166,8 @@
 		<module name="MemberName" />
 		<module name="StaticVariableName" />
 		<module name="NeedBraces"/>
-		<module name="MultipleStringLiterals"/>
-		<module name="MinDeclaredMethods">
-			<property name="minDeclaredMethods" value="2" />
-		</module>
-		
-		
-		<module name="DuplicateShortTypeName">
-			<property name="includeTypeTags" value="*" />
-		</module>
-		<module name="NoFullTypeName">
-			<property name="includeTypeTags" value="*" />
-		</module>
-
-		<module name="IllegalMethodCall">
-			<property name="disallowedCalls" value="Scanner, String" />
-			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.equals, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
-		</module>
-		<module name="UnnecessaryMethodCall">
-			<property name="disallowedCalls" value="Scanner, String" />
-			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, Scanner.nextLine, Scanner.close" />
-		</module>
-		
-		
-		<module name="IllegalTypeImported">
-			<property name="illegalPrefixes" value="*" />
-			<property name="legalPrefixes"
-				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util.List, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.Iterator, java.util.NoSuchElementException" />
-		</module>
-		<module name="IllegalTypeDefined">
-			<property name="illegalTypeNames"
-				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
-		</module>
-		
-		<module name="FunctionAssignsGlobal">
-			<property name="excludeMethodTags"
-				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
-
-		</module>
-		
- 		<module name="InvalidPackageName">
-		</module>
+		<module name="MultipleStringLiterals"/>		
+ 		<module name="InvalidPackageName"/>
 
 
 	</module>
