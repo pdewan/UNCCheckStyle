@@ -50,7 +50,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework" };
-	static int lastSequenceNumberOfExpectedTypes;
+	static int lastSequenceNumberOfExpectedTypes = -1;
 	protected String checksName;
 	protected  String[] existingClasses = {};
 	public  Collection<String> existingClassesShortNamesCollection = new HashSet();

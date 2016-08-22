@@ -271,6 +271,8 @@ public abstract class UNCCheck extends Check {
 //		if (vetoChecks())
 //			return;
 		try {
+//			System.out.println ("begin tree:" + this);
+
 //			maybeAskForConsent();
 			if (vetoChecks())
 				return;
@@ -291,6 +293,7 @@ public abstract class UNCCheck extends Check {
 
 			if (isAutoBuild && !isCheckOnBuild()) {
 				visitedTree = false;
+//				System.out.println ("Auto build and not check on build:");
 				return;
 			}
 			visitedTree = true;
