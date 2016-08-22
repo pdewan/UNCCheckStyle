@@ -2632,4 +2632,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return true;
 	}
 
+	public static void main (String[] args) {
+		System.out.println ( "Math.PI".matches("Math.(.*)"));
+	}
 }

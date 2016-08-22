@@ -85,14 +85,21 @@ public class LiberalMagicNumberCheck extends ComprehensiveVisitCheck{
 				FullIdent.createFullIdent(aSibling).getText(), allowedSiblings);
 	}
 	protected boolean isSiblingAllowed (DetailAST anAST) {
+//		if (anAST.getText().contains("22")) {
+//			System.out.println("found Math sibling");
+//		}
 		return isAllowed(anAST.getPreviousSibling()) || isAllowed(anAST.getNextSibling());
 	}
+	
 	 @Override
 	    protected void doVisitToken(DetailAST ast)
 	    {
 //		 DetailAST aContainingConstantDef = findContainingConstantDef(ast);
-		 if (findContainingConstantDef(ast) != null || isSiblingAllowed(ast))
+		 if (findContainingConstantDef(ast) != null || 
+				 isSiblingAllowed(ast) ||
+				 inVariableInitialization(ast))
 			 return;
+		 
 		 
 //		 DetailAST aPreviousSibling = ast.getPreviousSibling();
 //		 if (aPreviousSibling != null) {
@@ -201,6 +208,15 @@ public class LiberalMagicNumberCheck extends ComprehensiveVisitCheck{
 	    	}
 	    	return getTopMostExpression(aParent);
 	    }
+	    protected boolean inVariableInitialization(DetailAST anAST) {
+	    	DetailAST aParent = anAST.getParent();
+	    	if (aParent == null) {
+	    		return false;
+	    	}
+	    	if (aParent.getType() == TokenTypes.VARIABLE_DEF)
+	    		return true;
+	    	return inVariableInitialization(aParent);
+		}
 
 	    /**
 	     * Determines whether or not the given AST is in a valid hash code method.

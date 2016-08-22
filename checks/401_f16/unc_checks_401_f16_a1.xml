@@ -134,13 +134,20 @@
  		<module name="InvalidPackageName">
 			<property name="severity" value="warning" />
 		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="severity" value="warning" />
+			<property name="allowedSiblings" value=
+				"Math.(.*)" 
+			/>
+			
+		</module>
+		
 
 
 	</module>
 	<module name="TreeWalker">		
 		<module name="EqualsAvoidNull" />
 		<module name="EmptyStatement" />
-		<module name="LiberalMagicNumber" />
 		<module name="SimplifyBooleanExpression" />
 		<module name="SimplifyBooleanReturn" />
 		<module name="StringLiteralEquality" />
