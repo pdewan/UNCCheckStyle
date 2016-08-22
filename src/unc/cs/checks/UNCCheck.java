@@ -51,6 +51,7 @@ public abstract class UNCCheck extends Check {
 	 boolean isAutoBuild;
 	protected  boolean checkOnBuild = false;
 	boolean visitedTree = true;
+	boolean newSequenceNumber;
 
 	public UNCCheck() {
 		initCheck();
@@ -180,7 +181,7 @@ public abstract class UNCCheck extends Check {
 	}
 	
 	protected void newSequenceNumber() {
-
+		
 		filesInLastPhase = filesInCurrentPhase;
 //		Set<String> aFilesNotInLastPhase = new HashSet(allFilesInProject);
 //		aFilesNotInLastPhase.removeAll(filesInLastPhase);
@@ -234,13 +235,20 @@ public abstract class UNCCheck extends Check {
 	public void doBeginTree(DetailAST ast) {
 
 	}
-
+	protected boolean notInPlugIn() {
+		return notInPlugIn;
+	}
 	protected boolean isAutoBuild() {
+		if (notInPlugIn())
+			return false; // 
 		Throwable aDummy = new Throwable();
 		StackTraceElement[] anElements = aDummy.getStackTrace();
 		StackTraceElement aSecondLastElement = anElements[anElements.length - 2];
 		return aSecondLastElement.toString().contains("Build");
 
+	}
+	boolean isNewSequenceNumber() {
+		return newSequenceNumber;
 	}
 	protected void maybeNewSequenceNumber() {
 		long aCurrentExecutionTime = System.currentTimeMillis();
@@ -250,8 +258,11 @@ public abstract class UNCCheck extends Check {
 		// isAutoBuild ||
 		aTimeDelta > NEW_CHEKCKS_THRESHOLD) {
 //			System.out.println("Time delta:" + aTimeDelta);
+			newSequenceNumber = true;
 			newSequenceNumber();
 
+		} else {
+			newSequenceNumber = false;
 		}
 		
 		lastExecutionTime = aCurrentExecutionTime;

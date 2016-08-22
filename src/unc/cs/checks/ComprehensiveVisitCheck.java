@@ -2140,6 +2140,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		log(msgKey(), ast, aTreeAST, anExplanations);
 
 	}
+	protected void log(String aMessageKey, DetailAST ast, String... anExplanations) {
+		DetailAST aTreeAST = getEnclosingTreeDeclaration(ast);
+		// String aTypeName = getEnclosingShortClassName(ast);
+		log(aMessageKey, ast, aTreeAST, anExplanations);
+
+	}
 
 	// move this up to ComprehensiveVisitCheck
 	protected void log(DetailAST ast, DetailAST aTreeAST,

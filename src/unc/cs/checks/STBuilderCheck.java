@@ -45,9 +45,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 //	public static final String MSG_KEY = "stBuilder";
 	public static final String MSG_KEY = "typeDefined";
+	public static final String EXPECTED_TYPES = "expectedTypes";
+
 
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework" };
+	static int lastSequenceNumberOfExpectedTypes;
 	protected String checksName;
 	protected  String[] existingClasses = {};
 	public  Collection<String> existingClassesShortNamesCollection = new HashSet();
@@ -285,6 +288,18 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			stConstructors.clear();
 		}
 		sTBuilderTree = ast;
+		// print once per each sequence number
+//		if (isNewSequenceNumber() && !isAutoBuild()) {
+		if (sequenceNumber > lastSequenceNumberOfExpectedTypes && !isAutoBuild()) {
+
+    		extendibleLog(0,
+    				
+    				EXPECTED_TYPES, new Object[] {EXPECTED_TYPES + ":", expectedTypes.toString()}
+			
+			);
+    		lastSequenceNumberOfExpectedTypes = sequenceNumber;
+    		
+    	}
 
 	}
 
@@ -588,6 +603,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //			shownMissingClasses = false;
 //
 //		} 
+    	// do not print on autobuild, only batch build
+//    	if (isNewSequenceNumber() && !isAutoBuild()) {
+//    		extendibleLog(0,
+//    				
+//    				EXPECTED_TYPES, new Object[] {EXPECTED_TYPES, expectedTypes.toString()}
+//			
+//			);
+//    		
+//    	}
     	Boolean check = checkIncludeExcludeTagsOfCurrentType();
     	if (check == null)
     		return;
