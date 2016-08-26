@@ -296,14 +296,16 @@ public abstract class UNCCheck extends Check {
 //				System.out.println ("Auto build and not check on build:");
 				return;
 			}
-			if (!isAutoBuild) {
-				maybeAskForConsent();
-			}
-			if (!isAutoBuild 
-					&& vetoChecks()) // should this not call maybeAskForConsent
-				return;
-			visitedTree = true;
-			isPackageInfo = false;
+//			String aFileName = getFileContents().getFilename();
+
+//			if (!isAutoBuild) {
+//				maybeAskForConsent();
+//			}
+//			if (!isAutoBuild 
+//					&& vetoChecks()) // should this not call maybeAskForConsent
+//				return;
+//			visitedTree = true;
+//			isPackageInfo = false;
 			String aFileName = getFileContents().getFilename();
 //			if (aFileName.contains("ndo")) {
 //				System.out.println ("found undo");
@@ -317,6 +319,8 @@ public abstract class UNCCheck extends Check {
 				isPackageInfo = true;
 				return;
 			}
+			isPackageInfo = false;
+
 
 			// checkAndFileDescription = "Check:" + this + " ast:" + ast + " " +
 			// getFileContents().getFilename();
@@ -324,6 +328,13 @@ public abstract class UNCCheck extends Check {
 					+ aFileName;
 
 			maybeSaveProjectDirectory(aFileName);
+			if (!isAutoBuild) {
+				maybeAskForConsent();
+			}
+			if (!isAutoBuild 
+					&& vetoChecks()) // should this not call maybeAskForConsent
+				return;
+			visitedTree = true;
 			
 //			long aCurrentExecutionTime = System.currentTimeMillis();
 //			isAutoBuild = isAutoBuild();
