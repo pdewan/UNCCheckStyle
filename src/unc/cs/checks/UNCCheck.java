@@ -144,7 +144,7 @@ public abstract class UNCCheck extends Check {
 
 	protected void maybeAskForConsent() {
 //		System.out.println("Ask for consent: Checking if in plugin:" + notInPlugIn);
-		if (notInPlugIn)
+		if (notInPlugIn || isAutoBuild)
 			return; // we are grading in server
 		if (consentFormShown)
 			return;
@@ -274,8 +274,8 @@ public abstract class UNCCheck extends Check {
 //			System.out.println ("begin tree:" + this);
 
 //			maybeAskForConsent();
-			if (vetoChecks())
-				return;
+//			if (vetoChecks())
+//				return;
 //			maybeNewSequenceNumber();
 //			long aCurrentExecutionTime = System.currentTimeMillis();
 ////			isAutoBuild = isAutoBuild();
@@ -296,6 +296,12 @@ public abstract class UNCCheck extends Check {
 //				System.out.println ("Auto build and not check on build:");
 				return;
 			}
+			if (!isAutoBuild) {
+				maybeAskForConsent();
+			}
+			if (!isAutoBuild 
+					&& vetoChecks()) // should this not call maybeAskForConsent
+				return;
 			visitedTree = true;
 			isPackageInfo = false;
 			String aFileName = getFileContents().getFilename();
@@ -331,7 +337,8 @@ public abstract class UNCCheck extends Check {
 //					}
 //					
 //					lastExecutionTime = aCurrentExecutionTime;
-			maybeAskForConsent();
+			
+//			maybeAskForConsent();
 //			if (vetoChecks())
 //				return;
 			maybeNewSequenceNumber(); // which should go first?
@@ -436,10 +443,10 @@ public abstract class UNCCheck extends Check {
 		}
 	}
 	protected boolean errorCheck() {
-		return errorOccurred;
+		return !errorOccurred;
 	}
 	protected boolean consentCheck() {
-		return consentFormShown && !consentFormSigned;
+		return (consentFormShown && !consentFormSigned);
 	}
 	protected boolean vetoChecks() {
 		return errorCheck() && consentCheck();
