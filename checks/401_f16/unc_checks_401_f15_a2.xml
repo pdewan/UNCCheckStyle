@@ -82,8 +82,19 @@
 			<property name="includeTypeTags" value="*" />
 		</module>
 		<module name="IllegalTypeImported">
+			<property name="severity" value="warning" />
+			<property name="illegalPrefixes" value="*" />
 			<property name="legalPrefixes"
-				value="bus.uigen, util, shapes, java.beans, java.util.Scanner, java.util.List, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.Iterator, java.util.NoSuchElementException" />
+				value="
+					bus.uigen, 
+					util, 
+					shapes, 
+					java.beans, 
+					java.util.Scanner, 					
+					java.util.Iterator, 
+					java.util.NoSuchElementException,
+					gradingTools
+					" />
 		</module>
 		<module name="IllegalTypeDefined">
 			<property name="illegalTypeNames"
@@ -95,10 +106,15 @@
 		</module>
 		
 		<module name="ExpectedGetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
+			<property name="expectedProperties" value="
+				@ScannerBean= ScannedString:String
+				" 
+			/>
 		</module>
 		<module name="ExpectedSetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
+			<property name="expectedProperties" value="
+			@ScannerBean= ScannedString:String
+			" />
 		</module>
 
 		<module name="FunctionAssignsGlobal">
