@@ -91,14 +91,34 @@
 		</module>
 		<module name="ClassDefined">
 			<property name="severity" value="info" />
-			<property name="expectedTypes" value="main.Assignment(.*), @ScannerBean, @Number, @Word, @Quote, @Start, @End, @Plus, @Minus" />
+			<property name="expectedTypes" value="
+			main.Assignment(.*), 
+			@ScannerBean, 
+			@Number, 
+			@Word, 
+			@Quote, 
+			@Start, 
+			@End, 
+			@Plus, 
+			@Minus
+			" />
 		</module>
 		
 		<module name="ExpectedGetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String, @Word= Input:String AND Value:String, @Number= Input:String AND Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String" />
+			<property name="expectedProperties" value="
+			@ScannerBean= ScannedString:String, 
+			@Word= Input:String AND Value:String, 
+			@Number= Input:String AND Value:int, 
+			@Quote= Input:String, 
+			@Start= Input:String, 
+			@End= Input:String, 
+			@Plus= Input:String, 
+			@Minus= Input:String
+			" />
 		</module>
 		<module name="ExpectedSetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />
+			<property name="expectedProperties" value="
+			@ScannerBean= ScannedString:String" />
 		</module>
 
 		<module name="FunctionAssignsGlobal">
