@@ -132,12 +132,16 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 	  * 
 	  */
 	 protected Boolean isIllegalImport(String importText, String myClassName) {
+		 if (STBuilderCheck.isProjectImport(importText) || importText.endsWith("Tags") ) {
+			 return false;
+		 }
 		 if (inLegalPrefixes(importText, myClassName))
 			 return false;
 		 if (inIllegalPrefixes(importText, myClassName))
 			 return true;
-		 return !STBuilderCheck.isProjectImport(importText) && 
-				 !importText.endsWith("Tags"); //to allow bootstrapping for tag annotations
+		 return false;
+//		 return !STBuilderCheck.isProjectImport(importText) && 
+//				 !importText.endsWith("Tags"); //to allow bootstrapping for tag annotations
 		 
 			 
 			 

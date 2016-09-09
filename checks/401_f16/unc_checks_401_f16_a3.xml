@@ -17,7 +17,7 @@
 		<module name="STBuilder">
 			<property name="includeTypeTags" value="*" />
 			<property name="severity" value="info" />
-			<property name="projectPackagePrefixes" value="test,lectures, main, grail" />
+			<property name="projectPackagePrefixes" value="test,lectures, main, mp, grail" />
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
@@ -56,9 +56,9 @@
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC,
-					grail.scanner.ScanningIterator=
-						indexOf:String;char;int->void AND
-						indexOfNot:String;char;int->void//EC	
+					ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC	
 					" />
 			</module>
 			<module name="MissingMethodCall">
@@ -68,13 +68,13 @@
 				main.Assignment1 = 
 						processInput:->void AND
 						scanString:String->void AND
-						indexOf:String;char;int->void AND
-						indexOfNot:String;char;int->void//EC AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC AND
 						(.*)!hasNext:->boolean//EC AND
 						(.*)!next:->String//EC,
-				mp.scanner.ScanningIterator=
-						indexOf:String;char;int->void AND
-						indexOfNot:String;char;int->void//EC
+				ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC
 						" />
 			</module>
 			

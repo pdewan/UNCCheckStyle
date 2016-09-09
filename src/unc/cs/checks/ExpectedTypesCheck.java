@@ -110,7 +110,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 		for (String aSpecification : aSpecifications) {
 		
 //			String[] aPropertiesPath = aPropertySpecification.split(".");	
-			Boolean hasMatched = matchType(aSpecification, aTypes);
+			Boolean hasMatched = matchType(maybeStripComment(aSpecification), aTypes);
 			if (hasMatched == null) {
 //				return null;
 				retVal = null; // means we will try again later
