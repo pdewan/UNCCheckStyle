@@ -135,14 +135,35 @@
 			<property name="severity" value="warning" />
 			<property name="disallowedCalls" value="Scanner, String" />
 			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.equals, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				String.equals, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
+				" />
 		</module>
 		
 		<module name="UnnecessaryMethodCall">
 			<property name="severity" value="warning" />
 			<property name="disallowedCalls" value="Scanner, String" />
 			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, Scanner.nextLine, Scanner.close" />
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 				
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
+				" />
 		</module>
 		
 		
