@@ -207,6 +207,12 @@
 			
 		</module>
 		
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="warning" />		
+		</module>
+		<module name="VariableHasClassType">
+		<property name="severity" value="warning" />		
+		</module>
 
 
 	</module>
