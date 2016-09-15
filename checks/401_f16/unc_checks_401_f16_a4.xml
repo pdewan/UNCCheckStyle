@@ -22,11 +22,34 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A2" />
+				value="401_f16_A3" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
-				ScanningIterator//EC
+				@Number, 
+				@Word, 
+				@Quote, 
+				@Start, 
+				@End, 
+				@Plus//EC, 
+				@Minus//EC,
+				ScanningIterator//EC,
+				@RotatingLine//EC,				
+				@Move, 
+				@Pass,
+				@Fail,
+				@Say, 
+				@RotateLeftArm//EC, 
+				@RotateRightArm//EC,  
+				@Repeat//EC, 
+				@Define//EC, 
+				@Call//EC,  
+				@Thread//EC, 
+				@Wait//EC, 
+				@ProceedAll//EC,
+				@Sleep//EC,  
+				@Undo//EC,
+				@Redo//EC
 				" />				
 
 		</module>
@@ -75,7 +98,26 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedSignatures"
 				value="
-				mp.scanner.ScanningIterator =:String,												
+				mp.scanner.ScanningIterator =:String,
+				@Word= :String, 
+				@Number= :String, 
+				@Quote= :String, 
+				@Start= :String, 
+				@End= :String, 
+				@Plus= :String, 
+				@Minus= :String,
+				@Move= :String, 
+				@Pass= :String,
+				@Fail= :String,
+				@Say= :String, 
+				@RotateLeftArm= :String, 
+				@RotateRightArm= :String,  
+				@Repeat= :String, 
+				@Define= :String, 
+				@Call= :String,  
+				@Thread= :String, 
+				@Wait= :String,
+				@Sleep=:String												
 				" />
 		</module>
 		
@@ -89,16 +131,37 @@
 		
 		<module name="ExpectedGetters">
 			<property name="severity" value="warning" />		
-		
 			<property name="expectedProperties" value="
-				@ScannerBean= ScannedString:String
-				" 
+				@ScannerBean= ScannedString:String 
+							AND Tokens:.*\[\] 
+							AND Errors:String//EC,
+				@Word= Input:String AND Value:String, 
+				@Number= Input:String AND Value:int, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String,
+				@Move= Input:String AND Value:String, 
+				@Pass= Input:String AND Value:String,
+				@Fail= Input:String AND Value:String,
+				@Say= Input:String AND Value:String, 
+				@RotateLeftArm= Input:String AND Value:String, 
+				@RotateRightArm= Input:String AND Value:String,  
+				@Repeat= Input:String AND Value:String, 
+				@Define= Input:String AND Value:String, 
+				@Call= Input:String AND Value:String,  
+				@Thread= Input:String AND Value:String, 
+				@Wait= Input:String AND Value:String,
+				@Sleep=Input:String AND Value:String
+			" 
 			/>
 		</module>
 		<module name="ExpectedSetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-			@ScannerBean= ScannedString:String
+			@ScannerBean= ScannedString:String AND Tokens:.*\[\]
+			
 			" />
 		</module>
 		
@@ -116,14 +179,35 @@
 			<property name="severity" value="warning" />
 			<property name="disallowedCalls" value="Scanner, String" />
 			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.equals, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				String.equals, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
+				" />
 		</module>
 		
 		<module name="UnnecessaryMethodCall">
 			<property name="severity" value="warning" />
 			<property name="disallowedCalls" value="Scanner, String" />
 			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, Scanner.nextLine, Scanner.close" />
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 				
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
+				" />
 		</module>
 		
 		
@@ -167,6 +251,12 @@
 			
 		</module>
 		
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="warning" />		
+		</module>
+		<module name="VariableHasClassType">
+		<property name="severity" value="warning" />		
+		</module>
 
 
 	</module>

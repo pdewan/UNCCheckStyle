@@ -33,7 +33,7 @@
 				@End, 
 				@Plus//EC, 
 				@Minus//EC,
-				mp.scanner.ScanningIterator//EC
+				ScanningIterator//EC
 				" />				
 
 		</module>
@@ -102,6 +102,7 @@
 		</module>				
 		
 		<module name="ExpectedGetters">
+			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
 				@ScannerBean= ScannedString:String,
 				@Word= Input:String AND Value:String, 
@@ -115,6 +116,7 @@
 			/>
 		</module>
 		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
 			@ScannerBean= ScannedString:String
 			
