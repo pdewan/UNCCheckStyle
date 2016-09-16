@@ -43,7 +43,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment1 = 
+					main.Assignment2 = 
 						processInput:->void,
 					@ScannerBean =
 						scanString:String->void AND
@@ -58,7 +58,7 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment1 = 
+				main.Assignment2 = 
 						processInput:->void AND
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
