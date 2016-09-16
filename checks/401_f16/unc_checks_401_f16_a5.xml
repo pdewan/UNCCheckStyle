@@ -22,7 +22,7 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A3" />
+				value="401_f16_A5" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
@@ -33,7 +33,23 @@
 				@End, 
 				@Plus//EC, 
 				@Minus//EC,
-				ScanningIterator//EC
+				ScanningIterator//EC,
+				@RotatingLine//EC,				
+				@Move, 
+				@Pass,
+				@Fail,
+				@Say, 
+				@RotateLeftArm//EC, 
+				@RotateRightArm//EC,  
+				@Repeat//EC, 
+				@Define//EC, 
+				@Call//EC,  
+				@Thread//EC, 
+				@Wait//EC, 
+				@ProceedAll//EC,
+				@Sleep//EC,  
+				@Undo//EC,
+				@Redo//EC
 				" />				
 
 		</module>
@@ -50,7 +66,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment3 = 
+					main.Assignment4 = 
 						processInput:->void,
 					@ScannerBean =
 						scanString:String->void AND
@@ -65,9 +81,9 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment3 = 
+				main.Assignment4 = 
 						processInput:->void AND
-						@ScannerBean!setScannedString:String->void,
+						ThreadSupport!sleep:long:->void,
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -82,7 +98,23 @@
 						@Start!getInput:->String AND 
 						@End!getInput:->String AND 
 						@Plus!getInput:->String//EC AND 
-						@Minus!getInput:->String//EC,
+						@Minus!getInput:->String//EC AND
+						@Move!getInput:->String AND 
+						@Pass!getInput:->String AND
+						@Fail!getInput:->String AND
+						@Say!getInput:->String AND 
+						@RotateLeftArm!getInput:->String//EC AND
+						@RotateRightArm!getInput:->String//EC AND  
+						@Repeat!getInput:->String//EC AND 
+						@Define!getInput:->String//EC AND 
+						@Call!getInput:->String//EC AND  
+						@Thread!getInput:->String//EC AND 
+						@Wait!getInput:->String//EC AND
+						@ProceedAll!getInput:->String//EC AND
+						@Sleep!getInput:->String//EC AND  
+						@Undo!getInput:->String//EC AND
+						@Redo!getInput:->String//EC AND
+						,
 				ScanningIterator=
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC
@@ -93,8 +125,9 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment3=
-					@ScannerBean, 
+				main.Assignment5=
+					@ScannerBean AND
+					@BridgeScene,					
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -102,9 +135,34 @@
 					@Start AND 
 					@End AND
 				    @Plus//EC AND 
-					@Minus//EC				
+					@Minus//EC AND
+					@RotatingLine//EC,				
+				   @Move AND 
+					@Pass AND
+					@Fail AND
+					@Say AND 
+					@RotateLeftArm//EC AND 
+					@RotateRightArm//EC AND  
+					@Repeat//EC AND 
+					@Define//EC AND 
+					@Call//EC AND  
+					@Thread//EC AND 
+					@Wait//EC AND 
+					@ProceedAll//EC AND
+					@Sleep//EC AND  
+					@Undo//EC AND
+					@Redo//EC,
+				@BridgeScene =
+					@Avatar,
+				@Avatar = 
+					@Angle,			
 				" />
 		   </module>
+		
+		<module name="IllegalComponentInstantiation">
+			<property name="severity" value="warning" />		
+			<property name="includeTypeTags" value="*" />
+		</module>
 			
 		<module name="ExpectedConstructors">
 			<property name="severity" value="warning" />		
@@ -117,7 +175,22 @@
 				@Start= :String, 
 				@End= :String, 
 				@Plus= :String, 
-				@Minus= :String												
+				@Minus= :String,
+				@Move= :String, 
+				@Pass= :String,
+				@Fail= :String,
+				@Say= :String, 
+				@RotateLeftArm= :String, 
+				@RotateRightArm= :String,  
+				@Repeat= :String, 
+				@Define= :String, 
+				@Call= :String,  
+				@Thread= :String, 
+				@Wait= :String,
+				@Sleep=:String,
+				@Angle =:,
+				@Avatar=:,
+				@BridgeScene=:											
 				" />
 		</module>
 		
@@ -132,21 +205,46 @@
 		<module name="ExpectedGetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-				@ScannerBean= ScannedString:String,
+				@ScannerBean= ScannedString:String 
+							AND Tokens:.*\[\] 
+							AND Errors:String//EC,
 				@Word= Input:String AND Value:String, 
 				@Number= Input:String AND Value:int, 
 				@Quote= Input:String, 
 				@Start= Input:String, 
 				@End= Input:String, 
 				@Plus= Input:String, 
-				@Minus= Input:String
+				@Minus= Input:String,
+				@Move= Input:String AND Value:String, 
+				@Pass= Input:String AND Value:String,
+				@Fail= Input:String AND Value:String,
+				@Say= Input:String AND Value:String, 
+				@RotateLeftArm= Input:String AND Value:String, 
+				@RotateRightArm= Input:String AND Value:String,  
+				@Repeat= Input:String AND Value:String, 
+				@Define= Input:String AND Value:String, 
+				@Call= Input:String AND Value:String,  
+				@Thread= Input:String AND Value:String, 
+				@Wait= Input:String AND Value:String,
+				@Sleep=Input:String AND Value:String,
+			    @Angle= LeftLine:@LINE_PATTERN AND 
+			    		RightLine:@LINE_PATTERN, 
+			    @Avatar= Text:@STRING_PATTERN AND 
+			    		Head:@IMAGE_PATTERN AND 
+			    		Arms:@Angle AND 
+			    		Legs:@Angle, 
+			    @BridgeScene= Arthur:@Avatar AND 
+			    			Galahad:@Avatar AND 
+			    			Lancelot:@Avatar AND 
+			    			Robin:@Avatar AND
+			    			Guard:@Avatar
 			" 
 			/>
 		</module>
 		<module name="ExpectedSetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-			@ScannerBean= ScannedString:String
+			@ScannerBean= ScannedString:String AND Tokens:.*\[\]
 			
 			" />
 		</module>

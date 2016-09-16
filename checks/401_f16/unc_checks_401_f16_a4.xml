@@ -22,7 +22,7 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A3" />
+				value="401_f16_A4" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
@@ -82,7 +82,10 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment4 = 
-						processInput:->void,
+						processInput:->void AND
+						@RotatingLine!setWidth:int->void AND
+						ThreadSupport!sleep:long->void AND
+						@RotatingLine!setHeight:int->void,
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -124,8 +127,9 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment3=
-					@ScannerBean, 
+				main.Assignment4=
+					@ScannerBean AND
+					@RotatingLine, 
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -158,7 +162,7 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedSignatures"
 				value="
-				mp.scanner.ScanningIterator =:String,
+				ScanningIterator =:String,
 				@Word= :String, 
 				@Number= :String, 
 				@Quote= :String, 
