@@ -120,6 +120,40 @@
 						" />
 			</module>
 			
+			<module name="ExpectedClassInstantiations">
+			<property name="severity" value="warning" />			
+			<property name="instantiations"
+				value="				
+				main.Assignment3=
+					@ScannerBean, 
+				@ScannerBean =
+					@Number AND 
+					@Word AND
+					@Quote AND
+					@Start AND 
+					@End AND
+				    @Plus//EC AND 
+					@Minus//EC AND
+					@RotatingLine//EC,				
+				   @Move AND 
+					@Pass AND
+					@Fail AND
+					@Say AND 
+					@RotateLeftArm//EC AND 
+					@RotateRightArm//EC AND  
+					@Repeat//EC AND 
+					@Define//EC AND 
+					@Call//EC AND  
+					@Thread//EC AND 
+					@Wait//EC AND 
+					@ProceedAll//EC AND
+					@Sleep//EC AND  
+					@Undo//EC AND
+					@Redo//EC			
+				" />
+		   </module>
+			
+			
 		<module name="ExpectedConstructors">
 			<property name="severity" value="warning" />		
 			<property name="expectedSignatures"

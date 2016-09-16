@@ -58,8 +58,10 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment2 = 
+				main.Assignment3 = 
 						processInput:->void AND
+						@ScannerBean!setScannedString:String->void,
+				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC AND
@@ -70,6 +72,18 @@
 						indexOfNot:String;char;int->int//EC
 						" />
 			</module>
+			
+			<module name="ExpectedClassInstantiations">
+			<property name="severity" value="warning" />		
+			
+			<property name="instantiations"
+				value="				
+				main.Assignment3=
+					@ScannerBean					,
+				
+				
+				" />
+		   </module>
 			
 		<module name="ExpectedConstructors">
 			<property name="severity" value="warning" />		
