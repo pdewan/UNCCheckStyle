@@ -74,7 +74,12 @@
 						indexOfNot:String;char;int->int//EC,
 					ScanningIterator=
 						indexOf:String;char;int->int AND
-						indexOfNot:String;char;int->int//EC	
+						indexOfNot:String;char;int->int//EC	,
+					@Angle =
+						@move:int;int->void,
+					@Avatar =
+						@move:int;int->void AND
+						@scale:double->void//EC
 					" />
 			</module>
 			<module name="MissingMethodCall">
