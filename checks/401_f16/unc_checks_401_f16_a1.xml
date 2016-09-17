@@ -43,8 +43,8 @@
 				<property name="expectedSignatures"
 					value="
 					main.Assignment1 = 
-						processInput:->void AND
-						scanString:String->void AND
+						processInput:->* AND
+						scanString:String->* AND
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC,
 					ScanningIterator=
