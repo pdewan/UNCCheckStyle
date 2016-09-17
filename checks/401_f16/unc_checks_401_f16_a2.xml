@@ -78,7 +78,7 @@
 			
 			<property name="instantiations"
 				value="				
-				main.Assignment3=
+				main.Assignment2=
 					@ScannerBean					,
 				
 				
