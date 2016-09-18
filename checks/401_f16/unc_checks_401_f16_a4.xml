@@ -190,7 +190,8 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedInterfaces"
 				value="
-				ScanningIterator = Iterator//EC
+				ScanningIterator = Iterator//EC,
+				@ScannerBean = @ScannerBean
 				" />
 		</module>				
 		

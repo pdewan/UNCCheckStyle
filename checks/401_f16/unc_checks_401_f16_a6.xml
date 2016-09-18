@@ -215,7 +215,10 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedInterfaces"
 				value="
-				ScanningIterator = Iterator//EC
+				ScanningIterator = Iterator//EC,
+				@Angle= @Angle, 
+				@Avatar=@Avatar, 
+				@ScannerBean = @ScannerBean				
 				" />
 		</module>				
 		

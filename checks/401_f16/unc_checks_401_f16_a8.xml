@@ -22,7 +22,7 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A5" />
+				value="401_f16_A8" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
@@ -52,7 +52,14 @@
 				@Redo//EC,
 				@Angle,
 				@Avatar,
-				@BridgeScene
+				@BridgeScene,
+				@Locatable, 
+				@BoundedShape, 
+				@Table,
+				@CommandInterpreter,
+				@SignedMoveCommandInterpreter//EC,
+				@ErrorResilientCommandInterpreter//EC,
+				@ConsoleSceneView				
 				" />				
 
 		</module>
@@ -69,7 +76,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment5 = 
+					main.Assignment8 = 
 						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
@@ -79,19 +86,29 @@
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC	,
 					@Angle =
-						@move:int;int->void,
+						@move:int;int->*,
 					@Avatar =
-						@move:int;int->void AND
-						@scale:double->void//EC
+						@move:int;int->* AND
+						@scale:double->*//EC,
+					@BridgeScene =
+						@approach:@Avatar->* AND
+						@say:String->* AND
+						@passed:->* AND
+						@failed:->* AND
+						@scroll:int;int->*
+						
 					" />
 			</module>
 			<module name="MissingMethodCall">
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment5 = 
+				main.Assignment8 = 
 						processInput:->void AND
-						ThreadSupport!sleep:long:->void,
+						ThreadSupport!sleep:long:->void AND
+						@CommandInterpreter!setCommand:String->* AND
+						@Table!put:String;Object->void AND
+						@Tale!get:String->Object,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -126,6 +143,32 @@
 				ScanningIterator=
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC
+						,
+				@BridgeScene=
+						@Avatar!@move:int;int->* AND
+						@STRING_PATTERN!setText:String->void
+						,
+				@CommandInterpreter=
+						@ScannerBean!getTokens:->.*\[\]  AND
+						@ScannerBean!getTokenList:->@ClearableHistory AND
+						@BridgeScene!@say:String->* AND
+						@Avatar!@move:int;int->* AND
+						@BridgeScene!getArthur:->(.*) AND
+						@BridgeScene!getRobin:->(.*) AND
+						@BridgeScene!getLancelot:->(.*) AND
+						@BridgeScene!getGalahad:->(.*) AND
+						@Table!get:String->*
+				@Locatable = 
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				@BoundedShape = 
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				@ConsoleSceneView = 
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+ 						(.*)!getArms:-> @Angle AND
+ 						(.*)!getLegs:-> @Angle AND
+ 						(.*)!getLeftLine:-> @LINE_PATTERN AND
+ 						(.*)!getRightLine:-> @LINE_PATTERN AND
+ 						(.*)!getText:->@STRING_PATTERN
 						" />
 			</module>
 			
@@ -133,9 +176,12 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment5=
+				main.Assignment8=
 					@ScannerBean AND
-					@BridgeScene,					
+					@BridgeScene AND
+					@CommandInterpreter AND
+					@ConsoleSceneView AND
+					@Table,				
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -196,9 +242,8 @@
 				@Thread= :String, 
 				@Wait= :String,
 				@Sleep=:String,
-				@Angle =:,
-				@Avatar=:,
-				@BridgeScene=:											
+				@CommandInterpreter=:@ScannerBean;@BridgeScene,
+				@ConsoleSceneView = :@BridgeScene														
 				" />
 		</module>
 		
@@ -206,11 +251,18 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedInterfaces"
 				value="
-				ScanningIterator = Iterator//EC,
+				ScanningIterator = Iterator//EC,			
 				@Angle= @Angle, 
 				@Avatar=@Avatar, 
-				@ScannerBean = @ScannerBean				
-				" />
+				@ScannerBean = @ScannerBean,
+				@CommandInterpreter = @CommandInterpreter,
+				@ConsoleSceneView = @ConsoleSceneView,
+				@ConsoleSceneView = PropertyChangeListener,				
+				@Locatable =  PropertyListenerRegisterer,
+				@BoundedShape = PropertyListenerRegisterer,
+				@Locatable =  @Locatable,
+				@BoundedShape = @BoundedShape,
+				"/>				
 		</module>				
 		
 		<module name="ExpectedGetters">
@@ -218,7 +270,8 @@
 			<property name="expectedProperties" value="
 				@ScannerBean= ScannedString:String 
 							AND Tokens:.*\[\] 
-							AND Errors:String//EC,
+							AND Errors:String//EC
+							AND TokenList:@ClearableHistory//EC,
 				@Word= Input:String AND Value:String, 
 				@Number= Input:String AND Value:int, 
 				@Quote= Input:String, 
@@ -248,14 +301,20 @@
 			    			Galahad:@Avatar AND 
 			    			Lancelot:@Avatar AND 
 			    			Robin:@Avatar AND
-			    			Guard:@Avatar
+			    			Guard:@Avatar AND
+			    			Gorge:* AND
+			    			KnightArea:* AND
+			    			GuardArea:* AND
+			    			Occupied:boolean,
+    			@CommandInterpreter= Command:String
 			" 
 			/>
 		</module>
 		<module name="ExpectedSetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-			@ScannerBean= ScannedString:String
+			@ScannerBean= ScannedString:String,
+			@CommandInterpreter= Command:String
 			
 			" />
 		</module>
@@ -318,7 +377,12 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools
+					gradingTools,
+					java.util.List,  
+					java.util.Iterator, 
+					java.util.ArrayList, 
+					java.util.Vector, 
+				 	java.util.LinkedList
 					" />
 		</module>
 		
@@ -358,6 +422,9 @@
 		<module name="ClassHasAtLeastOneInterface">
 		<property name="severity" value="warning" />		
 		</module>
+		<module name="ClassHasOneInterface">
+			<property name="severity" value="warning" />					
+		</module>
 		<module name="VariableHasClassType">
 		<property name="severity" value="warning" />		
 		</module>
@@ -379,6 +446,70 @@
 		</module>
 		<module name="ImagePattern">
 				<property name="severity" value="warning" />		
+		</module>
+		
+		 <module name="PeerCommonProperties">
+		 	<property name="severity" value="warning" />		 
+			<property name="includeTypeTags" value="
+				@Word,
+				@Number,
+				@Quote,
+				@Move, 
+				@Say, 
+				@Approach,
+				@Pass,
+				@Fail,
+				@RotateLeftArm, 
+				@RotateRightArm,  
+				@Repeat, 
+				@Define, 
+				@Call,  
+				@Thread, 
+				@Wait, 
+				@ProceedAll, 
+				@Sleep, 
+				@Undo, 
+				@Redo
+				" />			
+			<property name="includeSets" value="
+				Input AND
+				Value				
+				" />		
+		  </module>
+		   <module name="InvalidPackageName">
+		</module>
+		<module name="ExpectedSuperTypes">
+			<property name="severity" value="warning" />		
+			<property name="expectedSuperTypes"
+				value="
+				@LINE_PATTERN= @BoundedShape, 
+				@STRING_PATTERN= @BoundedShape, 
+				@IMAGE_PATTERN= @BoundedShape, 
+				@LABEL_PATTERN = @BoundedShape, 
+				@BoundedShape=@Locatable
+				"/>
+		</module>
+		
+		<module name="ExpectedPattern">
+			<property name="severity" value="warning" />		
+			<property name="expectedPattern"
+				value="
+				@Table= MAP_PATTERN, 
+				@Angle= BEAN_PATTERN
+				"/>
+		</module>
+		<module name="IllegalPropertyNotification">
+			<property name="severity" value="warning" />		
+			<property name="excludeProperties" value="this" />
+		</module>
+		<module name="IllegalTypeDefined">
+		    <property name="severity" value="warning" />		
+			<property name="illegalTypeNames" value="
+				PropertyChangeEvent, 
+				PropertyChangeListener, 
+				PropertyListenerRegisterer
+				"
+				 />
 		</module>
 
 
@@ -413,8 +544,6 @@
 		<module name="NeedBraces"/>
 		<module name="MultipleStringLiterals"/>		
  		<module name="InvalidPackageName"/>
-
-
 	</module>
 </module>
 

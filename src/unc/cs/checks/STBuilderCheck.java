@@ -273,6 +273,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				processPreviousMethodData();
 			processMethodAndClassData();
 		}
+		checkTags(ast); // want to check tags after symbol table built
 		super.doFinishTree(ast);
 //		super.log(ast, "testing st builder");
 
@@ -592,32 +593,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void setLogNoMatches(boolean newVal) {
 		logNoMacthes = newVal;
 	}
-    public void visitClassOrInterface(DetailAST ast) {  
-		
-//    	super.visitType(ast);
-//    	if (fullTypeName.contains("ListImp")) {
-//    		System.out.println ("found inner interface");
-//    	}
-//    	if (shownMissingClasses) {
-//			log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
-//			shownMissingClasses = false;
-//
-//		} 
-    	// do not print on autobuild, only batch build
-//    	if (isNewSequenceNumber() && !isAutoBuild()) {
-//    		extendibleLog(0,
-//    				
-//    				EXPECTED_TYPES, new Object[] {EXPECTED_TYPES, expectedTypes.toString()}
-//			
-//			);
-//    		
-//    	}
-    	Boolean check = checkIncludeExcludeTagsOfCurrentType();
-    	if (check == null)
-    		return;
-    	if (!check)
-    		return;
-    	List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
+	public void checkTags(DetailAST ast) {
+		List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
 //    	System.out.println("Checking full type name: " + fullTypeName);
     	if (tagMatches.containsKey(fullTypeName)) {
     		tagMatches.remove(fullTypeName);
@@ -662,6 +639,79 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    		
 //    		
 //    	}
+	}
+    public void visitClassOrInterface(DetailAST ast) {  
+		
+//    	super.visitType(ast);
+//    	if (fullTypeName.contains("ListImp")) {
+//    		System.out.println ("found inner interface");
+//    	}
+//    	if (shownMissingClasses) {
+//			log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
+//			shownMissingClasses = false;
+//
+//		} 
+    	// do not print on autobuild, only batch build
+//    	if (isNewSequenceNumber() && !isAutoBuild()) {
+//    		extendibleLog(0,
+//    				
+//    				EXPECTED_TYPES, new Object[] {EXPECTED_TYPES, expectedTypes.toString()}
+//			
+//			);
+//    		
+//    	}
+    	// What does thie mean when we have not computed tags?
+    	// should we not use the symbol table
+    	Boolean check = checkIncludeExcludeTagsOfCurrentType();
+    	if (check == null)
+    		return;
+    	if (!check)
+    		return;
+//    	List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
+////    	System.out.println("Checking full type name: " + fullTypeName);
+//    	if (tagMatches.containsKey(fullTypeName)) {
+//    		tagMatches.remove(fullTypeName);
+//    		if (!overlappingTags) {
+//    			unmatchedTypes.remove(tagMatches.get(fullTypeName));
+//    		}
+//    	}
+//    	
+//    	boolean aFoundMatch = false;
+//    	for (String anExpectedClassOrTag:checkTags) {
+//    		if ( matchesMyType(maybeStripComment(anExpectedClassOrTag))) {
+//    			tagMatches.put(fullTypeName, anExpectedClassOrTag);
+////    			matchedTypes.add(fullTypeName);
+//    			unmatchedTypes.remove(anExpectedClassOrTag);
+////    			if (shownMissingClasses) {
+////    				log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
+////        			shownMissingClasses = false;
+////
+////    			} 
+////    			else {
+//
+////    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
+//    			log(ast, anExpectedClassOrTag);
+//    			aFoundMatch = true;
+////
+////    			}
+//    		}
+//    		
+//    	}
+//    	if (!aFoundMatch && logNoMacthes) {
+//			log(ast, "No Expected Tag");
+//		}
+////    		
+////    		
+////    	}
+////    	
+////    	for (String anExpectedClassOrTag:expectedClasses) {
+////    		if ( matchesMyType(anExpectedClassOrTag)) {
+//////    			DetailAST aTypeAST = getEnclosingClassDeclaration(currentTree);
+////    			log(currentTree, msgKey(), shortTypeName, expectedClasses.toString());
+////    		}
+////    		
+////    		
+////    	}
 
 
     }

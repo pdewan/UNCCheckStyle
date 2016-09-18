@@ -95,7 +95,7 @@
 		</module>
 		
 		<module name="ExpectedGetters">
-			<property name="expectedProperties" value="@ScannerBean= ScannedString:String AND Tokens:.*\[\] AND TokenList:@LIST_PATTERN AND TokenList:@ClearableHistory, @Word= Input:String AND Value:String, @Number= Input:String AND Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String, @Angle= LeftLine:@LINE_PATTERN AND RightLine:@LINE_PATTERN, @Avatar= Text:@STRING_PATTERN AND Head:@IMAGE_PATTERN AND Arms:@Angle AND Legs:@Angle, @BridgeScene= Arthur:@Avatar AND Galahad:@Avatar AND Lancelot:@Avatar AND Robin:@Avatar AND Guard:@Avatar AND Gorge:* AND KnightArea:* AND GuardArea:* AND Occupied:boolean ANDKnightTurn:boolean, @CommandInterpreter = Command:String" />
+			<property name="expectedProperties" value="@ScannerBean= ScannedString:String AND Tokens:.*\[\] AND TokenList:@LIST_PATTERN AND TokenList:@ClearableHistory, @Word= Input:String AND Value:String, @Number= Input:String AND Value:int, @Quote= Input:String, @Start= Input:String, @End= Input:String, @Plus= Input:String, @Minus= Input:String, @Angle= LeftLine:@LINE_PATTERN AND RightLine:@LINE_PATTERN, @Avatar= Text:@STRING_PATTERN AND Head:@IMAGE_PATTERN AND Arms:@Angle AND Legs:@Angle, @BridgeScene= Arthur:@Avatar AND Galahad:@Avatar AND Lancelot:@Avatar AND Robin:@Avatar AND Guard:@Avatar AND Gorge:* AND KnightArea:* AND GuardArea:* AND Occupied:boolean AND KnightTurn:boolean, @CommandInterpreter = Command:String" />
 		</module>
 		<module name="ExpectedSetters">
 			<property name="expectedProperties" value="@ScannerBean= ScannedString:String" />

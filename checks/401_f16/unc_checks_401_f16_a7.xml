@@ -22,7 +22,7 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A6" />
+				value="401_f16_A7" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
@@ -143,6 +143,9 @@
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC
 						,
+				@Avatar=  @STRING_PATTERN!setX:int->void) AND 
+						  @Angle!move:int;int->void
+						  , 						
 				@BridgeScene=
 						@Avatar!@move:int;int->* AND
 						@STRING_PATTERN!setText:String->void
@@ -152,8 +155,13 @@
 						@ScannerBean!getTokenList:->@ClearableHistory AND
 						@BridgeScene!@say:String->* AND
 						@Avatar!@move:int;int->* AND
-						@Table!get:String->*
+						@BridgeScene!getArthur:->(.*) AND
+						@BridgeScene!getRobin:->(.*) AND
+						@BridgeScene!getLancelot:->(.*) AND
+						@BridgeScene!getGalahad:->(.*) AND
+						@Table!get:String->*						
 						" />
+						
 			</module>
 			
 			<module name="ExpectedClassInstantiations">
@@ -234,7 +242,13 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedInterfaces"
 				value="
-				ScanningIterator = Iterator//EC
+				ScanningIterator = Iterator//EC,
+				@Angle= @Angle, 
+				@Avatar=@Avatar, 
+				@ScannerBean = @ScannerBean,
+				@CommandInterpreter = @CommandInterpreter,				
+				@Locatable =  @Locatable,
+				@BoundedShape = @BoundedShape
 				" />
 		</module>				
 		
