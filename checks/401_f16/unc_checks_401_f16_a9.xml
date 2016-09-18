@@ -123,8 +123,8 @@
 						processInput:->void AND
 						ThreadSupport!sleep:long:->void AND
 						@CommandInterpreter!setCommand:String->* AND
-						@Table!put:String;Object->void AND
-						@Tale!get:String->Object,						
+						@Table!put:(.*);(.*) -> (.*) AND
+						@Table!get:(.*)->(.*) ,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -173,13 +173,13 @@
 						@BridgeScene!getRobin:->(.*) AND
 						@BridgeScene!getLancelot:->(.*) AND
 						@BridgeScene!getGalahad:->(.*) AND
-						@Table!get:String->*
+						@Table!get:(.*)->(.*),
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@ConsoleSceneView = 
-						(.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
  						(.*)!getArms:-> @Angle AND
  						(.*)!getLegs:-> @Angle AND
  						(.*)!getLeftLine:-> @LINE_PATTERN AND

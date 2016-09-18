@@ -6,6 +6,7 @@
 
 
 <module name="unc.tools.checkstyle.AnExtendibleChecker">
+		
 
 	<property name="severity" value="warning" />
 
@@ -15,211 +16,318 @@
 
 		<module name="STBuilder">
 			<property name="includeTypeTags" value="*" />
-
 			<property name="severity" value="info" />
-			<property name="projectPackagePrefixes" value="main, test,lectures,mp, grail" />
+			<property name="projectPackagePrefixes" value="test,lectures, main, mp, grail" />
 			<property name="existingClasses"
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
+			<property name="checksName"
+				value="401_f16_A9" />
+			<property name="expectedTypes" value="
+				main.Assignment(.*),
+				@ScannerBean,
+				@Number, 
+				@Word, 
+				@Quote, 
+				@Start, 
+				@End, 
+				@Plus//EC, 
+				@Minus//EC,
+				ScanningIterator//EC,
+				@RotatingLine//EC,				
+				@Move, 
+				@Pass,
+				@Fail,
+				@Say, 
+				@RotateLeftArm//EC, 
+				@RotateRightArm//EC,  
+				@Repeat//EC, 
+				@Define//EC, 
+				@Call//EC,  
+				@Thread//EC, 
+				@Wait//EC, 
+				@ProceedAll//EC,
+				@Sleep//EC,  
+				@Undo//EC,
+				@Redo//EC,
+				@Angle,
+				@Avatar,
+				@BridgeScene,
+				@Locatable, 
+				@BoundedShape, 
+				@Table,
+				@CommandInterpreter,
+				@SignedMoveCommandInterpreter//EC,
+				@ErrorResilientCommandInterpreter//EC,
+				@ConsoleSceneView,
+				@InheritingBridgeScenePainter,
+				@ObservableBridgeScenePainter,
+				@DelegatingBridgeSceneView,
+				@PaintListener,
+				@BridgeSceneController,
+				@CommandInterpreterController//EC,
+				@ObservableCommandInterpreter//EC,
+				@Animator,
+				@AnimatingCommand,
+				@SayCommand,
+				@MoveCommand								
+				" />				
 
 		</module>
+		
 
 	</module>
 
 
-	<module name="TreeWalker">
-		<module name="EqualsAvoidNull" />
-		<module name="EmptyStatement" />
-		<module name="MagicNumber" />
-		<module name="SimplifyBooleanExpression" />
-		<module name="SimplifyBooleanReturn" />
-		<module name="StringLiteralEquality" />
-		<module name="NestedForDepth">
-			<property name="max" value="1" />
-		</module>
-		<module name="NestedIfDepth">
-			<property name="max" value="1" />
-		</module>
-		<module name="PackageDeclaration" />
-		<module name="AvoidStarImport">
-			<module name="HiddenField" />
-
-		</module>
-
-		<module name="VisibilityModifier">
-			<property name="packageAllowed" value="true" />
-			<property name="protectedAllowed" value="true" />
-		</module>
-		<module name="ConstantName" />
-		<module name="TypeName" />
-		<module name="MethodName" />
-		<module name="LocalVariableName" />
-		<module name="MemberName" />
-		<module name="StaticVariableName" />
-		<module name="NeedBraces" />
-		<module name="MultipleStringLiterals" />
-
-		<module name="NoDuplicateShortTypeName">
-		</module>
-		<module name="NoFullTypeName">
-		</module>
-
-		<module name="IllegalMethodCall">
-			<property name="disallowedCalls" value="Scanner, String" />
-			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.toLowerCase, String.equals, String.equalsIgnoreCase, Scanner.nextLine, Scanner.hasNext, Scanner.close" />
-		</module>
-		<module name="UnnecessaryMethodCall">
-			<property name="disallowedCalls" value="Scanner, String" />
-			<property name="exceptionCalls"
-				value="String.substring, String.charAt, String.length, String.equals, String.equalsIgnoreCase, String.toLowerCase, Scanner.nextLine, Scanner.close" />
-		</module>
-
-		<module name="IllegalInitCall">
-			<property name="includeTypeTags" value="*" />
-		</module>
-		<module name="IllegalComponentInstantiation">
-			<property name="includeTypeTags" value="*" />
-		</module>
-		<module name="IllegalTypeImported">
-			<property name="legalPrefixes"
-				value="bus.uigen, util, java.util.Scanner, java.util.List,  java.util.Iterator, java.util.ArrayList, java.util.Vector, java.util.LinkedList, java.util.NoSuchElementException, javax.swing, java.beans" />
-		</module>
-		<module name="IllegalTypeDefined">
-			<property name="illegalTypeNames"
-				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
-		</module>
-		<module name="ClassDefined">
-			<property name="severity" value="info" />
-			<property name="expectedTypes"
-				value="
-			main.Assignment(.*), 
-			@ScannerBean, 
-			@Number, 
-			@Word, 
-			@Quote, 
-			@Start, 
-			@End, 
-			@Plus, 
-			@Minus,
-			@move, 
-			@say, 
-			@rotateLeftArm, 
-			@rotateRightArm,  
-			@repeat, 
-			@define, 
-			@call,  
-			@thread, 
-			@wait, 
-			@proceedAll,  
-			@sleep,  
-			@undo, 
-			@redo, 
-			@RotatingLine, 
-			@Angle, 
-			@Avatar, 
-			@BridgeScene, 
-			@Locatable, 
-			@BoundedShape, 
-			@Table, 
-			@CommandInterpreter,
-			@ConsoleSceneView,
-			@InheritingBridgeScenePainter,
-			@ObservableBridgeScenePainter,
-			@PaintListener,
-			@BridgeSceneController,
-			@CommandInterpreterController,
-			@ObservableCommandInterpreter,
-			@Animator,
-			@AnimatingCommand,
-			@SayCommand,
-			@MoveCommand,
-			
-			" />
-		</module>
-
-		<module name="ExpectedGetters">
-			<property name="expectedProperties"
-				value="@ScannerBean= ScannedString:String AND Tokens:.*\[\] AND TokenList:@LIST_PATTERN AND TokenList:@ClearableHistory, 
-			@Word= Input:String AND Value:String, 
-			@Number= Input:String AND Value:int, 
-			@Quote= Input:String, 
-			@Start= Input:String, 
-			@End= Input:String, 
-			@Plus= Input:String, 
-			@Minus= Input:String, 
-			@Angle= LeftLine:@LINE_PATTERN AND RightLine:@LINE_PATTERN, 
-			@Avatar= Text:@STRING_PATTERN AND Head:@IMAGE_PATTERN AND Arms:@Angle AND Legs:@Angle, 
-			@BridgeScene= Arthur:@Avatar AND Galahad:@Avatar AND Lancelot:@Avatar AND Robin:@Avatar AND Guard:@Avatar AND Gorge:* AND KnightArea:* AND GuardArea:* AND Occupied:boolean ANDKnightTurn:boolean, 
-			@CommandInterpreter = Command:String,
-			@CommandInterpreterController = 
-				TextField:JTextField AND 
-				MenuItem:JMenuItem AND 
-				Button:JButton AND
-				Say: JButton AND
-				Approach: JButton AND
-				Pass: JButton AND
-				Fail: JButton,
-			@ProgressBarCreator =  ProgressBar:JProgressBar AND Slider:JSlider,
-			" />
-		</module>
-		<module name="ExpectedSetters">
-			<property name="expectedProperties"
-				value="
-			@ScannerBean= ScannedString:String,
-			@CommandInterpreter = Command:String,
-			" />
-		</module>
-		<module name="ExpectedSignatures">
-			<property name="expectedSignatures"
-				value="
-				@Angle= @move:int;int->*AND @scale:double->*, 
-				@Avatar= @move:int;int->* AND @scale:double->*, 
-				@BridgeScene= 
-					@scroll:int->* AND 
-					@approach:@Avatar->*AND 
-					@say:String->* AND 
-					@passed:->* AND 
-					@failed:->*	AND 
-					pre((.*)):->boolean,
-				@CommandInterpreter = 
+	<module name="unc.tools.checkstyle.ANonCachingTreeWalker">
+		<property name="severity" value="warning" />
+	
+		<module name="ExpectedDeclaredSignatures">
+				<property name="severity" value="warning" />
+		
+				<property name="expectedSignatures"
+					value="
+					main.Assignment9 = 
+						processInput:->*,
+					@ScannerBean =
+						scanString:String->* AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC,
+					ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC	,
+					@Angle =
+						@move:int;int->*,
+					@Avatar =
+						@move:int;int->* AND
+						@scale:double->*//EC,
+					@BridgeScene =
+						@approach:@Avatar->* AND
+						@say:String->* AND
+						@passed:->* AND
+						@failed:->* AND
+						@scroll:int;int->* AND
+						pre((.*)):->boolean,
+					@InheritingBridgeScenePainter=
+						paint:Graphics(.*)->void,
+					@ObservableBridgeScenePainter=
+						paint:Graphics(.*)->void,
+					@PaintListener=
+						paint:Graphics(.*)->void AND
+						@addPaintListener:@PaintListener->void,
+					@Animator = @animateAvatar:@Avatar->void,
+			@CommandInterpreter = 
 					@parseSay:*->Runnable AND 
 					@parseMove:*->Runnable AND 
-					@asynchronousGalahad:->void	AND
+					@asynchronousGalahad:->void//EC	AND
 					@asynchronousLancelot:->void AND		
 					@asynchronousRobin:->void AND	
 					@asynchronousArthur:->void AND
 					@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void
+				@Animator = @animateAvatar:@Avatar->void									
+								
+						
+					" />
+			</module>
+			<module name="MissingMethodCall">
+			<property name="severity" value="warning" />			
+			<property name="expectedCalls"
+				value="
+				main.Assignment9 = 
+						processInput:->void AND
+						ThreadSupport!sleep:long:->void AND
+						@CommandInterpreter!setCommand:String->* AND
+						@Table!put:(.*);(.*) -> (.*) AND
+						@Tale!get:String->Object,						
+				@ScannerBean =
+						scanString:String->void AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC AND
+						(.*)!hasNext:->boolean//EC AND
+						(.*)!next:->String//EC AND
+						@Number!getInput:->String AND 
+						@Number!getValue:->String AND						
+						@Word!getInput:->String AND 
+						@Word!getValue:->String AND						
+						@Quote!getInput:->String AND 
+						@Start!getInput:->String AND 
+						@End!getInput:->String AND 
+						@Plus!getInput:->String//EC AND 
+						@Minus!getInput:->String//EC AND
+						@Move!getInput:->String AND 
+						@Pass!getInput:->String AND
+						@Fail!getInput:->String AND
+						@Say!getInput:->String AND 
+						@RotateLeftArm!getInput:->String//EC AND
+						@RotateRightArm!getInput:->String//EC AND  
+						@Repeat!getInput:->String//EC AND 
+						@Define!getInput:->String//EC AND 
+						@Call!getInput:->String//EC AND  
+						@Thread!getInput:->String//EC AND 
+						@Wait!getInput:->String//EC AND
+						@ProceedAll!getInput:->String//EC AND
+						@Sleep!getInput:->String//EC AND  
+						@Undo!getInput:->String//EC AND
+						@Redo!getInput:->String//EC AND
+						,
+				ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC
+						,
+				@BridgeScene=
+						@Avatar!@move:int;int->* AND
+						@STRING_PATTERN!setText:String->void
+						,
+				@CommandInterpreter=
+						@ScannerBean!getTokens:->.*\[\]  AND
+						@ScannerBean!getTokenList:->@ClearableHistory AND
+						@BridgeScene!@say:String->* AND
+						@Avatar!@move:int;int->* AND
+						@BridgeScene!getArthur:->(.*) AND
+						@BridgeScene!getRobin:->(.*) AND
+						@BridgeScene!getLancelot:->(.*) AND
+						@BridgeScene!getGalahad:->(.*) AND
+						@Table!get:(.*)->(.*)AND
+						@Table!put:(.*);(.*) -> (.*) AND
+						@parseSay:*->Runnable AND
+					 	@parseMove:*->Runnable,							
+				@Locatable = 
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				@BoundedShape = 
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				@ConsoleSceneView = 
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
+						@BridgeScene!addPropertyChangeListener:PropertyChangeListener->void AND
+ 						(.*)!getArms:-> @Angle AND
+ 						(.*)!getLegs:-> @Angle AND
+ 						(.*)!getLeftLine:-> @LINE_PATTERN AND
+ 						(.*)!getRightLine:-> @LINE_PATTERN AND
+ 						(.*)!getText:->@STRING_PATTERN,
+ 				@InheritingBridgeScenePainter = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+ 						(.*)!getArms:-> @AngleAND
+ 						(.*)!getLegs:-> @Angle AND
+ 						(.*)!getLeftLine:-> @LINE_PATTERN AND
+ 						(.*)!getRightLine:-> @LINE_PATTERN AND
+ 						(.*)!getText:->@STRING_PATTERN, 
+				 @BridgeSceneController = 
+ 						@BridgeScene!getArthur:-> @Avatar AND 
+ 						@BridgeScene!getGalahad:-> @Avatar	AND
+ 						@BridgeScene!getLancelot:-> @Avatar	AND	
+ 						@BridgeScene!getRobin:-> @Avatar	AND
+ 						@Avatar!move:int; int->void,
+				 @ObservableCommandInterpreter = 
+				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				 @InheritingBridgeScenePainter = 
+				 		Graphics(.*)!draw(.*):*->(.*) AND
+				 		super!paint:Graphics->void(.*),
+				 @PaintListener = 
+				 	Graphics(.*)!draw(.*):*->(.*),
+				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void
+				  
+ 						
 				" />
+			</module>
+			
+			<module name="ExpectedClassInstantiations">
+			<property name="severity" value="warning" />			
+			<property name="instantiations"
+				value="				
+				main.Assignment9=
+					@ScannerBean AND
+					@BridgeScene AND
+					@CommandInterpreter AND
+					@InheritingBridgeScenePainter AND
+					@ObservableBridgeScenePainter//EC AND
+					@CommandInterpreterController//EC AND
+					@ObservableCommandInterpreter,
+					
+									
+				@ScannerBean =
+					@Number AND 
+					@Word AND
+					@Quote AND
+					@Start AND 
+					@End AND
+				    @Plus//EC AND 
+					@Minus//EC AND
+					@RotatingLine//EC AND				
+				    @Move AND 
+					@Pass AND
+					@Fail AND
+					@Say AND 
+					@RotateLeftArm//EC AND 
+					@RotateRightArm//EC AND  
+					@Repeat//EC AND 
+					@Define//EC AND 
+					@Call//EC AND  
+					@Thread//EC AND 
+					@Wait//EC AND 
+					@ProceedAll//EC AND
+					@Sleep//EC AND  
+					@Undo//EC AND
+					@Redo//EC,
+				@BridgeScene =
+					@Avatar AND
+					PropertyChangeEvent,				
+				@Avatar = 
+					@Angle,
+				@CommandInterpreterController =
+					JTextField AND
+					JMenuItem AND
+					JButton,
+				@ProgressBarCreator =
+					JProgressBar AND
+					JSlider			
+						
+				" />
+		   </module>
+		
+		<module name="IllegalComponentInstantiation">
+			<property name="severity" value="warning" />		
+			<property name="includeTypeTags" value="*" />
 		</module>
-		<module name="ExpectedDeclaredSignatures">
+			
+		<module name="ExpectedConstructors">
+			<property name="severity" value="warning" />		
 			<property name="expectedSignatures"
 				value="
-				@InheritingBridgeScenePainter=paint:Graphics(.*)->void,
-				@ObservableBridgeScenePainter=paint:Graphics(.*)->void AND@addPaintListener:@PaintListener->void,
-				@PaintListener=paint:Graphics(.*)->void		
-								
-				" />
-		</module>
-
-		<module name="ExpectedConstructors">
-			<property name="expectedSignatures"
-				value="@BridgeScene =:, 
-				@Angle=:, 
-				@CommandInterpreter = :@BridgeScene; @ScannerBean,
+				ScanningIterator =:String,
+				@Word= :String, 
+				@Number= :String, 
+				@Quote= :String, 
+				@Start= :String, 
+				@End= :String, 
+				@Plus= :String, 
+				@Minus= :String,
+				@Move= :String, 
+				@Pass= :String,
+				@Fail= :String,
+				@Say= :String, 
+				@RotateLeftArm= :String, 
+				@RotateRightArm= :String,  
+				@Repeat= :String, 
+				@Define= :String, 
+				@Call= :String,  
+				@Thread= :String, 
+				@Wait= :String,
+				@Sleep=:String,
+				@CommandInterpreter=:@ScannerBean;@BridgeScene,
 				@ConsoleSceneView = :@BridgeScene,
 				@InheritingBridgeScenePainter = :@BridgeScene,
-				@BridgeSceneController = :@BridgeScene,
+				@DelegatingBridgeSceneView = :@BridgeScene,
+				@BridgeSceneController = :@BridgeScene;Component,
 				@CommandInterpreterController = :@CommandInterpreter,
 				@MoveCommmand = :@Avatar; int; int,
-				@SayCommand = :@BridgeScene; String,
-																			
+				@SayCommand = :@BridgeScene; String
+																						
 				" />
 		</module>
+		
 		<module name="ExpectedInterfaces">
+			<property name="severity" value="warning" />		
 			<property name="expectedInterfaces"
 				value="
+				ScanningIterator = Iterator//EC,			
 				@Angle= @Angle, 
 				@Avatar=@Avatar, 
 				@ScannerBean = @ScannerBean,
@@ -231,141 +339,312 @@
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
-				@BridgeSceneController = MouseListener AND KeyListener,
-				@ObservableCommandIntepreter = PropertyListenerRegisterer,
+				@BridgeSceneController = 
+					MouseListener AND KeyListener,
+				@ObservableCommandIntepreter = 
+					PropertyListenerRegisterer,
 				@SayCommand = Runnable,
 				@MoveCommand = Runnable,
 				@Animator = @Animator,
 				@AnimatingCommand = Runnable,
-				@BridgeScene = 	PropertyListenerRegisterer			
+				@BridgeScene = 	PropertyListenerRegisterer					
+				"/>				
+		</module>				
+		
+		<module name="ExpectedGetters">
+			<property name="severity" value="warning" />		
+			<property name="expectedProperties" value="
+				@ScannerBean= ScannedString:String 
+							AND Tokens:.*\[\] 
+							AND Errors:String//EC
+							AND TokenList:@ClearableHistory//EC,
+				@Word= Input:String AND Value:String, 
+				@Number= Input:String AND Value:int, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String,
+				@Move= Input:String AND Value:String, 
+				@Pass= Input:String AND Value:String,
+				@Fail= Input:String AND Value:String,
+				@Say= Input:String AND Value:String, 
+				@RotateLeftArm= Input:String AND Value:String, 
+				@RotateRightArm= Input:String AND Value:String,  
+				@Repeat= Input:String AND Value:String, 
+				@Define= Input:String AND Value:String, 
+				@Call= Input:String AND Value:String,  
+				@Thread= Input:String AND Value:String, 
+				@Wait= Input:String AND Value:String,
+				@Sleep=Input:String AND Value:String,
+			    @Angle= LeftLine:@LINE_PATTERN AND 
+			    		RightLine:@LINE_PATTERN, 
+			    @Avatar= Text:@STRING_PATTERN AND 
+			    		Head:@IMAGE_PATTERN AND 
+			    		Arms:@Angle AND 
+			    		Legs:@Angle, 
+			    @BridgeScene= Arthur:@Avatar AND 
+			    			Galahad:@Avatar AND 
+			    			Lancelot:@Avatar AND 
+			    			Robin:@Avatar AND
+			    			Guard:@Avatar AND
+			    			Gorge:* AND
+			    			KnightArea:* AND
+			    			GuardArea:* AND
+			    			Occupied:boolean,
+    			@CommandInterpreter= Command:String,
+    			@DelegatingBridgeSceneView = 
+    				ObservableBridgeScenePainter:@ObservableBridgeScenePainter,
+    			@CommandInterpreterController = 
+    				TextField:JTextField AND 
+    				MenuItem:JMenuItem AND 
+    				Button:JButton AND
+    				Say: JButton//EC AND
+					Approach: JButton//EC AND
+					Pass: JButton//EC AND
+					Fail: JButton//EC,
+				@ProgressBarCreator =  
+				    ProgressBar:JProgressBar AND 
+				    Slider:JSlider 
+			" 
+			/>
+		</module>
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />		
+			<property name="expectedProperties" value="
+			@ScannerBean= ScannedString:String,
+			@CommandInterpreter= Command:String
+			
+			" />
+		</module>
+		
+		<module name="DuplicateShortTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+		
+		<module name="NoFullTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+
+		<module name="IllegalMethodCall">		
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				String.equals, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
 				" />
 		</module>
-		<module name="ExpectedSuperTypes">
-			<property name="expectedSuperTypes"
+		
+		<module name="UnnecessaryMethodCall">
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
 				value="
-				@LINE_PATTERN= @BoundedShape, 
-				@STRING_PATTERN= @Locatable, 
-				@IMAGE_PATTERN= @BoundedShape, 
-				@LABEL_PATTERN = @BoundedShape, 
-				@BoundedShape=@Locatable,
-				@InheritingBridgeScenePainter=Component,
-				@ObservableBridgeScenePainter=Component,
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 				
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
 				" />
 		</module>
-
-		<module name="MissingMethodCall">
-			<property name="expectedCalls"
+		
+		
+		<module name="IllegalTypeImported">
+			<property name="severity" value="warning" />
+			<property name="illegalPrefixes" value="*" />
+			<property name="legalPrefixes"
 				value="
-				@CommandInterpreter = 
-							(.*)!move:(int;int)->void AND
-							(.*)!setString:String->void AND
-					 		@Table!get:(.*)->(.*) AND
-					 		@Table!put:(.*);(.*) -> (.*) AND
-					 		@BridgeScene!getArthur:->(.*) AND
-					 		@parseSay:*->Runnable AND
-					 		@parseMove:*->Runnable,					 		
-				 @Avatar=  @STRING_PATTERN!setX:int->void) AND @Angle!move:int;int->void, 
-				 @BridgeScene = 
-				 	@Avatar!@move:int;->void AND 
-				 	(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @Locatable = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @BoundedShape = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @ConsoleSceneView = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
-				 						(.*)!getArms:-> @AngleAND
-				 						(.*)!getLegs:-> @Angle AND
-				 						(.*)!getLeftLine:-> @LINE_PATTERN AND
-				 						(.*)!getRightLine:-> @LINE_PATTERN AND
-				 						(.*)!getText:->@STRING_PATTERN,
-				 @InheritingBridgeScenePainter = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
-				 						(.*)!getArms:-> @AngleAND
-				 						(.*)!getLegs:-> @Angle AND
-				 						(.*)!getLeftLine:-> @LINE_PATTERN AND
-				 						(.*)!getRightLine:-> @LINE_PATTERN AND
-				 						(.*)!getText:->@STRING_PATTERN,
-				 
-				 @BridgeSceneController = 
-				 						@BridgeScene!getArthur:-> @Avatar AND 
-				 						@BridgeScene!getGalahad:-> @Avatar	AND
-				 						@BridgeScene!getLancelot:-> @Avatar	AND	
-				 						@BridgeScene!getRobin:-> @Avatar	AND
-				 						@Avatar!move:int; int->void AND				 						
-				 						@BridgeScene!@say:@Avatar->void AND
-				 						@BridgeScene!@approach:@Avatar->void,
-				 @ObservableCommandInterpreter = (.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @InheritingBridgeScenePainter = 
-				 	Graphics(.*)!draw(.*):*->(.*) AND
-				 	super!paint:Graphics->void(.*),
-				 @PaintListener = 
-				 	Graphics(.*)!draw(.*):*->(.*),
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void
-				 						
-				 						
-				 " />
+					bus.uigen, 
+					util, 
+					shapes, 
+					java.beans, 
+					java.util.Scanner, 					
+					java.util.Iterator, 
+					java.util.NoSuchElementException,
+					gradingTools,
+					java.util.List,  
+					java.util.Iterator, 
+					java.util.ArrayList, 
+					java.util.Vector, 
+				 	java.util.LinkedList
+					" />
 		</module>
-
-		<module name="ExpectedPattern">
-			<property name="expectedPattern"
-				value="
-				@Table= MAP_PATTERN, 
-				@Angle= BEAN_PATTERN
-				" />
+		
+		<module name="IllegalTypeDefined">
+			<property name="severity" value="warning" />
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
 		</module>
-
-
+		
 		<module name="FunctionAssignsGlobal">
+			<property name="severity" value="warning" />
 			<property name="excludeMethodTags"
 				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
 
 		</module>
 		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />		
 		</module>
 		<module name="MissingActualProperty">
+			<property name="severity" value="warning" />		
 		</module>
 		<module name="MissingActualEditableProperty">
+			<property name="severity" value="warning" />		
 		</module>
+		
+ 		<module name="InvalidPackageName">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="severity" value="warning" />
+			<property name="allowedSiblings" value=
+				"Math.(.*)" 
+			/>
+			
+		</module>
+		
 		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="warning" />		
 		</module>
 		<module name="ClassHasOneInterface">
+			<property name="severity" value="warning" />					
 		</module>
 		<module name="VariableHasClassType">
-
+		<property name="severity" value="warning" />		
 		</module>
-
+		
 		<module name="LinePattern">
+			<property name="severity" value="warning" />		
 		</module>
 		<module name="OvalPattern">
+				<property name="severity" value="warning" />		
 		</module>
 		<module name="RectanglePattern">
+				<property name="severity" value="warning" />		
 		</module>
 		<module name="StringShapePattern">
+				<property name="severity" value="warning" />		
 		</module>
 		<module name="PointPattern">
+				<property name="severity" value="warning" />		
 		</module>
 		<module name="ImagePattern">
+				<property name="severity" value="warning" />		
 		</module>
-		<module name="VectorPattern">
+		
+		 <module name="PeerCommonProperties">
+		 	<property name="severity" value="warning" />		 
+			<property name="includeTypeTags" value="
+				@Word,
+				@Number,
+				@Quote,
+				@Move, 
+				@Say, 
+				@Approach,
+				@Pass,
+				@Fail,
+				@RotateLeftArm, 
+				@RotateRightArm,  
+				@Repeat, 
+				@Define, 
+				@Call,  
+				@Thread, 
+				@Wait, 
+				@ProceedAll, 
+				@Sleep, 
+				@Undo, 
+				@Redo
+				" />			
+			<property name="includeSets" value="
+				Input AND
+				Value				
+				" />		
+		  </module>
+		   <module name="InvalidPackageName">
 		</module>
-		<module name="ListPattern">
+		<module name="ExpectedSuperTypes">
+			<property name="severity" value="warning" />		
+			<property name="expectedSuperTypes"
+				value="
+				@LINE_PATTERN= @BoundedShape, 
+				@STRING_PATTERN= @BoundedShape, 
+				@IMAGE_PATTERN= @BoundedShape, 
+				@LABEL_PATTERN = @BoundedShape, 
+				@BoundedShape=@Locatable,
+				@InheritingBridgeScenePainter=Component,
+				@ObservableBridgeScenePainter=Component
+				"/>
 		</module>
-		<module name="MapPattern">
-		</module>
-
-		<module name="NoStructuredSetter">
+		
+		<module name="ExpectedPattern">
+			<property name="severity" value="warning" />		
+			<property name="expectedPattern"
+				value="
+				@Table= MAP_PATTERN, 
+				@Angle= BEAN_PATTERN
+				"/>
 		</module>
 		<module name="IllegalPropertyNotification">
+			<property name="severity" value="warning" />		
 			<property name="excludeProperties" value="this" />
 		</module>
-
-
-		<module name="PeerCommonProperties">
-			<property name="includeTypeTags"
-				value="@move, @say, @rotateLeftArm, @rotateRightArm,  @repeat, @define, @call,  @thread, @wait, @proceedAll,  @sleep,  @undo, @redo, @LINE_PATTERN, @IMAGE_PATTERN, @STRING_PATTERN" />
-			<property name="includeSets"
-				value="@move AND @say AND @rotateLeftArm AND @rotateRightArm AND  @repeat AND @define AND @call AND  @thread AND @wait AND @proceedAll AND  @sleep AND  @undo AND @redo, @LINE_PATTERN AND @IMAGE_PATTERN AND @STRING_PATTERN" />
+		<module name="IllegalTypeDefined">
+		    <property name="severity" value="warning" />		
+			<property name="illegalTypeNames" value="
+				PropertyChangeEvent, 
+				PropertyChangeListener, 
+				PropertyListenerRegisterer
+				"
+				 />
 		</module>
-		<module name="InvalidPackageName">
-		</module>
 
+
+	</module>
+	<module name="TreeWalker">		
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="PackageDeclaration" />		
+		<module name="AvoidStarImport" />
+		<module name="HiddenField"/>
+
+		
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces"/>
+		<module name="MultipleStringLiterals"/>		
+ 		<module name="InvalidPackageName"/>
 	</module>
 </module>
 
