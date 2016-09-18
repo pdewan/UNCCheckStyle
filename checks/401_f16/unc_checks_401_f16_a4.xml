@@ -67,7 +67,8 @@
 				<property name="expectedSignatures"
 					value="
 					main.Assignment4 = 
-						processInput:->*,
+						processInput:->* AND
+						@ScannerBean:setScannedString:String->void,
 					@ScannerBean =
 						scanString:String->* AND
 						indexOf:String;char;int->int AND

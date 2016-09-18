@@ -56,7 +56,9 @@
 				@Locatable, 
 				@BoundedShape, 
 				@Table,
-				@CommandInterpreter
+				@CommandInterpreter,
+				@SignedMoveCommandInterpreter//EC,
+				@ErrorResilientCommandInterpreter//EC				
 				" />				
 
 		</module>
@@ -73,7 +75,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment6 = 
+					main.Assignment7 = 
 						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
@@ -100,9 +102,12 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment6 = 
+				main.Assignment7 = 
 						processInput:->void AND
-						ThreadSupport!sleep:long:->void,
+						ThreadSupport!sleep:long:->void AND
+						@CommandInterpreter!setCommand:String->* AND
+						@Table!put:String;Object->void AND
+						@Tale!get:String->Object,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -141,6 +146,13 @@
 				@BridgeScene=
 						@Avatar!@move:int;int->* AND
 						@STRING_PATTERN!setText:String->void
+						,
+				@CommandInterpreter=
+						@ScannerBean!getTokens:->.*\[\]  AND
+						@ScannerBean!getTokenList:->@ClearableHistory AND
+						@BridgeScene!@say:String->* AND
+						@Avatar!@move:int;int->* AND
+						@Table!get:String->*
 						" />
 			</module>
 			
@@ -148,9 +160,11 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment6=
+				main.Assignment7=
 					@ScannerBean AND
-					@BridgeScene,					
+					@BridgeScene AND
+					@CommandInterpreter AND
+					@Table,				
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -210,7 +224,8 @@
 				@Call= :String,  
 				@Thread= :String, 
 				@Wait= :String,
-				@Sleep=:String
+				@Sleep=:String,
+				@CommandInterpreter=:@ScannerBean;@BridgeScene
 														
 				" />
 		</module>
@@ -263,15 +278,16 @@
 			    			Gorge:* AND
 			    			KnightArea:* AND
 			    			GuardArea:* AND
-			    			Occupied:boolean
+			    			Occupied:boolean,
+    			@CommandInterpreter= Command:String
 			" 
 			/>
 		</module>
 		<module name="ExpectedSetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-			@ScannerBean= ScannedString:
-					String
+			@ScannerBean= ScannedString:String,
+			@CommandInterpreter= Command:String
 			
 			" />
 		</module>
