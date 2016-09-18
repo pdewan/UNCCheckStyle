@@ -225,6 +225,15 @@
 				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
 
 		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualProperty">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualEditableProperty">
+			<property name="severity" value="warning" />		
+		</module>
 		
  		<module name="InvalidPackageName">
 			<property name="severity" value="warning" />

@@ -22,7 +22,7 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A4" />
+				value="401_f16_A6" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
@@ -49,7 +49,14 @@
 				@ProceedAll//EC,
 				@Sleep//EC,  
 				@Undo//EC,
-				@Redo//EC
+				@Redo//EC,
+				@Angle,
+				@Avatar,
+				@BridgeScene,
+				@Locatable, 
+				@BoundedShape, 
+				@Table,
+				@CommandInterpreter
 				" />				
 
 		</module>
@@ -66,7 +73,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment4 = 
+					main.Assignment6 = 
 						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
@@ -74,18 +81,28 @@
 						indexOfNot:String;char;int->int//EC,
 					ScanningIterator=
 						indexOf:String;char;int->int AND
-						indexOfNot:String;char;int->int//EC	
+						indexOfNot:String;char;int->int//EC	,
+					@Angle =
+						@move:int;int->*,
+					@Avatar =
+						@move:int;int->* AND
+						@scale:double->*//EC,
+					@BridgeScene =
+						@approach:@Avatar->* AND
+						@say:String->* AND
+						@passed:->* AND
+						@failed:->* AND
+						@scroll:int;int->*
+						
 					" />
 			</module>
 			<module name="MissingMethodCall">
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment4 = 
+				main.Assignment6 = 
 						processInput:->void AND
-						@RotatingLine!setWidth:int->void AND
-						ThreadSupport!sleep:long->void AND
-						@RotatingLine!setHeight:int->void,
+						ThreadSupport!sleep:long:->void,
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -120,6 +137,10 @@
 				ScanningIterator=
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC
+						,
+				@BridgeScene=
+						@Avatar!@move:int;int->* AND
+						@STRING_PATTERN!setText:String->void
 						" />
 			</module>
 			
@@ -127,9 +148,9 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment4=
+				main.Assignment6=
 					@ScannerBean AND
-					@RotatingLine, 
+					@BridgeScene,					
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -153,10 +174,18 @@
 					@ProceedAll//EC AND
 					@Sleep//EC AND  
 					@Undo//EC AND
-					@Redo//EC			
+					@Redo//EC,
+				@BridgeScene =
+					@Avatar,
+				@Avatar = 
+					@Angle,			
 				" />
 		   </module>
-			
+		
+		<module name="IllegalComponentInstantiation">
+			<property name="severity" value="warning" />		
+			<property name="includeTypeTags" value="*" />
+		</module>
 			
 		<module name="ExpectedConstructors">
 			<property name="severity" value="warning" />		
@@ -181,7 +210,8 @@
 				@Call= :String,  
 				@Thread= :String, 
 				@Wait= :String,
-				@Sleep=:String												
+				@Sleep=:String
+														
 				" />
 		</module>
 		
@@ -198,7 +228,8 @@
 			<property name="expectedProperties" value="
 				@ScannerBean= ScannedString:String 
 							AND Tokens:.*\[\] 
-							AND Errors:String//EC,
+							AND Errors:String//EC
+							AND TokenList:@ClearableHistory//EC,
 				@Word= Input:String AND Value:String, 
 				@Number= Input:String AND Value:int, 
 				@Quote= Input:String, 
@@ -217,14 +248,30 @@
 				@Call= Input:String AND Value:String,  
 				@Thread= Input:String AND Value:String, 
 				@Wait= Input:String AND Value:String,
-				@Sleep=Input:String AND Value:String
+				@Sleep=Input:String AND Value:String,
+			    @Angle= LeftLine:@LINE_PATTERN AND 
+			    		RightLine:@LINE_PATTERN, 
+			    @Avatar= Text:@STRING_PATTERN AND 
+			    		Head:@IMAGE_PATTERN AND 
+			    		Arms:@Angle AND 
+			    		Legs:@Angle, 
+			    @BridgeScene= Arthur:@Avatar AND 
+			    			Galahad:@Avatar AND 
+			    			Lancelot:@Avatar AND 
+			    			Robin:@Avatar AND
+			    			Guard:@Avatar AND
+			    			Gorge:* AND
+			    			KnightArea:* AND
+			    			GuardArea:* AND
+			    			Occupied:boolean
 			" 
 			/>
 		</module>
 		<module name="ExpectedSetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-			@ScannerBean= ScannedString:String
+			@ScannerBean= ScannedString:
+					String
 			
 			" />
 		</module>
@@ -287,7 +334,12 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools
+					gradingTools,
+					java.util.List,  
+					java.util.Iterator, 
+					java.util.ArrayList, 
+					java.util.Vector, 
+				 	java.util.LinkedList
 					" />
 		</module>
 		
@@ -334,11 +386,73 @@
 		<module name="LinePattern">
 			<property name="severity" value="warning" />		
 		</module>
-		
-
-		<module name="NoStructuredSetter">
+		<module name="OvalPattern">
 				<property name="severity" value="warning" />		
 		</module>
+		<module name="RectanglePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="StringShapePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="PointPattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="ImagePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		
+		 <module name="PeerCommonProperties">
+		 	<property name="severity" value="warning" />		 
+			<property name="includeTypeTags" value="
+				@Word,
+				@Number,
+				@Quote,
+				@Move, 
+				@Say, 
+				@Approach,
+				@Pass,
+				@Fail,
+				@RotateLeftArm, 
+				@RotateRightArm,  
+				@Repeat, 
+				@Define, 
+				@Call,  
+				@Thread, 
+				@Wait, 
+				@ProceedAll, 
+				@Sleep, 
+				@Undo, 
+				@Redo
+				" />			
+			<property name="includeSets" value="
+				Input AND
+				Value				
+				" />		
+		  </module>
+		   <module name="InvalidPackageName">
+		</module>
+		<module name="ExpectedSuperTypes">
+			<property name="severity" value="warning" />		
+			<property name="expectedSuperTypes"
+				value="
+				@LINE_PATTERN= @BoundedShape, 
+				@STRING_PATTERN= @BoundedShape, 
+				@IMAGE_PATTERN= @BoundedShape, 
+				@LABEL_PATTERN = @BoundedShape, 
+				@BoundedShape=@Locatable
+				"/>
+		</module>
+		
+		<module name="ExpectedPattern">
+			<property name="severity" value="warning" />		
+			<property name="expectedPattern"
+				value="
+				@Table= MAP_PATTERN, 
+				@Angle= BEAN_PATTERN
+				"/>
+		</module>
+
 
 	</module>
 	<module name="TreeWalker">		

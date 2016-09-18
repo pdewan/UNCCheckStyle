@@ -49,7 +49,10 @@
 				@ProceedAll//EC,
 				@Sleep//EC,  
 				@Undo//EC,
-				@Redo//EC
+				@Redo//EC,
+				@Angle,
+				@Avatar,
+				@BridgeScene
 				" />				
 
 		</module>
@@ -66,7 +69,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment4 = 
+					main.Assignment5 = 
 						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
@@ -86,7 +89,7 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment4 = 
+				main.Assignment5 = 
 						processInput:->void AND
 						ThreadSupport!sleep:long:->void,
 				@ScannerBean =
@@ -249,7 +252,7 @@
 		<module name="ExpectedSetters">
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
-			@ScannerBean= ScannedString:String AND Tokens:.*\[\]
+			@ScannerBean= ScannedString:String
 			
 			" />
 		</module>
@@ -328,6 +331,15 @@
 				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
 
 		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualProperty">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualEditableProperty">
+			<property name="severity" value="warning" />		
+		</module>
 		
  		<module name="InvalidPackageName">
 			<property name="severity" value="warning" />
@@ -345,6 +357,25 @@
 		</module>
 		<module name="VariableHasClassType">
 		<property name="severity" value="warning" />		
+		</module>
+		
+		<module name="LinePattern">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="OvalPattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="RectanglePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="StringShapePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="PointPattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="ImagePattern">
+				<property name="severity" value="warning" />		
 		</module>
 
 
