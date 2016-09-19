@@ -205,8 +205,7 @@
 					@passed:->* AND 
 					@failed:->*	AND 
 					pre((.*)):->boolean,
-				@CommandInterpreter = 
-					 
+				@CommandInterpreter = 					 
 					@asynchronousGalahad:->void	AND
 					@asynchronousLancelot:->void AND		
 					@asynchronousRobin:->void AND	

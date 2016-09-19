@@ -22,7 +22,7 @@
 				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f16_A10" />
+				value="401_f16_A11" />
 			<property name="expectedTypes" value="
 				main.Assignment(.*),
 				@ScannerBean,
@@ -70,7 +70,24 @@
 				@Animator,
 				@AnimatingCommand,
 				@SayCommand,
-				@MoveCommand								
+				@MoveCommand,
+				@PassCommand,
+				@Animator,
+				@AnimatingCommand,
+				@FailCommand,
+				@ApproachCommand,
+				@RepeatCommand,
+				@CommandList,
+				@RotateLeftArmCommand//EC,
+				@RotateRightArmCommand//EC,
+				@SleepCommand//EC,
+				@DefineCommand//EC,
+				@CallCommand//EC,
+				@ThreadCommand//EC,			
+				@DefineCommand//EC,
+				@CallCommand//EC,
+				@ThreadCommand//EC,
+				@Parser								
 				" />				
 
 		</module>
@@ -87,7 +104,7 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment10 = 
+					main.Assignment11 = 
 						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
@@ -116,16 +133,37 @@
 						paint:Graphics(.*)->void AND
 						@addPaintListener:@PaintListener->void,
 					@Animator = @animateAvatar:@Avatar->void,
-			@CommandInterpreter = 
-					@parseSay:*->Runnable AND 
-					@parseMove:*->Runnable AND 
-					@asynchronousGalahad:->void//EC	AND
-					@asynchronousLancelot:->void AND		
-					@asynchronousRobin:->void AND	
-					@asynchronousArthur:->void AND
-					@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void									
-								
+					@CommandInterpreter = 					
+						@asynchronousGalahad:->void//EC	AND
+						@asynchronousLancelot:->void AND		
+						@asynchronousRobin:->void AND	
+						@asynchronousArthur:->void AND
+						@asynchronousGuard:->void,
+				@Animator = @animateAvatar:@Avatar->void,
+				@Parser = 
+				    @parseSay:*->Runnable AND 
+					@parseMove:*->Runnable AND
+				  	@parseCommand:*->Runnable AND						
+				  	@parseApproach:*->Runnable AND						
+				 	@parsePass:*->Runnable AND						
+				 	@parseFail:*->Runnable AND						
+				 	@parseRepeat:*->Runnable AND						
+				 	@parseCommandList:*->Runnable AND						
+				 	@parseNumber:*->* AND
+				 	@parseRotateLeftArm:*->Runnable AND
+				 	@parseRotateRightArm:*->Runnable AND
+				 	@parseSleep:*->Runnable AND
+					@parseDefine:*->Runnable AND
+					@parseCall:*->Runnable AND
+					@parseThread:*->Runnable AND
+					@parseSleep:*->Runnable AND
+					@parseNumber:*->int AND
+					next:->* AND
+					peek:->* AND
+					hasNext:->boolean//EC AND
+					reset:->*,	
+				@CommandList =
+					@add:Runnable->*,
 						
 					" />
 			</module>
@@ -133,15 +171,13 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment10 = 
+				main.Assignment11 = 
 						processInput:->void AND
 						ThreadSupport!sleep:long:->void AND
 						@CommandInterpreter!setCommand:String->* AND
 						@Table!put:(.*);(.*) -> (.*) AND
-						@Tale!get:String->Object AND
-						@CommandInterpreter!@asynchronous(.*):->void AND
-						@CommandInterpreter!@approach:@Avatar->void AND
-						@CommandInterpreter!@say:@Avatar->void,						
+						@Table!get:String->Object AND
+						@CommandInterpreter!@asynchronous(.*):->void,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -190,10 +226,8 @@
 						@BridgeScene!getRobin:->(.*) AND
 						@BridgeScene!getLancelot:->(.*) AND
 						@BridgeScene!getGalahad:->(.*) AND
-						@Table!get:(.*)->(.*)AND
-						@Table!put:(.*);(.*) -> (.*) AND
-						@parseSay:*->Runnable AND
-					 	@parseMove:*->Runnable,							
+						@Table!get:(.*)->(.*) AND
+						@Table!put:(.*);(.*) -> (.*),							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
@@ -226,8 +260,34 @@
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
 				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void
-				  
- 						
+				  @ApproachCommand = @BridgeScene!@approach:@Avatar->*,
+				 @FailCommand = @BridgeScene!@failed:->*,
+				 @PassCommand = @BridgeScene!@passed:->*,
+				 @SayCommand = @BridgeScene!@say:String->*,			 
+				 @CommandList = Runnable!run:->void,
+				 @Parser = 
+				 	@parseCommand:*->Runnable AND						
+				 	@parseSay:*->Runnable AND
+				 	@parseApproach:*->Runnable AND						
+				 	@parseMove:*->Runnable AND					
+				 	@parsePass:*->Runnable AND						
+				 	@parseFail:*->Runnable AND						
+				 	@parseRepeat:*->Runnable AND						
+				 	@parseCommandList:*->Runnable AND						
+				 	@parseNumber:*->*//EC AND
+				 	@parseRotateLeftArm:*->Runnable//EC AND
+				 	@parseRotateRightArm:*->Runnable//EC AND
+					@parseDefine:*->Runnable//EC AND
+					@parseCall:*->Runnable//EC AND
+					@parseThread:*->Runnable//EC AND
+				 	@parseSleep:*->Runnable//EC,
+ 			@RotateLeftArmCommand = @Avatar!@rotateLeftArm:int->void,
+			@RotateRightArmCommand = @Avatar!@rotateRightArm:int->void,
+			@SleepCommand = @ThreadSupport!sleep:long->void,
+			@DefineCommand = @Table!put:Object;Object->*,
+			@CallCommand = @Table!get:Object->Object,				 
+			@ThreadCommand = @Table!get:Object->Object AND Thread!start:->void
+				 			 									
 				" />
 			</module>
 			
@@ -235,16 +295,9 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment10=
-					@ScannerBean AND
+				main.Assignment11=
 					@BridgeScene AND
-					@CommandInterpreter AND
-					@InheritingBridgeScenePainter AND
-					@ObservableBridgeScenePainter//EC AND
-					@CommandInterpreterController//EC AND
-					@ObservableCommandInterpreter,
-					
-									
+					@CommandInterpreter,
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -280,7 +333,19 @@
 					JButton,
 				@ProgressBarCreator =
 					JProgressBar AND
-					JSlider			
+					JSlider,
+				@Parser = 
+					@RotateLeftArmCommand//EC AND
+					@RotateRightArmCommand//EC AND
+					@SleepCommand AND
+					@DefineCommand AND
+					@CallCommand AND
+					@ThreadCommand AND		
+					@DefineCommand//EC AND
+					@CallCommand//EC AND
+					@ThreadCommand//EC AND
+					CommandList
+							
 						
 				" />
 		   </module>
@@ -321,7 +386,16 @@
 				@BridgeSceneController = :@BridgeScene;Component,
 				@CommandInterpreterController = :@CommandInterpreter,
 				@MoveCommmand = :@Avatar; int; int,
-				@SayCommand = :@BridgeScene; String
+				@SayCommand = :@BridgeScene; String,
+				@FailCommand = :@BridgeScene,
+				@PassCommand = :@BridgeScene,
+				@ApproachCommand = :@BridgeScene;@Avatar,
+				@RepeatCommand = :int;@Runnable,
+				@RotateLeftArmCommand = :@Avatar; int,
+				@RotateRightArmCommand = :@Avatar; int,
+				@SleepCommand = :long,
+				@DefineCommand = :String;@Runnable;@Table,	
+				@ThreadCommand = :String;@Table
 																						
 				" />
 		</module>
@@ -348,6 +422,18 @@
 					PropertyListenerRegisterer,
 				@SayCommand = Runnable,
 				@MoveCommand = Runnable,
+				@PassCommand = Runnable,
+				@FailCommand = Runnable,
+				@ApproachCommand = Runnable,
+				@RotateLeftArmCommand = Runnable,
+				@RotateRigtArmCommand = Runnable,
+				@SleepCommand = Runnable,
+				@DefineCommand = Runnable,
+				@CallCommand = Runnable,
+				@ThreadCommand = Runnable,								
+				@CommandList = 
+					@CommandList AND 
+					Runnable,
 				@Animator = @Animator,
 				@AnimatingCommand = Runnable,
 				@BridgeScene = 	PropertyListenerRegisterer					
@@ -408,7 +494,12 @@
 					Fail: JButton//EC,
 				@ProgressBarCreator =  
 				    ProgressBar:JProgressBar AND 
-				    Slider:JSlider 
+				    Slider:JSlider,
+				 @Parser = 
+				 	CommandText:String AND 
+				 	CommandObject:Runnable AND 
+				 	Errors:*//EC,
+				     
 			" 
 			/>
 		</module>
@@ -416,7 +507,8 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
 			@ScannerBean= ScannedString:String,
-			@CommandInterpreter= Command:String
+			@CommandInterpreter= Command:String,
+			@Parser = CommandText:String	
 			
 			" />
 		</module>
