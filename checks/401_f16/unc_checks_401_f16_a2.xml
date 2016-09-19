@@ -24,7 +24,7 @@
 			<property name="checksName"
 				value="401_f16_A2" />
 			<property name="expectedTypes" value="
-				main.Assignment(.*),
+				main.Assignment2,
 				@ScannerBean,
 				ScanningIterator//EC
 				" />				

@@ -24,7 +24,7 @@
 			<property name="checksName"
 				value="401_f16_A11" />
 			<property name="expectedTypes" value="
-				main.Assignment(.*),
+				main.Assignment11,
 				@ScannerBean,
 				@Number, 
 				@Word, 
@@ -207,7 +207,7 @@
 						@ProceedAll!getInput:->String//EC AND
 						@Sleep!getInput:->String//EC AND  
 						@Undo!getInput:->String//EC AND
-						@Redo!getInput:->String//EC AND
+						@Redo!getInput:->String//EC
 						,
 				ScanningIterator=
 						indexOf:String;char;int->int AND
@@ -227,7 +227,10 @@
 						@BridgeScene!getLancelot:->(.*) AND
 						@BridgeScene!getGalahad:->(.*) AND
 						@Table!get:(.*)->(.*) AND
-						@Table!put:(.*);(.*) -> (.*),							
+						@Table!put:(.*);(.*) -> (.*) AND
+						@Parser!setCommandText:String->void AND
+				 		@Parser!getCommandObject:->Runnable AND
+				 		@Parser!getErrors:->*//EC,							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 

@@ -24,7 +24,7 @@
 			<property name="checksName"
 				value="401_f16_A7" />
 			<property name="expectedTypes" value="
-				main.Assignment(.*),
+				main.Assignment7,
 				@ScannerBean,
 				@Number, 
 				@Word, 
@@ -137,7 +137,7 @@
 						@ProceedAll!getInput:->String//EC AND
 						@Sleep!getInput:->String//EC AND  
 						@Undo!getInput:->String//EC AND
-						@Redo!getInput:->String//EC AND
+						@Redo!getInput:->String//EC
 						,
 				ScanningIterator=
 						indexOf:String;char;int->int AND

@@ -24,7 +24,7 @@
 			<property name="checksName"
 				value="401_f16_A3" />
 			<property name="expectedTypes" value="
-				main.Assignment(.*),
+				main.Assignment3,
 				@ScannerBean,
 				@Number, 
 				@Word, 
