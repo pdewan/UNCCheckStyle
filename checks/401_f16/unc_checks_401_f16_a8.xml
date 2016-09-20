@@ -273,7 +273,7 @@
 			<property name="expectedProperties" value="
 				@ScannerBean= ScannedString:String 
 							AND Tokens:.*\[\] 
-							AND Errors:String//EC
+							AND Errors:*//EC
 							AND TokenList:@ClearableHistory//EC,
 				@Word= Input:String AND Value:String, 
 				@Number= Input:String AND Value:int, 
