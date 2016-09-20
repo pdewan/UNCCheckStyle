@@ -90,7 +90,6 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment5 = 
-						processInput:->void AND
 						ThreadSupport!sleep:long:->void,
 				@ScannerBean =
 						scanString:String->void AND

@@ -198,8 +198,8 @@
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment11 = 
-						processInput:->void AND
+				main.Assignment12 = 
+						
 						ThreadSupport!sleep:long:->void AND
 						@CommandInterpreter!setCommand:String->* AND
 						@Table!put:(.*);(.*) -> (.*) AND

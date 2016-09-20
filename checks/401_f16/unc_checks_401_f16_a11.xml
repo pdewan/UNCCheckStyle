@@ -172,7 +172,7 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment11 = 
-						processInput:->void AND
+						
 						ThreadSupport!sleep:long:->void AND
 						@CommandInterpreter!setCommand:String->* AND
 						@Table!put:(.*);(.*) -> (.*) AND

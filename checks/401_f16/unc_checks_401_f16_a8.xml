@@ -104,7 +104,7 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment8 = 
-						processInput:->void AND
+						
 						ThreadSupport!sleep:long:->void AND
 						@CommandInterpreter!setCommand:String->* AND
 						@Table!put:String;Object->(.*) AND

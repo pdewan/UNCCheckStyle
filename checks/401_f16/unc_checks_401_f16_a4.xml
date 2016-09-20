@@ -83,7 +83,7 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment4 = 
-						processInput:->void AND
+						@ScannerBean!setScannedString:String->void AND
 						@RotatingLine!setWidth:int->void AND
 						ThreadSupport!sleep:long->void AND
 						@RotatingLine!setHeight:int->void,
