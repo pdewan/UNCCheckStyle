@@ -74,9 +74,7 @@
 				<property name="severity" value="warning" />
 		
 				<property name="expectedSignatures"
-					value="
-					main.Assignment7 = 
-						processInput:->*,
+					value="					
 					@ScannerBean =
 						scanString:String->* AND
 						indexOf:String;char;int->int AND
