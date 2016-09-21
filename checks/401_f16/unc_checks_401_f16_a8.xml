@@ -76,8 +76,6 @@
 		
 				<property name="expectedSignatures"
 					value="
-					main.Assignment8 = 
-						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
 						indexOf:String;char;int->int AND
@@ -114,31 +112,7 @@
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC AND
 						(.*)!hasNext:->boolean//EC AND
-						(.*)!next:->String//EC AND
-						@Number!getInput:->String AND 
-						@Number!getValue:->String AND						
-						@Word!getInput:->String AND 
-						@Word!getValue:->String AND						
-						@Quote!getInput:->String AND 
-						@Start!getInput:->String AND 
-						@End!getInput:->String AND 
-						@Plus!getInput:->String//EC AND 
-						@Minus!getInput:->String//EC AND
-						@Move!getInput:->String AND 
-						@Pass!getInput:->String AND
-						@Fail!getInput:->String AND
-						@Say!getInput:->String AND 
-						@RotateLeftArm!getInput:->String//EC AND
-						@RotateRightArm!getInput:->String//EC AND  
-						@Repeat!getInput:->String//EC AND 
-						@Define!getInput:->String//EC AND 
-						@Call!getInput:->String//EC AND  
-						@Thread!getInput:->String//EC AND 
-						@Wait!getInput:->String//EC AND
-						@ProceedAll!getInput:->String//EC AND
-						@Sleep!getInput:->String//EC AND  
-						@Undo!getInput:->String//EC AND
-						@Redo!getInput:->String//EC
+						(.*)!next:->String//EC 
 						,
 				ScanningIterator=
 						indexOf:String;char;int->int AND
@@ -193,7 +167,7 @@
 					@End AND
 				    @Plus//EC AND 
 					@Minus//EC AND
-					@RotatingLine//EC AND				
+									
 				    @Move AND 
 					@Pass AND
 					@Fail AND
@@ -340,11 +314,11 @@
 				String.substring, 
 				String.charAt, 
 				String.length, 
-				String.equals, 
+				String.equals, String.equalsIgnoreCase 
 				Scanner.nextLine, 
 				Scanner.hasNext, 
 				String.toLowerCase,
-				String.equals,
+				
 				String.isEmpty,
 				Scanner.close
 				" />
@@ -361,7 +335,7 @@
 				Scanner.nextLine, 
 				Scanner.hasNext, 				
 				String.toLowerCase,
-				String.equals,
+				String.equals, String.equalsIgnoreCase
 				String.isEmpty,
 				Scanner.close
 				" />
