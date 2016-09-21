@@ -16,7 +16,7 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public abstract class BoundedShapePatternCheck extends LocatableShapePatternCheck {
-	public static final String BOUNDS_PROPERTIES = "Width: int | Height: int";
+	public static final String BOUNDS_PROPERTIES = "Width: int" + BASIC_SET_MEMBER_SEPARATOR + "Height: int";
 
 	//@Override
 	//public String composeProperties() {
