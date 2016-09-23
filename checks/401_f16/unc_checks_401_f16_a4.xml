@@ -65,11 +65,19 @@
 				<property name="severity" value="warning" />
 		
 				<property name="expectedSignatures"
-					value="					
+					value="		
+					main.Assignment4 = 
+						animateScanner:->* AND
+						animateLine:->*//EC,			
 					@ScannerBean =
 						scanString:String->* AND
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC,
+					@RotatingLine =					
+						setAngle:double->void AND
+						setRadius:double->void AND
+						@rotate:int->*
+						,
 					ScanningIterator=
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC	
@@ -81,7 +89,8 @@
 				value="
 				main.Assignment4 = 
 						@ScannerBean!setScannedString:String->void AND
-						ThreadSupport!sleep:long->void
+						ThreadSupport!sleep:long->void AND
+						@RotatingLine!@rotate:int->* //EC
 						,
 				@ScannerBean =
 						scanString:String->void AND
