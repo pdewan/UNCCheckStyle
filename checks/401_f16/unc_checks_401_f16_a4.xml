@@ -36,7 +36,7 @@
 				ScanningIterator//EC,
 				@RotatingLine//EC,				
 				@Move, 
-				@Pass,
+				@Pass, @Approach,
 				@Fail,
 				@Say, 
 				@RotateLeftArm//EC, 
@@ -97,8 +97,7 @@
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC AND
 						(.*)!hasNext:->boolean//EC AND
-						(.*)!next:->String//EC AND
-						
+						(.*)!next:->String//EC 
 						,
 				ScanningIterator=
 						indexOf:String;char;int->int AND
@@ -123,7 +122,7 @@
 					@Minus//EC AND
 									
 				    @Move AND 
-					@Pass AND
+					@Pass AND @Approach AND
 					@Fail AND
 					@Say AND 
 					@RotateLeftArm//EC AND 
@@ -154,7 +153,7 @@
 				@Plus= :String, 
 				@Minus= :String,
 				@Move= :String, 
-				@Pass= :String,
+				@Pass= :String, @Approach = :String,
 				@Fail= :String,
 				@Say= :String, 
 				@RotateLeftArm= :String, 
@@ -231,7 +230,7 @@
 				String.substring, 
 				String.charAt, 
 				String.length, 
-				String.equals, String.equalsIgnoreCase
+				String.equals, String.equalsIgnoreCase,
 				Scanner.nextLine, 
 				Scanner.hasNext, 
 				String.toLowerCase,
@@ -251,7 +250,7 @@
 				Scanner.nextLine, 
 				Scanner.hasNext, 				
 				String.toLowerCase,
-				String.equals, String.equalsIgnoreCase
+				String.equals, String.equalsIgnoreCase,
 				String.isEmpty,
 				Scanner.close
 				" />

@@ -36,7 +36,7 @@
 				ScanningIterator//EC,
 				@RotatingLine//EC,				
 				@Move, 
-				@Pass,
+				@Pass, @Approach,
 				@Fail,
 				@Say, 
 				@RotateLeftArm//EC, 
@@ -72,7 +72,15 @@
 					@ScannerBean =
 						scanString:String->* AND
 						indexOf:String;char;int->int AND
-						indexOfNot:String;char;int->int//EC,
+						indexOfNot:String;char;int->int//EC
+						
+						,
+					@RotatingLine =					
+						setAngle:double->void AND
+						setRadius:double->void AND
+						@rotate:int->*
+						,
+						
 					ScanningIterator=
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC	,
@@ -88,7 +96,7 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment5 = 
-						ThreadSupport!sleep:long:->void,
+						ThreadSupport!sleep:long->void,
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -105,7 +113,7 @@
 			<property name="instantiations"
 				value="				
 				main.Assignment5=
-					@ScannerBean AND
+					
 					@BridgeScene,					
 				@ScannerBean =
 					@Number AND 
@@ -117,7 +125,7 @@
 					@Minus//EC AND
 									
 				    @Move AND 
-					@Pass AND
+					@Pass AND @Approach AND
 					@Fail AND
 					@Say AND 
 					@RotateLeftArm//EC AND 
@@ -156,7 +164,7 @@
 				@Plus= :String, 
 				@Minus= :String,
 				@Move= :String, 
-				@Pass= :String,
+				@Pass= :String, @Approach = :String,
 				@Fail= :String,
 				@Say= :String, 
 				@RotateLeftArm= :String, 
@@ -168,7 +176,7 @@
 				@Wait= :String,
 				@Sleep=:String,
 				@Angle =:,
-				@Avatar=:,
+				@Avatar=:@IMAGE_PATTERN,
 				@BridgeScene=:											
 				" />
 		</module>
@@ -249,7 +257,7 @@
 				String.substring, 
 				String.charAt, 
 				String.length, 
-				String.equals, String.equalsIgnoreCase 
+				String.equals, String.equalsIgnoreCase, 
 				Scanner.nextLine, 
 				Scanner.hasNext, 
 				String.toLowerCase,
@@ -270,7 +278,7 @@
 				Scanner.nextLine, 
 				Scanner.hasNext, 				
 				String.toLowerCase,
-				String.equals, String.equalsIgnoreCase
+				String.equals, String.equalsIgnoreCase,
 				String.isEmpty,
 				Scanner.close
 				" />
@@ -289,7 +297,7 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools
+					gradingTools, javax.swing
 					" />
 		</module>
 		

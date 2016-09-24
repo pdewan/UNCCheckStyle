@@ -113,6 +113,11 @@
 					ScanningIterator=
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC	,
+					@RotatingLine =					
+						setAngle:double->void AND
+						setRadius:double->void AND
+						@rotate:int->*
+						,
 					@Angle =
 						@move:int;int->*,
 					@Avatar =
@@ -173,7 +178,7 @@
 				value="
 				main.Assignment11 = 
 						
-						ThreadSupport!sleep:long:->void AND
+						ThreadSupport!sleep:long->void AND
 						@CommandInterpreter!setCommand:String->* AND
 						@Table!put:(.*);(.*) -> (.*) AND
 						@Table!get:String->Object AND
@@ -287,7 +292,7 @@
 					@Minus//EC AND
 									
 				    @Move AND 
-					@Pass AND
+					@Pass AND @Approach AND
 					@Fail AND
 					@Say AND 
 					@RotateLeftArm//EC AND 
@@ -347,7 +352,7 @@
 				@Plus= :String, 
 				@Minus= :String,
 				@Move= :String, 
-				@Pass= :String,
+				@Pass= :String, @Approach = :String,
 				@Fail= :String,
 				@Say= :String, 
 				@RotateLeftArm= :String, 
@@ -357,7 +362,7 @@
 				@Call= :String,  
 				@Thread= :String, 
 				@Wait= :String,
-				@Sleep=:String,
+				@Sleep=:String, @Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				@CommandInterpreter=:@ScannerBean;@BridgeScene,
 				@ConsoleSceneView = :@BridgeScene,
 				@InheritingBridgeScenePainter = :@BridgeScene,
@@ -510,7 +515,7 @@
 				String.substring, 
 				String.charAt, 
 				String.length, 
-				String.equals, String.equalsIgnoreCase 
+				String.equals, String.equalsIgnoreCase, 
 				Scanner.nextLine, 
 				Scanner.hasNext, 
 				String.toLowerCase,
@@ -550,7 +555,7 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools,
+					gradingTools, javax.swing,
 					java.util.List,  
 					java.util.Iterator, 
 					java.util.ArrayList, 
