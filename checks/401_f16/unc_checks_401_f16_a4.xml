@@ -172,7 +172,14 @@
 			<property name="expectedInterfaces"
 				value="
 				ScanningIterator = Iterator//EC,
-				@ScannerBean = @ScannerBean
+				@ScannerBean = @ScannerBean,
+				@Word= @Token, 
+				@Number= @Token, 
+				@Quote= @Token, 
+				@Start= @Token, 
+				@End= @Token, 
+				@Plus= @Token, 
+				@Minus= @Token
 				" />
 		</module>				
 		
