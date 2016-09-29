@@ -554,7 +554,14 @@
 			<property name="expectedProperties" value="
 			@ScannerBean= ScannedString:String,
 			@CommandInterpreter= Command:String,
-			@Parser = CommandText:String	
+			@Parser = CommandText:String,
+				@Word= Input:String , 
+				@Number= Input:String, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String	
 			
 			" />
 		</module>
