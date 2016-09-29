@@ -617,7 +617,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    			else {
 
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
-    			log(ast, anExpectedClassOrTag);
+    			String aClassOrInterface = isInterface?"Interface":"Class";
+    			log(ast, anExpectedClassOrTag, aClassOrInterface);
     			aFoundMatch = true;
 //
 //    			}
