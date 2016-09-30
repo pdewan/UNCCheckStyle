@@ -113,7 +113,12 @@
 						paint:Graphics(.*)->void,
 					@PaintListener=
 						paint:Graphics(.*)->void AND
-						@addPaintListener:@PaintListener->void				
+						@addPaintListener:@PaintListener->void,
+					@SingletonsCreator =
+						@scannerFactoryMethod:->@ScannerBean AND
+						@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@avatarTableFactoryMethod:->@Table AND
+						@commandInterpreterFactoryMethod:->@CommandInterpreter				
 								
 						
 					" />
@@ -152,7 +157,10 @@
 						@BridgeScene!getRobin:->(.*) AND
 						@BridgeScene!getLancelot:->(.*) AND
 						@BridgeScene!getGalahad:->(.*) AND
-						@Table!get:(.*)->(.*),
+						@Table!get:(.*)->(.*)  AND	
+						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND	
+					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table,
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 

@@ -128,7 +128,12 @@
 					@asynchronousRobin:->void AND	
 					@asynchronousArthur:->void AND
 					@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void									
+				@Animator = @animateAvatar:@Avatar->void,
+				@SingletonsCreator =
+						@scannerFactoryMethod:->@ScannerBean AND
+						@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@avatarTableFactoryMethod:->@Table AND
+						@commandInterpreterFactoryMethod:->@CommandInterpreter									
 								
 						
 					" />
@@ -173,7 +178,10 @@
 						@Table!get:(.*)->(.*)AND
 						@Table!put:(.*);(.*) -> (.*) AND
 						@parseSay:*->Runnable AND
-					 	@parseMove:*->Runnable,							
+					 	@parseMove:*->Runnable AND	
+						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND	
+					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table,							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 

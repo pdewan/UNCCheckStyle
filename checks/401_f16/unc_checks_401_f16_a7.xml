@@ -97,7 +97,12 @@
 						@say:String->* AND
 						@passed:->* AND
 						@failed:->* AND
-						@scroll:int;int->*
+						@scroll:int;int->*,
+					@SingletonsCreator =
+						@scannerFactoryMethod:->@ScannerBean AND
+						@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@avatarTableFactoryMethod:->@Table AND
+						@commandInterpreterFactoryMethod:->@CommandInterpreter
 						
 					" />
 			</module>
@@ -135,7 +140,12 @@
 						@BridgeScene!getRobin:->(.*) AND
 						@BridgeScene!getLancelot:->(.*) AND
 						@BridgeScene!getGalahad:->(.*) AND
-						@Table!get:String->*						
+						@Table!get:String->* AND
+						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND							
+						
+					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table
+					 						
 						" />
 						
 			</module>
