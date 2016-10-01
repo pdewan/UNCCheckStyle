@@ -75,7 +75,8 @@
 						(.*)!hasNext:->boolean//EC AND
 						(.*)!next:->String//EC AND
 						(.*)!getInput:->String AND 
-						(.*)!getValue:->String						
+						@Number!getValue:->String AND
+						@Word!getValue:->String						
 						,
 				ScanningIterator=
 						indexOf:String;char;int->int AND
