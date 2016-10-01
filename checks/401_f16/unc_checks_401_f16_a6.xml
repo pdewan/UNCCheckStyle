@@ -238,7 +238,7 @@
 				@Sleep=Input:String AND Value:String,
 			    @Angle= LeftLine:@LINE_PATTERN AND 
 			    		RightLine:@LINE_PATTERN, 
-			    @Avatar= Text:@STRING_PATTERN AND 
+			    @Avatar= StringShape:@STRING_PATTERN AND 
 			    		Head:@IMAGE_PATTERN AND 
 			    		Arms:@Angle AND 
 			    		Legs:@Angle, 
@@ -373,6 +373,9 @@
 		</module>
 		
 		<module name="LinePattern">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="VectorPattern">
 			<property name="severity" value="warning" />		
 		</module>
 		<module name="OvalPattern">

@@ -604,6 +604,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	
     	boolean aFoundMatch = false;
+		String aClassOrInterface = isInterface?"Interface":"Class";
+
     	for (String anExpectedClassOrTag:checkTags) {
     		if ( matchesMyType(maybeStripComment(anExpectedClassOrTag))) {
     			tagMatches.put(fullTypeName, anExpectedClassOrTag);
@@ -617,7 +619,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    			else {
 
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
-    			String aClassOrInterface = isInterface?"Interface":"Class";
+//    			String aClassOrInterface = isInterface?"Interface":"Class";
     			log(ast, anExpectedClassOrTag, aClassOrInterface);
     			aFoundMatch = true;
 //
@@ -626,7 +628,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     		
     	}
     	if (!aFoundMatch && logNoMacthes) {
-			log(ast, "No Expected Tag");
+    		
+			log(ast, "No Expected Tag", aClassOrInterface);
 		}
 //    		
 //    		
