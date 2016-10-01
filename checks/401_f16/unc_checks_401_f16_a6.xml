@@ -422,7 +422,34 @@
 				Value				
 				" />		
 		  </module>
-		   <module name="InvalidPackageName">
+		  <module name="ExpectedSuperTypes">
+			<property name="severity" value="warning" />		
+			<property name="expectedSuperTypes"
+				value="
+				@Word=@Token,
+				@Number=@Token,
+				@Quote=@Token,
+				@Move=@Word, 
+				@Say=@Word, 
+				@Approach=@Word,
+				@Pass=@Word,
+				@Fail=@Word,
+				@RotateLeftArm=@Word, 
+				@RotateRightArm=@Word,  
+				@Repeat=@Word, 
+				@Define=@Word, 
+				@Call=@Word,  
+				@Thread=@Word, 
+				@Wait=@Word, 
+				@ProceedAll=@Word, 
+				@Sleep=@Word, 
+				@Undo=@Word, 
+				@Redo=@Word
+				"/>
+		</module>
+		<module name="InvalidPackageName">
+			<property name="severity" value="warning" />		 
+		
 		</module>
 
 

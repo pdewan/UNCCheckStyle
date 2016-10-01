@@ -6,6 +6,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -106,9 +107,15 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchType(List<String> aSpecifications,
 			List<String> aTypes, DetailAST aTypeAST, DetailAST aTreeAST) {
 		Boolean retVal = true;
-		int i = 0;
+		List<String> aSingleElementCollection = new ArrayList();
+		aSingleElementCollection.add("");
+		STType anSTType = getSTType(aTypeAST);
 		for (String aSpecification : aSpecifications) {
-		
+			aSingleElementCollection.set(0, aSpecification);
+			if (findMatchingType (aSingleElementCollection, anSTType) != null) {
+				// cannot be subtype of yourself
+				continue;
+			}
 //			String[] aPropertiesPath = aPropertySpecification.split(".");	
 			Boolean hasMatched = matchType(maybeStripComment(aSpecification), aTypes);
 			if (hasMatched == null) {
