@@ -283,7 +283,8 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools
+					gradingTools,					
+					javax.swing
 					" />
 		</module>
 		
