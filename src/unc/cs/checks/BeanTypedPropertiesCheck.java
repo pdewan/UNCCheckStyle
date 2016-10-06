@@ -103,6 +103,7 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	// }
 	protected void logPropertyNotMatched(DetailAST aTreeAST, String aProperty,
 			String aType) {
+//		System.out.println ("Bean:" + aType + " " + aProperty);
 		log (aTreeAST, aTreeAST, aProperty, aType);
 //		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 //				.getFilename());

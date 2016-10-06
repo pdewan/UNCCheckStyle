@@ -163,7 +163,10 @@
 				@Call= :String,  
 				@Thread= :String, 
 				@Wait= :String,
-				@Sleep=:String												
+				@Sleep=:String,
+				@ProceedAll=:String,
+				@Undo=:String,
+				@Redo=:String												
 				" />
 		</module>
 		
@@ -200,15 +203,18 @@
 				@Pass= Input:String AND Value:String,
 				@Fail= Input:String AND Value:String,
 				@Say= Input:String AND Value:String, 
+				@Repeat= Input:String AND Value:String,				
+				@Approach=Input:String AND Value:String,				
 				@RotateLeftArm= Input:String AND Value:String, 
 				@RotateRightArm= Input:String AND Value:String,  
-				@Repeat= Input:String AND Value:String, 
 				@Define= Input:String AND Value:String, 
 				@Call= Input:String AND Value:String,  
 				@Thread= Input:String AND Value:String, 
 				@Wait= Input:String AND Value:String,
 				@Sleep=Input:String AND Value:String,
-				@Approach=Input:String AND Value:String
+				@ProceedAll=Input:String AND Value:String,
+				@Undo=Input:String AND Value:String,
+				@Redo=Input:String AND Value:String	
 			" 
 			/>
 		</module>
@@ -227,15 +233,18 @@
 				@Pass= Input:String,
 				@Fail= Input:String,
 				@Say= Input:String, 
+				@Approach=Input:String,
+				@Repeat= Input:String, 				
 				@RotateLeftArm= Input:String, 
 				@RotateRightArm= Input:String,  
-				@Repeat= Input:String, 
 				@Define= Input:String, 
 				@Call= Input:String,  
 				@Thread= Input:String, 
 				@Wait= Input:String,
 				@Sleep=Input:String,
-				@Approach=Input:String
+				@ProceedAll=Input:String,
+				@Undo=Input:String,
+				@Redo=Input:String
 			
 			" />
 		</module>

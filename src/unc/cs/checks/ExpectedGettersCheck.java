@@ -23,14 +23,20 @@ public class ExpectedGettersCheck extends BeanTypedPropertiesCheck {
 	}
 
 
-
-
-//	public Boolean matchType(String aSpecifiedType, String aProperty,
-//			Map<String, PropertyInfo> aPropertyInfos) {
+//	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
+//		STType anSTType = getSTType(aTree);
+//		if (anSTType.getName().contains("roceed")) {
+//			System.out.println("Doing pending check for " + anSTType.getName());
 //
-//		return matchGetter(aSpecifiedType, aProperty, aPropertyInfos);
+//		}
 //
+//		Boolean retVal = super.doPendingCheck(anAST, aTree);
+//		if (retVal == null) {
+//			System.out.println ("returning null in pending check");
+//		}
+//		return retVal;
 //	}
+
 
 
 
