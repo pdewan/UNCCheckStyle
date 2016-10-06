@@ -231,7 +231,11 @@
 				@Call= :String,  
 				@Thread= :String, 
 				@Wait= :String,
-				@Sleep=:String, @Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
+				@Sleep=:String, 
+				@ProceedAll=:String,
+				@Undo=:String,
+				@Redo=:String,
+				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				@CommandInterpreter=:@ScannerBean;@BridgeScene,
 				@ConsoleSceneView = :@BridgeScene														
 				" />
@@ -288,6 +292,9 @@
 				@Thread= Input:String AND Value:String, 
 				@Wait= Input:String AND Value:String,
 				@Sleep=Input:String AND Value:String,
+				@ProceedAll=Input:String AND Value:String,
+				@Undo=Input:String AND Value:String,
+				@Redo=Input:String AND Value:String,
 				@Approach=Input:String AND Value:String,
 			    @Angle= LeftLine:@LINE_PATTERN AND 
 			    		RightLine:@LINE_PATTERN, 
@@ -332,6 +339,9 @@
 				@Thread= Input:String, 
 				@Wait= Input:String,
 				@Sleep=Input:String,
+				@ProceedAll=Input:String,
+				@Undo=Input:String,
+				@Redo=Input:String,
 				@Approach=Input:String
 			
 			" />
