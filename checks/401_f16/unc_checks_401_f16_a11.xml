@@ -467,6 +467,7 @@
 				@Thread= Input:String AND Value:String, 
 				@Wait= Input:String AND Value:String,
 				@Sleep=Input:String AND Value:String,
+				@Approach=Input:String AND Value:String,
 			    @Angle= LeftLine:@LINE_PATTERN AND 
 			    		RightLine:@LINE_PATTERN, 
 			    @Avatar= StringShape:@STRING_PATTERN AND 
@@ -516,7 +517,20 @@
 				@Start= Input:String, 
 				@End= Input:String, 
 				@Plus= Input:String, 
-				@Minus= Input:String	
+				@Minus= Input:String,
+				@Move= Input:String, 
+				@Pass= Input:String,
+				@Fail= Input:String,
+				@Say= Input:String, 
+				@RotateLeftArm= Input:String, 
+				@RotateRightArm= Input:String,  
+				@Repeat= Input:String, 
+				@Define= Input:String, 
+				@Call= Input:String,  
+				@Thread= Input:String, 
+				@Wait= Input:String,
+				@Sleep=Input:String,
+				@Approach=Input:String	
 			
 			" />
 		</module>
