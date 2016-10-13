@@ -523,7 +523,7 @@
 				@Sleep=@Word, 
 				@Undo=@Word, 
 				@Redo=@Word,
-				@LINE_PATTERN= @BoundedShape, 
+				@LINE_PATTERN= @Locatable,, 
 				@STRING_PATTERN= @Locatable, 
 				@IMAGE_PATTERN= @BoundedShape, 
 				@LABEL_PATTERN = @BoundedShape, 
