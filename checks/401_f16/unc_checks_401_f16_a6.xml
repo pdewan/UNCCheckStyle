@@ -305,7 +305,7 @@
 
 		<module name="IllegalMethodCall">		
 			<property name="severity" value="warning" />
-			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="disallowedCalls" value="Scanner, String, Arrays" />
 			<property name="exceptionCalls"
 				value="
 				String.substring, 
@@ -317,13 +317,14 @@
 				String.toLowerCase,
 				
 				String.isEmpty,
-				Scanner.close
+				Scanner.close,
+				Arrays.toString
 				" />
 		</module>
 		
 		<module name="UnnecessaryMethodCall">
 			<property name="severity" value="warning" />
-			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="disallowedCalls" value="Scanner, String, Arrays" />
 			<property name="exceptionCalls"
 				value="
 				String.substring, 
@@ -334,7 +335,8 @@
 				String.toLowerCase,
 				String.equals, String.equalsIgnoreCase,
 				String.isEmpty,
-				Scanner.close
+				Scanner.close,
+				Arrays.toString
 				" />
 		</module>
 		
@@ -351,7 +353,7 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools, javax.swing
+					gradingTools, java.util.Arrays,javax.swing
 					" />
 		</module>
 		
