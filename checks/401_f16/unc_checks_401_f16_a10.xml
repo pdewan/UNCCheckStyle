@@ -225,12 +225,9 @@
 				value="				
 				main.Assignment10=
 					
-					@BridgeScene AND
-					@CommandInterpreter AND
 					@InheritingBridgeScenePainter AND
 					@ObservableBridgeScenePainter//EC AND
-					@CommandInterpreterController//EC AND
-					@ObservableCommandInterpreter,
+					@CommandInterpreterController//EC,
 					
 									
 				@ScannerBean =
@@ -361,6 +358,7 @@
 							AND Errors:*//EC
 							AND TokenList:@ClearableHistory//EC,
 				@Word= Input:String AND Value:String, 
+				@Token= Input:String,			
 				@Number= Input:String AND Value:int, 
 				@Quote= Input:String, 
 				@Start= Input:String, 
@@ -397,8 +395,13 @@
 			    			Gorge:* AND
 			    			KnightArea:* AND
 			    			GuardArea:* AND
-			    			Occupied:boolean,
+			    			Occupied:boolean AND
+			    			KnightTurn:@Avatar,
     			@CommandInterpreter= Command:String,
+    			@Locatable = X:int AND 
+    						Y:int,
+    			@BoundedShape= Width:int AND 
+    						Height:int,
     			@DelegatingBridgeSceneView = 
     				ObservableBridgeScenePainter:@ObservableBridgeScenePainter,
     			@CommandInterpreterController = 
@@ -420,6 +423,11 @@
 			<property name="expectedProperties" value="
 			@ScannerBean= ScannedString:String,
 			@CommandInterpreter= Command:String,
+    			@Locatable = X:int AND 
+    						Y:int,
+    			@BoundedShape= Width:int AND 
+    						Height:int,
+				@Token= Input:String,			
 				@Word= Input:String , 
 				@Number= Input:String, 
 				@Quote= Input:String, 
@@ -612,8 +620,29 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedSuperTypes"
 				value="
+				@Word=@Token,
+				@Number=@Token,
+				@Quote=@Token,
+				@Start=@Token,
+				@End=@Token,
+				@Move=@Word, 
+				@Say=@Word, 
+				@Approach=@Word,
+				@Pass=@Word,
+				@Fail=@Word,
+				@RotateLeftArm=@Word, 
+				@RotateRightArm=@Word,  
+				@Repeat=@Word, 
+				@Define=@Word, 
+				@Call=@Word,  
+				@Thread=@Word, 
+				@Wait=@Word, 
+				@ProceedAll=@Word, 
+				@Sleep=@Word, 
+				@Undo=@Word, 
+				@Redo=@Word,
 				@LINE_PATTERN= @BoundedShape, 
-				@STRING_PATTERN= @BoundedShape, 
+				@STRING_PATTERN= @Locatable, 
 				@IMAGE_PATTERN= @BoundedShape, 
 				@LABEL_PATTERN = @BoundedShape, 
 				@BoundedShape=@Locatable,

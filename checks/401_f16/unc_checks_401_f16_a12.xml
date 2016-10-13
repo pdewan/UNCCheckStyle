@@ -322,8 +322,6 @@
 			<property name="instantiations"
 				value="				
 				main.Assignment12=
-					@BridgeScene AND
-					@CommandInterpreter AND
 					BroadcastingClearanceManager,
 				@ScannerBean =
 					@Number AND 
@@ -497,6 +495,7 @@
 							AND Tokens:.*\[\] 
 							AND Errors:*//EC
 							AND TokenList:@ClearableHistory//EC,
+				@Token= Input:String,			
 				@Word= Input:String AND Value:String, 
 				@Number= Input:String AND Value:int, 
 				@Quote= Input:String, 
@@ -534,8 +533,13 @@
 			    			Gorge:* AND
 			    			KnightArea:* AND
 			    			GuardArea:* AND
-			    			Occupied:boolean,
+			    			Occupied:boolean AND
+			    			KnightTurn:@Avatar,
     			@CommandInterpreter= Command:String,
+    			@Locatable = X:int AND 
+    						Y:int,
+    			@BoundedShape= Width:int AND 
+    						Height:int,
     			@DelegatingBridgeSceneView = 
     				ObservableBridgeScenePainter:@ObservableBridgeScenePainter,
     			@CommandInterpreterController = 
@@ -563,6 +567,7 @@
 			@ScannerBean= ScannedString:String,
 			@CommandInterpreter= Command:String,
 			@Parser = CommandText:String,
+				@Token= Input:String,			
 				@Word= Input:String , 
 				@Number= Input:String, 
 				@Quote= Input:String, 
@@ -756,8 +761,29 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedSuperTypes"
 				value="
+				@Word=@Token,
+				@Number=@Token,
+				@Quote=@Token,
+				@Start=@Token,
+				@End=@Token,
+				@Move=@Word, 
+				@Say=@Word, 
+				@Approach=@Word,
+				@Pass=@Word,
+				@Fail=@Word,
+				@RotateLeftArm=@Word, 
+				@RotateRightArm=@Word,  
+				@Repeat=@Word, 
+				@Define=@Word, 
+				@Call=@Word,  
+				@Thread=@Word, 
+				@Wait=@Word, 
+				@ProceedAll=@Word, 
+				@Sleep=@Word, 
+				@Undo=@Word, 
+				@Redo=@Word,
 				@LINE_PATTERN= @BoundedShape, 
-				@STRING_PATTERN= @BoundedShape, 
+				@STRING_PATTERN= @Locatable, 
 				@IMAGE_PATTERN= @BoundedShape, 
 				@LABEL_PATTERN = @BoundedShape, 
 				@BoundedShape=@Locatable,

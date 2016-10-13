@@ -257,7 +257,8 @@
 			    			Gorge:* AND
 			    			KnightArea:* AND
 			    			GuardArea:* AND
-			    			Occupied:boolean
+			    			Occupied:boolean AND
+			    			KnightTurn:@Avatar
 			" 
 			/>
 		</module>
@@ -454,6 +455,8 @@
 				@Word=@Token,
 				@Number=@Token,
 				@Quote=@Token,
+				@Start=@Token,
+				@End=@Token,
 				@Move=@Word, 
 				@Say=@Word, 
 				@Approach=@Word,
