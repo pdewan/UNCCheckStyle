@@ -232,8 +232,8 @@
 				@Undo=:String,
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				@CommandInterpreter=:@ScannerBean;@BridgeScene,
-				@ConsoleSceneView = :@BridgeScene														
+				@CommandInterpreter=:,
+				@ConsoleSceneView = :														
 				" />
 		</module>
 		

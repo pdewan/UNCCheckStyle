@@ -219,7 +219,7 @@
 				@Undo=:String,
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				@CommandInterpreter=:@ScannerBean;@BridgeScene
+				@CommandInterpreter=:
 														
 				" />
 		</module>

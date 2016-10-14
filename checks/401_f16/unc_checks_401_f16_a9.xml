@@ -118,7 +118,11 @@
 						@scannerFactoryMethod:->@ScannerBean AND
 						@bridgeSceneFactoryMethod:->@BridgeScene AND
 						@avatarTableFactoryMethod:->@Table AND
-						@commandInterpreterFactoryMethod:->@CommandInterpreter				
+						@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@bridgeSceneControllerFactoryMethod:->@BridgeSceneController AND
+						@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
+						@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
+						@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView	
 								
 						
 					" />
@@ -278,12 +282,12 @@
 				@Undo=:String,
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				@CommandInterpreter=:@ScannerBean;@BridgeScene,
-				@ConsoleSceneView = :@BridgeScene,
-				@InheritingBridgeScenePainter = :@BridgeScene,
-				@DelegatingBridgeSceneView = :@BridgeScene,
-				@BridgeSceneController = :@BridgeScene;Component,
-				@CommandInterpreterController = :@CommandInterpreter
+				@CommandInterpreter=:,
+				@ConsoleSceneView = :,
+				@InheritingBridgeScenePainter =:,
+				@DelegatingBridgeSceneView =:,
+				@BridgeSceneController = :Component,
+				@CommandInterpreterController = :
 																						
 				" />
 		</module>
