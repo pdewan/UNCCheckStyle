@@ -110,19 +110,20 @@
 					@InheritingBridgeScenePainter=
 						paint:Graphics(.*)->void,
 					@ObservableBridgeScenePainter=
+						@addPaintListener:@PaintListener->void AND
 						paint:Graphics(.*)->void,
 					@PaintListener=
-						paint:Graphics(.*)->void AND
-						@addPaintListener:@PaintListener->void,
+						paint:Graphics(.*)->void,
 					@SingletonsCreator =
 						@scannerFactoryMethod:->@ScannerBean AND
 						@bridgeSceneFactoryMethod:->@BridgeScene AND
 						@avatarTableFactoryMethod:->@Table AND
 						@commandInterpreterFactoryMethod:->@CommandInterpreter AND
 						@bridgeSceneControllerFactoryMethod:->@BridgeSceneController AND
+						@consoleSceneViewFactoryMethod:->@ConsoleSceneView AND						
 						@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
-						@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
-						@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView	
+						@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter//EC AND
+						@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView//EC	
 								
 						
 					" />
@@ -134,9 +135,14 @@
 				main.Assignment9 = 
 						
 						ThreadSupport!sleep:long->void AND
-						@CommandInterpreter!setCommand:String->* AND
-						@Table!put:(.*);(.*) -> (.*) AND
-						@Table!get:(.*)->(.*) ,						
+						@CommandInterpreter!setCommand:String->* AND					
+						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!inheritingBridgeScenePainterFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!delegatingBridgeScenePainterFactoryMethod:->@BridgeScene//EC AND	
+						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						ThreadSupport!sleep:long->void AND
+						@Avatar!@move:int;int->* AND
+						@STRING_PATTERN!setText:String->void,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -169,20 +175,31 @@
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				@ConsoleSceneView = 
+				@ConsoleSceneView = 				
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
  						(.*)!getArms:-> @Angle AND
  						(.*)!getLegs:-> @Angle AND
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
  						(.*)!getRightLine:-> @LINE_PATTERN AND
  						(.*)!getText:->@STRING_PATTERN,
- 				@InheritingBridgeScenePainter = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+ 				@InheritingBridgeScenePainter = 
+ 						Graphics(.*)!draw(.*):*->(.*) AND
+				 		super!paint:Graphics->void(.*) AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+ 						(.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
  						(.*)!getArms:-> @AngleAND
  						(.*)!getLegs:-> @Angle AND
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
  						(.*)!getRightLine:-> @LINE_PATTERN AND
  						(.*)!getText:->@STRING_PATTERN, 
-				 @BridgeSceneController = 
+ 				@DelegatingBridgeSceneView =  						
+ 						ObservableBridgeScenePainter!addPaintListener:@PaintListener->void
+ 						, 
+ 				@ObservableBridgeScenePainter = 
+				 		@PaintListener!paint:Graphics->void(.*), 
+				 @BridgeSceneController = 				 
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
  						@BridgeScene!getArthur:-> @Avatar AND 
  						@BridgeScene!getGalahad:-> @Avatar	AND
  						@BridgeScene!getLancelot:-> @Avatar	AND	
@@ -190,9 +207,6 @@
  						@Avatar!move:int; int->void,
 				 @ObservableCommandInterpreter = 
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @InheritingBridgeScenePainter = 
-				 		Graphics(.*)!draw(.*):*->(.*) AND
-				 		super!paint:Graphics->void(.*),
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*) 
  						
@@ -202,13 +216,7 @@
 			<module name="ExpectedClassInstantiations">
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
-				value="				
-				main.Assignment9=
-					
-					@InheritingBridgeScenePainter AND
-					@ObservableBridgeScenePainter//EC AND
-					@CommandInterpreterController//EC,
-					
+				value="		
 									
 				@ScannerBean =
 					@Number AND 
@@ -372,9 +380,7 @@
     			@Locatable = X:int AND 
     						Y:int,
     			@BoundedShape= Width:int AND 
-    						Height:int,
-    			@DelegatingBridgeSceneView = 
-    				ObservableBridgeScenePainter:@ObservableBridgeScenePainter,
+    						Height:int,    			
     			@CommandInterpreterController = 
     				TextField:JTextField AND 
     				MenuItem:JMenuItem AND 

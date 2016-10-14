@@ -103,7 +103,8 @@
 						@scannerFactoryMethod:->@ScannerBean AND
 						@bridgeSceneFactoryMethod:->@BridgeScene AND
 						@avatarTableFactoryMethod:->@Table AND
-						@commandInterpreterFactoryMethod:->@CommandInterpreter
+						@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@consoleSceneViewFactoryMethod:->@ConsoleSceneView
 						
 					" />
 			</module>
@@ -112,11 +113,11 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment8 = 
-						
+						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!consoleSceneViewFactoryMethod:->@BridgeScene AND
 						ThreadSupport!sleep:long->void AND
-						@CommandInterpreter!setCommand:String->* AND
-						@Table!put:String;Object->(.*) AND
-						@Tale!get:String->(.*),						
+						@Avatar!@move:int;int->* AND
+						@STRING_PATTERN!setText:String->void,				
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -152,7 +153,8 @@
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				@ConsoleSceneView = 
+				@ConsoleSceneView = 							
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
  						(.*)!getArms:-> @Angle AND
  						(.*)!getLegs:-> @Angle AND
@@ -166,8 +168,7 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment8=
-					@ConsoleSceneView,				
+							
 				@ScannerBean =
 					@Number AND 
 					@Word AND

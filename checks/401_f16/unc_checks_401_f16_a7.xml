@@ -114,7 +114,7 @@
 						ThreadSupport!sleep:long->void AND
 						@CommandInterpreter!setCommand:String->* AND
 						@Table!put:String;Object->void AND
-						@Tale!get:String->Object,						
+						@Table!get:String->Object,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND

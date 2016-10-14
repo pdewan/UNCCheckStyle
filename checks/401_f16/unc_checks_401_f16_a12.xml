@@ -135,14 +135,17 @@
 						@passed:->* AND
 						@failed:->* AND
 						@scroll:int;int->* AND
-						pre((.*)):->boolean,
+						@preApproach:->boolean AND
+						@preSay:->boolean AND
+						@prePassed:->boolean AND
+						@preFailed:->boolean,
 					@InheritingBridgeScenePainter=
 						paint:Graphics(.*)->void,
 					@ObservableBridgeScenePainter=
+						@addPaintListener:@PaintListener->void AND
 						paint:Graphics(.*)->void,
 					@PaintListener=
-						paint:Graphics(.*)->void AND
-						@addPaintListener:@PaintListener->void,
+						paint:Graphics(.*)->void,
 					@Animator = @animateAvatar:@Avatar->void,
 					@CommandInterpreter = 					
 						@asynchronousGalahad:->void//EC	AND
@@ -206,11 +209,11 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment12 = 
-						
+						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND
+						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
 						ThreadSupport!sleep:long->void AND
-						@CommandInterpreter!setCommand:String->* AND
-						@Table!put:(.*);(.*) -> (.*) AND
-						@Table!get:String->Object AND
+						@CommandInterpreter!setCommand:String->* AND						
 						@CommandInterpreter!@waiting(.*):->void AND	
 						@CommandInterpreter!@lockstep(.*):->void//EC,						
 				@ScannerBean =
@@ -258,12 +261,21 @@
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
  						(.*)!getRightLine:-> @LINE_PATTERN AND
  						(.*)!getText:->@STRING_PATTERN,
- 				@InheritingBridgeScenePainter = (.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+ 				@InheritingBridgeScenePainter = 
+ 						Graphics(.*)!draw(.*):*->(.*) AND
+				 		super!paint:Graphics->void(.*) AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+ 						(.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
  						(.*)!getArms:-> @AngleAND
  						(.*)!getLegs:-> @Angle AND
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
  						(.*)!getRightLine:-> @LINE_PATTERN AND
  						(.*)!getText:->@STRING_PATTERN, 
+ 				@DelegatingBridgeSceneView =  						
+ 						ObservableBridgeScenePainter!addPaintListener:@PaintListener->void
+ 						, 
+ 				@ObservableBridgeScenePainter = 
+				 		@PaintListener!paint:Graphics->void(.*),  
 				 @BridgeSceneController = 
  						@BridgeScene!getArthur:-> @Avatar AND 
  						@BridgeScene!getGalahad:-> @Avatar	AND
@@ -271,10 +283,7 @@
  						@BridgeScene!getRobin:-> @Avatar	AND
  						@Avatar!move:int; int->void,
 				 @ObservableCommandInterpreter = 
-				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
-				 @InheritingBridgeScenePainter = 
-				 		Graphics(.*)!draw(.*):*->(.*) AND
-				 		super!paint:Graphics->void(.*),
+				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),				 
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
 				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
@@ -325,8 +334,7 @@
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-				main.Assignment12=
-					BroadcastingClearanceManager,
+				
 				@ScannerBean =
 					@Number AND 
 					@Word AND
