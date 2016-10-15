@@ -251,7 +251,6 @@
 							AND Tokens:.*\[\] 
 							AND Errors:*//EC
 							AND TokenList:@ClearableHistory//EC,
-				@Token= Input:String,
 				@Word= Input:String AND Value:String, 
 				@Number= Input:String AND Value:int, 
 				@Quote= Input:String, 
