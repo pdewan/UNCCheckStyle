@@ -96,7 +96,7 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment5 = 
-						ThreadSupport!sleep:long->void,
+						(.*)!sleep:long->void,
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND

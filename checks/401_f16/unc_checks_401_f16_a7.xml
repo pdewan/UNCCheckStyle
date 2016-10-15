@@ -111,10 +111,10 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment7 = 
-						ThreadSupport!sleep:long->void AND
+						(.*)!sleep:long->void AND
 						@CommandInterpreter!setCommand:String->* AND
-						@Table!put:String;Object->void AND
-						@Table!get:String->Object,						
+						(.*)!put:String;Object->void AND
+						(.*)!get:String->Object,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -124,23 +124,22 @@
 						indexOf:String;char;int->int AND
 						indexOfNot:String;char;int->int//EC
 						,
-				@Avatar=  @STRING_PATTERN!setX:int->void) AND 
-						  @Angle!move:int;int->void
+				@Avatar=  (.*)!setX:int->void) 
 						  , 						
 				@BridgeScene=
-						@Avatar!@move:int;int->* AND
-						@STRING_PATTERN!setText:String->void
+						(.*)!@move:int;int->* AND
+						(.*)!setText:String->void
 						,
 				@CommandInterpreter=
 						@ScannerBean!getTokens:->.*\[\]  AND
-						@ScannerBean!getTokenList:->@ClearableHistory AND
+						@ScannerBean!getTokenList:->@ClearableHistory//EC AND
 						@BridgeScene!@say:String->* AND
-						@Avatar!@move:int;int->* AND
-						@BridgeScene!getArthur:->(.*) AND
-						@BridgeScene!getRobin:->(.*) AND
-						@BridgeScene!getLancelot:->(.*) AND
-						@BridgeScene!getGalahad:->(.*) AND
-						@Table!get:String->* AND
+						(.*)!@move:int;int->* AND
+						(.*)!getArthur:->(.*) AND
+						(.*)!getRobin:->(.*) AND
+						(.*)!getLancelot:->(.*) AND
+						(.*)!getGalahad:->(.*) AND
+						(.*)!get:String->* AND
 						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND							
 						
 					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND

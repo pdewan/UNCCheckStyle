@@ -89,7 +89,7 @@
 				value="
 				main.Assignment4 = 
 						@ScannerBean!setScannedString:String->void AND
-						ThreadSupport!sleep:long->void AND
+						(.*)!sleep:long->void AND
 						@RotatingLine!@rotate:int->* //EC
 						,
 				@ScannerBean =

@@ -101,7 +101,7 @@
 				value="
 				main.Assignment6 = 
 						
-						ThreadSupport!sleep:long->void,
+						(.*)!sleep:long->void,
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -113,8 +113,8 @@
 						indexOfNot:String;char;int->int//EC
 						,
 				@BridgeScene=
-						@Avatar!@move:int;int->* AND
-						@STRING_PATTERN!setText:String->void
+						(.*)!@move:int;int->* AND
+						(.*)!!setText:String->void
 						" />
 			</module>
 			

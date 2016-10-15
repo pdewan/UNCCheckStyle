@@ -212,10 +212,10 @@
 						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
 						@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND
 						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
-						ThreadSupport!sleep:long->void AND
-						@CommandInterpreter!setCommand:String->* AND						
-						@CommandInterpreter!@waiting(.*):->void AND	
-						@CommandInterpreter!@lockstep(.*):->void//EC,						
+						(.*)!sleep:long->void AND
+						(.*)!setCommand:String->* AND						
+						(.*)!@waiting(.*):->void AND	
+						(.*)!@lockstep(.*):->void//EC,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -228,34 +228,35 @@
 						indexOfNot:String;char;int->int//EC
 						,
 				@BridgeScene=
-						@Avatar!@move:int;int->* AND
-						@STRING_PATTERN!setText:String->void
+						(.*)!@move:int;int->* AND
+						(.*)!!setText:String->void
 						,
 				@CommandInterpreter=
-						@ScannerBean!getTokens:->.*\[\]  AND
-						@ScannerBean!getTokenList:->@ClearableHistory AND
-						@BridgeScene!@say:String->* AND
-						@Avatar!@move:int;int->* AND
-						@BridgeScene!getArthur:->(.*) AND
-						@BridgeScene!getRobin:->(.*) AND
-						@BridgeScene!getLancelot:->(.*) AND
-						@BridgeScene!getGalahad:->(.*) AND
-						@Table!get:(.*)->(.*) AND
-						@Table!put:(.*);(.*) -> (.*) AND
+						(.*)!getTokens:->.*\[\]  AND
+						(.*)!getTokenList:->@ClearableHistory//EC AND
+						(.*)!@say:String->* AND
+						(.*)!@move:int;int->* AND
+						(.*)!getArthur:->(.*) AND
+						(.*)!getRobin:->(.*) AND
+						(.*)!getLancelot:->(.*) AND
+						(.*)!getGalahad:->(.*) AND
+						(.*)!get:(.*)->(.*) AND
+						(.*)!put:(.*);(.*) -> (.*) AND
 						@Parser!setCommandText:String->void AND
 				 		@Parser!getCommandObject:->Runnable AND
 				 		@Parser!getErrors:->*//EC AND
 				 		@SingletonsCreator!@parserFactoryMethod:->@Parser AND
 				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 				 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
-				 		BroadcastingClearanceManager!proceedAll:->void,							
+				 		(.*)!proceedAll:->void,							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@ConsoleSceneView = 
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene  AND
 						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
-						@BridgeScene!addPropertyChangeListener:PropertyChangeListener->void AND
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
  						(.*)!getArms:-> @Angle AND
  						(.*)!getLegs:-> @Angle AND
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
@@ -271,26 +272,27 @@
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
  						(.*)!getRightLine:-> @LINE_PATTERN AND
  						(.*)!getText:->@STRING_PATTERN, 
- 				@DelegatingBridgeSceneView =  						
- 						ObservableBridgeScenePainter!addPaintListener:@PaintListener->void
+ 				@DelegatingBridgeSceneView =  
+ 						@SingletonsCreator!@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND				
+ 						(.*)!addPaintListener:@PaintListener->void
  						, 
  				@ObservableBridgeScenePainter = 
 				 		@PaintListener!paint:Graphics->void(.*),  
 				 @BridgeSceneController = 
- 						@BridgeScene!getArthur:-> @Avatar AND 
- 						@BridgeScene!getGalahad:-> @Avatar	AND
- 						@BridgeScene!getLancelot:-> @Avatar	AND	
- 						@BridgeScene!getRobin:-> @Avatar	AND
- 						@Avatar!move:int; int->void,
+ 						(.*)!getArthur:-> @Avatar AND 
+ 						(.*)!getGalahad:-> @Avatar	AND
+ 						(.*)!getLancelot:-> @Avatar	AND	
+ 						(.*)!getRobin:-> @Avatar	AND
+ 						(.*)!move:int; int->void,
 				 @ObservableCommandInterpreter = 
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),				 
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
 				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
-				  @ApproachCommand = @BridgeScene!@approach:@Avatar->*,
-				 @FailCommand = @BridgeScene!@failed:->*,
-				 @PassCommand = @BridgeScene!@passed:->*,
-				 @SayCommand = @BridgeScene!@say:String->*,			 
+				  @ApproachCommand = (.*)!@approach:@Avatar->*,
+				 @FailCommand = (.*)!@failed:->*,
+				 @PassCommand = (.*)!@passed:->*,
+				 @SayCommand = (.*)!@say:String->*,			 
 				 @CommandList = Runnable!run:->void,
 				 @Parser = 
 				 	@parseCommand:*->Runnable AND						
@@ -311,21 +313,21 @@
 				 	@ScanningException!getMessage:->String AND
 				 	@ParsingException!getMessage:->String AND
 				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
- 			@RotateLeftArmCommand = @Avatar!@rotateLeftArm:int->void,
-			@RotateRightArmCommand = @Avatar!@rotateRightArm:int->void,
-			@SleepCommand = @ThreadSupport!sleep:long->void,
-			@DefineCommand = @Table!put:Object;Object->*,
-			@CallCommand = @Table!get:Object->Object,				 
-			@ThreadCommand = @Table!get:Object->Object 
+ 			@RotateLeftArmCommand = (.*)!@rotateLeftArm:int->void,
+			@RotateRightArmCommand = (.*)!@rotateRightArm:int->void,
+			@SleepCommand = (.*)!sleep:long->void,
+			@DefineCommand = (.*)!put:Object;Object->*,
+			@CallCommand = (.*)!get:Object->Object,				 
+			@ThreadCommand = (.*)!get:Object->Object 
 				AND Thread!start:->void,
 			@CoordinatingAnimatingCommand = 
 		 		 @CoordinatingAnimator!@animateAvatar:@Avatar->void,
 		   	@CoordinatingAnimator = 
-		 	  BroadcastingClearanceManager!proceedAll:->void,
+		 	  (.*)!proceedAll:->void,
 		 	@CoordinatedAnimatingCommand =
 		 		@CoordinatedAnimator!@animateAvatar:@Avatar->void,
 		 	@CoordinatedAnimator = 
-		 		BroadcastingClearanceManager!waitForProceed:->void
+		 		(.*)!waitForProceed:->void
 				 			 									
 				" />
 			</module>
