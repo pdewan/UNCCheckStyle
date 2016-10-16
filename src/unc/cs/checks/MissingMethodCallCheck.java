@@ -109,6 +109,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				anSTType);
 		if (specifiedType == null)
 			return true; // the constraint does not apply to us
+//		if (specifiedType.contains("ingleton")) {
+//		System.out.println ("found test type");
+//	}
 //		List<CallInfo> aCalls = anSTType.getMethodsCalled();
 		// maybe have a separate check for local calls?
 		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
@@ -123,6 +126,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		boolean returnNull = false; 
 //		int i = 0;
 		for (String aSpecification:aSpecifications) {
+//			if (aSpecification.contains("ingleton")) {
+//				System.out.println ("found specification:");
+//			}
 			boolean found = false;
 			for (CallInfo aCallInfo:aCallsToBeChecked ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());

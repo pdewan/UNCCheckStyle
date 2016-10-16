@@ -140,7 +140,7 @@
 						(.*)!getLancelot:->(.*) AND
 						(.*)!getGalahad:->(.*) AND
 						(.*)!get:String->* AND
-						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND							
+						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND					
 						
 					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table
@@ -181,8 +181,13 @@
 				@BridgeScene =
 					@Avatar,
 				@Avatar = 
-					@Angle,			
-				" />
+					@Angle,	
+				@SingletonsCreator =
+					@ScannerBean AND
+					@BridgeScene AND
+					@Table AND
+					@CommandInterpreter		
+			" />
 		   </module>
 		
 		<module name="IllegalComponentInstantiation">
@@ -416,7 +421,17 @@
 		<module name="FunctionAssignsGlobal">
 			<property name="severity" value="warning" />
 			<property name="excludeMethodTags"
-				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+				value="
+					next(.*), 
+					pop(.*), 
+					delete(.*), 
+					remove(.*), 
+					read(.*), 
+					create(.*), 
+					set(.*), 
+					process(.*), 
+					scan(.*), (.*)create(.*), (.*)actory(.*)
+					" />
 
 		</module>
 		<module name="SetterAssignsGlobal">

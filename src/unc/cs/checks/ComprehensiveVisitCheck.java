@@ -2263,7 +2263,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected void log(String aMessageKey, DetailAST ast, DetailAST aTreeAST,
 			Object... anExplanations) {
-		int i = 0;
+//		int i = 0;
 		Object[] anArgs = composeArgs(aMessageKey, ast, aTreeAST, ast.getLineNo(),
 				anExplanations);
 

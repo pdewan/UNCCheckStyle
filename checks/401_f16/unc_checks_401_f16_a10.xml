@@ -87,7 +87,6 @@
 		
 				<property name="expectedSignatures"
 					value="
-						processInput:->*,
 					@ScannerBean =
 						scanString:String->* AND
 						indexOf:String;char;int->int AND
@@ -282,7 +281,17 @@
 					JSlider,
 				@CommandInterpreter =
 					@SayCommand AND
-					@MoveCommand	
+					@MoveCommand,
+				@SingletonsCreator =
+					@ScannerBean AND
+					@BridgeScene AND
+					@Table AND
+					@CommandInterpreter	AND
+					@ConsoleSceneView AND
+					@InheritingBridgeScenePainter AND
+					@ObservableBridgeScenePainter//EC AND
+					@DelegatingBridgeSceneView//EC	AND
+					@BridgeSceneController	
 						
 				" />
 		   </module>

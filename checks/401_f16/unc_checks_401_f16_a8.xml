@@ -196,7 +196,13 @@
 				@BridgeScene =
 					@Avatar,
 				@Avatar = 
-					@Angle,			
+					@Angle,							
+			@SingletonsCreator =
+				@ScannerBean AND
+				@BridgeScene AND
+				@Table AND
+				@CommandInterpreter	AND
+				@ConsoleSceneView		
 				" />
 		   </module>
 		

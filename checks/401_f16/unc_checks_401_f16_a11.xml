@@ -188,6 +188,7 @@
 				value="
 				main.Assignment11 = 
 						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND						
 						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND						
 						(.*)!@asynchronous(.*):->void,						
@@ -350,7 +351,17 @@
 					@DefineCommand//EC AND
 					@CallCommand//EC AND
 					@ThreadCommand//EC AND
-					CommandList
+					CommandList,
+				@SingletonsCreator =
+					@ScannerBean AND
+					@BridgeScene AND
+					@Table AND
+					@CommandInterpreter	AND
+					@ConsoleSceneView AND
+					@InheritingBridgeScenePainter AND
+					@ObservableBridgeScenePainter//EC AND
+					@DelegatingBridgeSceneView//EC	AND
+					@BridgeSceneController	
 							
 						
 				" />

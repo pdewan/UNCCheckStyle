@@ -159,7 +159,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	
 	abstract protected List<STNameable> getTypes(STType anSTType) ;
 	public Boolean matchTypes(STType anSTType, List<String> aSpecifiedInterfaces, DetailAST aTree) {
-		int i = 3;
+//		int i = 3;
 		List<STNameable> aClassNames = getTypes(anSTType);
 		if (aClassNames == null) {
 			return null;
@@ -180,6 +180,9 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 			System.err.println ("Did not find sttype for " + anAST);
 			return true;
 		}
+//		if (anSTType.getName().contains("mage")) {
+//			System.out.println ("found test type");
+//		}
 		if (anSTType.isEnum())
 			return true;
 		boolean doCheck = doCheck(anSTType);
@@ -188,9 +191,10 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 		
 		String aSpecifiedType = findMatchingType(typeToTypes.keySet(),
 				anSTType);
+		
 		if (aSpecifiedType == null)
 			return true; // the constraint does not apply to us
-		
+	
 		List<String> aSpecifiedTypes = typeToTypes.get(aSpecifiedType);
 //		if (aSpecifiedType.equals("ABridgeSceneController")) {
 //			System.out.println ("found ABridgeSceneController")

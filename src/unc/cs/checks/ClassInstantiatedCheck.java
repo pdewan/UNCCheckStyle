@@ -26,7 +26,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 	public static final String CALLER_TYPE_SEPARATOR = "#";
 	public static final String MSG_KEY = "classInstantiated";
 	public static final String MULTIPLE_INSTANTIATING_CODE = "multipleInstantiatingMethods";
-
+	
 
 
 
@@ -90,6 +90,9 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 				anSTType);
 		if (specifiedType == null)
 			return true; // the constraint does not apply to us
+//		if (specifiedType.contains("ingleton")) {
+//			System.out.println ("found test type");
+//		}
 		String[] aSpecifications = typeToSpecifications.get(specifiedType);
 		boolean returnNull = false; 
 		boolean returnValue = true;

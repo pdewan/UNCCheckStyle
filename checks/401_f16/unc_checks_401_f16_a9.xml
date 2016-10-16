@@ -123,7 +123,10 @@
 						@consoleSceneViewFactoryMethod:->@ConsoleSceneView AND						
 						@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
 						@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter//EC AND
-						@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView//EC	
+						@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView//EC AND
+						@commandInterpreterControllerFactoryMethod:->@CommandInterpreterController/EC AND
+						@commandInterpreterViewFactoryMethod:->@CommandInterpreterView
+						
 								
 						
 					" />
@@ -139,7 +142,8 @@
 						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
 						@SingletonsCreator!inheritingBridgeScenePainterFactoryMethod:->@BridgeScene AND
 						@SingletonsCreator!delegatingBridgeScenePainterFactoryMethod:->@BridgeScene//EC AND	
-						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@SingletonsCreator!@commandInterpreterControllerFactoryMethod:->@CommandInterpreterController/EC AND
+						@SingletonsCreator!@commandInterpreterViewFactoryMethod:->@CommandInterpreterView
 						ThreadSupport!sleep:long->void AND
 						(.*)!@move:int;int->* AND
 						(.*)!!setText:String->void,						
@@ -209,8 +213,11 @@
 				 @ObservableCommandInterpreter = 
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @PaintListener = 
-				 	Graphics(.*)!draw(.*):*->(.*) 
- 						
+				 	Graphics(.*)!draw(.*):*->(.*),
+				 @CommandInterpreterView =  
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
+ 				@CommandInterpreterContoller = 
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter, 	
 				" />
 			</module>
 			
@@ -253,7 +260,21 @@
 					JButton,
 				@ProgressBarCreator =
 					JProgressBar AND
-					JSlider			
+					JSlider,
+				@SingletonsCreator =
+					@ScannerBean AND
+					@BridgeScene AND
+					@Table AND
+					@CommandInterpreter	AND
+					@ConsoleSceneView AND
+					@InheritingBridgeScenePainter AND
+					@ObservableBridgeScenePainter//EC AND
+					@DelegatingBridgeSceneView//EC	AND
+					@BridgeSceneController	AND
+					@CommandInterpreterController//EC AND
+					@CommandInterpreterView//EC
+					
+							
 						
 				" />
 		   </module>
