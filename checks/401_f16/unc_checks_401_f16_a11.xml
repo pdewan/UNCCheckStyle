@@ -205,7 +205,7 @@
 						,
 				@BridgeScene=
 						(.*)!@move:int;int->* AND
-						(.*)!!setText:String->void
+						(.*)!setText:String->void
 						,
 				@CommandInterpreter=
 						(.*)!getTokens:->.*\[\]  AND

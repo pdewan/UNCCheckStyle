@@ -117,7 +117,7 @@
 						@SingletonsCreator!consoleSceneViewFactoryMethod:->@BridgeScene AND
 						(.*)!sleep:long->void AND
 						(.*)!@move:int;int->* AND
-						(.*)!!setText:String->void,				
+						(.*)!setText:String->void,				
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND

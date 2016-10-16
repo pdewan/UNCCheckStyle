@@ -114,7 +114,7 @@
 						,
 				@BridgeScene=
 						(.*)!@move:int;int->* AND
-						(.*)!!setText:String->void
+						(.*)!setText:String->void
 						" />
 			</module>
 			
@@ -259,7 +259,8 @@
 			    			KnightArea:* AND
 			    			GuardArea:* AND
 			    			Occupied:boolean AND
-			    			KnightTurn:@Avatar
+			    			KnightTurn:boolean AND InteractingKnight: @Avatar,
+
 			" 
 			/>
 		</module>
