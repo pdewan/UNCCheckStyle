@@ -87,7 +87,10 @@
 				@DefineCommand//EC,
 				@CallCommand//EC,
 				@ThreadCommand//EC,
-				@Parser								
+				@Parser	,				
+				@Token,
+				@Locatable,
+				@BoundedShape											
 				" />				
 
 		</module>

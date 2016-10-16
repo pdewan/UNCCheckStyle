@@ -59,7 +59,10 @@
 				@CommandInterpreter,
 				@SignedMoveCommandInterpreter//EC,
 				@ErrorResilientCommandInterpreter//EC,
-				@ConsoleSceneView				
+				@ConsoleSceneView,				
+				@Token,
+				@Locatable,
+				@BoundedShape								
 				" />				
 
 		</module>

@@ -70,7 +70,10 @@
 				@Animator,
 				@AnimatingCommand,
 				@SayCommand,
-				@MoveCommand								
+				@MoveCommand,				
+				@Token,
+				@Locatable,
+				@BoundedShape												
 				" />				
 
 		</module>

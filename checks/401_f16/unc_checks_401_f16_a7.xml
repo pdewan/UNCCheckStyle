@@ -58,7 +58,10 @@
 				@Table,
 				@CommandInterpreter,
 				@SignedMoveCommandInterpreter//EC,
-				@ErrorResilientCommandInterpreter//EC				
+				@ErrorResilientCommandInterpreter//EC,				
+				@Token,
+				@Locatable,
+				@BoundedShape				
 				" />				
 
 		</module>

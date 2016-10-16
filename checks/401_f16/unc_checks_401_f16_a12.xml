@@ -95,7 +95,10 @@
 				@CustomSwingTextFieldFactory//EC,	
 				@CoordinatingAnimationCommand,
 				@CoordinatedAnimationCommand//EC,
-				@CoordinatedAnimator							
+				@CoordinatedAnimator,				
+				@Token,
+				@Locatable,
+				@BoundedShape											
 				" />				
 
 		</module>
