@@ -309,7 +309,7 @@
 			    			KnightArea:* AND
 			    			GuardArea:* AND
 			    			Occupied:boolean AND
-			    			KnightTurn:@Avatar,
+			    			KnightTurn:boolean AND InteractingKnight: @Avatar,
     			@CommandInterpreter= Command:String,
     			@Locatable = X:int AND 
     						Y:int,
