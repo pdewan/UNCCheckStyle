@@ -61,8 +61,8 @@
 				@ErrorResilientCommandInterpreter//EC,
 				@ConsoleSceneView,				
 				@Token,
-				@Locatable,
-				@BoundedShape								
+				
+				SingletonsCreator								
 				" />				
 
 		</module>

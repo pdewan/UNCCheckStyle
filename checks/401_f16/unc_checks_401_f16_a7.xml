@@ -61,7 +61,8 @@
 				@ErrorResilientCommandInterpreter//EC,				
 				@Token,
 				@Locatable,
-				@BoundedShape				
+				@BoundedShape,
+				@SingletonsCreator				
 				" />				
 
 		</module>

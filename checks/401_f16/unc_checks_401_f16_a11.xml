@@ -89,8 +89,7 @@
 				@ThreadCommand//EC,
 				@Parser	,				
 				@Token,
-				@Locatable,
-				@BoundedShape											
+				SingletonsCreator											
 				" />				
 
 		</module>

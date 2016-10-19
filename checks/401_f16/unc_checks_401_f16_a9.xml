@@ -68,8 +68,8 @@
 				@CommandInterpreterController//EC,
 				@ObservableCommandInterpreter//EC,				
 				@Token,
-				@Locatable,
-				@BoundedShape				
+				
+				SingletonsCreator				
 								
 				" />				
 

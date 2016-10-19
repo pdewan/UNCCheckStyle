@@ -97,8 +97,8 @@
 				@CoordinatedAnimationCommand//EC,
 				@CoordinatedAnimator,				
 				@Token,
-				@Locatable,
-				@BoundedShape											
+				
+				SingletonsCreator											
 				" />				
 
 		</module>

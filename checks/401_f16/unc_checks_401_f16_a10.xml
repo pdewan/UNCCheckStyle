@@ -72,8 +72,8 @@
 				@SayCommand,
 				@MoveCommand,				
 				@Token,
-				@Locatable,
-				@BoundedShape												
+				
+				SingletonsCreator												
 				" />				
 
 		</module>
