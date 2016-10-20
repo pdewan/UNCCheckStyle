@@ -60,8 +60,6 @@
 				@SignedMoveCommandInterpreter//EC,
 				@ErrorResilientCommandInterpreter//EC,				
 				@Token,
-				@Locatable,
-				@BoundedShape,
 				@SingletonsCreator				
 				" />				
 
