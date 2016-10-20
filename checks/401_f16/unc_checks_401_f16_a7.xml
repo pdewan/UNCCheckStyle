@@ -115,10 +115,11 @@
 				main.Assignment7 = 
 						(.*)!sleep:long->void AND
 						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
-						@CommandInterpreter!setCommand:String->* AND
-						@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
+						@CommandInterpreter!@scannerFactoryMethod:->@ScannerBean AND
+						@CommandInterpreter!@bridgeSceneFactoryMethod:->@BridgeScene AND					
 						(.*)!put:String;Object->void AND
-						(.*)!get:String->Object,						
+						(.*)!get:String->Object						
+						,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
