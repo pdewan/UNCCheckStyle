@@ -114,7 +114,9 @@
 				value="
 				main.Assignment7 = 
 						(.*)!sleep:long->void AND
+						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
 						@CommandInterpreter!setCommand:String->* AND
+						@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
 						(.*)!put:String;Object->void AND
 						(.*)!get:String->Object,						
 				@ScannerBean =
