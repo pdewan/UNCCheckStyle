@@ -451,7 +451,7 @@
 			<property name="severity" value="warning" />		
 			<property name="expectedProperties" value="
 			@ScannerBean= ScannedString:String,
-			@CommandInterpreter= Command:String,
+			@CommandInterpreter= Command:String AND Errors:*//EC,
     			@Locatable = X:int AND 
     						Y:int,
     			@BoundedShape= Width:int AND 

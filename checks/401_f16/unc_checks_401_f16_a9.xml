@@ -401,7 +401,7 @@
 			    			GuardArea:* AND
 			    			Occupied:boolean AND
 			    			KnightTurn:boolean AND InteractingKnight: @Avatar,
-    			@CommandInterpreter= Command:String,
+    			@CommandInterpreter= Command:String AND Errors:*//EC,
     			@Locatable = X:int AND 
     						Y:int,
     			@BoundedShape= Width:int AND 
