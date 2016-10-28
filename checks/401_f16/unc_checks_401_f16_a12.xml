@@ -691,7 +691,16 @@
 		<module name="FunctionAssignsGlobal">
 			<property name="severity" value="warning" />
 			<property name="excludeMethodTags"
-				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+				value="
+					next(.*), 
+					pop(.*), 
+					delete(.*), 
+					remove(.*), 
+					read(.*), 					
+					set(.*), 
+					process(.*), 
+					scan(.*), (.*)create(.*), (.*)actory(.*)
+					" />
 
 		</module>
 		<module name="SetterAssignsGlobal">
