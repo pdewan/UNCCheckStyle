@@ -321,7 +321,8 @@
 			    			KnightTurn:boolean AND InteractingKnight: @Avatar,
     			@CommandInterpreter= Command:String AND Errors:*//EC,
     			@Locatable = X:int AND 
-    						Y:int,
+    						Y:int AND
+    						PropertyChangeListeners: List,
     			@BoundedShape= Width:int AND 
     						Height:int
 			" 

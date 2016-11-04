@@ -412,7 +412,9 @@
     				Button:JButton,
 				@ProgressBarCreator =  
 				    ProgressBar:JProgressBar AND 
-				    Slider:JSlider 
+				    Slider:JSlider,
+				@ObservableBridgeScenePainter =
+					 PaintListeners:List
 			" 
 			/>
 		</module>
