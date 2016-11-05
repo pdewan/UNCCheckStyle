@@ -168,24 +168,24 @@
 						@lockstepArthur:->void//EC AND
 						@lockstepGuard:->void//EC,
 				@Animator = @animateAvatar:@Avatar->void,
-				@Parser = 
-				    @parseSay:*->Runnable AND 
-					@parseMove:*->Runnable AND
+				@Parser = 				   
+					@parseSayCommand:*->Runnable AND 
+					@parseMoveCommand:*->Runnable AND
 				  	@parseCommand:*->Runnable AND						
-				  	@parseApproach:*->Runnable AND						
-				 	@parsePass:*->Runnable AND						
-				 	@parseFail:*->Runnable AND						
-				 	@parseRepeat:*->Runnable AND						
+				  	@parseApproachCommand:*->Runnable AND						
+				 	@parsePassCommand:*->Runnable AND						
+				 	@parseFailCommand:*->Runnable AND						
+				 	@parseRepeatCommand:*->Runnable AND						
 				 	@parseCommandList:*->Runnable AND						
-				 	@parseNumber:*->* AND
-				 	@parseRotateLeftArm:*->Runnable AND
-				 	@parseRotateRightArm:*->Runnable AND
-				 	@parseSleep:*->Runnable AND
-					@parseDefine:*->Runnable AND
-					@parseCall:*->Runnable AND
-					@parseThread:*->Runnable AND
-					@parseSleep:*->Runnable AND
-					@parseNumber:*->int AND
+				 	@parseNumberCommand:*->*//EC AND
+				 	@parseRotateLeftArmCommand:*->Runnable//EC AND
+				 	@parseRotateRightArmCommand:*->Runnable//EC AND
+				 	@parseSleepCommand:*->Runnable//EC AND
+					@parseDefineCommand:*->Runnable//EC AND
+					@parseCallCommand:*->Runnable//EC AND
+					@parseThreadCommand:*->Runnable//EC AND
+					@parseSleepCommand:*->Runnable//EC AND
+					
 					next:->* AND
 					peek:->* AND
 					hasNext:->boolean//EC AND
@@ -673,7 +673,7 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools, java.util.Arrays,javax.swing,
+					gradingTools, java.util.Arrays,javax.swing, java.awt,
 					java.util.List,  
 					java.util.Iterator, 
 					java.util.ArrayList, 

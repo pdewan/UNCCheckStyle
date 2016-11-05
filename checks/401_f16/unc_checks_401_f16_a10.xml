@@ -544,7 +544,7 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools, java.util.Arrays,javax.swing,
+					gradingTools, java.util.Arrays,javax.swing, java.awt,
 					java.util.List,  
 					java.util.Iterator, 
 					java.util.ArrayList, 
