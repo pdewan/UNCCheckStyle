@@ -233,7 +233,7 @@
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),				 
 				 @PaintListener = 
 				 	Graphics(.*)!draw(.*):*->(.*),
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void
+				 @AnimatingCommand = @Animator!@animateAvatar:@Avatar->void
 				  
  						
 				" />
