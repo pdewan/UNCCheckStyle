@@ -117,7 +117,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
 		// for efficiency, let us remove mapped calls
 
-
+//		if (anSTType.getName().contains("CommandInterpreterController")) {
+//			System.out.println ("found class");
+//		}
 		if (aCalls == null)
 			return null;
 		List<CallInfo> aCallsToBeChecked = new ArrayList(aCalls);

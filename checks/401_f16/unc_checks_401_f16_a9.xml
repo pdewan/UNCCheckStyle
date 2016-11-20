@@ -65,6 +65,7 @@
 				@DelegatingBridgeSceneView,
 				@PaintListener,
 				@BridgeSceneController,
+				@CommandInterpreterView//EC,
 				@CommandInterpreterController//EC,
 				@ObservableCommandInterpreter//EC,				
 				@Token,				
@@ -219,9 +220,9 @@
 				 	(.*)!repaint:->void,
 				 @CommandInterpreterView =  
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
- 				@CommandInterpreterContoller = 
+ 				@CommandInterpreterController = 
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
- 					@CommandInterpreter!setCommand:String->void, 	
+ 					@CommandInterpreter!setCommand:String->void 	
 				" />
 			</module>
 			

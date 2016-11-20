@@ -293,7 +293,7 @@
 				 	(.*)!repaint:->void,
 				 @CommandInterpreterView =  
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
- 				@CommandInterpreterContoller = 
+ 					@CommandInterpreterController = 
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
  					@CommandInterpreter!setCommand:String->void,
 				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
