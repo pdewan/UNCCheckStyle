@@ -47,6 +47,13 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 		if (aMethods.size() == 0 && aSpecification.getParameterTypes().length == 0)
 
 			return true;
+		if (
+				aMethods.size() == 0 && 
+				
+				(aSpecification.isConstructor() && 
+						aSpecification.getParameterNames().length == 0)) {
+			return true; // matching default constructor
+		}
 		return super.matchMethod(aSpecification, aMethods);
 //		for (STMethod aMethod : aMethods) {
 //			Boolean hasMatched = matchSignature(aSpecification, aMethod);

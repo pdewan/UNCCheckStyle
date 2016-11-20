@@ -112,10 +112,57 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	}
 	
 	public STMethod[] computeMethods() {
+
+		List<STMethod> retVal = new ArrayList();
+		addToList(retVal, getDeclaredMethods());
+		List<STNameable> anAllTypes = null;
+		if (isInterface()) {
+			anAllTypes = getAllSuperTypes();
+		} else {
+			anAllTypes = new ArrayList();
+			anAllTypes.add(getSuperClass());
+		}
+		if (anAllTypes == null) {
+			return null;
+		}
+		for (STNameable aSuperType:anAllTypes) {
+			Object aSuperTypeMethods = addMethodsOfSuperType(retVal, aSuperType);
+			if (aSuperTypeMethods == null) {
+				return null;
+			}
+		}
+//		
+//		STNameable aSuperType = getSuperClass(); // so this does not look at
+//													// super interfaces
+//		Object aSuperTypeMethods = addMethodsOfSuperType(retVal, aSuperType);
+//		if (aSuperTypeMethods == null) {
+//			return null;
+//		}
+		
+//		if (aSuperType != null
+//				&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {
+//			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+//					.getSTClassByShortName(aSuperType.getName());
+//			if (anSTType == null) {
+//				if (waitForSuperTypeToBeBuilt())
+//					return null;
+//				else
+//					return retVal.toArray(emptyMethods);
+//			}
+//			STMethod[] superTypeMethods = anSTType.getMethods();
+//			if (superTypeMethods == null) // some supertype not compiled
+//				return null;
+//			// addToList(retVal, anSTType.getMethods());
+//			addToList(retVal, superTypeMethods);
+//
+//		}
+		return retVal.toArray(emptyMethods);
+	}
+public STMethod[] computeMethodsOld() {
 		
 		List<STMethod> retVal = new ArrayList();
 		addToList(retVal, getDeclaredMethods());
-		STNameable aSuperType = getSuperClass();
+		STNameable aSuperType = getSuperClass(); // so this does not look at super interfaces
 		if (aSuperType != null
 				&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
@@ -135,7 +182,28 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		}
 		return retVal.toArray(emptyMethods);
 	}
+public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable aSuperType) {
 	
+
+	if (aSuperType != null
+			&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aSuperType.getName());
+		if (anSTType == null) {
+			if (waitForSuperTypeToBeBuilt())
+				return null;
+			else
+				return retVal;
+		}
+		STMethod[] superTypeMethods = anSTType.getMethods();
+		if (superTypeMethods == null) // some supertype not compiled
+			return null;
+//		addToList(retVal, anSTType.getMethods());
+		addToList(retVal, superTypeMethods);
+
+	}
+	return retVal;
+}
 	
 //	static STMethod[] emptySTMethods = {};
 //	

@@ -67,9 +67,9 @@
 				@BridgeSceneController,
 				@CommandInterpreterController//EC,
 				@ObservableCommandInterpreter//EC,				
-				@Token,
-				
-				SingletonsCreator				
+				@Token,				
+				@SingletonsCreator,
+				@ProgressBarCreator//EC				
 								
 				" />				
 
@@ -163,7 +163,7 @@
 						,
 				@BridgeScene=
 						(.*)!@move:int;int->* AND
-						(.*)!!setText:String->void
+						(.*)!setText:String->void
 						,
 				@CommandInterpreter=
 						(.*)!getTokens:->.*\[\]  AND
@@ -184,14 +184,9 @@
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@ConsoleSceneView = 				
 						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
-						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
- 						(.*)!getArms:-> @Angle AND
- 						(.*)!getLegs:-> @Angle AND
- 						(.*)!getLeftLine:-> @LINE_PATTERN AND
- 						(.*)!getRightLine:-> @LINE_PATTERN AND
- 						(.*)!getText:->@STRING_PATTERN,
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void,
  				@InheritingBridgeScenePainter = 
- 						Graphics(.*)!draw(.*):*->(.*) AND
+ 						(.*)!draw(.*):*->(.*) AND
 				 		super!paint:Graphics->void(.*) AND
 						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
  						(.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
@@ -208,19 +203,25 @@
 				 		@PaintListener!paint:Graphics->void(.*), 
 				 @BridgeSceneController = 				 
 						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+ 						(.*)!addKeyListener:KeyListener->void AND
+ 						(.*)!addMouseListener:MouseListener->void AND
+ 						(.*)!setFocusable:boolean->void AND
  						(.*)!getArthur:-> @Avatar AND 
  						(.*)!getGalahad:-> @Avatar	AND
  						(.*)!getLancelot:-> @Avatar	AND	
  						(.*)!getRobin:-> @Avatar	AND
- 						(.*)!move:int; int->void,
+ 						(.*)!setX:int->void AND
+ 						(.*)!setY:int->void,
 				 @ObservableCommandInterpreter = 
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @PaintListener = 
-				 	Graphics(.*)!draw(.*):*->(.*),
+				 	(.*)!draw(.*):*->(.*) AND
+				 	(.*)!repaint:->void,
 				 @CommandInterpreterView =  
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
  				@CommandInterpreterContoller = 
- 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter, 	
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+ 					@CommandInterpreter!setCommand:String->void, 	
 				" />
 			</module>
 			
@@ -314,13 +315,7 @@
 				@ProceedAll=:String,
 				@Undo=:String,
 				@Redo=:String,
-				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				@CommandInterpreter=:,
-				@ConsoleSceneView = :,
-				@InheritingBridgeScenePainter =:,
-				@DelegatingBridgeSceneView =:,
-				@BridgeSceneController = :Component,
-				@CommandInterpreterController = :
+				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:
 																						
 				" />
 		</module>
@@ -351,7 +346,10 @@
 				@Start= @Token, 
 				@End= @Token, 
 				@Plus= @Token, 
-				@Minus= @Token				
+				@Minus= @Token,
+				@CommandInterpreterController= ActionListener,
+				@CommandInterpreterView=PropertyChangeListener,
+				@PaintListener=PropertyChangeListener								
 				"/>				
 		</module>				
 		
@@ -514,7 +512,7 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools, java.util.Arrays,javax.swing,
+					gradingTools, java.util.Arrays,javax.swing, java.awt,
 					java.util.List,  
 					java.util.Iterator, 
 					java.util.ArrayList, 

@@ -73,7 +73,7 @@
 				@MoveCommand,				
 				@Token,
 				
-				SingletonsCreator												
+				@SingletonsCreator, @ProgressBarCreator//EC													
 				" />				
 
 		</module>
@@ -124,8 +124,9 @@
 						paint:Graphics(.*)->void,
 					@PaintListener=
 						paint:Graphics(.*)->void,
-					@Animator = @animateAvatar:@Avatar->void,
-			@CommandInterpreter = 
+				 	 
+				@Animator = @animateAvatar:@Avatar->void,
+				@CommandInterpreter = 
 					@parseSay:*->Runnable AND 
 					@parseMove:*->Runnable AND 
 					@asynchronousGalahad:->void//EC	AND
@@ -199,13 +200,7 @@
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@ConsoleSceneView = 
 						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
-						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
-						(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
- 						(.*)!getArms:-> @Angle AND
- 						(.*)!getLegs:-> @Angle AND
- 						(.*)!getLeftLine:-> @LINE_PATTERN AND
- 						(.*)!getRightLine:-> @LINE_PATTERN AND
- 						(.*)!getText:->@STRING_PATTERN,
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void , 
  				@InheritingBridgeScenePainter = 
  						Graphics(.*)!draw(.*):*->(.*) AND
 				 		super!paint:Graphics->void(.*) AND
@@ -223,17 +218,27 @@
  				@ObservableBridgeScenePainter = 
 				 		@PaintListener!paint:Graphics->void(.*), 
 				 @BridgeSceneController = 
-				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND				 
+				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND	
+				 		(.*)!addKeyListener:KeyListener->void AND
+ 						(.*)!addMouseListener:MouseListener->void AND
+ 						 (.*)!setFocusable:boolean->void AND 									 
  						(.*)!getArthur:-> @Avatar AND 
  						(.*)!getGalahad:-> @Avatar	AND
  						(.*)!getLancelot:-> @Avatar	AND	
  						(.*)!getRobin:-> @Avatar	AND
- 						(.*)!move:int; int->void,
+ 						(.*)!setX:int->void AND
+ 						(.*)!setY:int->void,
 				 @ObservableCommandInterpreter = 
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),				 
 				 @PaintListener = 
-				 	Graphics(.*)!draw(.*):*->(.*),
-				 @AnimatingCommand = @Animator!@animateAvatar:@Avatar->void
+				 	 (.*)!draw(.*):*->(.*) AND
+				 	 (.*)!repaint:->void,
+				 @CommandInterpreterView =  
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
+ 				@CommandInterpreterContoller = 
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+ 					@CommandInterpreter!setCommand:String->void,
+				@AnimatingCommand = @Animator!@animateAvatar:@Avatar->void
 				  
  						
 				" />
@@ -271,8 +276,7 @@
 					@Undo//EC AND
 					@Redo//EC,
 				@BridgeScene =
-					@Avatar AND
-					PropertyChangeEvent,				
+					@Avatar ,				
 				@Avatar = 
 					@Angle,
 				@CommandInterpreterController =
@@ -284,7 +288,8 @@
 					JSlider,
 				@CommandInterpreter =
 					@SayCommand AND
-					@MoveCommand,
+					@MoveCommand AND
+					@AnimatingCommand,
 				@SingletonsCreator =
 					@ScannerBean AND
 					@BridgeScene AND
@@ -332,12 +337,7 @@
 				@Undo=:String,
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				@CommandInterpreter=:,
-				@ConsoleSceneView = :,
-				@InheritingBridgeScenePainter =:,
-				@DelegatingBridgeSceneView =:,
-				@BridgeSceneController = :Component,
-				@CommandInterpreterController = :,
+				
 				@MoveCommmand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String
 																						
@@ -360,6 +360,7 @@
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
+				@PaintListener=PropertyChangeListener,
 				@BridgeSceneController = 
 					MouseListener AND KeyListener,
 				@ObservableCommandIntepreter = 
@@ -375,7 +376,9 @@
 				@Start= @Token, 
 				@End= @Token, 
 				@Plus= @Token, 
-				@Minus= @Token					
+				@Minus= @Token,
+				@CommandInterpreterController= ActionListener,
+				@CommandInterpreterView=PropertyChangeListener					
 				"/>				
 		</module>				
 		

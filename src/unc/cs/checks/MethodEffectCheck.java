@@ -161,6 +161,9 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 				for (STMethod aPossibleCalledMethod: allOverloadedMethods) {
 					if (!shouldVisitCalledMethod(aPossibleCalledMethod)) { 
 						// called method passes check
+						// why should we return true ever, we should simply continue and pass no judgement
+						// actually this will return if called method is setter.
+						// which means if it assigns to global, it is ok
 						if (!stopOnFailure()) // stop on success
 							return true; // check passed
 						else

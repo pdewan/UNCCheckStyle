@@ -852,6 +852,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		}
 		return retVal;
 	}
+   /**
+    * These are all methods in the class, not methods called by these methods
+    */   
 	@Override
 	public List<CallInfo> getAllMethodsCalled() {
 		if (allMethodsCalled == null) {
