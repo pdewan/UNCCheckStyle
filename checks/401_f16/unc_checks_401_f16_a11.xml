@@ -77,16 +77,7 @@
 				@FailCommand,
 				@ApproachCommand,
 				@RepeatCommand,
-				@CommandList,
-				@RotateLeftArmCommand//EC,
-				@RotateRightArmCommand//EC,
-				@SleepCommand//EC,
-				@DefineCommand//EC,
-				@CallCommand//EC,
-				@ThreadCommand//EC,			
-				@DefineCommand//EC,
-				@CallCommand//EC,
-				@ThreadCommand//EC,
+				@CommandList,				
 				@Parser	,				
 				@Token,
 				@SingletonsCreator, @ProgressBarCreator//EC												
@@ -279,20 +270,14 @@
 				 @CommandList = Runnable!run:->void,
 				 @Parser = 
 				 	@parseCommand:*->Runnable AND						
-				 	@parseSay:*->Runnable AND
-				 	@parseApproach:*->Runnable AND						
-				 	@parseMove:*->Runnable AND					
-				 	@parsePass:*->Runnable AND						
-				 	@parseFail:*->Runnable AND						
-				 	@parseRepeat:*->Runnable AND						
+				 	@parseSayCommand:*->Runnable AND
+				 	@parseApproachCommand:*->Runnable AND						
+				 	@parseMoveCommand:*->Runnable AND					
+				 	@parsePassCommand:*->Runnable AND						
+				 	@parseFailCommand:*->Runnable AND						
+				 	@parseRepeatCommand:*->Runnable AND						
 				 	@parseCommandList:*->Runnable AND						
-				 	@parseNumber:*->*//EC AND
-				 	@parseRotateLeftArm:*->Runnable//EC AND
-				 	@parseRotateRightArm:*->Runnable//EC AND
-					@parseDefine:*->Runnable//EC AND
-					@parseCall:*->Runnable//EC AND
-					@parseThread:*->Runnable//EC AND
-				 	@parseSleep:*->Runnable//EC AND
+				 	@parseNumber:*->*//EC AND				 	
 				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
 				 	
  			@RotateLeftArmCommand = (.*)!@rotateLeftArm:int->void,

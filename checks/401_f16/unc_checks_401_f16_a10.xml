@@ -237,8 +237,10 @@
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
  			@CommandInterpreterController = 
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
- 					@CommandInterpreter!setCommand:String->void,
-				@AnimatingCommand = @Animator!@animateAvatar:@Avatar->void
+ 					@CommandInterpreter!setCommand:String->void AND
+ 					(.*)!setButton:boolean->void AND
+ 					(.*)!addPropertyChangeListener:PropertyChangeListener->void,
+			@AnimatingCommand = @Animator!@animateAvatar:@Avatar->void
 				  
  						
 				" />
