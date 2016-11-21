@@ -341,7 +341,8 @@
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				
 				@MoveCommmand = :@Avatar; int; int,
-				@SayCommand = :@BridgeScene; String
+				@SayCommand = :@BridgeScene; String,
+				@AnimatingCommand =:@Animator;@Avatar
 																						
 				" />
 		</module>
