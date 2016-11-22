@@ -234,7 +234,8 @@
  						(.*)!getLegs:-> @Angle AND
  						(.*)!getLeftLine:-> @LINE_PATTERN AND
  						(.*)!getRightLine:-> @LINE_PATTERN AND
- 						(.*)!getText:->@STRING_PATTERN, 
+ 						(.*)!getText:->@STRING_PATTERN AND
+				 	    (.*)!repaint:->void, 
  				@DelegatingBridgeSceneView =  
  						@SingletonsCreator!@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND				
  						(.*)!addPaintListener:@PaintListener->void
@@ -424,6 +425,7 @@
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
 				@PaintListener=PropertyChangeListener,
+				@InheritingBridgeScenePainter=PropertyChangeListener,
 				@BridgeSceneController = 
 					MouseListener AND KeyListener,
 				@ObservableCommandIntepreter = 

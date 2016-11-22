@@ -473,6 +473,7 @@
 				@BoundedShape = @BoundedShape,
 				@PaintListener = @PaintListener,
 				@PaintListener=PropertyChangeListener,
+				@InheritingBridgeScenePainter=PropertyChangeListener,
 				@BridgeSceneController = 
 					MouseListener AND KeyListener,
 				@ObservableCommandIntepreter = 
