@@ -197,7 +197,8 @@
 						,
 				@BridgeScene=
 						(.*)!@move:int;int->* AND
-						(.*)!setText:String->void
+						(.*)!setText:String->void AND
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
 						,
 				@CommandInterpreter=
 						(.*)!getTokens:->.*\[\]  AND
@@ -321,7 +322,7 @@
 					@Undo//EC AND
 					@Redo//EC,
 				@BridgeScene =
-					@Avatar ,				
+					@Avatar AND PropertyChangeEvent,				
 				@Avatar = 
 					@Angle,
 				@CommandInterpreterController =
