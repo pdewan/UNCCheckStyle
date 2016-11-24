@@ -325,5 +325,10 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected boolean getVisitInnerClasses() {
 		return ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses();
 	}
+	public static void trim (String[] aStrings) {
+		for (int i = 0; i < aStrings.length; i++) {
+			aStrings[i] = aStrings[i].trim();
+		}
+	}
 
 }

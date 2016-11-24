@@ -27,6 +27,9 @@ public  class ExpectedDeclaredSignaturesCheck extends ExpectedSignaturesCheck {
 	}
 	@Override
 	protected STMethod[] getMatchedMethods(STType anSTType) {
+		if (anSTType.getName().contains("Singleton")) {
+			System.out.println("Found Singleton");
+		}
 		return anSTType.getDeclaredMethods();
 	}
 }

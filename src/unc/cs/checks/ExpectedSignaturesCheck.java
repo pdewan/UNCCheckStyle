@@ -49,7 +49,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			return;
 		}
 		String[] aSignatures = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
-		
+		trim(aSignatures);
 		typeToSignatures.put(aType, aSignatures);
 		typeToMethods.put(aType, signaturesToMethods(aSignatures));
 	}
@@ -214,6 +214,12 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchSignature(
 			STMethod aSpecification, STMethod aMethod) {
 		variablesAdded.clear();
+		Boolean aNameMatch = unifyingMatchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags());
+		if (aNameMatch == null)
+			return null;
+		if (!aNameMatch) {
+			return false;
+		}
 		String aReturnType = aSpecification.getReturnType();
 		STNameable[] typeTags = null;
 		
@@ -227,7 +233,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		Boolean retVal  = 
 				(isMatchAnyting(aSpecification.getParameterTypes()) ||
 				aSpecification.getParameterTypes().length == aMethod.getParameterTypes().length) &&
-				unifyingMatchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
+//				unifyingMatchesNameVariableOrTag(aSpecification.getName(), aMethod.getName(), aMethod.getComputedTags()) &&
 				unifyingMatchesNameVariableOrTag(aSpecification.getReturnType(), aMethod.getReturnType(), typeTags);
 				
 		if (!retVal) {

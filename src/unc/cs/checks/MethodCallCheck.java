@@ -33,7 +33,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
 //	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
 
-
+	
 //	public static final String SEPARATOR = ">";
 	
 
@@ -42,7 +42,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
 		String aType = extractTypeAndSignatures[0].trim();
 		String[] aSignaturesWithTarget = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
-		
+		trim (aSignaturesWithTarget);
 		typeToSignaturesWithTargets.put(aType, aSignaturesWithTarget);
 //		typeToMethods.put(aType, signaturesToMethods(aSignaturesWithTarget));
 

@@ -198,10 +198,10 @@
 					@bridgeSceneFactoryMethod:->@BridgeScene AND
 					@avatarTableFactoryMethod:->@Table AND
 					@commandInterpreterFactoryMethod:->@CommandInterpreter AND
-						@bridgeSceneControllerFactoryMethod:->@BridgeSceneController AND
-						@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
-						@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
-						@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView
+					@bridgeSceneControllerFactoryMethod:->@BridgeSceneController AND
+					@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
+					@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
+					@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView AND
 					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager, 	
 				@CoordinatedAnimator = @animateAvatar:@Avatar->*,
 				@CoordinatingAnimator = @animateAvatar:@Avatar->*,		
@@ -394,15 +394,17 @@
 					@CallCommand//EC AND
 					@ThreadCommand//EC AND
 					CommandList,
-				@SingletonsCreator =
-					@Parser AND
-					@Scanner AND
-					@Parser AND
+				@SingletonsCreator =					
+					@ScannerBean AND
 					@BridgeScene AND
 					@Table AND
-					@CommandInterpreter AND
-					BroadcastingClearanceManager
-							
+					@CommandInterpreter	AND
+					@ConsoleSceneView AND
+					@InheritingBridgeScenePainter AND
+					@ObservableBridgeScenePainter//EC AND
+					@DelegatingBridgeSceneView//EC	AND
+					@BridgeSceneController AND	
+					BroadcastingClearanceManager,		
 						
 				" />
 		   </module>
