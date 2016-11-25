@@ -380,13 +380,29 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			return true;
 		}
 		
-		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
+//		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
+//				anSTType);
+		List<String> aSpecifiedTypes = findMatchingTypes(typeToSignatures.keySet(),
 				anSTType);
 		
-		if (aSpecifiedType == null)
+//		if (aSpecifiedType == null)
+//			return true; // the constraint does not apply to us
+		if (aSpecifiedTypes == null)
 			return true; // the constraint does not apply to us
-		List<STMethod> aSpecifiedSignatures = typeToMethods.get(aSpecifiedType);
-		return matchMethods(anSTType, aSpecifiedSignatures, aTree);
+//		List<STMethod> aSpecifiedSignatures = typeToMethods.get(aSpecifiedType);
+//		return matchMethods(anSTType, aSpecifiedSignatures, aTree);
+		Boolean retVal = true;
+		for (String aSpecifiedType : aSpecifiedTypes) {
+			List<STMethod> aSpecifiedSignatures = typeToMethods
+					.get(aSpecifiedType);
+			Boolean aCurrentMatch = matchMethods(anSTType,
+					aSpecifiedSignatures, aTree);
+			if (retVal != null) {
+				retVal = aCurrentMatch == null ? null : aCurrentMatch && retVal;
+
+			}
+		}
+		return retVal;
 	}
 
 	@Override

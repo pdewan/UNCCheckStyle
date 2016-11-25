@@ -72,7 +72,6 @@
 				@SayCommand,
 				@MoveCommand,
 				@PassCommand,
-				@Animator,
 				@AnimatingCommand,
 				@FailCommand,
 				@ApproachCommand,
@@ -138,7 +137,6 @@
 						@asynchronousRobin:->void AND	
 						@asynchronousArthur:->void AND
 						@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void,
 				@Parser = 
 				    @parseSayCommand:*->Runnable AND 
 					@parseMoveCommand:*->Runnable AND
@@ -216,7 +214,9 @@
 				 		@Parser!getErrors:->*//EC AND	
 						@SingletonsCreator!@parserFactoryMethod:->@Parser AND
 					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
-					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table,							
+					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
+					 	Runnable!run:-> void AND
+					 	Thread!start:->void,							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
@@ -264,7 +264,8 @@
  				@CommandInterpreterController = 
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
  					@CommandInterpreter!setCommand:String->void,
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void
+				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,				 
+				@Animator =  (.*)!sleep:long->void,
 				  @ApproachCommand = (.*)!@approach:@Avatar->*,
 				 @FailCommand = (.*)!@failed:->*,
 				 @PassCommand = (.*)!@passed:->*,
@@ -394,7 +395,7 @@
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				
-				@MoveCommmand = :@Avatar; int; int,
+				@MoveCommand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
 				@FailCommand = :@BridgeScene,
 				@PassCommand = :@BridgeScene,

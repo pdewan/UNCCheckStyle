@@ -35,6 +35,9 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 	}
 	@Override
 	protected STMethod[] getMatchedMethods(STType anSTType) {
+//		if (anSTType.getName().contains("Say")) {
+//			System.out.println ("Found Say");
+//		}
 		return anSTType.getDeclaredConstructors();
 		
 	}

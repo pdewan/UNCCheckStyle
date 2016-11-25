@@ -167,7 +167,6 @@
 						@lockstepRobin:->void//EC AND	
 						@lockstepArthur:->void//EC AND
 						@lockstepGuard:->void//EC,
-				@Animator = @animateAvatar:@Avatar->void,
 				@Parser = 				   
 					@parseSayCommand:*->Runnable AND 
 					@parseMoveCommand:*->Runnable AND
@@ -252,7 +251,9 @@
 				 		@SingletonsCreator!@parserFactoryMethod:->@Parser AND
 				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 				 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
-				 		(.*)!proceedAll:->void,							
+				 		(.*)!proceedAll:->void AND
+					 	Runnable!run:-> void AND
+					 	Thread!start:->void,							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
@@ -298,6 +299,7 @@
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
  					@CommandInterpreter!setCommand:String->void,
 				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
+				@Animator =  (.*)!sleep:long->void,
 				  @ApproachCommand = (.*)!@approach:@Avatar->*,
 				 @FailCommand = (.*)!@failed:->*,
 				 @PassCommand = (.*)!@passed:->*,
@@ -444,7 +446,7 @@
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				
 				@CommandInterpreterController = :,
-				@MoveCommmand = :@Avatar; int; int,
+				@MoveCommand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
 				@FailCommand = :@BridgeScene,
 				@PassCommand = :@BridgeScene,

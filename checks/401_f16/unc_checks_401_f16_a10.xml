@@ -134,7 +134,6 @@
 					@asynchronousRobin:->void AND	
 					@asynchronousArthur:->void AND
 					@asynchronousGuard:->void,
-				@Animator = @animateAvatar:@Avatar->void,
 				@SingletonsCreator =
 						@scannerFactoryMethod:->@ScannerBean AND
 						@bridgeSceneFactoryMethod:->@BridgeScene AND
@@ -190,11 +189,12 @@
 						(.*)!get:(.*)->(.*)AND
 						(.*)!put:(.*);(.*) -> (.*) AND
 						@parseSay:*->Runnable AND
-					 	@parseMove:*->Runnable AND	
+					 	@parseMove:*->Runnable AND
 						@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean AND	
 					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
-					 	Runnable!run:-> void,							
+					 	Runnable!run:-> void AND
+					 	Thread!start:->void,							
 				@Locatable = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
@@ -241,8 +241,10 @@
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
  					@CommandInterpreter!setCommand:String->void AND
  					(.*)!setButton:boolean->void AND
- 					(.*)!addPropertyChangeListener:PropertyChangeListener->void,
-			@AnimatingCommand = @Animator!@animateAvatar:@Avatar->void
+ 					(.*)!addPropertyChangeListener:PropertyChangeListener->void AND
+ 					JButton!setEnabled:boolean->void,
+			@AnimatingCommand = @Animator!@animateAvatar:@Avatar->void,
+			@Animator =  (.*)!sleep:long->void
 				  
  						
 				" />
@@ -342,7 +344,7 @@
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				
-				@MoveCommmand = :@Avatar; int; int,
+				@MoveCommand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
 				@AnimatingCommand =:@Animator;@Avatar
 																						

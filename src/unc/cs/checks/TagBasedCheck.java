@@ -349,10 +349,29 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return aStructurePattern.getName().equals(aPatternName) || 
 				aStructurePattern.getName().equals("StructurePatternNames." + aPatternName);
  }
- 
- // could return a list also
+//could return a list also
  public  String findMatchingType (Collection<String> aTypesToBeMatched, STType anSTType) {
-		for (String aSpecifiedType:aTypesToBeMatched) {
+	   List<String> aMatchingTypes = findMatchingTypes(aTypesToBeMatched, anSTType);
+	   if (aMatchingTypes == null || aMatchingTypes.size() == 0)
+		   return null;
+	   return aMatchingTypes.get(0);
+	   
+//		for (String aSpecifiedType:aTypesToBeMatched) {
+//			matchedTypeOrTagAST = anSTType.getAST();
+//				Boolean matches = matchesAllAndedSpecificationTag(Arrays.asList(anSTType.getComputedTags()), aSpecifiedType);
+//
+//				if (matches == null) {
+//					return null;
+//				}
+//				if (matches)
+//					return aSpecifiedType; 
+//		}
+//		return null;
+	} 
+
+ public  List<String> findMatchingTypes (Collection<String> aTypesToBeMatched, STType anSTType) {
+	List<String> retVal = new ArrayList();
+	 for (String aSpecifiedType:aTypesToBeMatched) {
 			matchedTypeOrTagAST = anSTType.getAST();
 //				Boolean matches = matchesTypeUnifying(aSpecifiedType, anSTType.getName());
 				Boolean matches = matchesAllAndedSpecificationTag(Arrays.asList(anSTType.getComputedTags()), aSpecifiedType);
@@ -360,13 +379,28 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 				if (matches == null) {
 					return null;
 				}
-				if (matches)
+				if (matches) {
+					retVal.add(aSpecifiedType);
 //				if (matchesType(aSpecifiedType, anSTType.getName()))
-					return aSpecifiedType; 
+//					return aSpecifiedType; 
+				}
 		}
-		return null;
-	}
- 
+	 	if (retVal.size() > 1) {
+	 		List<String> aFilteredRetVal = new ArrayList();
+		 	STNameable[] anActualTags = anSTType.getTags();
+		 	for (STNameable aNameable:anActualTags) {
+		 		String aTag = "@" + maybeStripQuotes(aNameable.getName());
+		 		if (retVal.contains(aTag)) {
+		 			aFilteredRetVal.add(aTag);
+		 		}
+		 	}
+		 	if (aFilteredRetVal.size() > 0) {
+		 		return aFilteredRetVal;
+		 	}
+
+	 	}
+		return retVal;
+	} 
  
  public static String maybeStripQuotes(String aString) {
  	if (aString.indexOf("\"") != -1) // quote rather than named constant
