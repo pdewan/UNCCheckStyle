@@ -117,7 +117,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
 		// for efficiency, let us remove mapped calls
 
-//		if (anSTType.getName().contains("CommandInterpreterController")) {
+//		if (anSTType.getName().contains("CommandInterpreter")) {
 //			System.out.println ("found class");
 //		}
 		if (aCalls == null)
@@ -128,7 +128,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		boolean returnNull = false; 
 //		int i = 0;
 		for (String aSpecification:aSpecifications) {
-//			if (aSpecification.contains("ingleton")) {
+//			if (aSpecification.contains("ove")) {
 //				System.out.println ("found specification:");
 //			}
 			boolean found = false;

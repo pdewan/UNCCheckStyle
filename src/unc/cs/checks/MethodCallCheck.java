@@ -301,11 +301,14 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //			return true; // assume the type is right, 
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
 		Boolean result = matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
-		
+//		if (result == null) {
+//			System.out.println ("Null result");
+//		}
 //		if (aCalledParameters == null)
 //			return result;
 		if (aParametersText == null)
 			return result;
+		
 		if (result != true)
 			return result;
 
@@ -424,7 +427,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //	}
 	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
-		int i = 0;
+//		int i = 0;
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
 //		String aRegex = aSpecifiedMethod.getName();
 		if ( !isStarParameters(aSpecifiedMethod.getParameterTypes()) &&
@@ -457,6 +460,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		
 		if (!isIdentifier(aTypeName)) { // (cast etc,could not match, assume internal call)
 			aTypeName = aSpecifiedTarget;
+		}
+		if (aTypeName.contains("*")) {
+			return (aCallInfo.getCallee().equals(aSpecifiedMethod.getName())) ;
 		}
 		STType aTargetSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		if (aTargetSTType == null) {

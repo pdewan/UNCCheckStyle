@@ -509,6 +509,8 @@ public abstract class UNCCheck extends Check {
 	}
 
 	protected void deferLogging() {
+		if (notInPlugIn())
+			return;
 		deferLogging = true;
 	}
 
