@@ -91,6 +91,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		"Character",
 		"String",
 		"Boolean",
+		"Runnable",
+		"Thread"
 };
 	static List<STNameable> emptyList = new ArrayList();
 

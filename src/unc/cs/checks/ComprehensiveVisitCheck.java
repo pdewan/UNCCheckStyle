@@ -199,6 +199,55 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return true;
 
 	}
+	public Boolean matchReturnTypeISA(STMethod aSpecification, STMethod aMethod) {
+		String aSpecifiedReturnType = aSpecification.getReturnType();
+		String aMethodReturnType = aMethod.getReturnType();
+		Boolean result = matchReturnType(aSpecifiedReturnType, aMethodReturnType);
+		
+		if (result == null)
+			return null;
+		if (result) {
+			return result;
+		}
+		// check if actual type IS-A specified type
+		STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().
+				getSTClassByShortName(aMethodReturnType);
+		if (aReturnSTType == null) {
+			return null; // should not happen
+		}
+		List<STNameable> aSuperTypes = aReturnSTType.getAllSuperTypes();
+		if (aSuperTypes == null) {
+			return null;
+		}
+		for (STNameable aSuperType:aSuperTypes) {
+			result = matchReturnType(aSpecifiedReturnType, aSuperType.getName());
+			if (result == null) {
+				return null;
+			}
+			if (result) {
+				return result;
+			}
+		}		
+		return false;		
+	}
+	public Boolean matchReturnType(String aSpecifiedReturnType, String aMethodReturnType) {
+		STNameable[] typeTags = null;
+		
+		
+		if (aSpecifiedReturnType != null && aSpecifiedReturnType.startsWith(TAG_STRING)) {
+			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().
+					getSTClassByShortName(aMethodReturnType);
+			if (aReturnSTType == null)
+				return null;
+			typeTags = aReturnSTType.getComputedTags();
+		}
+		return unifyingMatchesNameVariableOrTag(aSpecifiedReturnType, 
+				aMethodReturnType, typeTags);
+
+		
+	   }
+
+
 	public Boolean matchReturnType(STMethod aSpecification, STMethod aMethod) {
 		String aSpecifiedReturnType = aSpecification.getReturnType();
 		String anActualReturnType = aMethod.getReturnType();
