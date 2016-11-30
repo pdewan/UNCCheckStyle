@@ -128,9 +128,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		boolean returnNull = false; 
 //		int i = 0;
 		for (String aSpecification:aSpecifications) {
-//			if (aSpecification.contains("ove")) {
-//				System.out.println ("found specification:");
-//			}
+			if (aSpecification.contains("parse")) {
+				System.out.println ("found specification:");
+			}
 			boolean found = false;
 			for (CallInfo aCallInfo:aCallsToBeChecked ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
