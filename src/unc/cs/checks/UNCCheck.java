@@ -505,6 +505,8 @@ public abstract class UNCCheck extends Check {
 	}
 
 	protected boolean isDeferLogging() {
+//		System.out.println ("temp defer logging");
+//		return false;
 		return deferLogging;
 	}
 

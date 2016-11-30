@@ -94,7 +94,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
 //						getName(getEnclosingTypeDeclaration(aTree)));
-		int i = 0;
+//		int i = 0;
 		STType anSTType = getSTType(anAST);
 		
 		if (anSTType == null) {
@@ -128,20 +128,26 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		boolean returnNull = false; 
 //		int i = 0;
 		for (String aSpecification:aSpecifications) {
-			if (aSpecification.contains("parse")) {
-				System.out.println ("found specification:");
-			}
+//			if (aSpecification.contains("say")) {
+//				System.out.println ("found specification:");
+//			}
 			boolean found = false;
 			for (CallInfo aCallInfo:aCallsToBeChecked ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 				String shortMethodName = toShortTypeName(aNormalizedLongName);
+//				if (aSpecification.contains("run") && aCallInfo.getCallee().contains("run")) {
+//					System.out.println ("Found specification");
+//				}
+
+					
 				Boolean matches = matches(anSTType, maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
 
 //				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
 				if (matches == null) {
-					if (!aSpecification.contains("!")) { // local call go onto another call
-						continue;
-					}
+					//commenting out this part, perhaps something else will go wrong
+//					if (!aSpecification.contains("!")) { // local call go onto another call, not really what is the difference?
+//						continue;
+//					}
 						
 					returnNull = true;
 					found = true; // we will come back to this
@@ -156,6 +162,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				}				
 			}
 			if (!found) {
+//				if (aSpecification.contains("run")) {
+//					System.out.println ("found specification");
+//				}
 				log(anAST, aTree, aSpecification);
 			}
 			

@@ -302,7 +302,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
 		Boolean result = matches(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo);
 //		if (result == null) {
-//			System.out.println ("Null result");
+//			System.out.println ("Null result, comment ths out");
 //		}
 //		if (aCalledParameters == null)
 //			return result;
@@ -444,7 +444,14 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 					return aLongMethodName.matches(aSpecifiedMethod.getName());
 
 				}
-			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && toShortTypeName(aTypeName).matches(aSpecifiedTarget); 
+			 Boolean retVal = aShortMethodName.matches(aSpecifiedMethod.getName());
+			 if (!retVal) {
+				 return  false;
+			 }
+			 return matchTypeISA(aSpecifiedTarget, toShortTypeName(aTypeName));
+//			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && 
+//					 matchTypeISA(aSpecifiedTarget, toShortTypeName(aTypeName));
+//					 toShortTypeName(aTypeName).matches(aSpecifiedTarget); 
 		 }
 //		 System.out.println ("Temp");
 		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);

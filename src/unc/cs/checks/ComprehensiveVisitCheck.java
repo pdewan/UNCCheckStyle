@@ -202,7 +202,41 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public Boolean matchReturnTypeISA(STMethod aSpecification, STMethod aMethod) {
 		String aSpecifiedReturnType = aSpecification.getReturnType();
 		String aMethodReturnType = aMethod.getReturnType();
-		Boolean result = matchReturnType(aSpecifiedReturnType, aMethodReturnType);
+		return matchTypeISA(aSpecifiedReturnType, aMethodReturnType );
+//		Boolean result = matchReturnType(aSpecifiedReturnType, aMethodReturnType);
+//		
+//		if (result == null)
+//			return null;
+//		if (result) {
+//			return result;
+//		}
+//		// check if actual type IS-A specified type
+//		STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().
+//				getSTClassByShortName(aMethodReturnType);
+//		if (aReturnSTType == null) {
+//			return null; // should not happen, can happen if return type is not in table
+//		}
+//		if (aMethod.getName().contains("parse")) {
+//			System.out.println ("found method");
+//		}
+//		List<STNameable> aSuperTypes = aReturnSTType.getAllSuperTypes();
+//		if (aSuperTypes == null) {
+//			return null;
+//		}
+//		for (STNameable aSuperType:aSuperTypes) {
+//			result = matchReturnType(aSpecifiedReturnType, aSuperType.getName());
+//			if (result == null) {
+//				return null;
+//			}
+//			if (result) {
+//				return result;
+//			}
+//		}		
+//		return false;		
+	}
+	public Boolean matchTypeISA(String aSpecifiedReturnType, String anActualType) {
+
+		Boolean result = matchReturnType(aSpecifiedReturnType, anActualType);
 		
 		if (result == null)
 			return null;
@@ -211,10 +245,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		// check if actual type IS-A specified type
 		STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().
-				getSTClassByShortName(aMethodReturnType);
+				getSTClassByShortName(anActualType);
 		if (aReturnSTType == null) {
-			return null; // should not happen
+			return null; // should not happen, can happen if return type is not in table
 		}
+//		if (aMethod.getName().contains("parse")) {
+//			System.out.println ("found method");
+//		}
 		List<STNameable> aSuperTypes = aReturnSTType.getAllSuperTypes();
 		if (aSuperTypes == null) {
 			return null;
