@@ -320,7 +320,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			return null;
 		if (!aMatchesName)
 			return false;
-		Boolean aMatchesType = matchReturnType(aSpecification, aMethod);
+//		Boolean aMatchesType = matchReturnType(aSpecification, aMethod);
+		Boolean aMatchesType = matchReturnTypeISA(aSpecification, aMethod);
+
+		
 		if (aMatchesType == null) {
 			return null;
 		}
