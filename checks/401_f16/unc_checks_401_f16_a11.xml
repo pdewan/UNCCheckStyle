@@ -654,7 +654,10 @@
 					read(.*), 					
 					set(.*), 
 					process(.*), 
-					scan(.*), (.*)create(.*), (.*)actory(.*)
+					scan(.*), 
+					(.*)create(.*), 
+					parse(.*),
+					(.*)actory(.*)
 					" />
 
 		</module>
