@@ -844,31 +844,12 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		if (aSuperTypes == null)
 			return null;
 
-//		// why is this not calling getAllSuperTypes
-//		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
-//		for (STNameable anInterface : anInterfaces) {
-//			List<STNameable> anInterfaceTypes = getAllTypes(anInterface, anSTType);
-//			if (anInterfaceTypes == null) {
-//				if (anSTType.waitForSuperTypeToBeBuilt())
-//					return null;
-//				else
-//					continue;
-//			}
-//			result.addAll(anInterfaceTypes);
-//		}
-//		if (anSTType.isInterface())
-//			return result;
-//		STNameable aSuperClass = anSTType.getSuperClass();
-//		if (aSuperClass == null)
-//			return result;
-//		List<STNameable> aSuperTypes = getAllTypes(anSTType.getSuperClass(), anSTType);
-//		if (aSuperTypes == null) {
-//			if (anSTType.waitForSuperTypeToBeBuilt())
-//				return null;
-//			else
-//				return result;
-//		}
+
 		addAllNonDuplicates(result, aSuperTypes);
+		List<STNameable> anInterfaces = getAllInterfaces(anSTType);
+		if (anInterfaces == null) 
+			return null;
+		addAllNonDuplicates(result, anInterfaces);
 		// result.addAll(aSuperType);
 		return result;
 	}
@@ -886,8 +867,8 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 //			else
 //				return result;
 		if (anSTType.isInterface()) {
-			System.err.println("An interface does not have an interface:"
-					+ anSTType.getName());
+//			System.err.println("An interface does not have an interface:"
+//					+ anSTType.getName());
 			return emptyList;
 		}
 //		if (anSTType.getName().contains("Vertical") || anSTType.getName().contains("Anim")) {

@@ -153,14 +153,7 @@
 				 	@parseFailCommand:*->Runnable AND						
 				 	@parseRepeatCommand:*->Runnable AND						
 				 	@parseCommandList:*->Runnable AND						
-				 	@parseNumberCommand:*->*//EC AND
-				 	@parseRotateLeftArmCommand:*->Runnable//EC AND
-				 	@parseRotateRightArmCommand:*->Runnable//EC AND
-				 	@parseSleepCommand:*->Runnable//EC AND
-					@parseDefineCommand:*->Runnable//EC AND
-					@parseCallCommand:*->Runnable//EC AND
-					@parseThreadCommand:*->Runnable//EC AND
-					@parseSleepCommand:*->Runnable//EC AND
+				 	@parseNumber:*->*//EC AND				 	
 					next:->* AND
 					peek:->* AND
 					hasNext:->boolean//EC AND
@@ -274,7 +267,8 @@
 				  @ApproachCommand = (.*)!@approach:@Avatar->*,
 				 @FailCommand = (.*)!@failed:->*,
 				 @PassCommand = (.*)!@passed:->*,
-				 @SayCommand = (.*)!@say:String->*,			 
+				 @SayCommand = (.*)!@say:String->*,	
+				 @RepeatCommand = Runnable!run:->void,		 
 				 @CommandList = Runnable!run:->void,
 				 @Parser = 
 				 	@parseCommand:*->Runnable AND						
@@ -286,6 +280,10 @@
 				 	@parseRepeatCommand:*->Runnable AND						
 				 	@parseCommandList:*->Runnable AND						
 				 	@parseNumber:*->*//EC AND				 	
+					@CommandList!@add:Runnable->* AND
+				 	next:->* AND
+					peek:->* AND
+					reset:->* AND			 	
 				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
 				 	
  			@RotateLeftArmCommand = (.*)!@rotateLeftArm:int->void,
@@ -341,14 +339,12 @@
 				@Parser = 
 					@RotateLeftArmCommand//EC AND
 					@RotateRightArmCommand//EC AND
-					@SleepCommand AND
-					@DefineCommand AND
-					@CallCommand AND
-					@ThreadCommand AND		
-					@DefineCommand//EC AND
-					@CallCommand//EC AND
-					@ThreadCommand//EC AND
-					CommandList,
+					@SleepCommand AND					
+					@CommandList AND 
+					@ApproachCommand AND 
+					@PassCommand AND 
+					@FailCommand AND 
+					@RepeatCommand,
 				@CommandInterpreter =
 					@AnimatingCommand,
 				@SingletonsCreator =
@@ -447,7 +443,8 @@
 				@SleepCommand = Runnable,
 				@DefineCommand = Runnable,
 				@CallCommand = Runnable,
-				@ThreadCommand = Runnable,								
+				@ThreadCommand = Runnable,	
+				@RepeatCommand = Runnable,							
 				@CommandList = 
 					@CommandList AND 
 					Runnable,

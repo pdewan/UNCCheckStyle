@@ -249,14 +249,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (aReturnSTType == null) {
 			return null; // should not happen, can happen if return type is not in table
 		}
-//		if (aMethod.getName().contains("parse")) {
-//			System.out.println ("found method");
-//		}
-		List<STNameable> aSuperTypes = aReturnSTType.getAllSuperTypes();
+		
+//		List<STNameable> aSuperTypes = aReturnSTType.getAllSuperTypes();
+		List<STNameable> aSuperTypes = aReturnSTType.getAllTypes();
+
 		if (aSuperTypes == null) {
 			return null;
 		}
+//		if (aSpecifiedReturnType.contains("Runnable")) {
+//			System.out.println ("found type");
+//		}
 		for (STNameable aSuperType:aSuperTypes) {
+			if (aSuperType.equals(aReturnSTType))
+				continue;
 			result = matchReturnType(aSpecifiedReturnType, aSuperType.getName());
 			if (result == null) {
 				return null;
