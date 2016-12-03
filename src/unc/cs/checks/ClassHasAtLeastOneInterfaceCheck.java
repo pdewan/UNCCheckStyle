@@ -31,7 +31,10 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 
 //		List<String> aSignatures = anSTClass.getPublicInstanceSignatures();
 		List<String> aSignatures = anSTClass.getDeclaredPublicInstanceSignatures();
-
+		
+//		if (anSTClass.getName().contains("WaitBased")) {
+//			System.out.println("found type");
+//		}
 		if (aSignatures == null)
 			return null;
 		if (aSignatures.size() == 0)

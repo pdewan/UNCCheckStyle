@@ -80,7 +80,6 @@
 				@MoveCommand,
 				@PassCommand,
 				@Animator,
-				@AnimatingCommand,
 				@FailCommand,
 				@ApproachCommand,
 				@RepeatCommand,
@@ -97,7 +96,7 @@
 				@Parser,
 				@ScanningException//EC,
 				@ParsingException//EC,
-				@BroadcastingClearanceManager,			
+				BroadcastingClearanceManager,			
 				@SingletonsCreator, @ProgressBarCreator//EC,
 				@CustomSwingTextFieldFactory//EC,	
 				@CoordinatingAnimationCommand,
@@ -156,7 +155,6 @@
 						paint:Graphics(.*)->void,
 					@PaintListener=
 						paint:Graphics(.*)->void,
-					@Animator = @animateAvatar:@Avatar->void,
 					@CommandInterpreter = 					
 						@asynchronousGalahad:->void//EC	AND
 						@asynchronousLancelot:->void AND		
@@ -167,7 +165,6 @@
 						@waitingLancelot:->void AND		
 						@waitingRobin:->void AND	
 						@waitingArthur:->void AND
-						@waitingGuard:->void AND
 						@startAnimation:->void AND
 						@lockstepGalahad:->void//EC	AND
 						@lockstepLancelot:->void//EC AND		
@@ -190,8 +187,7 @@
 					@parseDefineCommand:*->Runnable//EC AND
 					@parseCallCommand:*->Runnable//EC AND
 					@parseThreadCommand:*->Runnable//EC AND
-					@parseSleepCommand:*->Runnable//EC AND				 	
-					@CommandList!@add:Runnable->* AND
+					@parseSleepCommand:*->Runnable//EC AND
 					
 					next:->* AND
 					peek:->* AND
@@ -204,16 +200,24 @@
 					@parserFactoryMethod:->@Parser AND
 					@bridgeSceneFactoryMethod:->@BridgeScene AND
 					@avatarTableFactoryMethod:->@Table AND
+					@environmentFactoryMethod:->@Table AND					
 					@commandInterpreterFactoryMethod:->@CommandInterpreter AND
 					@bridgeSceneControllerFactoryMethod:->@BridgeSceneController AND
 					@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
 					@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
 					@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView AND
-					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager, 	
-				@CoordinatedAnimator = @animateAvatar:@Avatar->*,
-				@CoordinatingAnimator = @animateAvatar:@Avatar->*,		
+					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager	
+					
 					" />
 			</module>
+			<module name="ExpectedSignatures">
+				<property name="severity" value="warning" />
+		
+				<property name="expectedSignatures"
+					value="					
+					@Animator = @animateAvatar:@Avatar->void
+					" />
+			</module>	
 			<module name="MissingMethodCall">
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
@@ -257,6 +261,7 @@
 				 		@SingletonsCreator!@parserFactoryMethod:->@Parser AND
 				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 				 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
+				 		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND
 				 		(.*)!proceedAll:->void AND
 					 	Runnable!run:-> void AND
 					 	Thread!start:->void,							
@@ -304,7 +309,9 @@
  					@CommandInterpreterController = 
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
  					@CommandInterpreter!setCommand:String->void,
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,
+				 @AnimatingCommand = 
+					 (.*)!waitForProceed:->void AND
+				 	@Animator!@animateAvatar:@Avatar->void,
 				@Animator =  (.*)!sleep:long->void,
 				  @ApproachCommand = (.*)!@approach:@Avatar->*,
 				 @FailCommand = (.*)!@failed:->*,
@@ -329,6 +336,9 @@
 					@parseCallCommand:*->Runnable//EC AND
 					@parseThreadCommand:*->Runnable//EC AND
 					@parseSleepCommand:*->Runnable//EC AND
+					@parseProceedAllCommand:*->Runnable//EC AND
+					@parseUndoCommand:*->Runnable//EC AND
+					@parseRedoCommand:*->Runnable//EC AND					
 					@CommandList!@add:Runnable->* AND
 				 	next:->* AND
 					peek:->* AND
@@ -336,20 +346,33 @@
 				  	@ScanningException!getMessage:->String AND
 				 	@ParsingException!getMessage:->String AND
 				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
- 			@RotateLeftArmCommand = (.*)!@rotateLeftArm:int->void,
-			@RotateRightArmCommand = (.*)!@rotateRightArm:int->void,
+ 			@RotateLeftArmCommand = (.*)!@rotate:int->void,
+			@RotateRightArmCommand = (.*)!@rotate:int->void,
 			@SleepCommand = (.*)!sleep:long->void,
-			@DefineCommand = (.*)!put:Object;Object->*,
-			@CallCommand = (.*)!get:Object->Object,				 
-			@ThreadCommand = (.*)!get:Object->Object 
-				AND Thread!start:->void,
+			@DefineCommand = 
+				@SingletonsCreator!@environmentFactoryMethod:->@Table AND
+				(.*)!put:Object;Object->*,
+			@CallCommand = 
+				@SingletonsCreator!@environmentFactoryMethod:->@Table AND
+				Runnable!run:->void AND
+				(.*)!get:Object->Object,				 
+			@ThreadCommand = 
+				@SingletonsCreator!@environmentFactoryMethod:->@Table AND
+				(.*)!get:Object->Object AND Thread!start:->void,
+			@ProceedAllCommand = 
+			 	 (.*)!proceedAll:->void AND				 		
+				@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager,			
 			@CoordinatingAnimatingCommand = 
 		 		 @CoordinatingAnimator!@animateAvatar:@Avatar->void,
 		   	@CoordinatingAnimator = 
+		   		@Animator!@AnimateAvatar:@Avatar->void AND
+		   		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND		   	
 		 	  (.*)!proceedAll:->void,
 		 	@CoordinatedAnimatingCommand =
 		 		@CoordinatedAnimator!@animateAvatar:@Avatar->void,
 		 	@CoordinatedAnimator = 
+		 		@Animator!@AnimateAvatar:@Avatar->void AND
+		 		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND		 	
 		 		(.*)!waitForProceed:->void
 				 			 									
 				" />
@@ -383,7 +406,8 @@
 					@ProceedAll//EC AND
 					@Sleep//EC AND  
 					@Undo//EC AND
-					@Redo//EC,
+					@Redo//EC AND
+					@ScanningException//EC,
 				@BridgeScene =
 					@Avatar AND PropertyChangeEvent,				
 				@Avatar = 
@@ -400,18 +424,18 @@
 				@Parser = 
 					@RotateLeftArmCommand//EC AND
 					@RotateRightArmCommand//EC AND
-					@SleepCommand AND
-					@DefineCommand AND
-					@CallCommand AND
-					@ThreadCommand AND		
+					@SleepCommand//EC AND
 					@DefineCommand//EC AND
 					@CallCommand//EC AND
 					@ThreadCommand//EC AND
+					@UndoCommand//EC AND
+					@RedoCommand//EC AND
 					@CommandList AND 
 					@ApproachCommand AND 
 					@PassCommand AND 
 					@FailCommand AND 
-					@RepeatCommand,
+					@RepeatCommand AND
+					@ParsingException//EC,
 				@SingletonsCreator =					
 					@ScannerBean AND
 					@BridgeScene AND
@@ -422,7 +446,7 @@
 					@ObservableBridgeScenePainter//EC AND
 					@DelegatingBridgeSceneView//EC	AND
 					@BridgeSceneController AND	
-					BroadcastingClearanceManager,		
+					ABroadcastingClearanceManager,		
 						
 				" />
 		   </module>
@@ -461,19 +485,21 @@
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
 				
-				@CommandInterpreterController = :,
 				@MoveCommand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
 				@FailCommand = :@BridgeScene,
 				@PassCommand = :@BridgeScene,
 				@ApproachCommand = :@BridgeScene;@Avatar,
-				@RepeatCommand = :int;@Runnable,
+				@RepeatCommand = :int;Runnable,
 				@RotateLeftArmCommand = :@Avatar; int,
 				@RotateRightArmCommand = :@Avatar; int,
 				@SleepCommand = :long,
-				@DefineCommand = :String;@Runnable;@Table,	
-				@ThreadCommand = :String;@Table
-																						
+				@DefineCommand = :String;Runnable,	
+				@ThreadCommand = :String,
+				@CallCommand = :String,				
+				@AnimatingCommand = :@Animator;@Avatar;boolean,
+				@CoordinatedAnimatingCommand = :@Animator;@Avatar,	
+				@CoordinatedAnimatingCommand = :@Animator;@Avatar,																									
 				" />
 		</module>
 		
@@ -706,7 +732,8 @@
 					java.util.Iterator, 
 					java.util.ArrayList, 
 					java.util.Vector, 
-				 	java.util.LinkedList
+				 	java.util.LinkedList,
+				 	java.io.IOException
 					" />
 		</module>
 		
@@ -845,7 +872,10 @@
 				@LABEL_PATTERN = @BoundedShape, 
 				@BoundedShape=@Locatable,
 				@InheritingBridgeScenePainter=Component,
-				@ObservableBridgeScenePainter=Component
+				@ObservableBridgeScenePainter=Component,
+				@ScanningException=IOException,
+				@ParsingException=IOException,
+				@CustomSwingTextFieldFactory=SwingTextFieldFactory
 				"/>
 		</module>
 		

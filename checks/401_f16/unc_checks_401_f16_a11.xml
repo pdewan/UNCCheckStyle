@@ -79,7 +79,6 @@
 				@SayCommand,
 				@MoveCommand,
 				@PassCommand,
-				@AnimatingCommand,
 				@FailCommand,
 				@ApproachCommand,
 				@RepeatCommand,
@@ -284,14 +283,9 @@
 				 	next:->* AND
 					peek:->* AND
 					reset:->* AND			 	
-				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
+				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean
 				 	
- 			@RotateLeftArmCommand = (.*)!@rotateLeftArm:int->void,
-			@RotateRightArmCommand = (.*)!@rotateRightArm:int->void,
-			@SleepCommand = (.*)!sleep:long->void,
-			@DefineCommand = (.*)!put:Object;Object->*,
-			@CallCommand = (.*)!get:Object->Object,				 
-			@ThreadCommand = (.*)!get:Object->Object AND Thread!start:->void
+ 		
 				 			 									
 				" />
 			</module>
@@ -336,10 +330,7 @@
 				@ProgressBarCreator =
 					JProgressBar AND
 					JSlider,
-				@Parser = 
-					@RotateLeftArmCommand//EC AND
-					@RotateRightArmCommand//EC AND
-					@SleepCommand AND					
+				@Parser =										
 					@CommandList AND 
 					@ApproachCommand AND 
 					@PassCommand AND 
@@ -394,20 +385,14 @@
 				@ProceedAll=:String,
 				@Undo=:String,
 				@Redo=:String,
-				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				
+				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,				
 				@MoveCommand = :@Avatar; int; int,
 				@SayCommand = :@BridgeScene; String,
 				@FailCommand = :@BridgeScene,
 				@PassCommand = :@BridgeScene,
 				@ApproachCommand = :@BridgeScene;@Avatar,
-				@RepeatCommand = :int;@Runnable,
-				@RotateLeftArmCommand = :@Avatar; int,
-				@RotateRightArmCommand = :@Avatar; int,
-				@SleepCommand = :long,
-				@DefineCommand = :String;@Runnable;@Table,	
-				@ThreadCommand = :String;@Table
-																						
+				@RepeatCommand = :int;Runnable,				
+				@AnimatingCommand = :@Animator;@Avatar,														
 				" />
 		</module>
 		
@@ -437,13 +422,7 @@
 				@MoveCommand = Runnable,
 				@PassCommand = Runnable,
 				@FailCommand = Runnable,
-				@ApproachCommand = Runnable,
-				@RotateLeftArmCommand = Runnable,
-				@RotateRigtArmCommand = Runnable,
-				@SleepCommand = Runnable,
-				@DefineCommand = Runnable,
-				@CallCommand = Runnable,
-				@ThreadCommand = Runnable,	
+				@ApproachCommand = Runnable,				
 				@RepeatCommand = Runnable,							
 				@CommandList = 
 					@CommandList AND 
