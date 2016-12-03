@@ -188,7 +188,8 @@
 					@parseCallCommand:*->Runnable//EC AND
 					@parseThreadCommand:*->Runnable//EC AND
 					@parseSleepCommand:*->Runnable//EC AND
-					
+					@parseUndoCommand:*->Runnable//EC AND
+					@parseRedoCommand:*->Runnable//EC AND
 					next:->* AND
 					peek:->* AND
 					hasNext:->boolean//EC AND
