@@ -93,6 +93,7 @@
 				@DefineCommand//EC,
 				@CallCommand//EC,
 				@ThreadCommand//EC,
+				@ProceedAllCommand//EC,
 				@Parser,
 				@ScanningException//EC,
 				@ParsingException//EC,
@@ -207,7 +208,7 @@
 					@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
 					@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
 					@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView AND
-					@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager	
+					@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager	
 					
 					" />
 			</module>
@@ -374,7 +375,10 @@
 		 	@CoordinatedAnimator = 
 		 		@Animator!@AnimateAvatar:@Avatar->void AND
 		 		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND		 	
-		 		(.*)!waitForProceed:->void
+		 		(.*)!waitForProceed:->void,
+		 	@CustomSwingTextFieldFactory =
+		 		JTextField!setBackground:*->void AND
+		 		JTextField!setForeground:*->void
 				 			 									
 				" />
 			</module>
@@ -436,6 +440,7 @@
 					@PassCommand AND 
 					@FailCommand AND 
 					@RepeatCommand AND
+					@ProceedAllCommand AND
 					@ParsingException//EC,
 				@SingletonsCreator =					
 					@ScannerBean AND
@@ -447,8 +452,9 @@
 					@ObservableBridgeScenePainter//EC AND
 					@DelegatingBridgeSceneView//EC	AND
 					@BridgeSceneController AND	
-					ABroadcastingClearanceManager,		
-						
+					ABroadcastingClearanceManager,	
+				@CustomSwingTextFieldFactory =
+					JTextField						
 				" />
 		   </module>
 		
