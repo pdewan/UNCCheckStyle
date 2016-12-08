@@ -101,7 +101,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		boolean retVal = true;
 		List<STMethod> aMethodsCopy = new ArrayList<STMethod>(Arrays.asList(aMethods));
 		for (STMethod aSpecification : aSpecifications) {
-		
+//			if (aSpecification.getName().contains("parseSleep")) {
+//				System.out.println("found method specified");
+//			}
 //			String[] aPropertiesPath = aPropertySpecification.split(".");	
 			Boolean hasMatched = matchMethod(aSpecification, aMethodsCopy);
 			if (hasMatched == null)
@@ -153,6 +155,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	
 	public Boolean matchSignature(
 			String aSpecification, STMethod[] aMethods) {
+//		if (aSpecification.contains("parseSleep")) {
+//			System.out.println("found method specified");
+//		}
 		for (STMethod aMethod : aMethods) {
 			if (matchSignature(aSpecification, aMethod))
 				// return
@@ -167,6 +172,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public Boolean matchMethod(
 			STMethod aSpecification, List<STMethod> aMethods) {
 		for (STMethod aMethod : aMethods) {
+//			if (aMethod.getName().contains("parseSleep")) {
+//				System.out.println ("found candidate method");
+//			}
 			Boolean hasMatched = matchSignature(aSpecification, aMethod);
 			if (hasMatched == null)
 				return null;

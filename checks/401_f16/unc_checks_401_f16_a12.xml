@@ -344,7 +344,6 @@
 					@parseDefineCommand:*->Runnable//EC AND
 					@parseCallCommand:*->Runnable//EC AND
 					@parseThreadCommand:*->Runnable//EC AND
-					@parseSleepCommand:*->Runnable//EC AND
 					@parseProceedAllCommand:*->Runnable//EC AND
 					@parseUndoCommand:*->Runnable//EC AND
 					@parseRedoCommand:*->Runnable//EC AND					
