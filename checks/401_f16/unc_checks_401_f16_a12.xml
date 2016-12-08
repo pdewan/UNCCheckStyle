@@ -373,13 +373,13 @@
 			@CoordinatingAnimatingCommand = 
 		 		 @CoordinatingAnimator!@animateAvatar:@Avatar->void,
 		   	@CoordinatingAnimator = 
-		   		@Animator!@AnimateAvatar:@Avatar->void AND
+		   		@Animator!@animateAvatar:@Avatar->void AND
 		   		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		   	
 		 	  (.*)!proceedAll:->void,
 		 	@CoordinatedAnimationCommand =
 		 		@CoordinatedAnimator!@animateAvatar:@Avatar->void,
 		 	@CoordinatedAnimator = 
-		 		@Animator!@AnimateAvatar:@Avatar->void AND
+		 		@Animator!@animateAvatar:@Avatar->void AND
 		 		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		 	
 		 		(.*)!waitForProceed:->void,
 		 	@CustomSwingTextFieldFactory =

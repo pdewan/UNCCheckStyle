@@ -261,7 +261,7 @@
  				@CommandInterpreterController = 
  					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
  					@CommandInterpreter!setCommand:String->void,
-				 @AnimatingCommand = @Animator!@AnimateAvatar:@Avatar->void,				 
+				 @AnimatingCommand = @Animator!@animateAvatar:@Avatar->void,				 
 				@Animator =  (.*)!sleep:long->void,
 				  @ApproachCommand = (.*)!@approach:@Avatar->*,
 				 @FailCommand = (.*)!@failed:->*,
