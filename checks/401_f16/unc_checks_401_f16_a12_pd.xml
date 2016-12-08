@@ -100,13 +100,10 @@
 				BroadcastingClearanceManager,			
 				@SingletonsCreator, @ProgressBarCreator//EC,
 				@CustomSwingTextFieldFactory//EC,	
-				@CoordinatingAnimatingCommand,
+				@CoordinatingAnimationCommand,
 				@CoordinatedAnimationCommand//EC,
-				@CoordinatedAnimator//EC,				
-				@CoordinatingAnimator//EC,
-            @Token,
-            @UndoCommand//EC,
-            @RedoCommand//EC,
+				@CoordinatedAnimator,				
+				@Token,
 				
 				SingletonsCreator											
 				" />				
@@ -194,7 +191,6 @@
 					@parseSleepCommand:*->Runnable//EC AND
 					@parseUndoCommand:*->Runnable//EC AND
 					@parseRedoCommand:*->Runnable//EC AND
-               @parseProceedAllCommand:*->Runnable//EC AND
 					next:->* AND
 					peek:->* AND
 					hasNext:->boolean//EC AND
@@ -230,15 +226,12 @@
 				value="
 				main.Assignment12 = 
 						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
-						@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
+						@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND
 						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
 						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND						
 						(.*)!@waiting(.*):->void AND	
-						(.*)!@lockstep(.*):->void//EC AND	
-						(.*)!initialize:->void AND
-						(.*)!setTextFieldFactory:->void AND	
-                 		 (.*)!waitForProceed:->void,						
+						(.*)!@lockstep(.*):->void//EC,						
 				@ScannerBean =
 						scanString:String->void AND
 						indexOf:String;char;int->int AND
@@ -270,7 +263,7 @@
 				 		@SingletonsCreator!@parserFactoryMethod:->@Parser AND
 				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 				 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
-				 		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
+				 		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND
 				 		(.*)!proceedAll:->void AND
 					 	Runnable!run:-> void AND
 					 	Thread!start:->void,							
@@ -370,18 +363,18 @@
 				(.*)!get:Object->Object AND Thread!start:->void,
 			@ProceedAllCommand = 
 			 	 (.*)!proceedAll:->void AND				 		
-				@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager,			
+				@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager,			
 			@CoordinatingAnimatingCommand = 
 		 		 @CoordinatingAnimator!@animateAvatar:@Avatar->void,
 		   	@CoordinatingAnimator = 
 		   		@Animator!@AnimateAvatar:@Avatar->void AND
-		   		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		   	
+		   		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND		   	
 		 	  (.*)!proceedAll:->void,
-		 	@CoordinatedAnimationCommand =
+		 	@CoordinatedAnimatingCommand =
 		 		@CoordinatedAnimator!@animateAvatar:@Avatar->void,
 		 	@CoordinatedAnimator = 
 		 		@Animator!@AnimateAvatar:@Avatar->void AND
-		 		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		 	
+		 		@SingletonsCreator!@broadcastingClearanceManagerMethod:->BroadcastingClearanceManager AND		 	
 		 		(.*)!waitForProceed:->void,
 		 	@CustomSwingTextFieldFactory =
 		 		JTextField!setBackground:*->void AND
@@ -512,8 +505,8 @@
 				@ThreadCommand = :String,
 				@CallCommand = :String,				
 				@AnimatingCommand = :@Animator;@Avatar;boolean,
-				@CoordinatedAnimationCommand = :@Animator;@Avatar,	
-				@CoordinatedAnimationCommand = :@Animator;@Avatar,																									
+				@CoordinatedAnimatingCommand = :@Animator;@Avatar,	
+				@CoordinatedAnimatingCommand = :@Animator;@Avatar,																									
 				" />
 		</module>
 		
@@ -558,7 +551,7 @@
 				@AnimatingCommand = Runnable,
 				@BridgeScene = 	PropertyListenerRegisterer,
 				@CoordinatedAnimationCommand = Runnable//EC,
-				@CoordinatingAnimatingCommand = Runnable//EC,
+				@CoordinatingAnimationCommand = Runnable//EC,
 				@Word= @Token, 
 				@Number= @Token, 
 				@Quote= @Token, 
