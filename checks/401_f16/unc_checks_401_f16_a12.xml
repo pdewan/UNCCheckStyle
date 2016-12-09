@@ -236,7 +236,7 @@
 						(.*)!@waiting(.*):->void AND	
 						(.*)!@lockstep(.*):->void//EC AND	
 						(.*)!initialize:->void AND
-						(.*)!setTextFieldFactory:->void AND	
+						(.*)!setTextFieldFactory:*->void AND	
                  		 (.*)!waitForProceed:->void,						
 				@ScannerBean =
 						scanString:String->void AND
