@@ -494,7 +494,8 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	}
 	@Override
 	public void maybeNewProjectDirectory(String aProjectDirectory, String aChecksName) {
-		if (aProjectDirectory.equals(projectDirectry))
+		// This is where the null pointer exception occurs
+		if (aProjectDirectory == null || aProjectDirectory.equals(projectDirectry))
 			return;
 		reset();
 		projectDirectry = aProjectDirectory;
