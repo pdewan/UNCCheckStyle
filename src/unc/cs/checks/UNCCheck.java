@@ -353,6 +353,7 @@ public abstract class UNCCheck extends Check {
 //			if (vetoChecks())
 //				return;
 			maybeNewSequenceNumber(); // which should go first?
+			// This line gives null pointer exception in Ram's code
 			CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager()
 					.maybeNewProjectDirectory(ProjectDirectoryHolder.getCurrentProjectDirectory(),
 //							STBuilderCheck.getChecksName()
