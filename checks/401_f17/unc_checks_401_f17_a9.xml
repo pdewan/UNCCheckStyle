@@ -180,7 +180,7 @@
 					 	@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 					 	@SingletonsCreator!@avatarTableFactoryMethod:->@Table,
 				@Locatable = 
-						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+						(.*)!(.*):PropertyChangeEvent->(.*),
 				@BoundedShape = 
 						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				@ConsoleSceneView = 				

@@ -162,9 +162,9 @@
 						
 						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND
-						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
-						@SingletonsCreator!consoleSceneViewFactoryMethod:->@BridgeScene AND	
-						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@consoleSceneViewFactoryMethod:->@BridgeScene AND	
+						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
 						(.*)!@asynchronous(.*):->void AND
 						(.*)!@approach:@Avatar->void AND
 						(.*)!@say:@Avatar->void,						

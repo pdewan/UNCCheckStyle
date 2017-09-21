@@ -116,8 +116,8 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment8 = 
-						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
-						@SingletonsCreator!consoleSceneViewFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@consoleSceneViewFactoryMethod:->@BridgeScene AND
 						(.*)!sleep:long->void AND
 						(.*)!@move:int;int->* AND
 						(.*)!setText:String->void,				
@@ -134,7 +134,7 @@
 						,
 				@BridgeScene=
 						(.*)!@move:int;int->* AND
-						(.*)!!setText:String->void
+						(.*)!:String->void
 						,
 				@CommandInterpreter=
 						@ScannerBean!getTokens:->.*\[\]  AND

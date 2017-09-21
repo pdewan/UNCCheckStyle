@@ -252,7 +252,7 @@
 				@BridgeScene=
 						(.*)!@move:int;int->* AND
 						(.*)!setText:String->void AND
-						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*)
+						(.*)!(.*):PropertyChangeEvent->(.*)
 						,
 				@CommandInterpreter=
 						(.*)!getTokens:->.*\[\]  AND
