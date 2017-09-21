@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+	editor -->
+<!-- Checkstyle-Configuration: Test Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+
+<module name="unc.tools.checkstyle.AnExtendibleChecker">
+		
+
+	<property name="severity" value="warning" />
+
+
+	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
+		<property name="severity" value="info" />
+
+		<module name="STBuilder">
+			<property name="includeTypeTags" value="*" />
+			<property name="severity" value="info" />
+			<property name="projectPackagePrefixes" value="test,lectures, main, mp, grail" />
+			<property name="existingClasses"
+				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
+			<property name="importsAsExistingClasses" value="true" />
+			<property name="checksName"
+				value="401_f17_A3" />
+			<property name="expectedTypes" value="
+				main.Assignment3,
+				@ScannerBean,
+				@Number, 
+				@Word, 
+				@Quote, 
+				@Start, 
+				@End, 
+				@Plus//EC, 
+				@Minus//EC,
+				ScanningIterator//EC
+				" />				
+
+		</module>
+		
+
+	</module>
+
+
+	<module name="unc.tools.checkstyle.ANonCachingTreeWalker">
+		<property name="severity" value="warning" />
+	
+		<module name="ExpectedDeclaredSignatures">
+				<property name="severity" value="warning" />
+		
+				<property name="expectedSignatures"
+					value="
+					main.Assignment3 = 
+						processInput:->*,
+					@ScannerBean =
+						scanString:String->* AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC,
+					ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC	
+					" />
+			</module>
+			<module name="MissingMethodCall">
+			<property name="severity" value="warning" />			
+			<property name="expectedCalls"
+				value="
+				main.Assignment3 = 
+						processInput:->void AND
+						@ScannerBean!setScannedString:String->void,
+				@ScannerBean =
+						scanString:String->void AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC AND
+						(.*)!hasNext:->boolean//EC AND
+						(.*)!next:->String//EC AND
+						(.*)!getInput:->String AND 
+						@Number!getValue:->String AND
+						@Word!getValue:->String						
+						,
+				ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC
+						" />
+			</module>
+			
+			<module name="ExpectedClassInstantiations">
+			<property name="severity" value="warning" />			
+			<property name="instantiations"
+				value="				
+				main.Assignment3=
+					@ScannerBean, 
+				@ScannerBean =
+					@Number AND 
+					@Word AND
+					@Quote AND
+					@Start AND 
+					@End AND
+				    @Plus//EC AND 
+					@Minus//EC				
+				" />
+		   </module>
+			
+		<module name="ExpectedConstructors">
+			<property name="severity" value="warning" />		
+			<property name="expectedSignatures"
+				value="
+				ScanningIterator =:String,
+				@Word= :String, 
+				@Number= :String, 
+				@Quote= :String, 
+				@Start= :String, 
+				@End= :String, 
+				@Plus= :String, 
+				@Minus= :String												
+				" />
+		</module>
+		
+		<module name="ExpectedInterfaces">
+			<property name="severity" value="warning" />		
+			<property name="expectedInterfaces"
+				value="
+				ScanningIterator = Iterator//EC,
+				@Word= @Token, 
+				@Number= @Token, 
+				@Quote= @Token, 
+				@Start= @Token, 
+				@End= @Token, 
+				@Plus= @Token, 
+				@Minus= @Token
+				" />
+		</module>				
+		
+		<module name="ExpectedGetters">
+			<property name="severity" value="warning" />		
+			<property name="expectedProperties" value="
+				@ScannerBean= ScannedString:String,
+				@Word= Input:String AND Value:String, 
+				@Number= Input:String AND Value:int, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String
+			" 
+			/>
+		</module>
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />		
+			<property name="expectedProperties" value="
+				@ScannerBean= ScannedString:String,
+				@Word= Input:String , 
+				@Number= Input:String, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String
+			
+			" />
+		</module>
+		
+		<module name="DuplicateShortTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+		
+		<module name="NoFullTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+
+		<module name="IllegalMethodCall">		
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				String.equals, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
+				" />
+		</module>
+		
+		<module name="UnnecessaryMethodCall">
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String" />
+			<property name="exceptionCalls"
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 				
+				String.toLowerCase,
+				String.equals,
+				String.isEmpty,
+				Scanner.close
+				" />
+		</module>
+		
+		
+		<module name="IllegalTypeImported">
+			<property name="severity" value="warning" />
+			<property name="illegalPrefixes" value="*" />
+			<property name="legalPrefixes"
+				value="
+					bus.uigen, 
+					util, 
+					shapes, 
+					java.beans, 
+					java.util.Scanner, 					
+					java.util.Iterator, 
+					java.util.NoSuchElementException,
+					gradingTools
+					" />
+		</module>
+		
+		<module name="IllegalTypeDefined">
+			<property name="severity" value="warning" />
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
+		</module>
+		
+		<module name="FunctionAssignsGlobal">
+			<property name="severity" value="warning" />
+			<property name="excludeMethodTags"
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+
+		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualProperty">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualEditableProperty">
+			<property name="severity" value="warning" />		
+		</module>
+		
+ 		<module name="InvalidPackageName">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="severity" value="warning" />
+			<property name="allowedSiblings" value=
+				"Math.(.*)" 
+			/>
+			
+		</module>
+		
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="warning" />		
+		</module>
+		<module name="VariableHasClassType">
+		<property name="severity" value="warning" />		
+		</module>
+
+
+	</module>
+	<module name="TreeWalker">		
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="PackageDeclaration" />		
+		<module name="AvoidStarImport" />
+		<module name="HiddenField"/>
+
+		
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces"/>
+		<module name="MultipleStringLiterals"/>		
+ 		<module name="InvalidPackageName"/>
+
+
+	</module>
+</module>
+

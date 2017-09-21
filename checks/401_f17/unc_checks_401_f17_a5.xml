@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+	editor -->
+<!-- Checkstyle-Configuration: Test Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+
+<module name="unc.tools.checkstyle.AnExtendibleChecker">
+		
+
+	<property name="severity" value="warning" />
+
+
+	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
+		<property name="severity" value="info" />
+
+		<module name="STBuilder">
+			<property name="includeTypeTags" value="*" />
+			<property name="severity" value="info" />
+			<property name="projectPackagePrefixes" value="test,lectures, main, mp, grail" />
+			<property name="existingClasses"
+				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap" />
+			<property name="importsAsExistingClasses" value="true" />
+			<property name="checksName"
+				value="401_f17_A5" />
+			<property name="expectedTypes" value="
+				main.Assignment5,
+				@ScannerBean,
+				@Number, 
+				@Word, 
+				@Quote, 
+				@Start, 
+				@End, 
+				@Plus//EC, 
+				@Minus//EC,
+				ScanningIterator//EC,
+				@RotatingLine//EC,				
+				@Move, 
+				@Pass, @Approach,
+				@Fail,
+				@Say, 
+				@RotateLeftArm//EC, 
+				@RotateRightArm//EC,  
+				@Repeat//EC, 
+				@Define//EC, 
+				@Call//EC,  
+				@Thread//EC, 
+				@Wait//EC, 
+				@ProceedAll//EC,
+				@Sleep//EC,  
+				@Undo//EC,
+				@Redo//EC,
+				@Angle,
+				@Avatar,
+				@BridgeScene
+				" />				
+
+		</module>
+		
+
+	</module>
+
+
+	<module name="unc.tools.checkstyle.ANonCachingTreeWalker">
+		<property name="severity" value="warning" />
+	
+		<module name="ExpectedDeclaredSignatures">
+				<property name="severity" value="warning" />
+		
+				<property name="expectedSignatures"
+					value="					
+					@ScannerBean =
+						scanString:String->* AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC
+						
+						,
+					@RotatingLine =					
+						setAngle:double->void AND
+						setRadius:double->void AND
+						@rotate:int->*
+						,
+						
+					ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC	,
+					@Angle =
+						@move:int;int->void,
+					@Avatar =
+						@move:int;int->void AND
+						@scale:double->void//EC
+					" />
+			</module>
+			<module name="MissingMethodCall">
+			<property name="severity" value="warning" />			
+			<property name="expectedCalls"
+				value="
+				main.Assignment5 = 
+						(.*)!sleep:long->void,
+				@ScannerBean =
+						scanString:String->void AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC 
+						,
+				ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC
+						" />
+			</module>
+			
+			<module name="ExpectedClassInstantiations">
+			<property name="severity" value="warning" />			
+			<property name="instantiations"
+				value="				
+				main.Assignment5=
+					
+					@BridgeScene,					
+				@ScannerBean =
+					@Number AND 
+					@Word AND
+					@Quote AND
+					@Start AND 
+					@End AND
+				    @Plus//EC AND 
+					@Minus//EC AND
+									
+				    @Move AND 
+					@Pass AND @Approach AND
+					@Fail AND
+					@Say AND 
+					@RotateLeftArm//EC AND 
+					@RotateRightArm//EC AND  
+					@Repeat//EC AND 
+					@Define//EC AND 
+					@Call//EC AND  
+					@Thread//EC AND 
+					@Wait//EC AND 
+					@ProceedAll//EC AND
+					@Sleep//EC AND  
+					@Undo//EC AND
+					@Redo//EC,
+				@BridgeScene =
+					@Avatar,
+				@Avatar = 
+					@Angle,			
+				" />
+		   </module>
+		
+		<module name="IllegalComponentInstantiation">
+			<property name="severity" value="warning" />		
+			<property name="includeTypeTags" value="*" />
+		</module>
+			
+		<module name="ExpectedConstructors">
+			<property name="severity" value="warning" />		
+			<property name="expectedSignatures"
+				value="
+				ScanningIterator =:String,
+				@Word= :String, 
+				@Number= :String, 
+				@Quote= :String, 
+				@Start= :String, 
+				@End= :String, 
+				@Plus= :String, 
+				@Minus= :String,
+				@Move= :String, 
+				@Pass= :String, @Approach = :String,
+				@Fail= :String,
+				@Say= :String, 
+				@RotateLeftArm= :String, 
+				@RotateRightArm= :String,  
+				@Repeat= :String, 
+				@Define= :String, 
+				@Call= :String,  
+				@Thread= :String, 
+				@Wait= :String,
+				@Sleep=:String,
+				@ProceedAll=:String,
+				@Undo=:String,
+				@Redo=:String,	
+				@Angle =:,
+				@Avatar=:@IMAGE_PATTERN,
+				@BridgeScene=:											
+				" />
+		</module>
+		
+		<module name="ExpectedInterfaces">
+			<property name="severity" value="warning" />		
+			<property name="expectedInterfaces"
+				value="
+				ScanningIterator = Iterator//EC,
+				@Angle= @Angle, 
+				@Avatar=@Avatar, 
+				@ScannerBean = @ScannerBean,
+				@Word= @Token, 
+				@Number= @Token, 
+				@Quote= @Token, 
+				@Start= @Token, 
+				@End= @Token, 
+				@Plus= @Token, 
+				@Minus= @Token				
+				" />
+		</module>				
+		
+		<module name="ExpectedGetters">
+			<property name="severity" value="warning" />		
+			<property name="expectedProperties" value="
+				@ScannerBean= ScannedString:String 
+							AND Tokens:.*\[\] 
+							AND Errors:*//EC,
+				@Token= Input:String,							
+				@Word= Input:String AND Value:String, 
+				@Number= Input:String AND Value:int, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String,
+				@Move= Input:String AND Value:String, 
+				@Pass= Input:String AND Value:String,
+				@Fail= Input:String AND Value:String,
+				@Say= Input:String AND Value:String, 
+				@RotateLeftArm= Input:String AND Value:String, 
+				@RotateRightArm= Input:String AND Value:String,  
+				@Repeat= Input:String AND Value:String, 
+				@Define= Input:String AND Value:String, 
+				@Call= Input:String AND Value:String,  
+				@Thread= Input:String AND Value:String, 
+				@Wait= Input:String AND Value:String,
+				@Sleep=Input:String AND Value:String,
+				@ProceedAll=Input:String AND Value:String,
+				@Undo=Input:String AND Value:String,
+				@Redo=Input:String AND Value:String,
+				@Approach=Input:String AND Value:String,
+			    @Angle= LeftLine:@LINE_PATTERN AND 
+			    		RightLine:@LINE_PATTERN, 
+			    @Avatar= StringShape:@STRING_PATTERN AND 
+			    		Head:@IMAGE_PATTERN AND 
+			    		Arms:@Angle AND 
+			    		Legs:@Angle, 
+			    @BridgeScene= Arthur:@Avatar AND 
+			    			Galahad:@Avatar AND 
+			    			Lancelot:@Avatar AND 
+			    			Robin:@Avatar AND
+			    			Guard:@Avatar
+			" 
+			/>
+		</module>
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />		
+			<property name="expectedProperties" value="
+			@ScannerBean= ScannedString:String,
+				@Token= Input:String,			
+				@Word= Input:String , 
+				@Number= Input:String, 
+				@Quote= Input:String, 
+				@Start= Input:String, 
+				@End= Input:String, 
+				@Plus= Input:String, 
+				@Minus= Input:String,
+				@Move= Input:String, 
+				@Pass= Input:String,
+				@Fail= Input:String,
+				@Say= Input:String, 
+				@RotateLeftArm= Input:String, 
+				@RotateRightArm= Input:String,  
+				@Repeat= Input:String, 
+				@Define= Input:String, 
+				@Call= Input:String,  
+				@Thread= Input:String, 
+				@Wait= Input:String,
+				@Sleep=Input:String,
+				@ProceedAll=Input:String,
+				@Undo=Input:String,
+				@Redo=Input:String,
+				@Approach=Input:String
+			
+			" />
+		</module>
+		
+		<module name="DuplicateShortTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+		
+		<module name="NoFullTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+
+		<module name="IllegalMethodCall">		
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String, Arrays" />
+			<property name="exceptionCalls"
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				String.equals, String.equalsIgnoreCase, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 
+				String.toLowerCase,
+				
+				String.isEmpty,
+				Scanner.close,
+				Arrays.toString
+				" />
+		</module>
+		
+		<module name="UnnecessaryMethodCall">
+			<property name="severity" value="warning" />
+			<property name="disallowedCalls" value="Scanner, String, Arrays" />
+			<property name="exceptionCalls"
+				value="
+				String.substring, 
+				String.charAt, 
+				String.length, 
+				Scanner.nextLine, 
+				Scanner.hasNext, 				
+				String.toLowerCase,
+				String.equals, String.equalsIgnoreCase,
+				String.isEmpty,
+				Scanner.close,
+				Arrays.toString
+				" />
+		</module>
+		
+		
+		<module name="IllegalTypeImported">
+			<property name="severity" value="warning" />
+			<property name="illegalPrefixes" value="*" />
+			<property name="legalPrefixes"
+				value="
+					bus.uigen, 
+					util, 
+					shapes, 
+					java.beans, 
+					java.util.Scanner, 					
+					java.util.Iterator, 
+					java.util.NoSuchElementException,
+					gradingTools, java.util.Arrays,javax.swing
+					" />
+		</module>
+		
+		<module name="IllegalTypeDefined">
+			<property name="severity" value="warning" />
+			<property name="illegalTypeNames"
+				value="PropertyChangeEvent, PropertyChangeListener, PropertyListenerRegisterer" />
+		</module>
+		
+		<module name="FunctionAssignsGlobal">
+			<property name="severity" value="warning" />
+			<property name="excludeMethodTags"
+				value="next(.*), pop(.*), delete(.*), remove(.*), read(.*), create(.*), set(.*), process(.*), scan(.*)" />
+
+		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualProperty">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="MissingActualEditableProperty">
+			<property name="severity" value="warning" />		
+		</module>
+		
+ 		<module name="InvalidPackageName">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="LiberalMagicNumber" >
+			<property name="severity" value="warning" />
+			<property name="allowedSiblings" value=
+				"Math.(.*)" 
+			/>
+			
+		</module>
+		
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="warning" />		
+		</module>
+		<module name="VariableHasClassType">
+		<property name="severity" value="warning" />		
+		</module>
+		
+		<module name="LinePattern">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="OvalPattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="RectanglePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="StringShapePattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="PointPattern">
+				<property name="severity" value="warning" />		
+		</module>
+		<module name="ImagePattern">
+				<property name="severity" value="warning" />		
+		</module>
+
+
+	</module>
+	<module name="TreeWalker">		
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="PackageDeclaration" />		
+		<module name="AvoidStarImport" />
+		<module name="HiddenField"/>
+
+		
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces"/>
+		<module name="MultipleStringLiterals"/>		
+ 		<module name="InvalidPackageName"/>
+
+
+	</module>
+</module>
+
