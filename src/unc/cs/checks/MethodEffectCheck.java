@@ -197,6 +197,10 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //		 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName (
 //				 getName(getEnclosingTypeDeclaration(aTree)));
 			STType anSTType = getSTType(aTree);
+			if (anSTType == null) {
+				System.err.println("did not find sttype, returning from doPendingChecks");
+				return null;
+			}
 			if (anSTType.isEnum() || anSTType.isInterface())
 				return true;
 
