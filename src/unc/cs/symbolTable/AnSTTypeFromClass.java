@@ -16,6 +16,18 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
 	STNameable[] computedTags;
 	Map emptyTable = new HashMap();
+	Object[] emptyArray = {};
+	public AnSTTypeFromClass(String aClassName) {
+		super (null, aClassName);
+		// all instance  variables are now initialized
+		declaredMethods = new STMethod[0];
+		methods = new STMethod[0];
+		allComputedTags = new STNameable[0];
+		declaredInterfaces = new STNameable[0];
+		interfaces  = new STNameable[0] ;
+		declaredFields = new STNameable[0];
+
+	}
 	public AnSTTypeFromClass(Class aClass) {
 		super (null, aClass.getName());
 		reflectedClass = aClass;
@@ -98,6 +110,9 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	@Override
 	public boolean isInterface() {
 		// TODO Auto-generated method stub
+		if (reflectedClass == null) {
+			return false;
+		}
 		return reflectedClass.isInterface();
 	}
 
@@ -232,7 +247,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 	@Override
 	public boolean isEnum() {
+		if (reflectedClass == null) return false;
+		
 		return reflectedClass.isEnum();
+		
 	}
 
 

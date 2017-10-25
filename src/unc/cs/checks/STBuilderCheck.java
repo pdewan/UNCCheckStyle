@@ -183,8 +183,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			addSTType(anSTType);
 		} catch (ClassNotFoundException e) {
 			if (existingClassesCollection.contains(aClassName))
-				System.err.println("Could not make existing class from: "
-						+ aClassName);
+				System.out.println("Could not make existing class from: "
+						+ aClassName );
+			STType anSTType = new AnSTTypeFromClass(aClassName);
+			addSTType(anSTType);
 			// e.printStackTrace();
 		}
 
