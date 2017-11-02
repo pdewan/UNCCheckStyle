@@ -674,8 +674,11 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 	return result;
 		
 }
+
 public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
-	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING)  || aShortClassName.matches(aDescriptor))
+	if (aDescriptor == null || aDescriptor.length() == 0 
+			|| aDescriptor.equals(MATCH_ANYTHING)  || 
+			aShortClassName.matches(aDescriptor))
 		return true;
 //	int i = 0;
 	if (aShortClassName.contains("]") || // array element

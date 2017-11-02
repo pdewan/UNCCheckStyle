@@ -211,9 +211,7 @@
  						(.*)!getArthur:-> @Avatar AND 
  						(.*)!getGalahad:-> @Avatar	AND
  						(.*)!getLancelot:-> @Avatar	AND	
- 						(.*)!getRobin:-> @Avatar	AND
- 						(.*)!setX:int->void AND
- 						(.*)!setY:int->void,
+ 						(.*)!getRobin:-> @Avatar,
 				 @ObservableCommandInterpreter = 
 				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
 				 @PaintListener = 
@@ -273,7 +271,7 @@
 					@Table AND
 					@CommandInterpreter	AND
 					@ConsoleSceneView AND
-					@InheritingBridgeScenePainter AND
+					@InheritingBridgeScenePainter//not-EC AND
 					@ObservableBridgeScenePainter//EC AND
 					@DelegatingBridgeSceneView//EC	AND
 					@BridgeSceneController	AND
@@ -650,7 +648,7 @@
 				@Sleep=@Word, 
 				@Undo=@Word, 
 				@Redo=@Word,
-				@LINE_PATTERN= @BoundedShape, 
+				@LINE_PATTERN= @Locatable, 
 				@STRING_PATTERN= @Locatable, 
 				@IMAGE_PATTERN= @BoundedShape, 
 				@LABEL_PATTERN = @BoundedShape, 

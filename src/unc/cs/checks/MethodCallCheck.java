@@ -472,7 +472,18 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			return (aCallInfo.getCallee().equals(aSpecifiedMethod.getName())) ;
 		}
 		STType aTargetSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
+//		if (aTargetSTType == null && !aSpecifiedTarget.equalsIgnoreCase(MATCH_ANYTHING)) {
+		
+//		//KLUDGE!!!!! False Negatives
+//
+//		if (aSpecifiedTarget.equals(MATCH_ANYTHING) || aSpecifiedTarget.equals(".*") || aSpecifiedTarget.equalsIgnoreCase("(.*)")) {
+//			return aSpecifiedMethod.getName().equals(aCallInfo.getCallee()) &&
+//					aSpecifiedMethod.getParameterTypes().length == aCallInfo.getActuals().size();
+//					
+//			
+//		}
 		if (aTargetSTType == null) {
+			
 			return null;
 		}
 		STMethod[] aMethods = aTargetSTType.getMethods();

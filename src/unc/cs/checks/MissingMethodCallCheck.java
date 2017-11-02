@@ -139,7 +139,12 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //					System.out.println ("Found specification");
 //				}
 
-					
+				if (aCallInfo.toString().contains("move"))	{
+					System.out.println ("found move");
+				}
+//				if (aCallInfo.toString().contains("sleep"))	{
+//					System.out.println ("found sleep");
+//				}
 				Boolean matches = matches(anSTType, maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
 
 //				Boolean matches = matches(toShortTypeName(anSTType.getName()), aSpecification, shortMethodName, aNormalizedLongName, aCallInfo);
