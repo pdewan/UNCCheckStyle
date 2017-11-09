@@ -115,8 +115,8 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment8 = 
-						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
-						@SingletonsCreator!consoleSceneViewFactoryMethod:->@ConsoleSceneView AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@consoleSceneViewFactoryMethod:->@ConsoleSceneView AND
 						(.*)!sleep:long->void AND
 						(.*)!@move:int;int->* AND
 						(.*)!setText:String->void,				
