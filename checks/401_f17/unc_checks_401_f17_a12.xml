@@ -255,8 +255,7 @@
 						(.*)!(.*):PropertyChangeEvent->(.*)
 						,
 				@CommandInterpreter=
-						(.*)!getTokens:->.*\[\]  AND
-						(.*)!getTokenList:->@ClearableHistory//EC AND
+						
 						
 						(.*)!getArthur:->(.*) AND
 						(.*)!getRobin:->(.*) AND
@@ -268,7 +267,6 @@
 				 		@Parser!getErrors:->*//EC AND
 				 		@SingletonsCreator!@parserFactoryMethod:->@Parser AND
 				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
-				 		@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND
 				 		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
 				 		(.*)!proceedAll:->void AND
 					 	Runnable!run:-> void AND
@@ -326,6 +324,9 @@
 				 @CommandList = Runnable!run:->void,				 	
 				 @RepeatCommand = Runnable!run:->void,
 				 @Parser = 
+				    (.*)!getTokens:->.*\[\]  AND
+					(.*)!getTokenList:->@ClearableHistory//EC AND
+					@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND					
 				 	@parseCommand:*->Runnable AND						
 				 	@parseSayCommand:*->Runnable AND
 				 	@parseApproachCommand:*->Runnable AND						
