@@ -143,9 +143,9 @@
 						
 						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND					
-						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
-						@SingletonsCreator!inheritingBridgeScenePainterFactoryMethod:->@BridgeScene AND
-						@SingletonsCreator!delegatingBridgeScenePainterFactoryMethod:->@BridgeScene//EC AND	
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@inheritingBridgeScenePainterFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@delegatingBridgeScenePainterFactoryMethod:->@BridgeScene//EC AND	
 						@SingletonsCreator!@commandInterpreterControllerFactoryMethod:->@CommandInterpreterController/EC AND
 						@SingletonsCreator!@commandInterpreterViewFactoryMethod:->@CommandInterpreterView
 						ThreadSupport!sleep:long->void AND

@@ -228,9 +228,9 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment12 = 
-						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 						@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
-						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
 						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND						
 						(.*)!@waiting(.*):->void AND	
@@ -370,8 +370,7 @@
 				@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager,			
 			@CoordinatingAnimatingCommand = 
 		 		 @CoordinatingAnimator!@animateAvatar:@Avatar->void,
-		   	@CoordinatingAnimator = 
-		   		@Animator!@animateAvatar:@Avatar->void AND
+		   	@CoordinatingAnimator = 		   		
 		   		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		   	
 		 	  (.*)!proceedAll:->void,
 		 	@CoordinatedAnimationCommand =

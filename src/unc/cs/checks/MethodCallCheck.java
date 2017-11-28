@@ -425,8 +425,25 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //		return result;
 //		
 //	}
+	protected Boolean starTargetAndMethodNameMatch (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
+			String aLongMethodName, CallInfo aCallInfo) {
+		if (!aSpecifiedTarget.contains("*")) {
+			return false;			
+		}
+		return nameOrImpliedTagMethodMatch(aSpecifiedMethod.getName(), aShortMethodName);
+
+	}
+	protected Boolean nameOrImpliedTagMethodMatch (String aSpecifiedMethod, String anActualMethod ) {
+		String aNormalizedMethodName = anActualMethod;
+		if (aSpecifiedMethod.startsWith(TAG_STRING)) {
+			aNormalizedMethodName = TAG_STRING + anActualMethod;
+			
+		}
+		return aSpecifiedMethod.equalsIgnoreCase(aNormalizedMethodName);
+	}
 	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
+		
 //		int i = 0;
 //		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
 //		String aRegex = aSpecifiedMethod.getName();
@@ -449,11 +466,8 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 				 return  false;
 			 }
 			 return matchTypeISA(aSpecifiedTarget, toShortTypeName(aTypeName));
-//			 return aShortMethodName.matches(aSpecifiedMethod.getName()) && 
-//					 matchTypeISA(aSpecifiedTarget, toShortTypeName(aTypeName));
-//					 toShortTypeName(aTypeName).matches(aSpecifiedTarget); 
+
 		 }
-//		 System.out.println ("Temp");
 		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);
 		 if (matchesType == null)
 			 return null;
@@ -462,15 +476,19 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		 }
 
 		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
-			 return aShortMethodName.matches(aSpecifiedMethod.getName());
+			 return aShortMethodName.matches(aSpecifiedMethod.getName()); // not checking for parameters?
 		 }
 		
 		if (!isIdentifier(aTypeName)) { // (cast etc,could not match, assume internal call)
 			aTypeName = aSpecifiedTarget;
 		}
+		// this is dangerous as one might have star and non star text in specification
 		if (aTypeName.contains("*")) {
 			return (aCallInfo.getCallee().equals(aSpecifiedMethod.getName())) ;
 		}
+//		if (starTargetAndMethodNameMatch(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo)) {
+//			return aSpecifiedMethod.getParameterTypes().length == aCallInfo.getCallerParameterTypes().size(); // crude check
+//		}
 		STType aTargetSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 //		if (aTargetSTType == null && !aSpecifiedTarget.equalsIgnoreCase(MATCH_ANYTHING)) {
 		
@@ -508,6 +526,10 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		}
 		if (hadNullMatch)
 			return null; // either way we do not know if something bad happened
+		// we land here when the target type was wrong because of a multi level method call
+		if (starTargetAndMethodNameMatch(aSpecifiedTarget, aSpecifiedMethod, aShortMethodName, aLongMethodName, aCallInfo)) {
+			return aSpecifiedMethod.getParameterTypes().length == aCallInfo.getCallerParameterTypes().size(); // crude check
+		}
 		return false;
 		
 

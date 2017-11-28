@@ -19,12 +19,19 @@
 			<property name="severity" value="info" />
 			<property name="projectPackagePrefixes" value="test,lectures, main, mp, grail" />
 			<property name="existingClasses"
-				value="java.util.List, java.util.ArrayList, java.util.Vector, java.util.HashMap, bus.uigen.OEFrame" />
+				value="
+					java.util.List, 
+					java.util.ArrayList, 
+					java.util.Vector, 
+					java.util.HashMap, 
+					java.lang.Runnable, 
+					java.lang.Thread
+					" />
 			<property name="importsAsExistingClasses" value="true" />
 			<property name="checksName"
-				value="401_f17_A8" />
+				value="401_f17_A12" />
 			<property name="expectedTypes" value="
-				main.Assignment8,
+				main.Assignment12,
 				@ScannerBean,
 				@Number, 
 				@Word, 
@@ -36,7 +43,7 @@
 				ScanningIterator//EC,
 				@RotatingLine//EC,				
 				@Move, 
-				@Pass, @Approach,
+				@Pass,
 				@Fail,
 				@Say, 
 				@RotateLeftArm//EC, 
@@ -59,10 +66,49 @@
 				@CommandInterpreter,
 				@SignedMoveCommandInterpreter//EC,
 				@ErrorResilientCommandInterpreter//EC,
-				@ConsoleSceneView,				
-				@Token,
+				@ConsoleSceneView,
+				@InheritingBridgeScenePainter,
+				@ObservableBridgeScenePainter,
+				@DelegatingBridgeSceneView,
+				@PaintListener,
+				@BridgeSceneController,
+				@CommandInterpreterController//EC,
+				@ObservableCommandInterpreter//EC,
+				@Animator,
+				@AnimatingCommand,
+				@SayCommand,
+				@MoveCommand,
+				@PassCommand,
+				@Animator,
+				@FailCommand,
+				@ApproachCommand,
+				@RepeatCommand,
+				@CommandList,
+				@RotateLeftArmCommand//EC,
+				@RotateRightArmCommand//EC,
+				@SleepCommand//EC,
+				@DefineCommand//EC,
+				@CallCommand//EC,
+				@ThreadCommand//EC,			
+				@DefineCommand//EC,
+				@CallCommand//EC,
+				@ThreadCommand//EC,
+				@ProceedAllCommand//EC,
+				@Parser,
+				@ScanningException//EC,
+				@ParsingException//EC,
+				BroadcastingClearanceManager,			
+				@SingletonsCreator, @ProgressBarCreator//EC,
+				@CustomSwingTextFieldFactory//EC,	
+				@CoordinatingAnimatingCommand,
+				@CoordinatedAnimationCommand//EC,
+				@CoordinatedAnimator//EC,				
+				@CoordinatingAnimator//EC,
+            @Token,
+            @UndoCommand//EC,
+            @RedoCommand//EC,
 				
-				SingletonsCreator								
+				SingletonsCreator											
 				" />				
 
 		</module>
@@ -101,31 +147,250 @@
 						@say:String->* AND
 						@passed:->* AND
 						@failed:->* AND
-						@scroll:int;int->*,
-					@SingletonsCreator =
-						@scannerFactoryMethod:->@ScannerBean AND
-						@bridgeSceneFactoryMethod:->@BridgeScene AND
-						@avatarTableFactoryMethod:->@Table AND
-						@commandInterpreterFactoryMethod:->@CommandInterpreter AND
-						@consoleSceneViewFactoryMethod:->@ConsoleSceneView
-						
+						@scroll:int;int->* AND
+						@preApproach:->boolean AND
+						@preSay:->boolean AND
+						@prePassed:->boolean AND
+						@preFailed:->boolean,
+					@InheritingBridgeScenePainter=
+						paint:Graphics(.*)->void,
+					@ObservableBridgeScenePainter=
+						@addPaintListener:@PaintListener->void AND
+						paint:Graphics(.*)->void,
+					@PaintListener=
+						paint:Graphics(.*)->void,
+					@CommandInterpreter = 					
+						@asynchronousGalahad:->void//EC	AND
+						@asynchronousLancelot:->void AND		
+						@asynchronousRobin:->void AND	
+						@asynchronousArthur:->void AND
+						@asynchronousGuard:->void AND
+						@waitingGalahad:->void	AND
+						@waitingLancelot:->void AND		
+						@waitingRobin:->void AND	
+						@waitingArthur:->void AND
+						@startAnimation:->void AND
+						@lockstepGalahad:->void//EC	AND
+						@lockstepLancelot:->void//EC AND		
+						@lockstepRobin:->void//EC AND	
+						@lockstepArthur:->void//EC AND
+						@lockstepGuard:->void//EC,
+				@Parser = 				   
+					@parseSayCommand:*->Runnable AND 
+					@parseMoveCommand:*->Runnable AND
+				  	@parseCommand:*->Runnable AND						
+				  	@parseApproachCommand:*->Runnable AND						
+				 	@parsePassCommand:*->Runnable AND						
+				 	@parseFailCommand:*->Runnable AND						
+				 	@parseRepeatCommand:*->Runnable AND						
+				 	@parseCommandList:*->Runnable AND						
+				 	@parseNumberCommand:*->*//EC AND
+				 	@parseRotateLeftArmCommand:*->Runnable//EC AND
+				 	@parseRotateRightArmCommand:*->Runnable//EC AND
+				 	@parseSleepCommand:*->Runnable//EC AND
+					@parseDefineCommand:*->Runnable//EC AND
+					@parseCallCommand:*->Runnable//EC AND
+					@parseThreadCommand:*->Runnable//EC AND					
+					@parseUndoCommand:*->Runnable//EC AND
+					@parseRedoCommand:*->Runnable//EC AND
+               @parseProceedAllCommand:*->Runnable//EC AND
+					next:->* AND
+					peek:->* AND
+					hasNext:->boolean//EC AND
+					reset:->*,	
+				@CommandList =
+					@add:Runnable->*,
+				@SingletonsCreator =
+					@scannerFactoryMethod:->@ScannerBean AND
+					@parserFactoryMethod:->@Parser AND
+					@bridgeSceneFactoryMethod:->@BridgeScene AND
+					@avatarTableFactoryMethod:->@Table AND
+					@environmentFactoryMethod:->@Table AND					
+					@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+					@bridgeSceneControllerFactoryMethod:->@BridgeSceneController AND
+					@inheritingBridgeScenePainterFactoryMethod:->@InheritingBridgeScenePainter AND
+					@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND
+					@delegatingBridgeSceneViewFactoryMethod:->@DelegatingBridgeSceneView AND
+					@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager	
+					
 					" />
 			</module>
+			<module name="ExpectedSignatures">
+				<property name="severity" value="warning" />
+		
+				<property name="expectedSignatures"
+					value="					
+					@Animator = @animateAvatar:@Avatar->void
+					" />
+			</module>	
 			<module name="MissingMethodCall">
 			<property name="severity" value="warning" />			
 			<property name="expectedCalls"
 				value="
-				main.Assignment8 = 	
-						(.*)!@move:int;int->* ,				
-				
-						" />
+				main.Assignment12 = 
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+						@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
+						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						(.*)!sleep:long->void AND
+						(.*)!setCommand:String->* AND						
+						(.*)!@waiting(.*):->void AND	
+						(.*)!@lockstep(.*):->void//EC AND	
+						(.*)!initialize:->void AND
+						(.*)!setTextFieldFactory:*->void AND	
+                 		 (.*)!waitForProceed:->void,						
+				@ScannerBean =
+						scanString:String->void AND
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC AND
+						(.*)!hasNext:->boolean//EC AND
+						(.*)!next:->String//EC 
+						,
+				ScanningIterator=
+						indexOf:String;char;int->int AND
+						indexOfNot:String;char;int->int//EC
+						,
+				@BridgeScene=
+						(.*)!@move:int;int->* AND
+						(.*)!setText:String->void AND
+						(.*)!(.*):PropertyChangeEvent->(.*)
+						,
+				@CommandInterpreter=
+						
+						
+						(.*)!getArthur:->(.*) AND
+						(.*)!getRobin:->(.*) AND
+						(.*)!getLancelot:->(.*) AND
+						(.*)!getGalahad:->(.*) AND
+						
+						@Parser!setCommandText:String->void AND
+				 		@Parser!getCommandObject:->Runnable AND
+				 		@Parser!getErrors:->*//EC AND
+				 		@SingletonsCreator!@parserFactoryMethod:->@Parser AND
+				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+				 		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
+				 		(.*)!proceedAll:->void AND
+					 	Runnable!run:-> void AND
+					 	Thread!start:->void,							
+				@Locatable = 
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				@BoundedShape = 
+						(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),
+				@ConsoleSceneView = 
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene  AND
+						(.*)!addPropertyChangeListener:PropertyChangeListener->void,
+ 				@InheritingBridgeScenePainter = 
+ 						Graphics(.*)!draw(.*):*->(.*) AND
+				 		super!paint:Graphics->void(.*) AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+ 						(.*)!addPropertyChangeListener:PropertyChangeListener->void) AND
+ 						(.*)!getArms:-> @AngleAND
+ 						(.*)!getLegs:-> @Angle AND
+ 						(.*)!getLeftLine:-> @LINE_PATTERN AND
+ 						(.*)!getRightLine:-> @LINE_PATTERN AND
+ 						(.*)!getText:->@STRING_PATTERN, 
+ 				@DelegatingBridgeSceneView =  
+ 						@SingletonsCreator!@observableBridgeScenePainterFactoryMethod:->@ObservableBridgeScenePainter AND				
+ 						(.*)!addPaintListener:@PaintListener->void
+ 						, 
+ 				@ObservableBridgeScenePainter = 
+				 		@PaintListener!paint:Graphics->void(.*),  
+				 @BridgeSceneController = 
+				 		@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
+						(.*)!addKeyListener:KeyListener->void AND
+ 						(.*)!addMouseListener:MouseListener->void AND
+ 						 (.*)!setFocusable:boolean->void AND 						
+ 						(.*)!getArthur:-> @Avatar AND 
+ 						(.*)!getGalahad:-> @Avatar	AND
+ 						(.*)!getLancelot:-> @Avatar	AND	
+ 						(.*)!getRobin:-> @Avatar,
+				 @ObservableCommandInterpreter = 
+				 		(.*)!(.*)notify(.*):PropertyChangeEvent->(.*),				 
+				 @PaintListener = 
+				 	 (.*)!draw(.*):*->(.*) AND
+				 	(.*)!repaint:->void,
+				 @CommandInterpreterView =  
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter,
+ 					@CommandInterpreterController = 
+ 					@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+ 					@CommandInterpreter!setCommand:String->void,
+				 @AnimatingCommand = 
+					 (.*)!waitForProceed:->void AND
+				 	@Animator!@animateAvatar:@Avatar->void,
+				@Animator =  (.*)!sleep:long->void,
+				  @ApproachCommand = (.*)!@approach:@Avatar->*,
+				 @FailCommand = (.*)!@failed:->*,
+				 @PassCommand = (.*)!@passed:->*,
+				 @SayCommand = (.*)!@say:String->*,			 
+				 @CommandList = Runnable!run:->void,				 	
+				 @RepeatCommand = Runnable!run:->void,
+				 @Parser = 
+				    (.*)!getTokens:->.*\[\]  AND
+					(.*)!getTokenList:->@ClearableHistory//EC AND
+					@SingletonsCreator!@avatarTableFactoryMethod:->@Table AND					
+				 	@parseCommand:*->Runnable AND						
+				 	@parseSayCommand:*->Runnable AND
+				 	@parseApproachCommand:*->Runnable AND						
+				 	@parseMoveCommand:*->Runnable AND					
+				 	@parsePassCommand:*->Runnable AND						
+				 	@parseFailCommand:*->Runnable AND						
+				 	@parseRepeatCommand:*->Runnable AND						
+				 	@parseCommandList:*->Runnable AND						
+				 	@parseNumber:*->*//EC AND	
+				 	@parseRotateLeftArmCommand:*->Runnable//EC AND
+				 	@parseRotateRightArmCommand:*->Runnable//EC AND
+				 	@parseSleepCommand:*->Runnable//EC AND
+					@parseDefineCommand:*->Runnable//EC AND
+					@parseCallCommand:*->Runnable//EC AND
+					@parseThreadCommand:*->Runnable//EC AND
+					@parseProceedAllCommand:*->Runnable//EC AND
+					@parseUndoCommand:*->Runnable//EC AND
+					@parseRedoCommand:*->Runnable//EC AND					
+					@CommandList!@add:Runnable->* AND
+				 	next:->* AND
+					peek:->* AND
+					reset:->* AND			 	
+				  	@ScanningException!getMessage:->String AND
+				 	@ParsingException!getMessage:->String AND
+				 	@SingletonsCreator!@scannerFactoryMethod:->@ScannerBean,
+ 			@RotateLeftArmCommand = (.*)!@rotate:int->void,
+			@RotateRightArmCommand = (.*)!@rotate:int->void,
+			@SleepCommand = (.*)!sleep:long->void,
+			@DefineCommand = 
+				@SingletonsCreator!@environmentFactoryMethod:->@Table AND
+				(.*)!put:Object;Object->*,
+			@CallCommand = 
+				@SingletonsCreator!@environmentFactoryMethod:->@Table AND
+				Runnable!run:->void AND
+				(.*)!get:Object->Object,				 
+			@ThreadCommand = 
+				@SingletonsCreator!@environmentFactoryMethod:->@Table AND
+				(.*)!get:Object->Object AND Thread!start:->void,
+			@ProceedAllCommand = 
+			 	 (.*)!proceedAll:->void AND				 		
+				@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager,			
+			@CoordinatingAnimatingCommand = 
+		 		 @CoordinatingAnimator!@animateAvatar:@Avatar->void,
+		   	@CoordinatingAnimator = 		   		
+		   		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		   	
+		 	  (.*)!proceedAll:->void,
+		 	@CoordinatedAnimationCommand =
+		 		@CoordinatedAnimator!@animateAvatar:@Avatar->void,
+		 	@CoordinatedAnimator = 
+		 		@Animator!@animateAvatar:@Avatar->void AND
+		 		@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND		 	
+		 		(.*)!waitForProceed:->void,
+		 	@CustomSwingTextFieldFactory =
+		 		JTextField!setBackground:*->void AND
+		 		JTextField!setForeground:*->void
+				 			 									
+				" />
 			</module>
 			
 			<module name="ExpectedClassInstantiations">
 			<property name="severity" value="warning" />			
 			<property name="instantiations"
 				value="				
-							
+				
 				@ScannerBean =
 					@Number AND 
 					@Word AND
@@ -149,21 +414,50 @@
 					@ProceedAll//EC AND
 					@Sleep//EC AND  
 					@Undo//EC AND
-					@Redo//EC,
+					@Redo//EC AND
+					@ScanningException//EC,
 				@BridgeScene =
-					@Avatar,
+					@Avatar AND PropertyChangeEvent,				
 				@Avatar = 
-					@Angle,							
-			@SingletonsCreator =
-				@ScannerBean AND
-				@BridgeScene AND
-				@Table AND
-				@CommandInterpreter	AND
-				@ConsoleSceneView,
-			@Locatable =
-				PropertyChangeEvent,
-			@BoundedShape =
-				PropertyChangeEvent	
+					@Angle,
+				@CommandInterpreterController =
+					JTextField AND
+					JMenuItem AND
+					JButton,
+				@ProgressBarCreator =
+					JProgressBar AND
+					JSlider,
+				@CommandInterpreter =
+					@AnimatingCommand,
+				@Parser = 
+					@RotateLeftArmCommand//EC AND
+					@RotateRightArmCommand//EC AND
+					@SleepCommand//EC AND
+					@DefineCommand//EC AND
+					@CallCommand//EC AND
+					@ThreadCommand//EC AND
+					@UndoCommand//EC AND
+					@RedoCommand//EC AND
+					@CommandList AND 
+					@ApproachCommand AND 
+					@PassCommand AND 
+					@FailCommand AND 
+					@RepeatCommand AND
+					@ProceedAllCommand AND
+					@ParsingException//EC,
+				@SingletonsCreator =					
+					@ScannerBean AND
+					@BridgeScene AND
+					@Table AND
+					@CommandInterpreter	AND
+					@ConsoleSceneView AND
+					@InheritingBridgeScenePainter AND
+					@ObservableBridgeScenePainter//EC AND
+					@DelegatingBridgeSceneView//EC	AND
+					@BridgeSceneController AND	
+					ABroadcastingClearanceManager,	
+				@CustomSwingTextFieldFactory =
+					JTextField						
 				" />
 		   </module>
 		
@@ -200,8 +494,22 @@
 				@Undo=:String,
 				@Redo=:String,
 				@Angle =:, @Avatar=:@IMAGE_PATTERN, @BridgeScene=:,
-				@CommandInterpreter=:,
-				@ConsoleSceneView = :														
+				
+				@MoveCommand = :@Avatar; int; int,
+				@SayCommand = :@BridgeScene; String,
+				@FailCommand = :@BridgeScene,
+				@PassCommand = :@BridgeScene,
+				@ApproachCommand = :@BridgeScene;@Avatar,
+				@RepeatCommand = :int;Runnable,
+				@RotateLeftArmCommand = :@Avatar; int,
+				@RotateRightArmCommand = :@Avatar; int,
+				@SleepCommand = :long,
+				@DefineCommand = :String;Runnable,	
+				@ThreadCommand = :String,
+				@CallCommand = :String,				
+				@AnimatingCommand = :@Animator;@Avatar;boolean,
+				@CoordinatedAnimationCommand = :@Animator;@Avatar,	
+				@CoordinatedAnimationCommand = :@Animator;@Avatar,																									
 				" />
 		</module>
 		
@@ -220,13 +528,44 @@
 				@BoundedShape = PropertyListenerRegisterer,
 				@Locatable =  @Locatable,
 				@BoundedShape = @BoundedShape,
+				@PaintListener = @PaintListener,
+				@PaintListener=PropertyChangeListener,
+				@InheritingBridgeScenePainter=PropertyChangeListener,
+				@BridgeSceneController = 
+					MouseListener AND KeyListener,
+				@ObservableCommandIntepreter = 
+					PropertyListenerRegisterer,
+				@SayCommand = Runnable,
+				@MoveCommand = Runnable,
+				@PassCommand = Runnable,
+				@FailCommand = Runnable,
+				@ApproachCommand = Runnable,
+				@RotateLeftArmCommand = Runnable,
+				@RotateRigtArmCommand = Runnable,
+				@SleepCommand = Runnable,
+				@DefineCommand = Runnable,
+				@CallCommand = Runnable,
+				@ThreadCommand = Runnable,	
+				@RepeatCommand = Runnable,											
+				@CommandList = 
+					@CommandList AND 
+					Runnable,
+				@Animator = @Animator,
+				@AnimatingCommand = Runnable,
+				@BridgeScene = 	PropertyListenerRegisterer,
+				@CoordinatedAnimationCommand = Runnable//EC,
+				@CoordinatingAnimatingCommand = Runnable//EC,
 				@Word= @Token, 
 				@Number= @Token, 
 				@Quote= @Token, 
 				@Start= @Token, 
 				@End= @Token, 
 				@Plus= @Token, 
-				@Minus= @Token
+				@Minus= @Token,
+				@CommandInterpreterController= ActionListener,
+				@CommandInterpreterView=PropertyChangeListener	
+				
+									
 				"/>				
 		</module>				
 		
@@ -279,10 +618,27 @@
 			    			KnightTurn:boolean AND InteractingKnight: @Avatar,
     			@CommandInterpreter= Command:String AND Errors:*//EC,
     			@Locatable = X:int AND 
-    						Y:int AND
-    						PropertyChangeListeners: List,
+    						Y:int,
     			@BoundedShape= Width:int AND 
-    						Height:int
+    						Height:int,
+    			@DelegatingBridgeSceneView = 
+    				ObservableBridgeScenesPainter:@ObservableBridgeScenePainter,
+    			@CommandInterpreterController = 
+    				TextField:JTextField AND 
+    				MenuItem:JMenuItem AND 
+    				Button:JButton AND
+    				Say: JButton//EC AND
+					Approach: JButton//EC AND
+					Pass: JButton//EC AND
+					Fail: JButton//EC,
+				@ProgressBarCreator =  
+				    ProgressBar:JProgressBar AND 
+				    Slider:JSlider,
+				 @Parser = 
+				 	CommandText:String AND 
+				 	CommandObject:Runnable AND 
+				 	Errors:*//EC,
+				     
 			" 
 			/>
 		</module>
@@ -291,10 +647,7 @@
 			<property name="expectedProperties" value="
 			@ScannerBean= ScannedString:String,
 			@CommandInterpreter= Command:String,
-    			@Locatable = X:int AND 
-    						Y:int,
-    			@BoundedShape= Width:int AND 
-    						Height:int,
+			@Parser = CommandText:String,
 				@Token= Input:String,			
 				@Word= Input:String , 
 				@Number= Input:String, 
@@ -318,7 +671,7 @@
 				@ProceedAll=Input:String,
 				@Undo=Input:String,
 				@Redo=Input:String,
-				@Approach=Input:String
+				@Approach=Input:String	
 			
 			" />
 		</module>
@@ -341,11 +694,11 @@
 				String.substring, 
 				String.charAt, 
 				String.length, 
-				String.equals, String.equalsIgnoreCase, 
+				String.equals,
 				Scanner.nextLine, 
 				Scanner.hasNext, 
-				String.toLowerCase,
-				
+				String.toLowerCase,				
+				String. equalsIgnoreCase,
 				String.isEmpty,
 				Scanner.close,
 				Arrays.toString
@@ -363,7 +716,8 @@
 				Scanner.nextLine, 
 				Scanner.hasNext, 				
 				String.toLowerCase,
-				String.equals, String.equalsIgnoreCase,
+				String.equals,				
+				String. equalsIgnoreCase,
 				String.isEmpty,
 				Scanner.close,
 				Arrays.toString
@@ -383,12 +737,13 @@
 					java.util.Scanner, 					
 					java.util.Iterator, 
 					java.util.NoSuchElementException,
-					gradingTools, java.util.Arrays,javax.swing,
+					gradingTools, java.util.Arrays,javax.swing, java.awt,
 					java.util.List,  
 					java.util.Iterator, 
 					java.util.ArrayList, 
 					java.util.Vector, 
-				 	java.util.LinkedList
+				 	java.util.LinkedList,
+				 	java.io.IOException
 					" />
 		</module>
 		
@@ -409,7 +764,10 @@
 					read(.*), 					
 					set(.*), 
 					process(.*), 
-					scan(.*), (.*)create(.*), (.*)actory(.*)
+					scan(.*), 
+					(.*)create(.*), 					 
+					parse(.*),
+					(.*)actory(.*)
 					" />
 
 		</module>
@@ -518,11 +876,16 @@
 				@Sleep=@Word, 
 				@Undo=@Word, 
 				@Redo=@Word,
-				@LINE_PATTERN= @BoundedShape, 
+				@LINE_PATTERN= @Locatable, 
 				@STRING_PATTERN= @Locatable, 
 				@IMAGE_PATTERN= @BoundedShape, 
 				@LABEL_PATTERN = @BoundedShape, 
-				@BoundedShape=@Locatable
+				@BoundedShape=@Locatable,
+				@InheritingBridgeScenePainter=Component,
+				@ObservableBridgeScenePainter=Component,
+				@ScanningException=IOException,
+				@ParsingException=IOException,
+				@CustomSwingTextFieldFactory=SwingTextFieldFactory
 				"/>
 		</module>
 		
@@ -546,6 +909,10 @@
 				PropertyListenerRegisterer
 				"
 				 />
+		</module>
+		   <module name="ClassIsGeneric">
+		   <property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="Table" />
 		</module>
 
 

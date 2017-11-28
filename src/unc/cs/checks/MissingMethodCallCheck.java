@@ -139,9 +139,9 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //					System.out.println ("Found specification");
 //				}
 
-				if (aCallInfo.toString().contains("move"))	{
-					System.out.println ("found move");
-				}
+//				if (aCallInfo.toString().contains("move"))	{
+//					System.out.println ("found move");
+//				}
 //				if (aCallInfo.toString().contains("sleep"))	{
 //					System.out.println ("found sleep");
 //				}

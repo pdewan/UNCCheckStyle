@@ -451,6 +451,12 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		return false;
 	return aShortClassName.equals("Object") || isExternalImport(aShortClassName) || isJavaLangClass(aShortClassName);
  }
+ public static List<STNameable> asListOrNull(STNameable[] anArray) {
+	 return anArray == null ?
+			 null:
+			Arrays.asList(anArray);
+	 
+ }
  public List<STNameable> lookupTags(String aShortClassName)  {
 	 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aShortClassName);
@@ -458,8 +464,10 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
 				return emptyList;			
 			return null;
-		}
-		return Arrays.asList(anSTType.getComputedTags());
+		}		
+//		return Arrays.asList(anSTType.getComputedTags());
+		return asListOrNull(anSTType.getComputedTags());
+
  }
  
  public List<STNameable> lookupTagsOfCurrentTree()  {
@@ -467,7 +475,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	if (anSTType == null) {
 		return computedTypeTags(); // STBuilder
 	} else {
-		return Arrays.asList(anSTType.getComputedTags());
+//		return Arrays.asList(anSTType.getComputedTags());
+		return asListOrNull(anSTType.getComputedTags());
+
 	}
 			
 	

@@ -203,36 +203,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		String aSpecifiedReturnType = aSpecification.getReturnType();
 		String aMethodReturnType = aMethod.getReturnType();
 		return matchTypeISA(aSpecifiedReturnType, aMethodReturnType );
-//		Boolean result = matchReturnType(aSpecifiedReturnType, aMethodReturnType);
-//		
-//		if (result == null)
-//			return null;
-//		if (result) {
-//			return result;
-//		}
-//		// check if actual type IS-A specified type
-//		STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable().
-//				getSTClassByShortName(aMethodReturnType);
-//		if (aReturnSTType == null) {
-//			return null; // should not happen, can happen if return type is not in table
-//		}
-//		if (aMethod.getName().contains("parse")) {
-//			System.out.println ("found method");
-//		}
-//		List<STNameable> aSuperTypes = aReturnSTType.getAllSuperTypes();
-//		if (aSuperTypes == null) {
-//			return null;
-//		}
-//		for (STNameable aSuperType:aSuperTypes) {
-//			result = matchReturnType(aSpecifiedReturnType, aSuperType.getName());
-//			if (result == null) {
-//				return null;
-//			}
-//			if (result) {
-//				return result;
-//			}
-//		}		
-//		return false;		
+		
 	}
 	public Boolean matchTypeISA(String aSpecifiedReturnType, String anActualType) {
 
@@ -312,71 +283,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		
 
 	}
-
-	public Boolean matchSignature(STMethod aSpecification, STMethod aMethod) {
-		// let someone else add this , some instance method that calls it
-		variablesAdded.clear();
-		
-		// old lines moved to method above
-//
-//		String aSpecifiedReturnType = aSpecification.getReturnType();
-//		String anActualReturnType = aMethod.getReturnType();
-//
-//		STNameable[] anActualTypeTags = null;
-//		if (aSpecifiedReturnType != null
-//				&& aSpecifiedReturnType.startsWith(TAG_STRING)) {
-//			STType aReturnSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//					.getSTClassByShortName(anActualReturnType);
-//
-//			// STType aReturnSTType =
-//			// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aSpeifiedReturnType.substring(1));
-//			if (aReturnSTType == null)
-//				return null;
-//			anActualTypeTags = aReturnSTType.getComputedTags();
-//		}
-//
-//		if (aMethod == null) {
-//			System.err.println("Null method name");
-//			return true;
-//		}
-//
-//		Boolean retVal =
-//		unifyingMatchesNameVariableOrTag(aSpecification.getName(),
-//				aMethod.getName(), aMethod.getComputedTags())
-//				&& (aSpecifiedReturnType == null || unifyingMatchesNameVariableOrTag(
-//						aSpecifiedReturnType, aMethod.getReturnType(),
-//						anActualTypeTags)
-//
-//				// matchesNameVariableOrTag(aSpecification.getReturnType(),
-//				// aMethod.getReturnType(), typeTags)
-//				);
-//
-//		if (!retVal) {
-//			backTrackUnification();
-//			return false;
-//		}
-		//New replacement lines
-		Boolean aMatchesName = unifyingMatchesNameVariableOrTag(aSpecification.getName(),
-				aMethod.getName(), aMethod.getComputedTags());
-		if (aMatchesName == null)
-			return null;
-		if (!aMatchesName)
-			return false;
-//		Boolean aMatchesType = matchReturnType(aSpecification, aMethod);
-		Boolean aMatchesType = matchReturnTypeISA(aSpecification, aMethod);
-
-		
-		if (aMatchesType == null) {
-			return null;
-		}
-		if (!aMatchesType) {
-			return false;
-		}
-		// end lines
-		
-		String[] aSpecificationParameterTypes = aSpecification
-				.getParameterTypes();
-		String[] aMethodParameterTypes = aMethod.getParameterTypes();
+	
+	public Boolean matchParameters(
+			String[] aSpecificationParameterTypes, 
+			String[] aMethodParameterTypes) {
 
 		if (aSpecificationParameterTypes == null)
 			return true;
@@ -410,6 +320,79 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 		}
 		return true;
+		
+	}
+	public Boolean matchParameters(STMethod aSpecification, STMethod aMethod) {
+		return matchParameters(
+				aSpecification.getParameterTypes(), 
+				aMethod.getParameterTypes());
+	}
+
+
+	public Boolean matchSignature(STMethod aSpecification, STMethod aMethod) {
+		// let someone else add this , some instance method that calls it
+		variablesAdded.clear();
+		
+		
+		//New replacement lines
+		Boolean aMatchesName = unifyingMatchesNameVariableOrTag(aSpecification.getName(),
+				aMethod.getName(), aMethod.getComputedTags());
+		if (aMatchesName == null)
+			return null;
+		if (!aMatchesName)
+			return false;
+//		Boolean aMatchesType = matchReturnType(aSpecification, aMethod);
+		Boolean aMatchesType = matchReturnTypeISA(aSpecification, aMethod);
+
+		
+		if (aMatchesType == null) {
+			return null;
+		}
+		if (!aMatchesType) {
+			return false;
+		}
+		// end lines
+		
+		return matchParameters(
+				aSpecification, 
+				aMethod);
+		
+//		String[] aSpecificationParameterTypes = aSpecification
+//				.getParameterTypes();
+//		String[] aMethodParameterTypes = aMethod.getParameterTypes();
+//
+//		if (aSpecificationParameterTypes == null)
+//			return true;
+//		if (aSpecificationParameterTypes.length == 1) {
+//			if (aSpecificationParameterTypes[0].equals(MATCH_ANYTHING))
+//				return true;
+//		}
+//		if (aSpecificationParameterTypes.length != aMethodParameterTypes.length) {
+//			return false;
+//		}
+//		for (int i = 0; i < aSpecificationParameterTypes.length; i++) {
+//
+//			String aParameterType = aSpecificationParameterTypes[i];
+//
+//			STNameable[] parameterTags = null;
+//			if (aParameterType.startsWith(TAG_STRING)) {
+//
+//				STType aParameterSTType = SymbolTableFactory
+//						.getOrCreateSymbolTable().getSTClassByShortName(
+//								aParameterType.substring(1));
+//				if (aParameterSTType == null)
+//					return null;
+//				parameterTags = aParameterSTType.getComputedTags();
+//			}
+//
+//			if (!unifyingMatchesNameVariableOrTag(
+//					aSpecificationParameterTypes[i], aMethodParameterTypes[i],
+//					parameterTags)) {
+//				// backTrackUnification();
+//				return false;
+//			}
+//		}
+//		return true;
 
 	}
 

@@ -176,8 +176,8 @@
 			<property name="expectedCalls"
 				value="
 				main.Assignment11 = 
-						@SingletonsCreator!commandInterpreterFactoryMethod:->@CommandInterpreter AND
-						@SingletonsCreator!bridgeSceneFactoryMethod:->@BridgeScene AND						
+						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
+						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND						
 						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND						
 						(.*)!@asynchronous(.*):->void,						
