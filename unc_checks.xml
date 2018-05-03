@@ -231,7 +231,6 @@
 						@SingletonsCreator!@bridgeSceneFactoryMethod:->@BridgeScene AND
 						@SingletonsCreator!@broadcastingClearanceManagerFactoryMethod:->BroadcastingClearanceManager AND
 						@SingletonsCreator!@commandInterpreterFactoryMethod:->@CommandInterpreter AND
-						(.*)!sleep:long->void AND
 						(.*)!setCommand:String->* AND						
 						(.*)!@waiting(.*):->void AND	
 						(.*)!@lockstep(.*):->void//EC AND	
