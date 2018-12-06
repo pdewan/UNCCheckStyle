@@ -179,7 +179,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public static Boolean isIdentifier(String aString) {
-		if (aString.length() == 0)
+		if (aString == null || aString.length() == 0)
 			return false;
 		char aFirstChar = aString.charAt(0);
 		if (!Character.isLetter(aFirstChar) && (aFirstChar != TAG_CHAR)) {
