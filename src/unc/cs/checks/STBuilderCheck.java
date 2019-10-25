@@ -73,7 +73,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected Map<String, String> tagMatches = new HashMap();
 //	protected Set<String> matchedTypes = new HashSet();
 	protected boolean overlappingTags = true;
-	protected boolean logNoMacthes = true;
+	protected boolean logNoMatches = true;
 
 
 	public void setDerivedTypeTags(String[] aDerivedTagsSpecifications) {
@@ -106,7 +106,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
 //		System.out.println ("Setting checks name to:" + "Assignments" );
-		checksName =  "Assignments";;
+//		checksName =  "Assignments";
+		checksName =  "CheckStyle_All";
 		setCheckOnBuild(true); //make symboltable incrementally
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
 
@@ -294,12 +295,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		// print once per each sequence number
 //		if (isNewSequenceNumber() && !isAutoBuild()) {
 		if (sequenceNumber > lastSequenceNumberOfExpectedTypes && !isAutoBuild()) {
+			
+			if (expectedTypes.size() > 0) {
 
     		extendibleLog(0,
     				
     				EXPECTED_TYPES, new Object[] {EXPECTED_TYPES + ":", expectedTypes.toString()}
 			
 			);
+			}
     		lastSequenceNumberOfExpectedTypes = sequenceNumber;
     		
     	}
@@ -593,7 +597,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	}
 	
 	public void setLogNoMatches(boolean newVal) {
-		logNoMacthes = newVal;
+		logNoMatches = newVal;
 	}
 	public void checkTags(DetailAST ast) {
 		List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
@@ -630,7 +634,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     		}
     		
     	}
-    	if (!aFoundMatch && logNoMacthes) {
+    	if (!aFoundMatch && logNoMatches) {
     		
 			log(ast, "No Expected Tag", aClassOrInterface);
 		}

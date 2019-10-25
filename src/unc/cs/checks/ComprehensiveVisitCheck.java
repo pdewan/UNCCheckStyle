@@ -123,7 +123,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				TokenTypes.CTOR_DEF, TokenTypes.IMPORT,
 				TokenTypes.STATIC_IMPORT, TokenTypes.LCURLY, TokenTypes.RCURLY,
 				TokenTypes.METHOD_CALL, TokenTypes.IDENT, TokenTypes.ENUM_DEF,
-				TokenTypes.LITERAL_NEW, TokenTypes.IDENT };
+				TokenTypes.LITERAL_NEW, TokenTypes.IDENT, TokenTypes.LITERAL_RETURN };
 	}
 
 	protected void resetProject() {
@@ -2194,6 +2194,43 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public void visitTypeUse(DetailAST ast) {
 
 	}
+	public void visitReturn(DetailAST ast) {
+		DetailAST anExprAST = ast.getFirstChild();
+		if (anExprAST == null) {
+			return;
+		}
+		
+		DetailAST aDOTAST = anExprAST.getFirstChild();
+		if (aDOTAST == null || aDOTAST.getType() != TokenTypes.DOT) {
+			return;
+		}
+		DetailAST aLeftOfDotAST = aDOTAST.getFirstChild();
+		if (aLeftOfDotAST == null) {
+			return;
+		}
+		DetailAST aRightOfDotAST = aDOTAST.getLastChild();
+		if (aRightOfDotAST == null || aRightOfDotAST.getType() != TokenTypes.LITERAL_CLASS) {
+			return;
+		}
+		String aClassReturned = TypeVisitedCheck.toStringList(aLeftOfDotAST);
+		int aLastIndexOfDot = aClassReturned.lastIndexOf('.');
+		String aShortClassReturned = null;
+		if (aLastIndexOfDot == -1) {
+			aShortClassReturned = aClassReturned;
+		} else {
+			aShortClassReturned = aClassReturned.substring(aLastIndexOfDot + 2);
+		}
+		
+		String anAstString = TypeVisitedCheck.toStringList(ast);
+		String anAstStringParent = TypeVisitedCheck.toStringList(ast.getParent());
+		String anAstStringSibiling = TypeVisitedCheck.toStringList(ast.getParent().getLastChild());
+
+		
+
+		
+				
+
+	}
 	public static List<STNameable> getComputedAndExplicitTags (DetailAST ast, DetailAST aNameAST, String aTypeName) {
 		List<STNameable> explicitTags = getExplicitTags(ast);
 		STNameable aVariableNameable = new AnSTNameable(aNameAST, aNameAST.getText());
@@ -2653,6 +2690,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			return;
 		case TokenTypes.LITERAL_FOR:
 			visitLiteralFor(ast);
+			return;
+		case TokenTypes.LITERAL_RETURN:
+			visitReturn(ast);
 			return;
 
 		default:
