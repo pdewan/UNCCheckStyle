@@ -15,5 +15,6 @@ public interface STVariable extends STNameable {
 	STNameable[] getTags();
 	STType getDeclaringSTType();
 	void setDeclaringSTType(STType aDeclaringSTType);
+	Integer getAccessToken();
 	
 }

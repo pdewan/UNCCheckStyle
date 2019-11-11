@@ -149,7 +149,7 @@ public class CopyOfSTBuilderCheck extends ComprehensiveVisitCheck {
 	protected void processImports() {
 		if (!getImportsAsExistingClasses())
 			return;
-		for (STNameable aClassName : imports) {
+		for (STNameable aClassName : allImportsOfThisClass) {
 			if (TagBasedCheck.isProjectImport(aClassName.getName()))
 				continue;
 			processExistingClass(aClassName.getName());
@@ -204,7 +204,9 @@ public class CopyOfSTBuilderCheck extends ComprehensiveVisitCheck {
 					new ArrayList(globalsAccessedByCurrentMethod),
 					new ArrayList(globalsAssignedByCurrentMethod),
 					new ArrayList(localSTVariables),
-					new ArrayList(parameterSTVariables)
+					new ArrayList(parameterSTVariables),
+					getAccessToken(currentMethodAST)
+
 					);
 
 			if (currentMethodIsConstructor)
@@ -348,8 +350,8 @@ public class CopyOfSTBuilderCheck extends ComprehensiveVisitCheck {
 //		if (aName.startsWith("test")) {
 //			System.out.println("Putting class:" + aName);
 //		}
-		SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass()
-				.put(aName, anSTClass);
+		SymbolTableFactory.getOrCreateSymbolTable()
+				.putSTType(aName, anSTClass);
 		// log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 
 	}
@@ -519,7 +521,7 @@ public class CopyOfSTBuilderCheck extends ComprehensiveVisitCheck {
 				// computedTypeTags().toArray(dummyArray),
 				computedAndDerivedTypeTags().toArray(dummyArray),
 
-				imports.toArray(dummyArray),
+				allImportsOfThisClass.toArray(dummyArray),
 				globalVariables.toArray(dummyArray), 
 				new HashMap<>(	globalVariableToCall), 
 //				new HashMap<>(globalVariableToType),

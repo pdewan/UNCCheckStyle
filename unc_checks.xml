@@ -17,8 +17,8 @@
 		<module name="STBuilder">
 			<property name="includeTypeTags" value="*" />
 			<property name="severity" value="info" />
-			<property name="projectPackagePrefixes" value="*" />
-			<property name="logNoMatches" value="false" />				
+			<property name="logNoMatches" value="false" />	
+			<property name="importsAsExistingClasses" value="false" />		
 
 		</module>
 		
@@ -102,7 +102,6 @@
 			<property name="max" value="1" />
 		</module>
 		<module name="PackageDeclaration" />		
-		<module name="AvoidStarImport" />
 		<module name="HiddenField"/>
 
 		
@@ -132,7 +131,6 @@
             <property name="allowByTailComment" value="true"/>
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
-        <module name="AvoidStarImport"/>
         <module name="OneTopLevelClass"/>
         <module name="NoLineWrap"/>
         <module name="EmptyBlock">
@@ -272,6 +270,10 @@
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance"/>
+        <module name="AvoidStarImport" />  
+        <module name="RedundantImport"/> 
+        <module name="UnusedImports"/>   
+        <module name="AvoidStaticImport"/>  
         <module name="CustomImportOrder">
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="separateLineBetweenGroups" value="true"/>
@@ -336,5 +338,82 @@
             <property name="exceptionVariableName" value="expected"/>
         </module>
         <module name="CommentsIndentation"/>
+        <module name="JavadocStyleCheck"/>
+        <module name="JavadocVariableCheck"/>
+        <module name="MissingJavadocType"/>
+        <module name="MissingJavadocPackage"/>
+        <module name="WriteTagCheck"/>
+        <module name="BooleanExpressionComplexity">
+  			<property name="max" value="3"/>
+		</module>
+		<module name="ClassDataAbstractionCoupling">
+  			<property name="max" value="7"/>
+		</module>
+		<module name="ClassFanOutComplexity">
+  			<property name="max" value="20"/>
+		</module>
+		<module name="CyclomaticComplexity">
+  			<property name="max" value="10"/>
+		</module>
+		<module name="JavaNCSS">
+ 		 	<property name="methodMaximum" value="50"/>
+ 		 	<property name="classMaximum" value="1500"/>
+ 		 	 <property name="fileMaximum" value="2000"/>
+ 		 </module>
+ 		 
+		 <module name="PackageAnnotation"/>   
+		 <module name="SuppressWarnings"/> 
+		 <module name="MissingOverride"/>  
+		 <module name="AvoidNestedBlocks"/>
+		 <module name="DesignForExtension"/>
+		 <module name="FinalClass"/>
+		 <module name="HideUtilityClassConstructor"/>
+		 <module name="InnerTypeLast"/>
+		 <module name="InterfaceIsType"/>
+		 <module name="MutableException"/>
+		 <module name="ThrowsCount">
+  		     <property name="max" value="4"/>
+         </module>
+         <module name="AvoidInlineConditionals"/>
+         <module name="ArrayTrailingComma"/>
+         <module name="CovariantEquals"/>
+         <module name="DeclarationOrder"/>
+         <module name="DefaultComesLast"/>
+         <module name="EqualsHashCode"/>
+         <module name="ExplicitInitialization"/>
+         <module name="FallThrough"/>
+         <module name="FinalLocalVariable"/>
+         <module name="IllegalCatch"/>
+         <module name="IllegalThrows"/>
+         <module name="IllegalToken"/>
+         <module name="IllegalType"/>
+         <module name="InnerAssignment"/>
+         <module name="MissingCtor"/>
+         <module name="ModifiedControlVariable"/>
+         <module name="NestedTryDepth">
+  			<property name="max" value="1"/>
+		</module>
+		<module name="NoClone"/>
+		<module name="ParameterAssignment"/>
+		<module name="RequireThis"/>
+		<module name="ReturnCount">
+  			<property name="max" value="2"/>
+		</module>
+		<module name="SuperClone"/>
+		<module name="SuperFinalize"/>
+		<module name="UnnecessaryParentheses"/>
+	
+		<module name="VariableDeclarationUsageDistance">
+  			<property name="allowedDistance" value="3"/>  		
+		</module>
+		<module name="FinalParameters"/>
+		<module name="TodoComment"/>
+		<module name="TrailingComment"/>
+		<module name="UncommentedMain">
+		</module>
+		<module name="CommentsCheck"/>
+		
+		
+		
 	</module>
 </module>

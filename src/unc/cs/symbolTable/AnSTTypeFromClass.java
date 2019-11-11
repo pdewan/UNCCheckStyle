@@ -349,6 +349,16 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public STMethod getGetter(String aPropertyName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public STMethod getSetter(String aPropertyName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 
 //	@Override

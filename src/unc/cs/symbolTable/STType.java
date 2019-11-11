@@ -7,6 +7,9 @@ import java.util.Set;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public interface STType extends STNameable{
+	STMethod getGetter(String aPropertyName);
+	STMethod getSetter(String aPropertyName);
+
 	STMethod[] getDeclaredMethods();
 	STMethod[] getMethods();
 	STNameable[] getDeclaredInterfaces();

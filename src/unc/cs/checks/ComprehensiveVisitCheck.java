@@ -1,5 +1,8 @@
 package unc.cs.checks;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -474,6 +477,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return false;
 
 	}
+	public static String[] splitCamelCaseHyphenDash (String aCamelCaseName) {
+//		return aCamelCaseName.split("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
+		return aCamelCaseName.split("_|-|(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
+
+	}
+	public static String[] splitDashHyphen (String aDashHyphenName) {
+		return aDashHyphenName.split("_|-");
+	}
 
 	public static STMethod signatureToMethod(String aSignature) {
 		String[] aNameAndRest = aSignature.split(":");
@@ -486,7 +497,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			return new AnSTMethod(null, aSignature.trim(), null, null, null,
 					true, true, false, null, false, null, null, false, null,
-					null, null, null, null, null);
+					null, null, null, null, null, null);
 		}
 		if (aNameAndRest.length > 2) {
 			System.err.println("Illegal signature," + aSignature
@@ -514,7 +525,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, aReturnType, true, null, null, false, null, null,
-				null, null, null, null);
+				null, null, null, null, null);
 
 	}
 
@@ -539,7 +550,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, aReturnType, true, null, null, false, null, null,
-				null, null, null, null);
+				null, null, null, null, null);
 
 	}
 
@@ -769,7 +780,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					.getSTClassByShortName(aShortClassName);
 
 			if (anSTType == null) {
-				if (isExternalImport(aShortClassName)) // check last as we are
+				if (isExternalImportCacheCheckingShortName(aShortClassName)) // check last as we are
 														// not really sure about
 														// external
 					return null;
@@ -1129,6 +1140,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				anIdentifier.getText(), 
 				aTypeName, anRHS, 
 				aVariableKind, 
+				getAccessToken(paramOrVarDef),
 				getAllTags(paramOrVarDef, 
 						anIdentifier, 
 						aTypeName, 
@@ -1223,6 +1235,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					anIdentifier.getText(), 
 					aTypeName, anRHS, 
 					VariableKind.GLOBAL, 
+					getAccessToken(paramOrVarDef),
 					getAllTags(paramOrVarDef, anIdentifier, aTypeName, VARIABLE_START).toArray(dummyArray)
 					);
 
@@ -1680,7 +1693,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		isGeneric = false;
 		isElaboration = false;
 		// stMethods.clear();
-		imports.clear();
+		allImportsOfThisClass.clear();
 		globalVariables.clear();
 		globalSTVariables.clear();
 		typesInstantiated.clear();
@@ -2758,6 +2771,54 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public static boolean isPublic(DetailAST methodOrVariableDef) {
 		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PUBLIC);
+
+	}
+	
+	public static Integer getAccessToken(Method aMethod) {
+		int aModifiers = aMethod.getModifiers();
+		if (Modifier.isPublic(aModifiers)) {
+			return TokenTypes.LITERAL_PUBLIC;
+		}
+		if (Modifier.isProtected(aModifiers)) {
+			return TokenTypes.LITERAL_PROTECTED;
+		}
+		if (Modifier.isPrivate(aModifiers)) {
+			return TokenTypes.LITERAL_PRIVATE;
+		}
+		return null;
+	}
+	public static Integer getAccessToken(Constructor aMethod) {
+		int aModifiers = aMethod.getModifiers();
+		if (Modifier.isPublic(aModifiers)) {
+			return TokenTypes.LITERAL_PUBLIC;
+		}
+		if (Modifier.isProtected(aModifiers)) {
+			return TokenTypes.LITERAL_PROTECTED;
+		}
+		if (Modifier.isPrivate(aModifiers)) {
+			return TokenTypes.LITERAL_PRIVATE;
+		}
+		return null;
+	}
+	public static Integer getAccessToken(DetailAST methodOrVariableDef) {
+		if (isPublic(methodOrVariableDef)) {
+			return TokenTypes.LITERAL_PUBLIC;
+		}
+		if (isProtected(methodOrVariableDef)) {
+			return TokenTypes.LITERAL_PROTECTED;
+		}
+		if (isPrivate(methodOrVariableDef)) {
+			return TokenTypes.LITERAL_PRIVATE;
+		}
+		return null;
+	}
+	
+	public static boolean isProtected(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PROTECTED);
+
+	}
+	public static boolean isPrivate(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PRIVATE);
 
 	}
 

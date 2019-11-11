@@ -19,7 +19,7 @@ public interface SymbolTable {
 	boolean isInterface(String aTypeName);
 //	Map<String, DetailAST> getClassNameToAST();
 	boolean isType(String aTypeName);
-	Map<String, STType> getTypeNameToSTClass();
+//	Map<String, STType> getTypeNameToSTClass();
 	STType getSTClassByShortName(String aTypeName);
 	List<String> matchingFullSTTypeNames(String aTypeName);
 	STType getSTClassByFullName(String aTypeName);
@@ -28,4 +28,8 @@ public interface SymbolTable {
 	List<String> getAllInterfaceNames();
 	List<String> getAllClassNames();
 	void clear();
+	public Set<String> getTypeNamesKeySet();
+	STType putSTType(String aName, STType anSTType);
+	Set<String> getPackageNames();
+
 }

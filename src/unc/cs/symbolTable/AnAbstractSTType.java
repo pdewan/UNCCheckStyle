@@ -1768,7 +1768,27 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		}
 		return result;
 	}
-	
+	@Override
+	public STMethod getGetter(String aPropertyName) {
+		STMethod[] aDeclaredMethods = getDeclaredMethods();
+		for (STMethod aMethod:aDeclaredMethods) {
+			if (aMethod.getName().toLowerCase().equals("get" + aPropertyName.toLowerCase()) && aMethod.getParameterNames().length == 0) {
+				return aMethod;
+			}
+		}
+		return null;
+	}
+	@Override
+	public STMethod getSetter(String aPropertyName) {
+		STMethod[] aDeclaredMethods = getDeclaredMethods();
+		for (STMethod aMethod:aDeclaredMethods) {
+			if (aMethod.getName().toLowerCase().equals("set" + aPropertyName.toLowerCase()) && aMethod.getParameterNames().length == 1) {
+				return aMethod;
+			}
+		}
+		return null;
+	}
+
 	// @Override
 	// public boolean isParsedClass() {
 	// return true;

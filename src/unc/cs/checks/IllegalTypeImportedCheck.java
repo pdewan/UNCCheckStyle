@@ -135,7 +135,10 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
 		 if (importText.startsWith("java.lang")) {
 			 return false; // in case you import, for instance, java.lang.Thread
 		 }
-		 if (STBuilderCheck.isProjectImport(importText) || importText.endsWith("Tags") ) {
+//		 if (STBuilderCheck.isProjectImport(importText) || importText.endsWith("Tags") ) {
+//			 return false;
+//		 }
+		 if (!TagBasedCheck.isExternalImportCacheChecking(importText) || importText.endsWith("Tags") ) {
 			 return false;
 		 }
 		 if (inLegalPrefixes(importText, myClassName))

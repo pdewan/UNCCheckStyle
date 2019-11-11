@@ -3,6 +3,7 @@ package unc.cs.symbolTable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +15,7 @@ public class ASymbolTable implements SymbolTable{
 //	Map<String, DetailAST> classNameToAST = new HashMap<>();
 //	Map<String, DetailAST> interfaceNameToAST = new HashMap<>();
 //	Map<String, DetailAST> packageNameToAST = new HashMap();
+	Set<String> packageNames =  new HashSet<>();
 	Map<String, DetailAST> methodCallToAST = new HashMap();
 //	Map<String, DetailAST> methodDeclarationToAST = new HashMap();
 	Map<String, STType>   typeNameToSTClass = new HashMap<>();	
@@ -124,9 +126,14 @@ public class ASymbolTable implements SymbolTable{
 //		return anSTType;
 
 	}
+//	@Override
+//	public Map<String, STType> getTypeNameToSTClass() {
+//		return typeNameToSTClass;
+//	}
 	@Override
-	public Map<String, STType> getTypeNameToSTClass() {
-		return typeNameToSTClass;
+	public STType putSTType(String aName, STType anSTType) {
+		packageNames.add(aName);
+		return typeNameToSTClass.put(aName, anSTType);
 	}
 	@Override
 	public List<String> getAllTypeNames() {
@@ -163,5 +170,13 @@ public class ASymbolTable implements SymbolTable{
 		methodCallToAST.clear();
 		typeNameToSTClass.clear();
 		
+	}
+	@Override
+	public Set<String> getTypeNamesKeySet() {
+		return typeNameToSTClass.keySet();
+	}
+	@Override
+	public Set<String> getPackageNames() {
+		return packageNames;
 	}
 }

@@ -96,8 +96,10 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 };
 	static List<STNameable> emptyList = new ArrayList();
 
-	protected static Set<String> externalImports = new HashSet();
-	protected List<STNameable> imports = new ArrayList();
+	protected static Set<String> allProjectExternalImports = new HashSet();
+	protected static Set<String> allProjectExternalImportsShortName = new HashSet();
+
+	protected List<STNameable> allImportsOfThisClass = new ArrayList();
 
 	protected static Set<String> javaLangTypesSet;
 	protected static Set<String> primitiveTypesSet;
@@ -323,7 +325,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
  				.getSTClassByShortName(aShortClassName);
  		if (anSTType == null) {
- 			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
+ 			if (isExternalImportCacheCheckingShortName(aShortClassName)) // check last as we are not really sure about external
  				return null;			
  			return null;
  		}
@@ -441,15 +443,19 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public static boolean isJavaLangClass(String aShortClassName) {
 	 return javaLangTypesSet.contains(aShortClassName);
  }
- public static boolean isExternalImport(String aShortClassName) {
-	 return externalImports.contains(aShortClassName);
+ public static boolean isExternalImportCacheChecking(String aFullClassName) {
+	 return allProjectExternalImports.contains(aFullClassName);
  }
+ public static boolean isExternalImportCacheCheckingShortName(String aShortClassName) {
+	 return allProjectExternalImportsShortName.contains(aShortClassName);
+ }
+ 
  
  public static boolean isExternalClass(String aShortClassName) {
 	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aShortClassName);
 	if (anSTType != null)
 		return false;
-	return aShortClassName.equals("Object") || isExternalImport(aShortClassName) || isJavaLangClass(aShortClassName);
+	return aShortClassName.equals("Object") || isExternalImportCacheCheckingShortName(aShortClassName) || isJavaLangClass(aShortClassName);
  }
  public static List<STNameable> asListOrNull(STNameable[] anArray) {
 	 return anArray == null ?
@@ -461,7 +467,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aShortClassName);
 		if (anSTType == null) {
-			if (isExternalImport(aShortClassName)) // check last as we are not really sure about external
+			if (isExternalImportCacheCheckingShortName(aShortClassName)) // check last as we are not really sure about external
 				return emptyList;			
 			return null;
 		}		
@@ -964,13 +970,69 @@ public void visitImport(DetailAST ast) {
 	 String aShortClassName = findLastDescendentOfFirstChild(ast).getText();
 
 	 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
-	 imports.add(anSTNameable);
-	 if (!isProjectImport(aLongClassName))
-		 externalImports.add(aShortClassName);
+	 allImportsOfThisClass.add(anSTNameable);
+	 if (!isProjectImport(aLongClassName)) {
+//		 allProjectExternalImports.add(aShortClassName);
+		 allProjectExternalImports.add(aLongClassName);
+		 if (!aShortClassName.equals("*"))
+		 allProjectExternalImportsShortName.add(aShortClassName);
+
+	 } else {
+		 allProjectExternalImports.remove(aLongClassName);
+		 if (!aShortClassName.equals("*"))
+			 allProjectExternalImportsShortName.remove(aShortClassName);
+	 }
 }
+
+public static boolean isMaybeProjectImport (String aPackageName, String aClassName) {
+	String[] aClassNameComponents = aClassName.split("\\.");
+	// if it does not begin with com, org or edu should we say we do not care about it?
+	// instructor provided pakages may not follow it
+	if (aClassNameComponents.length <= 2) { // default package or one package name
+		return true;
+	}
+	String aClassNamePrefix = "";
+	for (int i = 0; i < aClassNameComponents.length -1; i++) {
+		if (i > 0) {
+			aClassNamePrefix += ".";
+		}
+		aClassNamePrefix += aClassNameComponents[i];
+		if (aClassNamePrefix.equals("main") || aClassNamePrefix.equals("com") || aClassNamePrefix.equals("org") || (aClassNamePrefix.equals("edu"))) {
+			break;
+		}
+		if (aPackageName.startsWith(aClassNamePrefix)) {
+			return true;
+		}
+	}
+//	if (aPackageNames.l)
+	return false;
+}
+
+//public static boolean isProjectImportCaching(String aFullName) {
+//	boolean retVal = isProjectImport(aFullName);
+//	if (retVal) {
+//		allProjectExternalImports.add(aFullName);
+//	}
+//	return retVal;
+//}
+
 public static boolean isProjectImport(String aFullName) {
-	 for (String aPrefix:STBuilderCheck.getProjectPackagePrefixes())
-		 if (aPrefix.equals("*") || aFullName.startsWith(aPrefix)) return true;
+	 for (String aPrefix:STBuilderCheck.getProjectPackagePrefixes()) {
+		 if (/*aPrefix.equals("*") ||*/ aFullName.startsWith(aPrefix)) return true;
+	 }
+	for (String aString:STBuilderCheck.getExternalPackagePrefixes()) {
+		if (aFullName.startsWith(aString)) {
+//			externalImports.add(aFullName);
+			return false;
+		}
+	}
+
+	 Set<String> aPackageNames = SymbolTableFactory.getOrCreateSymbolTable().getPackageNames();
+	 for (String aPackageName:aPackageNames) {
+		 if (isMaybeProjectImport(aPackageName, aFullName))
+			 return true;
+	 }
+
 	 return false;
 }
 static List<DetailAST> emptyASTList = new ArrayList();
@@ -1123,7 +1185,7 @@ public void visitStaticImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdent(
                anImportAST);
 	 STNameable anSTNameable = new AnSTNameable(ast, anImport.getText());
-	 imports.add(anSTNameable);
+	 allImportsOfThisClass.add(anSTNameable);
 }
 public static boolean isArray(String aShortClassName) {
 	 return aShortClassName.endsWith("[]");

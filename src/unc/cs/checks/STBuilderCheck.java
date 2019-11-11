@@ -46,10 +46,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //	public static final String MSG_KEY = "stBuilder";
 	public static final String MSG_KEY = "typeDefined";
 	public static final String EXPECTED_TYPES = "expectedTypes";
-
-
 	static String[] projectPackagePrefixes = { "assignment", "project",
-			"homework" };
+			"homework", "test", "comp", "proj", "ass", "hw" };
+	static String[] externalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen"};
 	static int lastSequenceNumberOfExpectedTypes = -1;
 	protected String checksName;
 	protected  String[] existingClasses = {};
@@ -163,10 +162,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected void processImports() {
 		if (!getImportsAsExistingClasses())
 			return;
-		for (STNameable aClassName : imports) {
-			if (TagBasedCheck.isProjectImport(aClassName.getName()))
-				continue;
-			processExistingClass(aClassName.getName());
+		for (STNameable aClassName : allImportsOfThisClass) {
+//			if (TagBasedCheck.isProjectImport(aClassName.getName()))
+//				continue;
+			if (isExternalImportCacheChecking(aClassName.getName()))
+				processExistingClass(aClassName.getName());
 		}
 	}
 
@@ -175,6 +175,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	}
 
 	protected  void processExistingClass(String aClassName) {
+		if (aClassName.endsWith("*"))
+			return;
 		if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
 				aClassName) != null)
 			return;
@@ -220,7 +222,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					new ArrayList(globalsAccessedByCurrentMethod),
 					new ArrayList(globalsAssignedByCurrentMethod),
 					new ArrayList(localSTVariables),
-					new ArrayList(parameterSTVariables)
+					new ArrayList(parameterSTVariables),
+					getAccessToken(currentMethodAST)
 					);
 
 			if (currentMethodIsConstructor)
@@ -236,9 +239,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		projectPackagePrefixes = aPrefixes;
 	}
 	
+	public void setExternalPackagePrefixes(String[] aPrefixes) {
+		externalPackagePrefixes = aPrefixes;
+	}
+	
 
 	public static String[] getProjectPackagePrefixes() {
 		return projectPackagePrefixes;
+	}
+	public static String[] getExternalPackagePrefixes() {
+		return externalPackagePrefixes;
 	}
 
 	public void setExistingClasses(String[] aClasses) {
@@ -376,14 +386,13 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			System.err.println(" null name!");
 			return;
 		}
-		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
-		// anSTClass.getName(), anSTClass);
-//		if (aName.startsWith("test")) {
-//			System.out.println("Putting class:" + aName);
-//		}
-		SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass()
-				.put(aName, anSTClass);
-		// log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
+//	
+//		SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass()
+//				.put(aName, anSTClass);
+		
+		SymbolTableFactory.getOrCreateSymbolTable()
+		.putSTType(aName, anSTClass);
+		
 
 	}
 
@@ -552,7 +561,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				// computedTypeTags().toArray(dummyArray),
 				computedAndDerivedTypeTags().toArray(dummyArray),
 
-				imports.toArray(dummyArray),
+				allImportsOfThisClass.toArray(dummyArray),
 				globalVariables.toArray(dummyArray), 
 				new HashMap<>(	globalVariableToCall), 
 //				new HashMap<>(globalVariableToType),

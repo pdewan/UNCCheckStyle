@@ -7,13 +7,17 @@ import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
+
 public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STMethod{
 	Constructor constructor;
 	static STNameable[] emptyArray = {};
+	Integer accessToken;
 
 	
 	public AnSTMethodFromConstructor(Constructor aMethod) {
 		super(null, aMethod.getName());
+		accessToken = ComprehensiveVisitCheck.getAccessToken(aMethod);
 		constructor = aMethod;		
 	}
 	@Override
@@ -180,6 +184,10 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	public List<String> getGlobalsAccessed() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public Integer getAccessToken() {
+		return accessToken;
 	}
 	
 	

@@ -10,6 +10,7 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	VariableKind variableKind;
 	STNameable[] tags;
 	STType declaringType;
+	Integer accessToken;
 
 	boolean isInstance;
 	boolean isFinal;
@@ -20,6 +21,7 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 			String aTypeName,
 			DetailAST anRHS,
 			VariableKind aVariableKind,
+			Integer anAccessToken,
 			STNameable[] aTags
 			) {
 		super(ast, aName);
@@ -29,6 +31,7 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 		variableKind = aVariableKind;
 		isFinal = ComprehensiveVisitCheck.isFinal(ast);
 		isInstance = !ComprehensiveVisitCheck.isStatic(ast);
+		accessToken = anAccessToken;
 		
 	}
 
@@ -87,6 +90,10 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	public void setDeclaringSTType(STType aDeclaringSTType) {
 		declaringType = aDeclaringSTType;
 		
+	}
+	@Override
+	public Integer getAccessToken() {
+		return accessToken;
 	}
 
 }

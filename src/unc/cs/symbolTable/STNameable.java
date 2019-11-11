@@ -5,5 +5,7 @@ public interface STNameable extends STElement {
 
 	Object getData();
 
+	String[] getComponents();
+
 
 }

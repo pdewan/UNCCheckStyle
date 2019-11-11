@@ -39,6 +39,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	
 	protected List<STVariable> localSTVariables;
 	protected List<STVariable> parameterSTVariables;
+	protected Integer accessToken;
 
 	
 	public  static final String GET = "get";
@@ -66,7 +67,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			List<String> aGlobalsAccessed,
 			List<String> aGlobalsAssigned,
 			List<STVariable> aLocalVariables,
-			List<STVariable> aParameters
+			List<STVariable> aParameters,
+			Integer anAccessToken
 			) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
@@ -96,6 +98,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		globalsAccessed = aGlobalsAccessed;
 		localSTVariables = aLocalVariables;
 		parameterSTVariables = aParameters;
+		accessToken = anAccessToken;
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
@@ -369,4 +372,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		public List<String> getGlobalsAccessed() {
 			return globalsAccessed;
 		}
+		@Override
+		public Integer getAccessToken() {
+			return accessToken;
+		}
+
 }

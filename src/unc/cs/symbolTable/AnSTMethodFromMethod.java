@@ -1,18 +1,23 @@
 package unc.cs.symbolTable;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
+
 public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod{
 	Method method;
 	static STNameable[] emptyList = {};
+	Integer accessToken;
 	
 	public AnSTMethodFromMethod(Method aMethod) {
 		super(null, aMethod.getName());
 		method = aMethod;	
+		accessToken = ComprehensiveVisitCheck.getAccessToken(method);
 		introspect();
 	}
 	@Override
@@ -186,6 +191,10 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 	public List<String> getGlobalsAccessed() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public Integer getAccessToken() {
+		return accessToken;
 	}
 	
 
