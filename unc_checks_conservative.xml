@@ -58,17 +58,6 @@
 		<module name="SetterAssignsGlobal">
 			<property name="severity" value="warning" />		
 		</module>
-		<module name="BulkierThen">
-			<property name="severity" value="warning" />	
-			<property name="minThenElseRatio" value="1" />
-			<property name="maxElsePartSize" value="1" />		
-					
-				
-		</module>
-		<module name="ThenBranching">
-			<property name="severity" value="warning" />					
-				
-		</module>
 		
 		<module name="LiberalMagicNumber" >
 			<property name="severity" value="warning" />
@@ -280,7 +269,6 @@
             <property name="allowedAbbreviationLength" value="1"/>
         </module>
         <module name="OverloadMethodsDeclarationOrder"/>
-        <module name="VariableDeclarationUsageDistance"/>
         <module name="AvoidStarImport" />  
         <module name="RedundantImport"/> 
         <module name="UnusedImports"/>   
@@ -355,16 +343,16 @@
         <module name="MissingJavadocPackage"/>
         <module name="WriteTagCheck"/>
         <module name="BooleanExpressionComplexity">
-  			<property name="max" value="3"/>
+  			<property name="max" value="1"/>
 		</module>
 		<module name="ClassDataAbstractionCoupling">
-  			<property name="max" value="7"/>
+  			<property name="max" value="1"/>
 		</module>
 		<module name="ClassFanOutComplexity">
-  			<property name="max" value="20"/>
+  			<property name="max" value="1"/>
 		</module>
 		<module name="CyclomaticComplexity">
-  			<property name="max" value="10"/>
+  			<property name="max" value="1"/>
 		</module>
 		<module name="JavaNCSS">
  		 	<property name="methodMaximum" value="50"/>
@@ -383,7 +371,7 @@
 		 <module name="InterfaceIsType"/>
 		 <module name="MutableException"/>
 		 <module name="ThrowsCount">
-  		     <property name="max" value="4"/>
+  		     <property name="max" value="1"/>
          </module>
          <module name="AvoidInlineConditionals"/>
          <module name="ArrayTrailingComma"/>
@@ -408,14 +396,14 @@
 		<module name="ParameterAssignment"/>
 		<module name="RequireThis"/>
 		<module name="ReturnCount">
-  			<property name="max" value="2"/>
+  			<property name="max" value="1"/>
 		</module>
 		<module name="SuperClone"/>
 		<module name="SuperFinalize"/>
 		<module name="UnnecessaryParentheses"/>
 	
 		<module name="VariableDeclarationUsageDistance">
-  			<property name="allowedDistance" value="3"/>  		
+  			<property name="allowedDistance" value="1"/>  		
 		</module>
 		<module name="FinalParameters"/>
 		<module name="TodoComment"/>

@@ -58,7 +58,10 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 		   if (numStatementsInElsePart <= maxElsePartSize &&
 				   (numStatementsInElsePart == 0) ||
 				   numStatementsInThenPart/numStatementsInElsePart >= minThenElseRatio) {
-			   logBulkierThen(aThenPart);
+//			   logBulkierThen(aThenPart);
+//				log(aThenPart, "Then#:" + numStatementsInThenPart + " Else#: " +numStatementsInElsePart );
+				log(aThenPart, "" + numStatementsInThenPart,  "" +numStatementsInElsePart );
+
 		   }
 			   
 		   
@@ -68,6 +71,7 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 	   
 		protected void logBulkierThen( DetailAST aSpecificAST) {
 			log (aSpecificAST);
+		
 
 		}
 

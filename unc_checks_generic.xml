@@ -72,6 +72,17 @@
 			<property name="severity" value="warning" />		
 			
 		</module>
+		<module name="BulkierThen">
+			<property name="severity" value="warning" />	
+			<property name="minThenElseRatio" value="1" />
+			<property name="maxElsePartSize" value="1" />		
+					
+				
+		</module>
+		<module name="ThenBranching">
+			<property name="severity" value="warning" />					
+				
+		</module>
 		
 		<module name="DuplicateShortTypeName">
 			<property name="severity" value="warning" />
