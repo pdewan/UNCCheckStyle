@@ -61,9 +61,7 @@
 		<module name="BulkierThen">
 			<property name="severity" value="warning" />	
 			<property name="minThenElseRatio" value="1" />
-			<property name="maxElsePartSize" value="1" />		
-					
-				
+			<property name="maxElsePartSize" value="1" /> 				
 		</module>
 		<module name="ThenBranching">
 			<property name="severity" value="warning" />					
@@ -94,10 +92,26 @@
 					
 				
 		 </module>
-		  
-		
-		
-
+		 
+		 <module name="ConstantDefined">
+		 	<property name="severity" value="info" />				
+		 </module>
+		 
+		 <module name="FinalParameterDefined">
+		 	<property name="severity" value="info" />				
+		 </module>
+		 
+		  <module name="EqualAvoidedNullCheck">
+		 	<property name="severity" value="info" />				
+		 </module>
+		 <module name="BulkierElse">
+			<property name="severity" value="info" />	
+			<property name="minElseThenRatio" value="1" />
+		</module>
+		 <module name="ElseBranching">
+			<property name="severity" value="info" />	
+		</module>
+		 
 
 	</module>
 	<module name="TreeWalker">		

@@ -4,27 +4,27 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
-public class BulkierThenCheck extends ComprehensiveVisitCheck{
-	public static final String MSG_KEY = "bulkierThen";
-	protected int maxElsePartSize = 4;
-	protected int minThenElseRatio = 3;
+public class BulkierElseCheck extends BulkierThenCheck{
+	public static final String MSG_KEY = "bulkierElse";
+	protected int maxThenPartSize = 4;
+	protected int minElseThenRatio = 3;
 
 	@Override
 	protected String msgKey() {
 		return MSG_KEY;
 	}
-	public int[] getDefaultTokens() {
-	return new int[] {
-			TokenTypes.METHOD_DEF, // to get current method tags
-			TokenTypes.CTOR_DEF,  // ditto
-			TokenTypes.LITERAL_IF
-			};
+//	public int[] getDefaultTokens() {
+//	return new int[] {
+//			TokenTypes.METHOD_DEF, // to get current method tags
+//			TokenTypes.CTOR_DEF,  // ditto
+//			TokenTypes.LITERAL_IF
+//			};
+//	}
+	public void setMaxThenPartSize (int newVal) {
+		maxThenPartSize =  newVal;
 	}
-	public void setMaxElsePartSize (int anElsePartSize) {
-		maxElsePartSize =  anElsePartSize;
-	}
-	public void setMinThenElseRatio (int aRatio) {
-		minThenElseRatio =  aRatio;
+	public void setMinElseThenRatio (int aRatio) {
+		minElseThenRatio =  aRatio;
 	}
 //	  @Override
 //	    public void visitToken(DetailAST ast)
@@ -37,7 +37,7 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 //	                throw new IllegalStateException(ast.toString());
 //	        }
 //	    }
-	public static final String STATEMENT_SEPARATOR = ";|for|if|while|switch";
+//	public static final String STATEMENT_SEPARATOR = ";|for|if|while|switch";
 	   protected void visitLiteralIf(DetailAST anIfAST)
 	    {
 		   if (!checkExcludeTagsOfCurrentType() ||
@@ -53,17 +53,20 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 		   String anElseString = anElsePart.toStringTree();
 		   double numStatementsInThenPart = aThenString.split(STATEMENT_SEPARATOR).length - 1; // no semiucolon means length of 1
 		   double numStatementsInElsePart = anElseString.split(STATEMENT_SEPARATOR).length - 1;
+		   if (numStatementsInElsePart == 0) {
+			   return;
+		   }
 		   if (numStatementsInThenPart == 0) {
 			   return;
 		   }
-		   
+
 //		   double aThenElseRatio = ((double) numStatementsInThenPart)/numStatementsInElsePart;
-		   if (numStatementsInElsePart <= maxElsePartSize &&
-				   (numStatementsInElsePart == 0) ||
-				   numStatementsInThenPart/numStatementsInElsePart >= minThenElseRatio) {
+		   if (
+//				   (numStatementsInElsePart == 0) ||
+				   numStatementsInElsePart/numStatementsInThenPart >= minElseThenRatio) {
 //			   logBulkierThen(aThenPart);
 //				log(aThenPart, "Then#:" + numStatementsInThenPart + " Else#: " +numStatementsInElsePart );
-				log(aThenPart, "" + numStatementsInThenPart,  "" +numStatementsInElsePart, "" + numStatementsInThenPart/numStatementsInElsePart );
+				log(anElsePart, "" + numStatementsInElsePart,  "" +numStatementsInThenPart, "" + numStatementsInThenPart/numStatementsInElsePart );
 
 		   }
 			   
