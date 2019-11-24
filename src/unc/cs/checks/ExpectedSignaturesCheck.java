@@ -478,7 +478,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			anSTType =getSTType(aTree);
 		}
 		if (anSTType == null) {
-			System.err.println ("Did not find sttype for " + anAST);
+			System.out.println ("Did not find sttype for " + anAST);
 			return true;
 		}
 		if (anSTType.isEnum() || anSTType.isInterface()) // do not want to tag interface methods

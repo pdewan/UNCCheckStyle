@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import sun.reflect.generics.scope.MethodScope;
 import unc.cs.symbolTable.ACallInfo;
@@ -477,6 +479,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return false;
 
 	}
+	
 	public static String[] splitCamelCaseHyphenDash (String aCamelCaseName) {
 //		return aCamelCaseName.split("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
 		return aCamelCaseName.split("_|-|(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
@@ -2146,6 +2149,18 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		DetailAST aNewAST = ast.findFirstToken(TokenTypes.LITERAL_NEW);
 		if (aNewAST != null) {
 			DetailAST anIdentAST = aNewAST.findFirstToken(TokenTypes.IDENT);
+			if (anIdentAST == null) {
+//				System.out.println("No id found after new in:" + aNewAST.getText());
+				FullIdent aFullIdent = FullIdent.createFullIdentBelow(aNewAST);
+				if (aFullIdent != null) {
+					String aText = aFullIdent.getText();
+					int anIndex = aText.lastIndexOf(".");
+					String aRetVal = aText.substring(anIndex+1);
+					return aRetVal;
+				}
+
+				return null;
+			}
 			if (aNewAST.findFirstToken(TokenTypes.ARRAY_DECLARATOR) != null
 					|| aNewAST.findFirstToken(TokenTypes.ARRAY_INIT) != null) {
 				return anIdentAST.getText() + "[]";

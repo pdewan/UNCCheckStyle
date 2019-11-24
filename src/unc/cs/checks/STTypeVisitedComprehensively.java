@@ -43,9 +43,9 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 //    	String aFullName = aPackageName + "." + aTypeName;
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aFullName);
 		STType anSTType = getSTType(ast);
-		int i = 0;
+//		int i = 0;
 		if (anSTType == null) {
-			System.err.println ("Did not find sttype for " + ast);
+			System.out.println ("STTpeVisited: Did not find sttype for " + getFullTypeName(ast));
 			return true;
 		}
 		if (!doCheck(anSTType))

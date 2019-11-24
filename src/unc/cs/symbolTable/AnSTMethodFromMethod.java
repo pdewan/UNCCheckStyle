@@ -196,6 +196,16 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 	public Integer getAccessToken() {
 		return accessToken;
 	}
+	@Override
+	public List<STVariable> getLocalVariables() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<STVariable> getParameters() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

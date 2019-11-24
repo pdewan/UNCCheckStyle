@@ -38,6 +38,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	protected List<String> globalsAccessed;
 	
 	protected List<STVariable> localSTVariables;
+	
 	protected List<STVariable> parameterSTVariables;
 	protected Integer accessToken;
 
@@ -376,5 +377,12 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		public Integer getAccessToken() {
 			return accessToken;
 		}
-
+		@Override
+		public List<STVariable> getLocalVariables() {
+			return localSTVariables;
+		}
+		@Override
+		public List<STVariable> getParameters() {
+			return parameterSTVariables;
+		}
 }

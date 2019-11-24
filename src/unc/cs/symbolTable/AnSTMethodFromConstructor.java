@@ -139,10 +139,10 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 //		// TODO Auto-generated method stub
 //		return null;
 //	}
-	List<STMethod> emptyMethodList = new ArrayList();
+	List emptyList = new ArrayList();
 	@Override
 	public List<STMethod> getLocalMethodsCalled() {
-		return emptyMethodList;
+		return emptyList;
 	}
 	@Override
 	public void fillLocalCallClosure(List<STMethod> aList) {
@@ -152,7 +152,7 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	@Override
 	public List<STMethod> getAllMethodsCalled() {
 		// TODO Auto-generated method stub
-		return emptyMethodList;
+		return emptyList;
 	}
 	@Override
 	public void fillAllCallClosure(List<STMethod> aList) {
@@ -161,11 +161,11 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	}
 	@Override
 	public List<STMethod> getAllCallClosure() {
-		return emptyMethodList;
+		return emptyList;
 	}
 	@Override
 	public List<STMethod> getLocalCallClosure() {
-		return emptyMethodList;
+		return emptyList;
 	}
 	@Override
 	public Boolean instantiatesType(String aShortOrLongName) {
@@ -188,6 +188,15 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	@Override
 	public Integer getAccessToken() {
 		return accessToken;
+	}
+	@Override
+	public List<STVariable> getLocalVariables() {
+		return emptyList;
+	}
+	@Override
+	public List<STVariable> getParameters() {
+		// TODO Auto-generated method stub
+		return emptyList;
 	}
 	
 	

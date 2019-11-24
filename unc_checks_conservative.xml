@@ -442,7 +442,7 @@
 		<module name="UncommentedMain">
 		</module>
 		<module name="CommentsCheck"/>
-		
+		 <module name="MagicNumber"/>
 		
 		
 	</module>

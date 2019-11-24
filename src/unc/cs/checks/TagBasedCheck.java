@@ -1267,6 +1267,9 @@ public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 //	DetailAST result = root.findFirstToken(TokenTypes.ENUM);
 	DetailAST anEnumDef = root;
 	while (true)  {
+		if (anEnumDef == null) {
+			break;
+		}
 		if (anEnumDef.getType() == TokenTypes.ENUM_DEF) 
 			break;
 		anEnumDef = anEnumDef.getNextSibling();
@@ -1277,7 +1280,7 @@ public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 }
 public static String getFullTypeName(DetailAST aTree) {
 	String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
-	int i = 1;
+//	int i = 1;
 	DetailAST aPackageAST = getEnclosingPackageDeclaration(aTree);
 	String aPackageName = DEFAULT_PACKAGE;
 	if (aPackageAST != null)
@@ -1285,7 +1288,7 @@ public static String getFullTypeName(DetailAST aTree) {
 	return aPackageName + "." + aTypeName;
 }
 public static STType getSTType(DetailAST aTreeAST) {
-	int i = 1;
+//	int i = 1;
 	String aFullName = getFullTypeName(aTreeAST);
 //	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 //	if (anSTType == null) {
@@ -1357,7 +1360,7 @@ public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 	result = getEnclosingEnumDeclaration(anAST);
 	if (result != null)
 		return result;
-	System.err.println(" could not find a type declaration for:" + anAST);
+	System.err.println(" could not find a type declaration for:" + anAST + "" + anAST.getText());
 	return result;
 	
 //		return aClassDef;

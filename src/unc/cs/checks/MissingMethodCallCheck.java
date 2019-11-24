@@ -98,7 +98,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 		STType anSTType = getSTType(anAST);
 		
 		if (anSTType == null) {
-			System.err.println ("Did not find sttype for " + fullTypeName);
+			System.out.println ("MissingMethodCall:Did not find sttype for " + fullTypeName + " " + toStringList(aTree));
 			return true;
 		}
 

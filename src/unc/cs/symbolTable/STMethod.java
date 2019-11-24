@@ -47,5 +47,7 @@ public interface STMethod extends STNameable{
 	List<String> getGlobalsAssigned();
 	List<String> getGlobalsAccessed();
 	Integer getAccessToken();
+	List<STVariable> getLocalVariables();
+	List<STVariable> getParameters();
 
 }

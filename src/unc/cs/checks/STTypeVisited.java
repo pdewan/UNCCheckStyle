@@ -10,11 +10,16 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 public abstract class STTypeVisited extends TypeVisitedCheck {
 	@Override
 	public int[] getDefaultTokens() {
-		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF};
+		return new int[] {TokenTypes.CLASS_DEF, TokenTypes.PACKAGE_DEF, TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF};
 	} 
 
 	public STTypeVisited() {
 
+	}
+	
+	protected void checkSTType(DetailAST ast, STType anSTClass) {
+		if (!typeCheck(anSTClass))
+    		super.logType(ast);
 	}
 	protected abstract  boolean typeCheck(STType anSTClass) ;
 
@@ -23,8 +28,9 @@ public abstract class STTypeVisited extends TypeVisitedCheck {
     	
     	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
     			getSTClassByFullName(fullTypeName);
-    	if (!typeCheck(anSTClass))
-    		super.logType(ast);
+    	checkSTType(ast, anSTClass);
+//    	if (!typeCheck(anSTClass))
+//    		super.logType(ast);
 
     }
 

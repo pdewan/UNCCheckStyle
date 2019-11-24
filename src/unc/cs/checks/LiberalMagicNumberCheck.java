@@ -21,7 +21,9 @@ public class LiberalMagicNumberCheck extends ComprehensiveVisitCheck{
      * A key is pointing to the warning message text in "messages.properties"
      * file.
      */
-    public static final String MSG_KEY = "magic.number";
+//    public static final String MSG_KEY = "magic.number";
+    public static final String MSG_KEY = "liberalMagicNumber";
+
 
     /**
      * The token types that are allowed in the AST path from the

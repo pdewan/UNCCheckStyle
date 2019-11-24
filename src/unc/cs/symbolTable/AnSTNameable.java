@@ -11,7 +11,7 @@ public class AnSTNameable implements STNameable {
 	DetailAST ast;
 	String name;
 	Object data;
-	String[] components;
+//	String[] components;
 	public AnSTNameable( String name) {
 		super();
 		this.name = name;
@@ -20,7 +20,7 @@ public class AnSTNameable implements STNameable {
 		super();
 		this.ast = ast;
 		this.name = name;
-		components = ComprehensiveVisitCheck.splitCamelCaseHyphenDash(name);
+//		components = ComprehensiveVisitCheck.splitCamelCaseHyphenDash(name);
 	}
 	public AnSTNameable(DetailAST ast, String name, String aData) {
 		this(ast, name);
@@ -51,10 +51,10 @@ public class AnSTNameable implements STNameable {
 	public String toString() {
 		return name;
 	}
-	@Override
-	public String[] getComponents() {
-		return components;
-	}
+//	@Override
+//	public String[] getComponents() {
+//		return components;
+//	}
 	
 //	public static void main (String[] args) {
 //		String[] aSplit = ComprehensiveVisitCheck.splitCamelCase("hel_loABC23Goo-dbye");
