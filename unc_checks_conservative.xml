@@ -115,7 +115,23 @@
 		 <module name="ElseBranching">
 			<property name="severity" value="info" />	
 		</module>
-		
+		<module name="MnemonicNameCheck">
+			<property name="severity" value="warning" />
+			<property name="processType" value="false" />			
+			<property name="processLocals" value="false" />
+			<property name="processParameters" value="false" />
+			<property name="processGlobals" value="false" />
+			<property name="processPublicMethods" value="false" />
+			<property name="processNonPublicMethods" value="false" />
+			<property name="minimumLettersInNameComponent" value="1" />
+			<property name="minimumVowelsInNameComponent" value="0" />
+			<property name="printName" value="false" />
+			<property name="printComponents" value="false" />		
+		</module>
+		 <module name="MnemonicNameCheck">	
+		 	<property name="severity" value="info" />		 		
+			<property name="printComponents" value="true" />				
+		</module>
 		
 
 

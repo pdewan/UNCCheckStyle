@@ -1,5 +1,7 @@
 package unc.cs.checks;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Stack;
 
 import unc.cs.symbolTable.AnSTType;
@@ -21,6 +24,7 @@ import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
 import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
+import unc.tools.checkstyle.ProjectDirectoryHolder;
 import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
@@ -45,6 +49,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 //	public static final String MSG_KEY = "stBuilder";
 	public static final String MSG_KEY = "typeDefined";
+	public static  String configurationFileName;
+
+	public static  String configurationFileFullName;
+	public static final Map<String, String> classToConfiguredClass = new HashMap();
 	public static final String EXPECTED_TYPES = "expectedTypes";
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework", "test", "comp", "proj", "ass", "hw" };
@@ -74,7 +82,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected boolean overlappingTags = true;
 	protected boolean logNoMatches = true;
 
-
+    public void setConfigurationFileName(String aConfigurationFileName) {
+    	configurationFileName = aConfigurationFileName;
+    }
 	public void setDerivedTypeTags(String[] aDerivedTagsSpecifications) {
 		setExpectedTypesAndSpecifications(classToSpecifications, aDerivedTagsSpecifications);
 		setExpectedTypesAndSpecifications(interfaceToSpecifications, aDerivedTagsSpecifications);
@@ -114,6 +124,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected void newProjectDirectory(String aNewProjectDirectory) {
 		super.newProjectDirectory(aNewProjectDirectory);
 		maybeProcessExistingClasses();
+		maybeProcessConfigurationFileName();
 //		System.out.println ("Clearing symbol table");
 //		SymbolTableFactory.getOrCreateSymbolTable().clear();
 		
@@ -125,6 +136,28 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	public boolean getVisitInnerClasses() {
 		return visitInnerClasses;
+	}
+	protected void maybeProcessConfigurationFileName() {
+		String aProjectDirectory = ProjectDirectoryHolder.getCurrentProjectDirectory();
+		if (aProjectDirectory == null || configurationFileName == null) {
+			return;
+		}
+		configurationFileFullName = aProjectDirectory + "/" + configurationFileName;
+		Scanner aScanner;
+		try {
+			aScanner = new Scanner (new File (configurationFileFullName));
+		
+		while (aScanner.hasNext()) {
+			String aLine = aScanner.nextLine();
+			String[] aLineTokens = aLine.split(",");
+			if (aLineTokens.length != 2) {
+				return;
+			}
+			classToConfiguredClass.put(aLineTokens[0], aLineTokens[1]);
+		}
+		} catch (FileNotFoundException e) {
+			return;
+		}
 	}
 	protected void maybeProcessExistingClasses() {
 		if (existingClassesFilled) {
@@ -481,6 +514,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		List<STNameable> result = computedTypeTags();
 		List<STNameable> derivedTags = derivedTags(typeAST, isInterface?INTERFACE_START:CLASS_START);
 		addAllNoDuplicates(result, derivedTags);
+		String aConfiguredName = classToConfiguredClass.get(shortTypeName);
+		if (aConfiguredName != null) {
+			STNameable aNameable = new AnSTNameable(aConfiguredName);
+			derivedTags.add(aNameable);
+		}
 		return result;
 	}
 
