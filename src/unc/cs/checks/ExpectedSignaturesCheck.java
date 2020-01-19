@@ -23,7 +23,8 @@ import unc.tools.checkstyle.ProjectSTBuilderHolder;
 public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "expectedSignatures";
 
-	protected Map<String, String[]> typeToSignatures = new HashMap<>();
+//	protected Map<String, String[]> typeToStrings = new HashMap<>();
+//	protected String[] strings;
 	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
 	@Override
 	// get full name
@@ -42,30 +43,26 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 
 	// this should be in an abstract class
 	public void setExpectedSignaturesOfType(String aPattern) {
-		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
-		String aType = extractTypeAndSignatures[0].trim();
-		if (extractTypeAndSignatures.length < 2) {
-			System.err.println ("Illegal pattern:" + aPattern + " does not have: " + TYPE_SEPARATOR);
-			return;
-		}
-		String[] aSignatures = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
-		trim(aSignatures);
-		typeToSignatures.put(aType, aSignatures);
-		typeToMethods.put(aType, signaturesToMethods(aSignatures));
+		super.setExpectedStringsOfType(aPattern);
+//		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
+//		String aType = extractTypeAndSignatures[0].trim();
+//		if (extractTypeAndSignatures.length < 2) {
+//			System.err.println ("Illegal pattern:" + aPattern + " does not have: " + TYPE_SEPARATOR);
+//			return;
+//		}
+//		String[] aSignatures = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
+//		trim(aSignatures);
+//		typeToStrings.put(aType, aSignatures);
+//		typeToMethods.put(aType, signaturesToMethods(aSignatures));
 	}
 
-	/*
-	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int
-	 * |Height:int,
-	 * 
-	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
-	 */
-	public void setExpectedSignatures(String[] aPatterns) {
-		for (String aPattern : aPatterns) {
-			setExpectedSignaturesOfType(aPattern);
-		}
-
-	}
+	
+//	public void setExpectedSignatures(String[] aPatterns) {
+//		for (String aPattern : aPatterns) {
+//			setExpectedSignaturesOfType(aPattern);
+//		}
+//
+//	}
 
 	
 	protected void logSignatureNotMatched(DetailAST anAST, DetailAST aTreeAST, String aSignature) {
@@ -496,7 +493,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		
 //		String aSpecifiedType = findMatchingType(typeToSignatures.keySet(),
 //				anSTType);
-		List<String> aSpecifiedTypes = findMatchingTypes(typeToSignatures.keySet(),
+		List<String> aSpecifiedTypes = findMatchingTypes(typeToStrings.keySet(),
 				anSTType);
 		
 //		if (aSpecifiedType == null)

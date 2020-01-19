@@ -20,7 +20,8 @@ import unc.cs.symbolTable.SymbolTableFactory;
 public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	public static final String MSG_KEY = "beanProperties";
 
-	protected Map<String, String[]> typeToProperty = new HashMap<>();
+//	protected Map<String, String[]> typeToStrings = new HashMap<>();
+//	protected String[] strings;
 //	public static final String SEPARATOR = ">";
 
 //	public void doVisitToken(DetailAST ast) {
@@ -44,23 +45,27 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //				TokenTypes.PACKAGE_DEF };
 //	}
 
-	public void setExpectedPropertiesOfType(String aPattern) {
-//		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
-//		String aType = extractTypeAndProperties[0].trim();
-//		String[] aProperties = extractTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+//	public void setExpectedPropertiesOfType(String aPattern) {
+////		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
+////		String aType = extractTypeAndProperties[0].trim();
+////		String[] aProperties = extractTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+////
+////		typeToProperty.put(aType, aProperties);
+//		setExpectedPropertiesOfType(typeToStrings, aPattern);
+//		
+//	}
+//	public void setExpectedPropertiesOfType(Map<String, String[]> aTypeToProperty, String aPattern) {
+//		String[] extractedTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
+//		String aType = extractedTypeAndProperties[0].trim();
+////		String[] aProperties = extractTypeAndProperties[1].split("\\|");
+//		String[] aProperties = extractedTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
 //
-//		typeToProperty.put(aType, aProperties);
-		setExpectedPropertiesOfType(typeToProperty, aPattern);
-		
-	}
-	public void setExpectedPropertiesOfType(Map<String, String[]> aTypeToProperty, String aPattern) {
-		String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
-		String aType = extractTypeAndProperties[0].trim();
-//		String[] aProperties = extractTypeAndProperties[1].split("\\|");
-		String[] aProperties = extractTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
-
-		aTypeToProperty.put(aType, aProperties);
-	}
+//		aTypeToProperty.put(aType, aProperties);
+//	}
+//	
+//	protected boolean hasSingleType(String[] aStrings) {
+//		return aStrings.length > 0 && aStrings[0].contains(TYPE_SEPARATOR);
+//	}
 
 	/*
 	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int
@@ -69,9 +74,14 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
 	 */
 	public void setExpectedProperties(String[] aPatterns) {
-		for (String aPattern : aPatterns) {
-			setExpectedPropertiesOfType(aPattern);
-		}
+		super.setExpectedStrings(aPatterns);
+//		if (hasSingleType(aPatterns)) {
+//			strings = aPatterns;
+//			return;
+//		}
+//		for (String aPattern : aPatterns) {
+//			setExpectedPropertiesOfType(aPattern);
+//		}
 
 	}
 
@@ -293,31 +303,56 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 
 	}
 
-
+//	protected  String[] getStringArrayToBeChecked(STType anSTType, Map<String, String[]> aMap, String[] aStrings ){
+//		String[] aSpecifiedProperties = aStrings;
+//		if (aSpecifiedProperties == null) {
+//
+//			String aSpecifiedType = findMatchingType(aMap.keySet(), anSTType);
+//			if (aSpecifiedType == null)
+//				return aSpecifiedProperties; // the constraint does not apply to us
+//
+//			aSpecifiedProperties = aMap.get(aSpecifiedType);
+//		}
+//		return aSpecifiedProperties;
+//	}
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(
-//						getName(getEnclosingTypeDeclaration(aTree)));
-		STType anSTType = getSTType(aTree);
-		if (anSTType == null) {
-			System.out.println("ST Type is null!");
-			System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+		return super.doStringArrayBasedPendingCheck(anAST, aTree);
+		
+////		STType anSTType = getSTType(aTree);
+////		if (anSTType == null) {
+////			System.out.println("ST Type is null!");
+////			System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+////			 return true; // this was commented out
+////		}
+////		if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate
+////															// checking for
+////															// interfaces
+////			return true;
+////
+////		String[] aSpecifiedProperties = getStringArrayToBeChecked(anSTType, typeToStrings, strings);
+//		String[] aSpecifiedProperties = getStringArrayToBeChecked(anAST, aTree);
+//		if (aSpecifiedProperties == null) {
 //			return true;
-		}
-		if (anSTType.isEnum() ||
-				anSTType.isInterface()) // why duplicate checking for interfaces
-			return true;
-		String aSpecifiedType = findMatchingType(typeToProperty.keySet(),
-				anSTType);
-		if (aSpecifiedType == null)
-			return true; // the constraint does not apply to us
-
+//		}
+//		
+////		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
+//		Map<String, PropertyInfo> aPropertyInfos = stTypeToBeChecked.getPropertyInfos();
+//
+//		if (aPropertyInfos == null)
+//			return null;
+//
+//		Map<String, PropertyInfo> anUmmatchedPropertyInfos = new HashMap(aPropertyInfos);
+//		return matchProperties(aSpecifiedProperties, anUmmatchedPropertyInfos, aTree);
+	}
+	
+	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String[] aStrings) {
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
-		if (aPropertyInfos == null) 
+
+		if (aPropertyInfos == null)
 			return null;
-		String[] aSpecifiedProperties = typeToProperty.get(aSpecifiedType);
+
 		Map<String, PropertyInfo> anUmmatchedPropertyInfos = new HashMap(aPropertyInfos);
-		return matchProperties(aSpecifiedProperties, anUmmatchedPropertyInfos, aTree);
+		return matchProperties(aStrings, anUmmatchedPropertyInfos, aTree);
 	}
 
 	@Override

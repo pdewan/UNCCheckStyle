@@ -513,11 +513,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected List<STNameable> computedAndDerivedTypeTags() {
 		List<STNameable> result = computedTypeTags();
 		List<STNameable> derivedTags = derivedTags(typeAST, isInterface?INTERFACE_START:CLASS_START);
-		addAllNoDuplicates(result, derivedTags);
 		String aConfiguredName = classToConfiguredClass.get(shortTypeName);
+		
+		addAllNoDuplicates(result, derivedTags);
 		if (aConfiguredName != null) {
 			STNameable aNameable = new AnSTNameable(aConfiguredName);
-			derivedTags.add(aNameable);
+			result.add(aNameable);
 		}
 		return result;
 	}
@@ -546,7 +547,6 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			return derivedTags;
 		}
 		String aText = toStringList(anAST).trim();
-		int i = 1;
 		for (String aKey : constructToSpecifications.keySet()) {
 			if (isDerivedTag(anAST, aText, constructToSpecifications.get(aKey), aPatternPrefix)) {
 				derivedTags.add(new AnSTNameable(aKey));

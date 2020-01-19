@@ -25,7 +25,7 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	}
 
 	public BeanPatternCheck() {
-		super.setExpectedPropertiesOfType(composeProperties());
+		super.setExpectedStringsOfType(composeProperties());
 		specifiedPatternName = composePatternName();
 		alternatePatternName = composeAlternatePatternName();
 		// this is tricky as the expected pattern check may happen before the checks

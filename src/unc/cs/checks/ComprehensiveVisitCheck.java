@@ -2477,9 +2477,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 	}
 
-	boolean doCheck(STType anSTType) {
-		return true;
-	}
+//	protected boolean doCheck(STType anSTType) {
+//		return true;
+//	}
 
 	protected void log(String aMessageKey, FullIdent ast, DetailAST aTreeAST,
 			Object... anExplanations) {

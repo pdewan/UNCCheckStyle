@@ -51,6 +51,7 @@ public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
 		return MSG_KEY;
 	}
 	@Override
+	protected
 	boolean doCheck(STType anSTType) {
 		// TODO Auto-generated method stub
 		return super.doCheck(anSTType) && !anSTType.isInterface();

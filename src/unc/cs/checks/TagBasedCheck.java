@@ -3,6 +3,7 @@ package unc.cs.checks;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -61,6 +62,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected Map<String, String> specificationVariablesToUnifiedValues = new Hashtable<>();
 	protected STNameable structurePattern;
 	public static final DetailAST noAST = new DetailAST();
+//	protected STType stTypeToBeChecked;
 
 
 	
@@ -170,7 +172,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
    }
 	public  boolean matchesSomeSpecificationTags (Collection<STNameable> aStoredTags, Collection<String> aSpecifications) {
 		for (String aSpecificationTag:aSpecifications) {
-			if (aSpecificationTag.equals(MATCH_ANYTHING) || matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
+			if (aSpecificationTag.equals(MATCH_ANYTHING) || 
+					matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
 				return true;
 		}
 		return false;
@@ -1464,6 +1467,132 @@ public static boolean isPrimitive(String aType) {
 public static boolean isOEAtomic(String aType) {
 	return aType.equals("String") || isPrimitive(aType);
 }
+
+protected boolean hasSingleType(String[] aStrings) {
+	return aStrings.length > 0 && !aStrings[0].contains(TYPE_SEPARATOR);
+}
+protected Map<String, String[]> typeToStrings = new HashMap<>();
+protected String[] strings;
+protected void setExpectedStrings(String[] aPatterns) {
+//	if (aPatterns.length == 0) {
+//		return;
+//	}
+//	if (!aPatterns[0].contains(TYPE_SEPARATOR)) {
+//		properties = aPatterns;
+//		return;
+//	}
+	if (hasSingleType(aPatterns)) {
+		strings = aPatterns;
+		return;
+	}
+	for (String aPattern : aPatterns) {
+		setExpectedStringsOfType(aPattern);
+	}
+
+}
+public void setExpectedStringsOfType(String aPattern) {
+//	String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
+//	String aType = extractTypeAndProperties[0].trim();
+//	String[] aProperties = extractTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+//
+//	typeToProperty.put(aType, aProperties);
+	setExpectedStringsOfType(typeToStrings, aPattern);
+	
+}
+public void setExpectedStringsOfType(Map<String, String[]> aTypeToProperty, String aPattern) {
+	String[] extractedTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
+	String aType = extractedTypeAndProperties[0].trim();
+//	String[] aProperties = extractTypeAndProperties[1].split("\\|");
+	String[] aProperties = extractedTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+
+	aTypeToProperty.put(aType, aProperties);
+}
+protected  String[] getStringArrayToBeChecked(STType anSTType, Map<String, String[]> aMap, String[] aStrings ){
+	String[] aSpecifiedProperties = aStrings;
+	if (aSpecifiedProperties == null) {
+
+		String aSpecifiedType = findMatchingType(aMap.keySet(), anSTType);
+		if (aSpecifiedType == null)
+			return aSpecifiedProperties; // the constraint does not apply to us
+
+		aSpecifiedProperties = aMap.get(aSpecifiedType);
+	}
+	return aSpecifiedProperties;
+}
+protected  String[] getStringArrayToBeChecked(DetailAST anAST, DetailAST aTree){
+	STType anSTType = getSTType(aTree);
+	if (anSTType == null) {
+		System.out.println("ST Type is null!");
+		System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+		 return null; // this was commented out
+	}
+	if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate
+														// checking for
+														// interfaces
+		return null;
+	String[] retVal = strings;
+	if (retVal == null) {
+
+		String aSpecifiedType = findMatchingType(typeToStrings.keySet(), anSTType);
+		if (aSpecifiedType == null)
+			return retVal; // the constraint does not apply to us
+
+		retVal = typeToStrings.get(aSpecifiedType);
+	}
+	return retVal;
+}
+protected  Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String[] aStrings) {
+	return true;
+}
+ protected boolean doCheck(STType anSTType) {
+	return true;
+}
+
+public Boolean doStringArrayBasedPendingCheck(DetailAST anAST, DetailAST aTree) {
+	STType anSTType = getSTType(aTree);
+	if (anSTType == null) {
+		System.out.println("ST Type is null!");
+		System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+		 return true; // this was commented out
+	}
+	if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate
+														// checking for
+														// interfaces
+		return true;
+	if (!doCheck(anSTType)) {
+		return true;
+	}
+	String[] aStrings = strings;
+	Boolean retVal = true;
+	if (aStrings != null) {
+		return processStrings(anAST, aTree, anSTType, aStrings);
+	}
+//	if (aStrings == null) {
+
+//		String aSpecifiedType = findMatchingType(typeToStrings.keySet(), anSTType);
+		List<String> aSpecifiedTypes = findMatchingTypes(typeToStrings.keySet(),
+				anSTType);
+		if (aSpecifiedTypes == null) {
+			return true;
+		}
+//		Boolean retVal = true;
+		for (String aSpecifiedType:aSpecifiedTypes) {
+
+			aStrings = typeToStrings.get(aSpecifiedType);
+			if (aStrings == null) {
+				retVal = true;
+				continue;
+			}
+			retVal = processStrings(anAST, aTree, anSTType, aStrings);
+		}
+//	}
+//	if (aStrings == null) {
+//		return true;
+//	}
+//	return processStrings(anAST, aTree, anSTType, aStrings);
+	return retVal;
+}
+
 
  static {
  	javaLangTypesSet = new HashSet();

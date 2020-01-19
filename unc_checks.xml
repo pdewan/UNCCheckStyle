@@ -130,6 +130,89 @@
 			<property name="printComponents" value="true" />				
 		</module>
 		 
+		
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="KeyValueClass" />				
+			<property name="expectedProperties" 
+			         value="
+						 Key:.*, 
+						 Value:.*				
+						" 
+			/>
+		</module>
+		
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ModelClass" />				
+			<property name="expectedProperties" 
+			         value="
+						 InputString:String, 
+						 Result:Map				
+						" 
+			/>
+		</module>
+		
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ModelClass" />				
+			<property name="expectedProperties" 
+			         value="
+						 InputString:String, 
+						" 
+			/>
+		</module>
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="MapperFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Mapper:.*				
+						" 
+			/>
+		</module>
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ReducerFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Reducer:.*				
+						" 
+			/>
+		</module>
+		
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="MapperFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Mapper:.*				
+						" 
+			/>
+		</module>
+		
+		 <module name="ExpectedSetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ReducerFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Reducer:.*				
+						" 
+			/>
+		</module>
+	
+		<module name="ClassIsGeneric">
+			<property name="severity" value="warning" />		
+			<property name="includeTypeTags" value="KeyValueClass" />
+		</module>
+		
+		
+		
+		 
 
 	</module>
 	<module name="TreeWalker">		

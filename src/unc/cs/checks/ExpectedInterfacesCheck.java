@@ -38,6 +38,7 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 		return anSTType.getAllInterfaces();
 	}
 	@Override
+	protected
 	boolean doCheck(STType anSTType) {
 		return !anSTType.isInterface() && !anSTType.isEnum();
 	}

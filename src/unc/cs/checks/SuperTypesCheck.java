@@ -37,6 +37,7 @@ public  class SuperTypesCheck extends ExpectedTypesCheck {
 	}
 
 	@Override
+	protected
 	boolean doCheck(STType anSTType) {
 		// TODO Auto-generated method stub
 		return !anSTType.isEnum();
