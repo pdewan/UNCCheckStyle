@@ -1499,13 +1499,17 @@ public void setExpectedStringsOfType(String aPattern) {
 	setExpectedStringsOfType(typeToStrings, aPattern);
 	
 }
-public void setExpectedStringsOfType(Map<String, String[]> aTypeToProperty, String aPattern) {
-	String[] extractedTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
-	String aType = extractedTypeAndProperties[0].trim();
-//	String[] aProperties = extractTypeAndProperties[1].split("\\|");
-	String[] aProperties = extractedTypeAndProperties[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+protected void setExpectedStringsOfType(Map<String, String[]> aTypeToStrings, String aType, String[] aStrings) {
+	aTypeToStrings.put(aType, aStrings);
+}
 
-	aTypeToProperty.put(aType, aProperties);
+protected void setExpectedStringsOfType(Map<String, String[]> aTypeToStrings, String aPattern) {
+	String[] extractedTypeAndStrings = aPattern.split(TYPE_SEPARATOR);
+	String aType = extractedTypeAndStrings[0].trim();
+//	String[] aProperties = extractTypeAndProperties[1].split("\\|");
+	String[] aStrings = extractedTypeAndStrings[1].split(TagBasedCheck.SET_MEMBER_SEPARATOR);
+	setExpectedStringsOfType(aTypeToStrings, aType, aStrings);
+//	aTypeToProperty.put(aType, aProperties);
 }
 protected  String[] getStringArrayToBeChecked(STType anSTType, Map<String, String[]> aMap, String[] aStrings ){
 	String[] aSpecifiedProperties = aStrings;

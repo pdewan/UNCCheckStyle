@@ -44,6 +44,7 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	// this should be in an abstract class
 	public void setExpectedSignaturesOfType(String aPattern) {
 		super.setExpectedStringsOfType(aPattern);
+	
 //		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
 //		String aType = extractTypeAndSignatures[0].trim();
 //		if (extractTypeAndSignatures.length < 2) {
@@ -54,6 +55,11 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 //		trim(aSignatures);
 //		typeToStrings.put(aType, aSignatures);
 //		typeToMethods.put(aType, signaturesToMethods(aSignatures));
+	}
+	protected void setExpectedStringsOfType(Map<String, String[]> aTypeToProperties, String aType, String[] aStrings) {
+		super.setExpectedStringsOfType(aTypeToProperties, aType,  aStrings);
+		typeToMethods.put(aType, signaturesToMethods(aStrings));
+
 	}
 
 	
