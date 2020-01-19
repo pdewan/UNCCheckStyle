@@ -30,7 +30,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	
 
 
-	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
+//	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
 //	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
 
 	
@@ -38,15 +38,15 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	
 
 	// this should be in an abstract class
-	public void setExpectedSignaturesOfType(String aPattern) {
-		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
-		String aType = extractTypeAndSignatures[0].trim();
-		String[] aSignaturesWithTarget = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
-		trim (aSignaturesWithTarget);
-		typeToSignaturesWithTargets.put(aType, aSignaturesWithTarget);
-//		typeToMethods.put(aType, signaturesToMethods(aSignaturesWithTarget));
-
-	}
+//	public void setExpectedSignaturesOfType(String aPattern) {
+//		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
+//		String aType = extractTypeAndSignatures[0].trim();
+//		String[] aSignaturesWithTarget = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
+//		trim (aSignaturesWithTarget);
+//		typeToSignaturesWithTargets.put(aType, aSignaturesWithTarget);
+////		typeToMethods.put(aType, signaturesToMethods(aSignaturesWithTarget));
+//
+//	}
 
 	/*
 	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int
@@ -54,12 +54,12 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	 * 
 	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
 	 */
-	public void setExpectedCalls(String[] aPatterns) {
-		for (String aPattern : aPatterns) {
-			setExpectedSignaturesOfType(aPattern);
-		}
-
-	}
+//	public void setExpectedCalls(String[] aPatterns) {
+//		for (String aPattern : aPatterns) {
+//			setExpectedSignaturesOfType(aPattern);
+//		}
+//
+//	}
     // "fail" if method matches
 	
 //	protected abstract boolean returnValueOnMatch();
@@ -68,7 +68,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	protected Boolean check(STType aCallingType, DetailAST ast,
 			String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
 		matchedSignature = "";
-		String[] aSignaturesWithTargets = typeToSignaturesWithTargets.get(specifiedType);
+//		String[] aSignaturesWithTargets = typeToSignaturesWithTargets.get(specifiedType);
+		String[] aSignaturesWithTargets = typeToStrings.get(specifiedType);
+
 		for (String aSignatureWithTarget:aSignaturesWithTargets) {
 			
 //			Boolean retVal = matches(toShortTypeName (aCallingType.getName()),aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
@@ -540,18 +542,20 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	}
 	
 	String specifiedType;
-
+	/**
+	 * This method should never be called and be overridden
+	 */
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 		specifiedType = null;
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(
-//						getName(getEnclosingTypeDeclaration(aTree)));
+
 		STType anSTType = getSTType(aTree);
 
 		if (anSTType.isEnum() || anSTType.isInterface())
 			return true;
 		
-		specifiedType = findMatchingType(typeToSignaturesWithTargets.keySet(),
+//		specifiedType = findMatchingType(typeToSignaturesWithTargets.keySet(),
+		specifiedType = findMatchingType(typeToStrings.keySet(),
+
 				anSTType);
 		if (specifiedType == null)
 			return true; // the constraint does not apply to us

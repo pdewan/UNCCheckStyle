@@ -214,41 +214,29 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 
 	@Override
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
-//		DetailAST aMethodNameAST = getLastDescendent(ast);
-//		DetailAST aLeftMostMethodTargetAST = aMethodNameAST
-//				.getPreviousSibling();
-//		String shortMethodName0 = aMethodNameAST.getText();
+
 		CallInfo aCallInfo = null;
-//		CallInfo aCallInfo = registerMethodCallAndtoNormalizedParts(ast, aTreeAST);
 		// this is bad, we are demultiplexng and then multiplexing, need to do this better at some point
 		if (ast.getType() == TokenTypes.CTOR_CALL)
 			aCallInfo = registerConstructorCallAndtoNormalizedParts(ast, aTreeAST);
 		else
 			aCallInfo = registerMethodCallAndtoNormalizedParts(ast, aTreeAST);
-//		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
 		String shortMethodName = toShortTypeName(aNormalizedLongName);
 
 
-		// System.out.println("Method text:" +
-		// getLastDescendent(ast).getText());
 		STType anSTType = getSTType(aTreeAST);
-//		String aCallingType = toShortTypeName(anSTType.getName());
 		Boolean checkResult = check(anSTType, ast, shortMethodName,
 				aNormalizedLongName, aCallInfo);
 		if (checkResult == null) {
-			// pendingChecks().add(ast);
 			return null;
 		}
-		// if (!check(ast, shortMethodName, aNormalizedLongName,
-		// aNormalizedParts))
+
 		if (!checkResult) {
-//			log(ast, aTreeAST, shortMethodName);
-//			log(ast, aTreeAST, aCallInfo);
+
 			log(ast, aTreeAST, shortMethodName, aNormalizedLongName,
 					aCallInfo);
 
-			// log(ast.getLineNo(), msgKey(), getLastDescendent(ast).getText());
 		}
 		return checkResult;
 

@@ -175,6 +175,16 @@
 			/>
 		</module>
 		
+		<module name="MissingMethodCall">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ControllerClass" />					
+			<property name="expectedCalls"
+				value="
+				    .*!setInputString:String->void,
+				" 
+			/>
+		</module>
+		
 		 <module name="ExpectedGetters">
 			<property name="severity" value="warning" />	
 			<property name="includeTypeTags" value="MapperFactory" />				

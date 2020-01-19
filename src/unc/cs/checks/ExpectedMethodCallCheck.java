@@ -18,15 +18,22 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
-
+/**
+ * 
+ * An Info thing, gives message if expected method called.
+ * Missing method call gives message if expected method not called
+ * Should make this a subclass of MissingMethodCallCheck
+ *
+ */
 public  class ExpectedMethodCallCheck extends MethodCallCheck {
 	public static final String MSG_KEY = "expectedMethodCall";
 	
 
 	public void setExpectedCalls(String[] aPatterns) {
-		for (String aPattern : aPatterns) {
-			setExpectedSignaturesOfType(aPattern);
-		}
+		super.setExpectedStrings(aPatterns);
+//		for (String aPattern : aPatterns) {
+//			setExpectedSignaturesOfType(aPattern);
+//		}
 
 	}
 	
