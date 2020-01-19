@@ -29,7 +29,9 @@ public  class VectorPatternCheck extends ExpectedSignaturesCheck {
 //    public static final String MSG_KEY = "listPattern";
    
     public VectorPatternCheck() {
-		super.setExpectedSignaturesOfType(VECTOR_SPECIFICATION);
+//		super.setExpectedSignaturesOfType(VECTOR_SPECIFICATION);
+		super.setExpectedStringsOfType(VECTOR_SPECIFICATION);
+
 	}
     
 //	@Override

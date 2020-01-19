@@ -29,7 +29,9 @@ public  class ListPatternCheck extends ExpectedSignaturesCheck {
 //    public static final String MSG_KEY = "listPattern";
    
     public ListPatternCheck() {
-		super.setExpectedSignaturesOfType(LIST_SPECIFICATION);
+//		super.setExpectedSignaturesOfType(LIST_SPECIFICATION);
+		super.setExpectedStringsOfType(LIST_SPECIFICATION);
+
 	}
     
 //	@Override

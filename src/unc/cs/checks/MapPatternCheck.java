@@ -29,7 +29,9 @@ public  class MapPatternCheck extends ExpectedSignaturesCheck {
 //    public static final String MSG_KEY = "listPattern";
    
     public MapPatternCheck() {
-		super.setExpectedSignaturesOfType(MAP_SPECIFICATION);
+//		super.setExpectedSignaturesOfType(MAP_SPECIFICATION);
+		super.setExpectedStringsOfType(MAP_SPECIFICATION);
+
 	}
     
 //	@Override

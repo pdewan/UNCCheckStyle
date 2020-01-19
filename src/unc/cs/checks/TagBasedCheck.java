@@ -1482,13 +1482,17 @@ protected void setExpectedStrings(String[] aPatterns) {
 //		return;
 //	}
 	if (hasSingleType(aPatterns)) {
-		strings = aPatterns;
+//		strings = aPatterns;
+		setStrings(aPatterns);
 		return;
 	}
 	for (String aPattern : aPatterns) {
 		setExpectedStringsOfType(aPattern);
 	}
 
+}
+protected void setStrings(String[] aStrings) {
+	strings = aStrings;	
 }
 public void setExpectedStringsOfType(String aPattern) {
 //	String[] extractTypeAndProperties = aPattern.split(TYPE_SEPARATOR);
@@ -1545,7 +1549,7 @@ protected  String[] getStringArrayToBeChecked(DetailAST anAST, DetailAST aTree){
 	}
 	return retVal;
 }
-protected  Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String[] aStrings) {
+protected  Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
 	return true;
 }
  protected boolean doCheck(STType anSTType) {
@@ -1553,7 +1557,13 @@ protected  Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTT
 }
 
 public Boolean doStringArrayBasedPendingCheck(DetailAST anAST, DetailAST aTree) {
-	STType anSTType = getSTType(aTree);
+	STType anSTType = null;
+	if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
+		anSTType = getSTType(anAST);
+	} else {
+		anSTType =getSTType(aTree);
+	}
+//	STType anSTType = getSTType(aTree);
 	if (anSTType == null) {
 		System.out.println("ST Type is null!");
 		System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
@@ -1569,7 +1579,7 @@ public Boolean doStringArrayBasedPendingCheck(DetailAST anAST, DetailAST aTree) 
 	String[] aStrings = strings;
 	Boolean retVal = true;
 	if (aStrings != null) {
-		return processStrings(anAST, aTree, anSTType, aStrings);
+		return processStrings(anAST, aTree, anSTType, null, aStrings);
 	}
 //	if (aStrings == null) {
 
@@ -1587,7 +1597,10 @@ public Boolean doStringArrayBasedPendingCheck(DetailAST anAST, DetailAST aTree) 
 				retVal = true;
 				continue;
 			}
-			retVal = processStrings(anAST, aTree, anSTType, aStrings);
+			Boolean aCurrentMatch = processStrings(anAST, aTree, anSTType, aSpecifiedType, aStrings);
+			if (retVal != null) {
+				retVal = aCurrentMatch == null ? null : aCurrentMatch && retVal;
+			}
 		}
 //	}
 //	if (aStrings == null) {

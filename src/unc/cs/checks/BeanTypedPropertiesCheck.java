@@ -344,8 +344,8 @@ public abstract class BeanTypedPropertiesCheck extends BeanPropertiesCheck {
 //		Map<String, PropertyInfo> anUmmatchedPropertyInfos = new HashMap(aPropertyInfos);
 //		return matchProperties(aSpecifiedProperties, anUmmatchedPropertyInfos, aTree);
 	}
-	
-	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String[] aStrings) {
+	@Override
+	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 
 		if (aPropertyInfos == null)
