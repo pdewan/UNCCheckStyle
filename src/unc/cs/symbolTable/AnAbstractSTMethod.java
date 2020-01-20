@@ -248,8 +248,12 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			if (callingMethods == null)
 				callingMethods = new HashSet();
 			callingMethods.add(aMethod);
-			if (aMethod.getDeclaringClass().equals(getDeclaringClass()))
+			if (aMethod.getDeclaringClass().equals(getDeclaringClass())) {
+				if (internallyCallingMethods == null) {
+					internallyCallingMethods = new HashSet();
+				}
 				internallyCallingMethods.add(aMethod);
+			}
 		}
 		
 		public static void setCalledMethods(STMethod aCallingMethod, Set<STMethod> aCalledMethods) {

@@ -443,6 +443,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public Boolean matchesCallingMethod(STType anSTType,
 			STMethod aSpecifiedMethod, STMethod anActualMethod) {
+		// added not tested
+		if (aSpecifiedMethod == null) {
+			return true;
+		}
+		
 		// int i = 0;
 		Boolean aMatch = matchSignature(aSpecifiedMethod, anActualMethod);
 		if (aMatch == null) {

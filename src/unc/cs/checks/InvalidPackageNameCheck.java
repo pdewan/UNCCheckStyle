@@ -44,6 +44,9 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 			if (packageName.startsWith(aPrefix)) {
 				return;
 			}
+			if (packageName.matches(aPrefix)) {
+				return;
+			}
 		}
 		
 		log(ast,  packageName, Arrays.asList(prefixes).toString().replaceAll(",", " "));

@@ -1018,17 +1018,27 @@ public static boolean isMaybeProjectImport (String aPackageName, String aClassNa
 //	}
 //	return retVal;
 //}
-
+/**
+ * 
+ *External prefixes gets priority over  internal
+ */
 public static boolean isProjectImport(String aFullName) {
-	 for (String aPrefix:STBuilderCheck.getProjectPackagePrefixes()) {
-		 if (/*aPrefix.equals("*") ||*/ aFullName.startsWith(aPrefix)) return true;
-	 }
 	for (String aString:STBuilderCheck.getExternalPackagePrefixes()) {
 		if (aFullName.startsWith(aString)) {
 //			externalImports.add(aFullName);
 			return false;
 		}
 	}
+	 for (String aPrefix:STBuilderCheck.getProjectPackagePrefixes()) {
+		 if (/*aPrefix.equals("*") ||*/ aFullName.startsWith(aPrefix)) return true;
+		 if (aFullName.matches(aPrefix)) return true;
+	 }
+//	for (String aString:STBuilderCheck.getExternalPackagePrefixes()) {
+//		if (aFullName.startsWith(aString)) {
+////			externalImports.add(aFullName);
+//			return false;
+//		}
+//	}
 
 	 Set<String> aPackageNames = SymbolTableFactory.getOrCreateSymbolTable().getPackageNames();
 	 for (String aPackageName:aPackageNames) {

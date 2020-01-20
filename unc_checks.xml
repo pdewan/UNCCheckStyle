@@ -185,6 +185,47 @@
 			/>
 		</module>
 		
+		<module name="MissingMethodCall">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ViewClass" />					
+			<property name="expectedCalls"
+				value="
+				    propertyChange#.*!tracePropertyChange:PropertyChangeEvent->void,
+				" 
+			/>
+		</module>
+		
+		
+		<module name="MissingMethodText">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ModelClass" />					
+			<property name="expectedCalls"
+				value="
+				    toString#.*EXPR.*MODEL.*,
+				" 
+			/>			
+		</module>
+		
+		<module name="MissingMethodText">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ViewClass" />					
+			<property name="expectedCalls"
+				value="
+				    toString#.*EXPR.*VIEW.*,
+				" 
+			/>
+		</module>
+		
+		<module name="MissingMethodText">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ControllerClass" />					
+			<property name="expectedCalls"
+				value="
+				    toString#.*EXPR.*CONTROLLER.*,
+				" 
+			/>
+		</module>
+		
 		 <module name="ExpectedGetters">
 			<property name="severity" value="warning" />	
 			<property name="includeTypeTags" value="MapperFactory" />				

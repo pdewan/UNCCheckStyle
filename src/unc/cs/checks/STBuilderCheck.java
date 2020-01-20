@@ -56,7 +56,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static final String EXPECTED_TYPES = "expectedTypes";
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework", "test", "comp", "proj", "ass", "hw" };
-	static String[] externalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen"};
+	static String[] externalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen", "util", "gradingTools" };
 	static int lastSequenceNumberOfExpectedTypes = -1;
 	protected String checksName;
 	protected  String[] existingClasses = {};
