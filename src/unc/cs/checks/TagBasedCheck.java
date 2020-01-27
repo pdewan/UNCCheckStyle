@@ -1260,6 +1260,9 @@ public static DetailAST getEnclosingTreeDeclaration(DetailAST anAST) {
 		root = aParent;
 	}
 	while (true) {
+		if (root.getType() == TokenTypes.PACKAGE_DEF) {
+			break;
+		}
 		DetailAST aLeftSibling = root.getPreviousSibling();
 		if (aLeftSibling == null)
 			break;
@@ -1316,13 +1319,15 @@ public static STType getSTType(DetailAST aTreeAST) {
 	return result;
 	
 }
+public static final int OBSERVED_IMPORT_TYPE = 152;
 public static DetailAST getOutermostTypeDeclaration (DetailAST ast) {
 	DetailAST anEnclosingType = getEnclosingTypeDeclaration(ast);
 	if (anEnclosingType == null) {
 		return null; // this should never happen on first call
 	}
 	DetailAST aPreviousAST = anEnclosingType.getPreviousSibling(); 
-	if (aPreviousAST == null || aPreviousAST.getType() == TokenTypes.IMPORT || aPreviousAST.getType() == TokenTypes.PACKAGE_DEF) // just check if it is class def?
+	int aPreviousASTType = aPreviousAST.getType();
+	if (aPreviousAST == null || aPreviousAST.getType() == OBSERVED_IMPORT_TYPE || aPreviousAST.getType() == TokenTypes.IMPORT || aPreviousAST.getType() == TokenTypes.PACKAGE_DEF) // just check if it is class def?
 		return anEnclosingType; // this means no package
 	DetailAST anAncestorType = getOutermostTypeDeclaration(aPreviousAST); // keep going left till you find one
 	if (anAncestorType == null) {

@@ -2331,31 +2331,30 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		log(aMessageKey, ast, aTreeAST, anExplanations);
 
 	}
+	
 
 	// move this up to ComprehensiveVisitCheck
 	protected void log(DetailAST ast, DetailAST aTreeAST,
 			Object... anExplanations) {
+		String aMsgKey = isInfo()?
+				msgKeyInfo():
+				msgKeyWarning();
+		
+//		log(msgKey(), ast, aTreeAST, anExplanations);
+		log(aMsgKey, ast, aTreeAST, anExplanations);
 
-		log(msgKey(), ast, aTreeAST, anExplanations);
 
 	}
 
 	// move this up to ComprehensiveVisitCheck
 	protected void log(FullIdent ast, DetailAST aTreeAST,
 			Object... anExplanations) {
-		// String aSourceName =
-		// shortFileName(astToFileContents.get(aTreeAST).getFilename());
-		// if (aTreeAST == currentTree) {
-		// log(ast.getLineNo(),
-		// msgKey(),
-		// aMethodName,
-		// aSourceName + ":" + ast.getLineNo());
-		// } else {
-		// log(0, msgKey(), aMethodName,
-		// aSourceName + ":"
-		// + ast.getLineNo());
-		// }
-		log(msgKey(), ast, aTreeAST, anExplanations);
+		String aMsgKey = isInfo()?
+				msgKeyInfo():
+				msgKeyWarning();
+		log(aMsgKey, ast, aTreeAST, anExplanations);
+
+//		log(msgKey(), ast, aTreeAST, anExplanations);
 
 	}
 

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import unc.cs.symbolTable.AnSTTypeFromClass;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -33,7 +34,9 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
 	 */
-	public static final String MSG_KEY = "variableHasClassType";
+	public static final String MSG_KEY_WARNING = "variableHasClassType";
+	public static final String MSG_KEY_INFO = "variableHasInterfaceType";
+
 //	Map<DetailAST, List<DetailAST>> astToPendingChecks = new HashMap();
 //	Map<DetailAST, FileContents> astToFileContents = new HashMap();
 	// List<FullIdent> pendingTypeUses = new ArrayList();
@@ -94,11 +97,11 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 //		}
 //	}
 
-	@Override
-	protected String msgKey() {
-		// TODO Auto-generated method stub
-		return MSG_KEY;
-	}
+//	@Override
+//	protected String msgKey() {
+//		// TODO Auto-generated method stub
+//		return MSG_KEY;
+//	}
 
 	/**
 	 * Checks return type of a given method.
@@ -200,8 +203,55 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 //		}
 //		return false;
 //	}
-	protected boolean checkType(STType anSTClass) {
-		return anSTClass.isInterface();
+	protected final String[] tagInterfacesArray = {"Serializable", "Remote"};
+	protected final Set<String> tagInterfaces = new HashSet (Arrays.asList(tagInterfacesArray));
+	protected boolean includesOnlyTagInterface(List<STNameable> anInterfaces) {
+		if (anInterfaces.size() != 1) {
+			return false;
+		}
+		String anInterface = anInterfaces.get(0).getName();
+		return tagInterfaces.contains(anInterface);
+	}
+	protected List<String> getNonTagIntefaces(List<STNameable> aNameableList) {
+		List<String> retVal = new ArrayList();
+		for (STNameable aNameable:aNameableList) {
+			String aName = aNameable.getName();
+			if (tagInterfaces.contains(aName)) {
+				continue;
+			}
+			retVal.add(aName);
+		}
+		return retVal;
+	}
+	protected Boolean checkType(STType anSTClass) {
+		if (anSTClass.isInterface())
+			return true;
+		List<STNameable> anAllInterfaces = anSTClass.getAllInterfaces();
+		STNameable[] aDeclaredInterfaces = anSTClass.getDeclaredInterfaces();
+		List<String> aNormalizedInterfaces = getNonTagIntefaces(Arrays.asList(aDeclaredInterfaces));
+		if (aNormalizedInterfaces.size() != 0) {
+			return false; 
+		}
+		
+		
+		STNameable aSuperType = anSTClass.getSuperClass();
+		
+		if (anAllInterfaces == null && aSuperType != null) { // has superclass, but we do not have its symbol table
+			return null;
+		}
+		if (anAllInterfaces == null) { 
+			System.err.println("all interfaces should not be null");
+			return null;
+		}
+		aNormalizedInterfaces = getNonTagIntefaces(anAllInterfaces);
+		
+		return anAllInterfaces != null && 
+				
+				(aNormalizedInterfaces.size() == 0) ;
+		
+		// if it has no interface, then interface could not have been used
+		
+//		return anSTClass.isInterface();
 	}
 	@Override
 	public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
@@ -211,45 +261,35 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 		String aTypeName = anIdentifierType.getText();
 		STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
 				getSTClassByShortName(aTypeName);
+		
 	
 		if (anSTClass instanceof AnSTTypeFromClass)
 			return true;
 		if (anSTClass == null)
 //		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
 			return null;
-		if (anSTClass.isEnum() || anSTClass.isInterface())
+		if (anSTClass.isEnum() )
+				//|| anSTClass.isInterface())
 			return true;
-		if (!checkType(anSTClass)) {
-//			 String aSourceName =
-//			 shortFileName(astToFileContents.get(aTreeAST).getFilename());
-//			if (aTreeAST == currentTree) {
-//				log(anIdentifierType.getLineNo(),
-//						anIdentifierType.getColumnNo(), msgKey(),
-//						anIdentifierType.getText(), anIdentifier.getText(),
-//						aSourceName + ":" + anIdentifier.getLineNo());
-//			} else {
-//				log(0, msgKey(), anIdentifierType.getText(),
-//						anIdentifier.getText(), aSourceName + ":"
-//								+ anIdentifier.getLineNo());
-//			}
+		Boolean aTypeCheck = checkType(anSTClass);
+		if (aTypeCheck == null)
+			return null;
+		
+		boolean aDoLog = 
+				isInfo()?
+						aTypeCheck && anSTClass.isInterface():
+						!aTypeCheck;
+//		if (!aTypeCheck)
+		if (aDoLog) {
+    		
+		
+//		if (!checkType(anSTClass)) {
+
 			log (anIdentifierType, aTreeAST, anIdentifierType.getText(),
 					anIdentifier.getText());
 			  
-//			if (aTreeAST == currentTree) {
-//			 int aLineNo = lineNo(anIdentifierType, aTreeAST);
-//			 int aColumnNo = columnNo(anIdentifierType, aTreeAST);
-//			 
-//				log(aLineNo,
-//						aColumnNo, 
-//						msgKey(),
-//						anIdentifierType.getText(), anIdentifier.getText(),
-//						aSourceName + ":" + anIdentifier.getLineNo());
-//			} else {
-//				log(0, msgKey(), anIdentifierType.getText(),
-//						anIdentifier.getText(), aSourceName + ":"
-//								+ anIdentifier.getLineNo());
-//			}
-			return true;
+
+//			return true;
 		}
 		return false;
 	}
@@ -287,7 +327,19 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 	boolean isMatchingClassName(String className) {
 		return SymbolTableFactory.getOrCreateSymbolTable().isClass(className);
 	}
-
+	protected String msgKeyWarning() {
+		// TODO Auto-generated method stub
+		return MSG_KEY_WARNING;
+	}
+	@Override
+	protected String msgKeyInfo() {
+		// TODO Auto-generated method stub
+		return MSG_KEY_INFO;
+	}
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return msgKeyWarning();
+	}
 //	@Override
 //	public void processDeferredChecks() {
 //		doPendingChecks();

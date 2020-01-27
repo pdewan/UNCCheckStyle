@@ -18,7 +18,7 @@
 			<property name="configurationFileName" value="MyMapReduceConfiguration.csv" />		
 			<property name="includeTypeTags" value="*" />
 			<property name="severity" value="info" />
-			<property name="logNoMatches" value="false" />	
+			<property name="logNoMatches" value="true" />	
 			<property name="importsAsExistingClasses" value="false" />		
 
 		</module>
@@ -52,7 +52,12 @@
 					scan(.*), 
 					(.*)create(.*), 					 
 					parse(.*),
-					(.*)actory(.*)
+					(.*)actory(.*),
+					fetch(.*),
+					run(.*),
+					update(.*),
+					add(.*),
+					
 					" />
 
 		</module>
@@ -79,11 +84,17 @@
 		<module name="ClassHasAtLeastOneInterface">
 		<property name="severity" value="warning" />		
 		</module>
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="info" />		
+		</module>
 		<module name="ClassHasOneInterface">
 			<property name="severity" value="warning" />					
 		</module>
 		<module name="VariableHasClassType">
 		<property name="severity" value="warning" />		
+		</module>
+			<module name="VariableHasClassType">
+		<property name="severity" value="info" />		
 		</module>
 		
 		

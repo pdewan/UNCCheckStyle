@@ -53,7 +53,12 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 		Boolean aTypeCheck = typeCheck(anSTType);
 		if (aTypeCheck == null)
 			return null;
-		if (!aTypeCheck)
+		boolean aDoLog = 
+				isInfo()?
+						aTypeCheck:
+						!aTypeCheck;
+//		if (!aTypeCheck)
+		if (aDoLog)
     		log(ast, aTreeAST, anSTType.getName());
 		return aTypeCheck;
 		

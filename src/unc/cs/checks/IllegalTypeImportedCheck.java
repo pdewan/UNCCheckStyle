@@ -46,7 +46,7 @@ public class IllegalTypeImportedCheck extends ComprehensiveVisitCheck {
     @Override
     public Boolean doPendingCheck(DetailAST ast, DetailAST aTreeAST) {
         final FullIdent imp;
-        if (ast.getType() == TokenTypes.IMPORT) {
+        if (ast.getType() == TokenTypes.IMPORT || ast.getType() == OBSERVED_IMPORT_TYPE ) {
             imp = FullIdent.createFullIdentBelow(ast);
         }
         else {

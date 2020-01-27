@@ -27,6 +27,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 public abstract class UNCCheck extends Check {
 	public static long NEW_CHEKCKS_THRESHOLD = 6000; // 1 seconds between
 														// checks
+	public static final String INFO = "info";
+	public static final String WARNING = "warning";
 	protected boolean isPackageInfo = false;
 	protected String checkAndFileDescription = "";
 	protected static boolean errorOccurred;
@@ -164,7 +166,9 @@ public abstract class UNCCheck extends Check {
 		try {
 			// see if we are executing in a plug in
 			Class.forName("org.eclipse.ui.console.ConsolePlugin");
-		} catch (Exception e) {
+//		} catch (Exception e) {
+		} catch (Throwable e) {
+
 			notInPlugIn = true;
 			return null;
 		}
@@ -558,6 +562,13 @@ public abstract class UNCCheck extends Check {
 			return checkOnBuild;
 		}
 	protected abstract String msgKey();
+	
+	protected  String msgKeyWarning() {
+		return msgKey();
+	}
+	protected  String msgKeyInfo() {
+		return msgKey();
+	}
 	// public static boolean isPublicAndInstance(DetailAST methodOrVariableDef)
 	// {
 	// return isPublic(methodOrVariableDef)
@@ -579,5 +590,7 @@ public abstract class UNCCheck extends Check {
 	// return isStatic (methodOrVariableDef)
 	// && ! isFinal(methodOrVariableDef);
 	// }
-
+   protected boolean isInfo() {
+	   return INFO.equals(getSeverity());
+   }
 }

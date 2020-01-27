@@ -16,7 +16,9 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
 	 */
-	public static final String MSG_KEY = "classHasOneInterface";
+	public static final String MSG_KEY_INFO = "classHasExactlyOneInterface";
+	public static final String MSG_KEY_WARNING = "classDoesNotHaveExactlyOneInterface";
+
 
 //	/** flag to control whether marker interfaces are allowed. */
 //	private boolean allowMarkerInterfaces = true;
@@ -95,11 +97,11 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 //		}
 //		
 //	}
-	@Override
-	protected String msgKey() {
-		// TODO Auto-generated method stub
-		return MSG_KEY;
-	}
+//	@Override
+//	protected String msgKey() {
+//		// TODO Auto-generated method stub
+//		return MSG_KEY;
+//	}
 
 //	@Override
 //	public int[] getDefaultTokens() {
@@ -181,5 +183,17 @@ public class ClassHasOneInterfaceCheck extends STClassVisitedComprehensively {
 //
 //	}
 
-	
+	protected String msgKeyWarning() {
+		// TODO Auto-generated method stub
+		return MSG_KEY_WARNING;
+	}
+	@Override
+	protected String msgKeyInfo() {
+		// TODO Auto-generated method stub
+		return MSG_KEY_INFO;
+	}
+	protected String msgKey() {
+		// TODO Auto-generated method stub
+		return msgKeyWarning();
+	}
 }

@@ -17,7 +17,9 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 	 * A key is pointing to the warning message text in "messages.properties"
 	 * file.
 	 */
-	public static final String MSG_KEY = "classHasAtLeastOneInterface";
+	public static final String MSG_KEY_INFO = "classHasAtLeastOneInterface";
+	public static final String MSG_KEY_WARNING = "classDoesNotHaveAtLeastOneInterface";
+
 
 //	/** flag to control whether marker interfaces are allowed. */
 //	private boolean allowMarkerInterfaces = true;
@@ -82,9 +84,18 @@ public  class ClassHasAtLeastOneInterfaceCheck extends STClassVisitedComprehensi
 //		log(ast.getLineNo(), msgKey(), typeName);
 //	}
 	@Override
+	protected String msgKeyWarning() {
+		// TODO Auto-generated method stub
+		return MSG_KEY_WARNING;
+	}
+	@Override
+	protected String msgKeyInfo() {
+		// TODO Auto-generated method stub
+		return MSG_KEY_INFO;
+	}
 	protected String msgKey() {
 		// TODO Auto-generated method stub
-		return MSG_KEY;
+		return msgKeyWarning();
 	}
 
 	

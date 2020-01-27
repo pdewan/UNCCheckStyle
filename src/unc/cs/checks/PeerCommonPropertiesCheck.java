@@ -115,6 +115,9 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 		String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		STType anSTType = getSTType(aTree);
+		if (anSTType ==null) {
+			return true;
+		}
 
 		if (anSTType.isEnum() || anSTType.isInterface()) // no point duplicating interface checks
 			return true;
