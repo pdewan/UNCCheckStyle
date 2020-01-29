@@ -1411,6 +1411,10 @@ public static String getOutermostOrEnclosingShortTypeName(DetailAST ast) {
 }
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 //	DetailAST result = null;
+	if (anAST == null) {
+		System.err.println ("Null AST:" + anAST);
+		return null;
+	}
 	if (anAST.getType() == TokenTypes.INTERFACE_DEF) {
 		return getEnclosingInterfaceDeclaration(anAST);
 	}
