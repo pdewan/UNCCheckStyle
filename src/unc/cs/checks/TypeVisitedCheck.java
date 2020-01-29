@@ -216,16 +216,20 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	
 	public static DetailAST getNameAST (DetailAST anAST) {
 		return anAST.findFirstToken(TokenTypes.IDENT);
+		
 	}
 	public static String toShortTypeName (String aTypeName) {
-		if (aTypeName == null)
-			return aTypeName;
-		int aDotIndex = aTypeName.lastIndexOf(".");
-		String aShortTypeName = aTypeName;
-		if (aDotIndex != -1)
-			aShortTypeName = aTypeName.substring(aDotIndex + 1);
-		return aShortTypeName;
+		return TagBasedCheck.toShortTypeName(aTypeName);
 	}
+//	public static String toShortTypeName (String aTypeName) {
+//		if (aTypeName == null)
+//			return aTypeName;
+//		int aDotIndex = aTypeName.lastIndexOf(".");
+//		String aShortTypeName = aTypeName;
+//		if (aDotIndex != -1)
+//			aShortTypeName = aTypeName.substring(aDotIndex + 1);
+//		return aShortTypeName;
+//	}
 	public static final Integer[] ignoreTokenTypesArray = {
 		TokenTypes.MODIFIERS,
 		TokenTypes.TYPE,

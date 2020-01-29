@@ -14,7 +14,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
-	STNameable[] computedTags;
+	STNameable[] computedTags, tags, configuredTags;
 	Map emptyTable = new HashMap();
 	Object[] emptyArray = {};
 	public AnSTTypeFromClass(String aClassName) {
@@ -23,6 +23,8 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		declaredMethods = new STMethod[0];
 		methods = new STMethod[0];
 		allComputedTags = new STNameable[0];
+		tags = allComputedTags;
+		configuredTags = allComputedTags;
 		declaredInterfaces = new STNameable[0];
 		interfaces  = new STNameable[0] ;
 		declaredFields = new STNameable[0];
@@ -358,6 +360,15 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public STMethod getSetter(String aPropertyName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public STNameable[] getConfiguredTags() {
+		return emptyNameables;
+	}
+	@Override
+	public STNameable[] getDerivedTags() {
+		// TODO Auto-generated method stub
+		return emptyNameables;
 	}
 
 

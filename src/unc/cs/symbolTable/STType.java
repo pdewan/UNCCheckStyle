@@ -86,4 +86,6 @@ public interface STType extends STNameable{
 //	DetailAST getDeclaredGlobalVariableToRHS(String aGlobal);
 	List<STVariable> getDeclaredSTGlobals();
 	List<String> getDeclaredPublicInstanceSignatures();
+	STNameable[] getConfiguredTags();
+	STNameable[] getDerivedTags();
 }

@@ -17,7 +17,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public class AnSTType extends AnAbstractSTType implements STType {
-	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, computedTags, imports;
+	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, configuredTags, derivedTags, computedTags, imports;
 //	protected final STMethod[] declaredMethods;
 //	protected final STMethod[] declaredConstructors;
 //	protected final STNameable[] interfaces;
@@ -59,6 +59,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STNameable[] aDeclaredEditablePropertyNames, 
 			STNameable[] aTags,
 			STNameable[] aComputedTags,
+			STNameable[] aConfiguredTags,
+			STNameable[] aDerivedTags,
 			STNameable[] anImports,
 			STNameable[] aFields,
 			Map<String, List<CallInfo>> aGlobalVariableToCall,
@@ -84,6 +86,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		declaredPropertyNames = aDeclaredPropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
 		tags = aTags;
+		configuredTags = aConfiguredTags;
+		derivedTags = aDerivedTags;
 		imports = anImports;
 		declaredFields = aFields;
 		globalVariableToCall = aGlobalVariableToCall;
@@ -241,6 +245,14 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public STNameable[] getComputedTags() {
 		return computedTags;
+	}
+	@Override
+	public STNameable[] getConfiguredTags() {
+		return configuredTags;
+	}
+	@Override
+	public STNameable[] getDerivedTags() {
+		return configuredTags;
 	}
 	@Override
 	public STNameable[] getImports() {

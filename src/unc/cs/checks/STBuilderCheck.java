@@ -43,6 +43,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected List<STMethod> stMethods = new ArrayList();
 	protected Stack<List<STMethod>> stMethodsStack = new Stack();
 	protected List<STNameable> derivedTags = new ArrayList();
+	protected List<STNameable> configuredTags = new ArrayList();
 
 	protected List<STMethod> stConstructors = new ArrayList();
 	protected Stack<List<STMethod>> stConstructorsStack = new Stack();
@@ -57,12 +58,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework", "test", "comp", "proj", "ass", "hw" };
 	static String[] externalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen", "util", "gradingTools" };
+	static String[] externalMethodRegularExpressions = { "trace.*"};
+	static String[] externalClassRegularExpressions = { ".*utton.*"};
+
 	static int lastSequenceNumberOfExpectedTypes = -1;
 	protected String checksName;
 	protected  String[] existingClasses = {};
 	public  Collection<String> existingClassesShortNamesCollection = new HashSet();
 	protected  Collection<String> existingClassesCollection = new HashSet();
-	boolean importsAsExistingClasses = false;
+	static boolean importsAsExistingClasses = false;
 	DetailAST sTBuilderTree = null; // make it non static at some point
 	protected static STBuilderCheck latestInstance;
 	protected boolean visitInnerClasses = false;
@@ -275,13 +279,25 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void setExternalPackagePrefixes(String[] aPrefixes) {
 		externalPackagePrefixes = aPrefixes;
 	}
+	public void setExternalMethodRegularExpressions(String[] newVal) {
+		externalMethodRegularExpressions = newVal;
+	}
 	
-
+	public void setExternalTypeRegularExpressions(String[] newVal) {
+		externalClassRegularExpressions = newVal;
+	}
+	
 	public static String[] getProjectPackagePrefixes() {
 		return projectPackagePrefixes;
 	}
 	public static String[] getExternalPackagePrefixes() {
 		return externalPackagePrefixes;
+	}
+	public static String[] getExternalMethodRegularExpressions() {
+		return externalMethodRegularExpressions;
+	}
+	public static String[] getExternalTypeRegularExpressions() {
+		return externalClassRegularExpressions;
 	}
 
 	public void setExistingClasses(String[] aClasses) {
@@ -298,7 +314,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		return checksName;
 	}
 
-	public boolean getImportsAsExistingClasses() {
+	public static boolean getImportsAsExistingClasses() {
 		return importsAsExistingClasses;
 	}
 
@@ -446,7 +462,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		STType anSTClass = new AnSTType(anEnumDef, anEnumName, emptyMethods,
 				emptyMethods, emptyTypes, null, packageName, false, false,
 				false, true, null, dummyArray, dummyArray, dummyArray,
-				dummyArray, dummyArray, dummyArray, 
+				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
 				new HashMap(),
 //				new HashMap(), 
 //				new HashMap(), 
@@ -516,8 +532,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		String aConfiguredName = classToConfiguredClass.get(shortTypeName);
 		
 		addAllNoDuplicates(result, derivedTags);
+		configuredTags.clear();
 		if (aConfiguredName != null) {
 			STNameable aNameable = new AnSTNameable(aConfiguredName);
+			configuredTags.add(aNameable);
 			result.add(aNameable);
 		}
 		return result;
@@ -594,11 +612,13 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				aMethods, aConstructors, interfaces, superClass, packageName,
 				isInterface, isGeneric, isElaboration, isEnum,
 				structurePattern, propertyNames.toArray(dummyArray),
-				editablePropertyNames.toArray(dummyArray), typeTags().toArray(
-						dummyArray),
+				editablePropertyNames.toArray(dummyArray), 
+				typeTags().toArray(
+						dummyArray),				
 				// computedTypeTags().toArray(dummyArray),
 				computedAndDerivedTypeTags().toArray(dummyArray),
-
+				configuredTags.toArray(dummyArray),
+				derivedTags.toArray(dummyArray),
 				allImportsOfThisClass.toArray(dummyArray),
 				globalVariables.toArray(dummyArray), 
 				new HashMap<>(	globalVariableToCall), 

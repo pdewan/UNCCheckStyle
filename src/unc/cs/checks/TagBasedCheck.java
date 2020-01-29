@@ -102,6 +102,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected static Set<String> allProjectExternalImportsShortName = new HashSet();
 
 	protected List<STNameable> allImportsOfThisClass = new ArrayList();
+	protected 
 
 	protected static Set<String> javaLangTypesSet;
 	protected static Set<String> primitiveTypesSet;
@@ -456,7 +457,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  
  public static boolean isExternalClass(String aShortClassName) {
 	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aShortClassName);
-	if (anSTType != null)
+	if (anSTType != null // what if we create existing classes
+			&& !STBuilderCheck.getImportsAsExistingClasses()) 
 		return false;
 	return aShortClassName.equals("Object") || isExternalImportCacheCheckingShortName(aShortClassName) || isJavaLangClass(aShortClassName);
  }
@@ -886,7 +888,7 @@ public static STNameable toShortPatternName(STNameable aLongName) {
 //		System.out.println("Null a long nane:" + aLongName);
 		return null;
 	}
-	String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
+	String aShortName = toShortTypeName(aLongName.getName());
 
 	return  new AnSTNameable(aLongName.getAST(), aShortName);
 }
@@ -1018,6 +1020,55 @@ public static boolean isMaybeProjectImport (String aPackageName, String aClassNa
 //	}
 //	return retVal;
 //}
+public static String toShortTypeName (String aTypeName) {
+	if (aTypeName == null)
+		return aTypeName;
+	int aDotIndex = aTypeName.lastIndexOf(".");
+	String aShortTypeName = aTypeName;
+	if (aDotIndex != -1)
+		aShortTypeName = aTypeName.substring(aDotIndex + 1);
+	return aShortTypeName;
+}
+/**
+ * Related is isExternalClass,w hich takes short name
+ *
+ */
+public static boolean isExternalType(String aFullName) {
+	if (isExternalClass(toShortTypeName(aFullName))) return true;
+	for (String aString:STBuilderCheck.getExternalTypeRegularExpressions()) {
+		if (aFullName.matches(aString)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+public static boolean isExplicitlyTagged (STType anSTType) {
+	return anSTType.getTags().length > 0 || anSTType.getConfiguredTags().length > 0;
+}
+public static String[] toStrings(STNameable[] anSTNameables) {
+	String[] retVal = new String[anSTNameables.length];
+	for (int i = 0; i < anSTNameables.length; i++) {
+		retVal[i] = anSTNameables[i].getName();
+	}
+	return retVal;
+}
+public static Set<String> getNonComputedTags (STType anSTType) {
+	Set<String> retVal = new HashSet();
+	
+	retVal.addAll(Arrays.asList(toStrings(anSTType.getDerivedTags())));
+	retVal.addAll(Arrays.asList(toStrings(anSTType.getConfiguredTags())));
+	retVal.addAll(Arrays.asList(toStrings(anSTType.getTags())));
+	return retVal;
+
+
+}
+public static Set<String> tagsNotContainedIn(STType aContainee, STType aContainer ) {
+	Set<String> aContaineeSet = getNonComputedTags(aContainee);
+	Set<String> aContainerSet = getNonComputedTags(aContainer);
+	aContainerSet.removeAll(aContaineeSet);
+	return aContainerSet;
+}
 /**
  * 
  *External prefixes gets priority over  internal
