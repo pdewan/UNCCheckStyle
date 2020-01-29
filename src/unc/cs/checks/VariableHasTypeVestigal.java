@@ -146,7 +146,7 @@ public final class VariableHasTypeVestigal extends AbstractFormatCheck {
 
 	@Override
 	public void visitToken(DetailAST ast) {
-    	System.out.println("Check called:" + MSG_KEY);
+    	System.err.println("Check called:" + MSG_KEY);
 
 		switch (ast.getType()) {
 		case TokenTypes.METHOD_DEF:
@@ -461,7 +461,7 @@ public final class VariableHasTypeVestigal extends AbstractFormatCheck {
 		final List<Integer> modifiersList = new ArrayList<>();
 		for (String modifier : modifiers.split(",")) {
 //			modifiersList.add(Utils.getTokenId(modifier.trim()));
-			System.out.println("Modifiers" + modifiers);
+			System.err.println("Modifiers" + modifiers);
 		}
 		this.memberModifiers = modifiersList;
 	}

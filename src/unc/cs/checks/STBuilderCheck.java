@@ -118,7 +118,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		startToSpecification.put(METHOD_START, methodToSpecifications);
 		startToSpecification.put(VARIABLE_START, variableToSpecifications);
 		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
-//		System.out.println ("Setting checks name to:" + "Assignments" );
+//		System.err.println ("Setting checks name to:" + "Assignments" );
 //		checksName =  "Assignments";
 		checksName =  "CheckStyle_All";
 		setCheckOnBuild(true); //make symboltable incrementally
@@ -129,7 +129,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		super.newProjectDirectory(aNewProjectDirectory);
 		maybeProcessExistingClasses();
 		maybeProcessConfigurationFileName();
-//		System.out.println ("Clearing symbol table");
+//		System.err.println ("Clearing symbol table");
 //		SymbolTableFactory.getOrCreateSymbolTable().clear();
 		
 	}
@@ -223,7 +223,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			addSTType(anSTType);
 		} catch (ClassNotFoundException e) {
 			if (existingClassesCollection.contains(aClassName))
-				System.out.println("Could not make existing class from: "
+				System.err.println("Could not make existing class from: "
 						+ aClassName );
 			STType anSTType = new AnSTTypeFromClass(aClassName);
 			addSTType(anSTType);
@@ -329,7 +329,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	@Override
 	public void doFinishTree(DetailAST ast) {
 		if (!getVisitInnerClasses() && checkIncludeExcludeTagsOfCurrentType()) {
-			// System.out.println("finish tree called:" + ast + " "
+			// System.err.println("finish tree called:" + ast + " "
 			// + getFileContents().getFilename());
 			if (currentMethodName != null)
 				processPreviousMethodData();
@@ -344,7 +344,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void doBeginTree(DetailAST ast) {
 		super.doBeginTree(ast);
 		astToFileContents.put(ast, getFileContents());
-		// System.out.println("STBuilder" + checkAndFileDescription);
+		// System.err.println("STBuilder" + checkAndFileDescription);
 		currentSTType = null;
 		if (!ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
 			stMethods.clear();
@@ -399,7 +399,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		if (!getVisitInnerClasses())
 			return;
 		if (checkIncludeExcludeTagsOfCurrentType()) {
-			// System.out.println("finish tree called:" + ast + " "
+			// System.err.println("finish tree called:" + ast + " "
 			// + getFileContents().getFilename());
 			if (currentMethodName != null)
 				processPreviousMethodData();
@@ -479,7 +479,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		// DetailAST anEnumIdent =
 		// anEnumDef.getNextSibling().findFirstToken(TokenTypes.IDENT);
 		// if (anEnumIdent == null) {
-		// System.out.println("null enum ident");
+		// System.err.println("null enum ident");
 		// }
 		// shortTypeName = anEnumIdent.getText();
 	}
@@ -668,7 +668,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	}
 	public void checkTags(DetailAST ast) {
 		List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
-//    	System.out.println("Checking full type name: " + fullTypeName);
+//    	System.err.println("Checking full type name: " + fullTypeName);
     	if (tagMatches.containsKey(fullTypeName)) {
     		tagMatches.remove(fullTypeName);
     		if (!overlappingTags) {
@@ -693,7 +693,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
 //    			String aClassOrInterface = isInterface?"Interface":"Class";
-//    			System.out.println ("STBuilder:" + aClassOrInterface + " " + anExpectedClassOrTag);
+//    			System.err.println ("STBuilder:" + aClassOrInterface + " " + anExpectedClassOrTag);
     			log(ast, anExpectedClassOrTag, aClassOrInterface);
     			aFoundMatch = true;
 //
@@ -722,7 +722,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		
 //    	super.visitType(ast);
 //    	if (fullTypeName.contains("ListImp")) {
-//    		System.out.println ("found inner interface");
+//    		System.err.println ("found inner interface");
 //    	}
 //    	if (shownMissingClasses) {
 //			log("expectedTypes", ast, ast, expectedTypes.toString().replaceAll(",", " "));
@@ -746,7 +746,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	if (!check)
     		return;
 //    	List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
-////    	System.out.println("Checking full type name: " + fullTypeName);
+////    	System.err.println("Checking full type name: " + fullTypeName);
 //    	if (tagMatches.containsKey(fullTypeName)) {
 //    		tagMatches.remove(fullTypeName);
 //    		if (!overlappingTags) {
@@ -795,18 +795,18 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     }
 
 	public static void main(String[] args) {
-		System.out.println("[200]".matches("(.*)\\[(.*)\\](.*)"));
+		System.err.println("[200]".matches("(.*)\\[(.*)\\](.*)"));
 		//METHOD_DEF public static void main ( [ String ] args ) { EXPR new java . util . ArrayList ( ) ; VARIABLE_DEF Queue qL EXPR new Queue ( EXPR "links" ) = ; VARIABLE_DEF Queue qA EXPR new Queue ( EXPR "array" ) = ; VARIABLE_DEF String item EXPR [ args EXPR 0 ] = ; EXPR ( qL . enq EXPR item ) ; EXPR ( qA . enq EXPR item ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( qL . enq EXPR [ args EXPR i ] ) ; EXPR ( qA . enq EXPR [ args EXPR i ] ) ; } for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; } }
 		//METHOD_DEF public int numElements ( ) { return EXPR ( imp . size ) ;
-		System.out.println ("METHOD_DEF public int numElements ( ) { return EXPR ( imp . size ) ;".
+		System.err.println ("METHOD_DEF public int numElements ( ) { return EXPR ( imp . size ) ;".
 				matches("METHOD_DEF .* int (size|numElements).*"));
-		System.out.println ("METHOD_DEF public static| void main ( [ String ] args ) { EXPR new java . util . ArrayList ( ) ; VARIABLE_DEF Queue qL EXPR new Queue ( EXPR \"links\" ) = ; VARIABLE_DEF Queue qA EXPR new Queue ( EXPR \"array\" ) = ; VARIABLE_DEF String item EXPR [ args EXPR 0 ] = ; EXPR ( qL . enq EXPR item ) ; EXPR ( qA . enq EXPR item ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( qL . enq EXPR [ args EXPR i ] ) ; EXPR ( qA . enq EXPR [ args EXPR i ] ) ; } for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; } }".
+		System.err.println ("METHOD_DEF public static| void main ( [ String ] args ) { EXPR new java . util . ArrayList ( ) ; VARIABLE_DEF Queue qL EXPR new Queue ( EXPR \"links\" ) = ; VARIABLE_DEF Queue qA EXPR new Queue ( EXPR \"array\" ) = ; VARIABLE_DEF String item EXPR [ args EXPR 0 ] = ; EXPR ( qL . enq EXPR item ) ; EXPR ( qA . enq EXPR item ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( qL . enq EXPR [ args EXPR i ] ) ; EXPR ( qA . enq EXPR [ args EXPR i ] ) ; } for ( FOR_INIT VARIABLE_DEF int i EXPR 1 = ; FOR_CONDITION EXPR < i args . length ; FOR_ITERATOR EXPR ++ i ) { EXPR ( System . out . println EXPR ( qL . front ) ) ; EXPR ( System . out . println EXPR ( qA . front ) ) ; EXPR ( qL . deq ) ; EXPR ( qA . deq ) ; EXPR ( System . out . println EXPR ( qL . numElements ) ) ; EXPR ( System . out . println EXPR ( qA . numElements ) ) ; } }".
 
 //				matches("METHOD_DEF [(public static)|(static public)] void main.*"));
 		matches("METHOD_DEF .* void main.*"));
 //METHOD_DEF public boolean empty ( ) { return EXPR ( imp . empty ) ; } }
 //		METHOD_DEF int size ( ) ;
-		System.out.println ("VARIABLE_DEF private [ String ]".matches("VARIABLE_DEF (private |protected )*\\[ String \\].*"));
+		System.err.println ("VARIABLE_DEF private [ String ]".matches("VARIABLE_DEF (private |protected )*\\[ String \\].*"));
 		
 		
 	}

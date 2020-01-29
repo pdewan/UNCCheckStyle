@@ -155,7 +155,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 				}
 				STMethod[] allOverloadedMethods = aCalledMethodClass.getMethods(aCalledMethodName);
 				if (allOverloadedMethods == null) {
-//					System.out.println ("Overloaded methods is null" + allOverloadedMethods);
+//					System.err.println ("Overloaded methods is null" + allOverloadedMethods);
 					return null; //return to pending check
 				}
 				for (STMethod aPossibleCalledMethod: allOverloadedMethods) {
@@ -198,7 +198,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //				 getName(getEnclosingTypeDeclaration(aTree)));
 			STType anSTType = getSTType(aTree);
 			if (anSTType == null) {
-				System.out.println("Did not find sttype, returning from MethodeffectCheckdoPendingChecks:" + getFullTypeName(anAST));
+				System.err.println("Did not find sttype, returning from MethodeffectCheckdoPendingChecks:" + getFullTypeName(anAST));
 				return null;
 			}
 			if (anSTType.isEnum() || anSTType.isInterface())

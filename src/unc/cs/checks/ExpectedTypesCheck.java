@@ -177,7 +177,7 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(anAST);
 		if (anSTType == null) {
-			System.out.println ("ExpectedTypesCheck Did not find sttype for " + getFullTypeName(anAST));
+			System.err.println ("ExpectedTypesCheck Did not find sttype for " + getFullTypeName(anAST));
 			return true;
 		}
 //		if (anSTType.getName().contains("mage")) {

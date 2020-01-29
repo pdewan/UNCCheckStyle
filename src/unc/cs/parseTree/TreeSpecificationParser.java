@@ -164,10 +164,10 @@ public class TreeSpecificationParser {
 
 		 Scanner aScanner = new Scanner(testString);
 		 while (aScanner.hasNext()) {
-			 System.out.println (aScanner.next());			 
+			 System.err.println (aScanner.next());			 
 		 }
 		 CheckedNode parsedStatement = parseConstruct(recursive);
-		 System.out.println(parsedStatement);
+		 System.err.println(parsedStatement);
 		 
 	 }
 

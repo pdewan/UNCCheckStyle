@@ -45,7 +45,7 @@ public abstract class STTypeVisitedComprehensively extends ComprehensiveVisitChe
 		STType anSTType = getSTType(ast);
 //		int i = 0;
 		if (anSTType == null) {
-			System.out.println ("STTpeVisited: Did not find sttype for " + getFullTypeName(ast));
+			System.err.println ("STTpeVisited: Did not find sttype for " + getFullTypeName(ast));
 			return true;
 		}
 		if (!doCheck(anSTType))

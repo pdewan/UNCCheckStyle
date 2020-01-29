@@ -56,41 +56,41 @@ public class ISATypesCheck extends ComprehensiveVisitCheck{
 		if (aTypes == null) 
 			return null;
 		List<String> aSuperTypes = anSTType.getSuperTypeNames();
-		System.out.println("SuperTypes" + aSuperTypes);
+		System.err.println("SuperTypes" + aSuperTypes);
 		if (aSuperTypes == null) 
 			return null;
-		System.out.println("Types" + aTypes);
+		System.err.println("Types" + aTypes);
 		List<String> aSignatures = anSTType.getAllSignatures();
 		if (aSignatures == null) 
 			return null;
-		System.out.println ("Signatures" + aSignatures);
+		System.err.println ("Signatures" + aSignatures);
 		List<String> aNonSuperTypes = anSTType.getNonSuperTypes();
 		if (aNonSuperTypes == null) 
 			return null;
-		System.out.println("NonSuperTypes" + aNonSuperTypes);
+		System.err.println("NonSuperTypes" + aNonSuperTypes);
 		List<String> aSubTypes = anSTType.getSubTypes();
 		if (aSubTypes == null) 
 			return null;
-		System.out.println("SubTypes" + aSubTypes);
+		System.err.println("SubTypes" + aSubTypes);
 		List<String> aPeerTypes = anSTType.getPeerTypes();
 		if (aPeerTypes == null) 
 			return null;
-		System.out.println("Peer Types" + aSubTypes);
+		System.err.println("Peer Types" + aSubTypes);
 		
 		for (String aPeerType:aPeerTypes) {
 			List<String> aCommonSignatures = anSTType.signaturesCommonWith(aPeerType);
 			if (aCommonSignatures == null)
 				return null;
-			System.out.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);
+			System.err.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);
 			List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 			if (aCommonSuperTypes == null)
 				return null;
-			System.out.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
+			System.err.println (anSTType.getName() + " common supertypes with " + aPeerType + " =" + aCommonSuperTypes);
 			for (String aSignature:aCommonSignatures) {
 				Boolean aHasSignature =  AnSTType.containsSignature(aCommonSuperTypes, aSignature);
 				if (aHasSignature == null)
 					continue;
-				System.out.println ("Super types of " + anSTType.getName() + " and " + aPeerType + 
+				System.err.println ("Super types of " + anSTType.getName() + " and " + aPeerType + 
 						"  contain signature:" + aSignature + " is " + aHasSignature);
 			}			
 		}

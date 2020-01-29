@@ -175,7 +175,7 @@ public class AConsentFormVetoer implements VetoableChangeListener {
 			fos.flush();
 			
 		} catch (IOException e) {
-			System.out.println(file.getName() + " " + e.getMessage());
+			System.err.println(file.getName() + " " + e.getMessage());
 			fos.close();
 			throw e;
 		}

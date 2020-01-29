@@ -102,7 +102,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	protected static Set<String> allProjectExternalImportsShortName = new HashSet();
 
 	protected List<STNameable> allImportsOfThisClass = new ArrayList();
-	//protected 
+//	protected 
 
 	protected static Set<String> javaLangTypesSet;
 	protected static Set<String> primitiveTypesSet;

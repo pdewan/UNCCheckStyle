@@ -872,7 +872,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 			return emptyList;
 		}
 //		if (anSTType.getName().contains("Vertical") || anSTType.getName().contains("Anim")) {
-//		System.out.println("checking all ointerfaces " + anSTType.getName());
+//		System.err.println("checking all ointerfaces " + anSTType.getName());
 //	}
 		STNameable[] anInterfaces = anSTType.getDeclaredInterfaces();
 		for (STNameable anInterface : anInterfaces) {
@@ -1349,7 +1349,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		for (Object anElement1 : aList1) {
 			for (Object anElement2 : aList2) {
 				if (anElement1 == null) {
-				System.out.println ("An lement 1" + anElement1 + " 2:" + anElement2);
+				System.err.println ("An lement 1" + anElement1 + " 2:" + anElement2);
 //				continue;
 				}
 				

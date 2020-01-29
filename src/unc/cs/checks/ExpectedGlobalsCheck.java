@@ -136,8 +136,8 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(aTree);
 		if (anSTType == null) {
-			System.out.println("ST Type is null!");
-			System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+			System.err.println("ST Type is null!");
+			System.err.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
 //			return true;
 		}
 		if (anSTType.isEnum() ||
