@@ -920,6 +920,10 @@ protected List emptyArrayList = new ArrayList();
 public void maybeVisitTypeTags(DetailAST ast) { 
 	if (typeTagsInitialized) return;
 	typeTagsInitialized = true;
+	if (ast == null) {
+		System.err.println("Null ast in maybeVisitTypeTags");
+		return;
+	}
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
 	if (annotationAST == null) {
 		typeTags = emptyArrayList;		
