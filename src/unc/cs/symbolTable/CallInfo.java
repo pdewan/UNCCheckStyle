@@ -28,4 +28,9 @@ public interface CallInfo {
 
 	DetailAST getAST();
 
+//	void setCalledType(String newVal);
+	void setCalledSTType(STType newVal);
+
+	void setCalledType(String newVal);
+
 }

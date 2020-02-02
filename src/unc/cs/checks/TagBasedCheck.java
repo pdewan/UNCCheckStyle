@@ -457,10 +457,14 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  
  public static boolean isExternalClass(String aShortClassName) {
 	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aShortClassName);
-	if (anSTType != null // what if we create existing classes
-			&& !STBuilderCheck.getImportsAsExistingClasses()) 
+	if (anSTType != null // what if we create existing classes, we may not have the external class in our path
+			)
+//			&& !STBuilderCheck.getImportsAsExistingClasses()) 
 		return false;
-	return aShortClassName.equals("Object") || isExternalImportCacheCheckingShortName(aShortClassName) || isJavaLangClass(aShortClassName);
+	return aShortClassName.equals("Object") ||
+			isExternalImportCacheCheckingShortName(aShortClassName) || 
+			isExternalImportCacheChecking(aShortClassName) || // not really short name
+			isJavaLangClass(aShortClassName);
  }
  public static List<STNameable> asListOrNull(STNameable[] anArray) {
 	 return anArray == null ?
@@ -972,12 +976,22 @@ public void maybeVisitMethodTags(DetailAST ast) {
 	}
 	currentMethodTags = getArrayLiterals(annotationAST);
 }
-
+private Map<String, String> importShortToLongName = new HashMap();
+protected String toLongTypeName (String aShortName) {
+	String retVal = aShortName;
+	String aPossibleLongName = importShortToLongName.get(aShortName);
+	if (aPossibleLongName != null) {
+		retVal = aPossibleLongName;
+	}
+	return retVal;
+}
 public void visitImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
 	 String aLongClassName = anImport.getText();
 	 String aShortClassName = findLastDescendentOfFirstChild(ast).getText();
-
+	 if (aShortClassName != null && !aShortClassName.isEmpty()) {
+			importShortToLongName.put(aShortClassName, aLongClassName);
+			}
 	 STNameable anSTNameable = new AnSTNameable(ast, aLongClassName);
 	 allImportsOfThisClass.add(anSTNameable);
 	 if (!isProjectImport(aLongClassName)) {

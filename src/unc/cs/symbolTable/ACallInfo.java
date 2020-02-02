@@ -60,6 +60,17 @@ public class ACallInfo implements CallInfo {
 	public String getCalledType() {
 		return calledType;
 	}
+	/**
+	 * To be corrected later, when we have all super types
+	 */
+	@Override
+	public void setCalledType(String newVal) {
+		calledType = newVal; 
+	}
+	@Override
+	public void setCalledSTType(STType newVal) {
+		calledSTType = newVal; 
+	}
 	@Override
 	public String getCallee() {
 		return callee;

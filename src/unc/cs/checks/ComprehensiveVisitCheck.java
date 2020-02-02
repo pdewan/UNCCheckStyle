@@ -97,6 +97,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected List<STNameable> typesInstantiated = new ArrayList();
 	protected List<STNameable> typesInstantiatedByCurrentMethod = new ArrayList();
+//	protected Map<String, String> importShortToLongName = new HashMap();
+
 
 	// protected Set<String> excludeTags;
 	// protected Set<String> includeTags;
@@ -142,7 +144,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 
-	public static STNameable[] getInterfaces(DetailAST aClassDef) {
+	public  STNameable[] getInterfaces(DetailAST aClassDef) {
 		List<STNameable> anInterfaces = new ArrayList();
 		int numInterfaces = 0;
 		DetailAST implementsClause = aClassDef
@@ -152,9 +154,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		DetailAST anImplementedInterface = implementsClause
 				.findFirstToken(TokenTypes.IDENT);
 		while (anImplementedInterface != null) {
-			if (anImplementedInterface.getType() == TokenTypes.IDENT)
+			if (anImplementedInterface.getType() == TokenTypes.IDENT) {
+//				String anInterfaceDeclaredName = anImplementedInterface.getText();
+//				String anInterfaceName = anInterfaceDeclaredName;
+//				String aPossibleLongName = importShortToLongName.get(anInterfaceDeclaredName);
+//				if (aPossibleLongName != null) {
+//					anInterfaceName = aPossibleLongName;
+//				}
+//				anInterfaces.add(new AnSTNameable(anImplementedInterface,
+//						anImplementedInterface.getText()));
+				
 				anInterfaces.add(new AnSTNameable(anImplementedInterface,
-						anImplementedInterface.getText()));
+						toLongTypeName(anImplementedInterface.getText())));
+			}
 			anImplementedInterface = anImplementedInterface.getNextSibling();
 		}
 		return (STNameable[]) anInterfaces.toArray(emptyNameableArray);
@@ -587,7 +599,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return result;
 	}
 
-	public static STNameable[] getSuperTypes(DetailAST aClassDef) {
+	public  STNameable[] getSuperTypes(DetailAST aClassDef) {
 		List<STNameable> aSuperTypes = new ArrayList();
 		STNameable[] emptyArray = {};
 		int numInterfaces = 0;
@@ -598,9 +610,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		DetailAST anExtendedType = extendsClause
 				.findFirstToken(TokenTypes.IDENT);
 		while (anExtendedType != null) {
-			if (anExtendedType.getType() == TokenTypes.IDENT)
-				aSuperTypes.add(new AnSTNameable(anExtendedType, anExtendedType
-						.getText()));
+			if (anExtendedType.getType() == TokenTypes.IDENT) {
+				String aDeclaredName = anExtendedType.getText();
+//				String aStoredName = aDeclaredName;
+//				String aPossibleLongName = importShortToLongName.get(aDeclaredName);
+//				if (aPossibleLongName != null) {
+//					aStoredName = aPossibleLongName;
+//				}
+//				aSuperTypes.add(new AnSTNameable(anExtendedType, aStoredName));
+//				aSuperTypes.add(new AnSTNameable(anExtendedType, anExtendedType
+//						.getText()));
+				aSuperTypes.add(new AnSTNameable(anExtendedType, toLongTypeName( anExtendedType
+				.getText())));
+			}
 			anExtendedType = anExtendedType.getNextSibling();
 		}
 		return (STNameable[]) aSuperTypes.toArray(emptyArray);
@@ -1168,6 +1190,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		
 	}
+//	protected String toLongTypeName (String aShortName) {
+//		String retVal = aShortName;
+//		String aPossibleLongName = importShortToLongName.get(aShortName);
+//		if (aPossibleLongName != null) {
+//			retVal = aPossibleLongName;
+//		}
+//		return retVal;
+//	}
 	public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope, VariableKind aVariableKind) {
 		int i = 0;
 		
@@ -1188,8 +1218,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				anRHS = aMaybeAssign.getFirstChild();
 				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
 			}
-
-			;
+			aTypeName = toLongTypeName(aTypeName);
 			// this code should go eventually
 			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
 					anIdentifier.getText(), aTypeName);
@@ -1471,7 +1500,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeName(aNormalizedLongName);
 		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(
-				currentMethodParameterTypes), aNormalizedParts[0], aCallee,
+				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]), aCallee,
 				aCallParameters, aNormalizedParts, aCastType);
 		if (aLeftMostMethodTargetAST != null) {
 			// String aTargetName;
@@ -1542,7 +1571,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		// need to worry about cast at some point I assume
 		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(
-				currentMethodParameterTypes), aNormalizedParts[0],
+				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]),
 				aNormalizedParts[1], aCallParameters, aNormalizedParts, null);
 
 		astToContinuationData.put(ast, aNormalizedParts);
@@ -2610,8 +2639,15 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected void visitInstantiation(DetailAST ast) {
 		final FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
 		String anInstantiatedTypeName = anIdentifierType.getText();
+//		String aPossibleLongName = importShortToLongName.get(anInstantiatedTypeName);
+//			if (aPossibleLongName != null) {
+//				anInstantiatedTypeName = aPossibleLongName;
+//			}
+		
+//		STNameable anInstantiatedNameable = new AnSTNameable(ast,
+//				anInstantiatedTypeName);
 		STNameable anInstantiatedNameable = new AnSTNameable(ast,
-				anInstantiatedTypeName);
+				toLongTypeName(anInstantiatedTypeName));
 		if (currentMethodName == null)
 			typesInstantiated.add(anInstantiatedNameable);
 		else

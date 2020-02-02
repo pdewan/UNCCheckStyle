@@ -1,5 +1,6 @@
 package unc.cs.symbolTable;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -864,6 +865,46 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		}
 		return retVal;
 	}
+   public static String getDefiningSuperType (STType anSTType, String aCallee) {
+	   STMethod[] aDeclaredMethods = anSTType.getDeclaredMethods(aCallee);
+	   if (aDeclaredMethods.length > 0) {
+		   return anSTType.getName();
+	   }
+	   STNameable aSuperTypeNameable = anSTType.getSuperClass();
+	   if (aSuperTypeNameable == null) {
+		   return Object.class.getName();
+	   }
+	   String aSuperTypeName = aSuperTypeNameable.getName();
+	   STType aSuperSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aSuperTypeName);
+	   if (aSuperSTType == null) {
+		   if (isObjectMethod(aCallee)) {
+			   return Object.class.getName();
+		   }
+		   return  aSuperTypeName;
+	   }
+	   return getDefiningSuperType(aSuperSTType, aCallee);
+   }
+	public static void addCalledSuperTypes(STType anSTType, List<CallInfo> aCallInfos) {
+		if (aCallInfos == null) {
+			return;
+		}
+		for (CallInfo aCallInfo : aCallInfos) {
+			STType aCalledType = aCallInfo.getCalledSTType();
+			if (aCalledType != anSTType)
+				continue;
+
+			String aCallee = aCallInfo.getCallee();
+			String aCalledSuperType = getDefiningSuperType(anSTType, aCallee);
+			if (aCalledType.getName().equals(aCalledSuperType)) {
+				continue;
+			}
+			aCallInfo.setCalledType(aCalledSuperType);
+
+			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledSuperType);
+			aCallInfo.setCalledSTType(aCalledSTType);
+		}
+
+	}
    /**
     * These are all methods in the class, not methods called by these methods
     */   
@@ -871,6 +912,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	public List<CallInfo> getAllMethodsCalled() {
 		if (allMethodsCalled == null) {
 			allMethodsCalled = computeAllCalls();
+			addCalledSuperTypes(this, allMethodsCalled);
+			
 		}
 		return allMethodsCalled;
 	}
@@ -926,9 +969,19 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		return result;
 	}
 
-	
+	static Set<String> objectMethodNames;
+	static Method[] objectMethods;
 
-	
+	public static boolean isObjectMethod(String aName) {
+		if (objectMethodNames == null ) {
+			objectMethodNames = new HashSet();
+			objectMethods = Object.class.getMethods();
+			for (Method aMethod:objectMethods) {
+				objectMethodNames.add(aMethod.getName());
+			}
+		}
+		return objectMethodNames.contains(aName);
+	}
 
 
 }

@@ -13,6 +13,8 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
+import unc.cs.symbolTable.CallInfo;
+import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTable;
@@ -57,6 +59,7 @@ public class PostProcessingMain {
 			}
 			processTypeInterfaces(anSTType);
 			processTypeSuperTypes(anSTType);
+			processTypeMethodCalls(anSTType);
 			
 			
 		
@@ -123,6 +126,56 @@ public class PostProcessingMain {
 	}
 	public static void processTypeInterfaces (STType anSTType) {
 	
+	List<STNameable> anInterfaces = anSTType.getAllInterfaces();
+	if (anInterfaces == null) {
+		anInterfaces = Arrays.asList(anSTType.getDeclaredInterfaces());
+	}
+	for (STNameable anInterface:anInterfaces) {
+		String aFullName = anInterface.getName();
+		if (isExternalType(aFullName)) {
+			printImplementsExternal(anSTType, aFullName);
+			return;
+		}
+		STType anInterfaceSTType = symbolTable.getSTClassByFullName(anInterface.getName());
+		if (anInterfaceSTType == null) {
+//			continue;
+			anInterfaceSTType = symbolTable.getSTClassByShortName(anInterface.getName());
+		}
+		if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType)){
+			printImplementsTagged(anSTType, anInterfaceSTType);
+		}
+	}
+	
+	
+
+}
+	public static void printCallInfo (STType aCallerSTType, STType aCalledSTType, CallInfo aCallInfo) {
+		String aCallingTypeName = aCallerSTType.getName();
+		String aCalledTypeName = aCallInfo.getCalledType();
+		STMethod aCallingMethod = aCallInfo.getCallingMethod();
+		List<STMethod> aCalledMethods = aCallInfo.getMatchingCalledMethods();
+		String aCallee = aCallInfo.getCallee();
+		System.out.println (aCallingTypeName + ":" + aCallingMethod + ":" + aCalledTypeName + ":" +aCallee  + ":" + aCalledSTType + aCalledMethods);
+	}
+	public static void processTypeMethodCalls (STType anSTType) {
+		List<CallInfo> aCallInfos = anSTType.getAllMethodsCalled();
+		if (aCallInfos == null) {
+			aCallInfos = anSTType.getMethodsCalled();
+		}
+		for (CallInfo aCallInfo:aCallInfos) {
+			String aCalledType = aCallInfo.getCalledType();
+			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledType);
+			if (aCalledSTType == null) {
+				aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aCalledType);
+			}
+			if (isExternalType(aCalledType)) {
+				printCallInfo(anSTType, aCalledSTType, aCallInfo);
+			}
+			if (aCalledSTType != null && TagBasedCheck.isExplicitlyTagged(aCalledSTType)) {
+				printCallInfo(anSTType, aCalledSTType, aCallInfo);
+
+			}
+		}
 	List<STNameable> anInterfaces = anSTType.getAllInterfaces();
 	if (anInterfaces == null) {
 		anInterfaces = Arrays.asList(anSTType.getDeclaredInterfaces());

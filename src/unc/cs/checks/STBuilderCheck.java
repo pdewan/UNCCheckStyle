@@ -195,11 +195,17 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static STBuilderCheck getLatestInstance() {
 		return latestInstance;
 	}
-
+//	protected Map<String, String> importShortToLongName = new HashMap();
 	protected void processImports() {
 		if (!getImportsAsExistingClasses())
 			return;
 		for (STNameable aClassName : allImportsOfThisClass) {
+			String aLongName = aClassName.getName();
+			// star imports?
+			String aShortName = toShortTypeName(aLongName);
+//			if (aShortName != null && !aShortName.isEmpty()) {
+//			importShortToLongName.put(aShortName, aLongName);
+//			}
 //			if (TagBasedCheck.isProjectImport(aClassName.getName()))
 //				continue;
 			if (isExternalImportCacheChecking(aClassName.getName()))

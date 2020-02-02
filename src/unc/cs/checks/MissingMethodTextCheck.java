@@ -79,6 +79,9 @@ public  class MissingMethodTextCheck extends MissingMethodCallCheck {
 	}
 	protected Boolean processString( STType anSTType, STMethod[] anSTMethods,  String aString, String aText, STMethod aSpecifiedMethod, Pattern aSpecifiedPattern) {
 		Boolean retVal = false;
+		if (anSTMethods == null) {
+			return null;
+		}
 		for (STMethod anActualMethod:anSTMethods) {
 			Boolean aMethodRetVal = processString(anSTType, anActualMethod, aSpecifiedMethod, aString, aText, aSpecifiedPattern);
 			if (aMethodRetVal == null) {
