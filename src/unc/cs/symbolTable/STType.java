@@ -88,4 +88,6 @@ public interface STType extends STNameable{
 	List<String> getDeclaredPublicInstanceSignatures();
 	STNameable[] getConfiguredTags();
 	STNameable[] getDerivedTags();
+	boolean isExternal();
+	void setExternal(boolean external);
 }

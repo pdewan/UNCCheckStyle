@@ -1,6 +1,7 @@
 package unc.cs.symbolTable;
 
 import java.util.List;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -24,7 +25,7 @@ public interface CallInfo {
 
 	STType getCalledSTType();
 
-	List<STMethod> getMatchingCalledMethods();
+	Set<STMethod> getMatchingCalledMethods();
 
 	DetailAST getAST();
 

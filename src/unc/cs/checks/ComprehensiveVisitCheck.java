@@ -445,7 +445,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 
-	public static void addAllNoDuplicates(List anOriginal, List aNew) {
+	public static void addAllNoDuplicates(List anOriginal, Set aNew) {
 		for (Object newElement : aNew) {
 			if (anOriginal.contains(newElement))
 				continue;

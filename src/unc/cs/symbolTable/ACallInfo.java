@@ -1,6 +1,8 @@
 package unc.cs.symbolTable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -17,7 +19,7 @@ public class ACallInfo implements CallInfo {
 	
 	String[] normalizedCall;
 	STMethod callingMethod;
-	List<STMethod> matchingCalledMethods;
+	Set<STMethod> matchingCalledMethods;
 	
 	
 //	public ACallInfo(String caller, String calledType,
@@ -94,10 +96,9 @@ public class ACallInfo implements CallInfo {
 		return calledSTType;
 	}
 	@Override
-	public List<STMethod> getMatchingCalledMethods() {
+	public Set<STMethod> getMatchingCalledMethods() {
 		if (matchingCalledMethods == null) {
-			matchingCalledMethods = new ArrayList();
-			int i = 0;
+			matchingCalledMethods = new HashSet();
 			STType aCalledType = getCalledSTType();
 			if (aCalledType == null)
 				return null;
@@ -105,6 +106,7 @@ public class ACallInfo implements CallInfo {
 				if (anSTMethod.getName().equals(callee) &&
 						anSTMethod.getParameterTypes().length == actuals.size()) { // at some point do overload resolution?
 					matchingCalledMethods.add(anSTMethod);
+//					anSTMethod.addCaller(callingMethod);
 //					break;
 				}
 			}

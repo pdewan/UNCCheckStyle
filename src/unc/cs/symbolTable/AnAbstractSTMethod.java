@@ -202,11 +202,12 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			return aCalledMethodClass.getDeclaredMethods(aCalledMethodName);			
 		}
 		@Override
-		public Set<STMethod> getAllCalledMethods() {
-			if (allCalledMethods == null)
-				allCalledMethods = computeAllCalledMethods(this);
+		public Set<STMethod> getAllDirectlyOrIndirectlyCalledMethods() {
+			if (allCalledMethods == null) {
+				allCalledMethods = computeAllDirectlyOrIndirectlyCalledMethods(new HashSet(), this);
+			}
 			if (allCalledMethods != null)
-				setCalledMethods(this, allCalledMethods);
+				addCallerMethod(this, allCalledMethods);
 			return allCalledMethods;
 		}
 		
@@ -219,24 +220,32 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			return callingMethods;
 		}
 		@Override
+	
 		public Set<STMethod> getInternallyCallingMethods() {
-			if (allInternallyCalledMethods == null)
-				allInternallyCalledMethods = computeAllInternallyCalledMethods(this);
+			if (allInternallyCalledMethods == null) {
+				Set<STMethod> result = new HashSet();
+				allInternallyCalledMethods = computeAllInternallyDirectlyOrIndirectlyCalledMethods(result, this);
+			}
 			if (allInternallyCalledMethods != null)
-				setCalledMethods(this, allInternallyCalledMethods);
+				addCallerMethod(this, allInternallyCalledMethods);
 			return internallyCallingMethods;
 		}
-		static Set<STMethod> visitedInternalMethods = new HashSet();
+//		static Set<STMethod> visitedInternalMethods = new HashSet();
+		static Set<STMethod> visitedInternalOrExternalMethods = new HashSet();
+
 		@Override
-		public Set<STMethod> getAllInternallyCalledMethods() {
+		public Set<STMethod> getAllInternallyDirectlyAndIndirectlyCalledMethods() {
 			if (allInternallyCalledMethods == null) {
 //				allInternallyCalledMethods = computeAllInternallyCalledMethods(this);
-				
-			allInternallyCalledMethods = 
-			computeAllInternallyCalledMethods(this);
+				Set<STMethod> result = new HashSet();
+				allInternallyCalledMethods = computeAllInternallyDirectlyOrIndirectlyCalledMethods(result, this);
 			}
-
 			return allInternallyCalledMethods;
+//			allInternallyCalledMethods = 
+//			computeAllInternallyDirectlyOrIndirectlyCalledMethods(this);
+			
+
+//			return allInternallyCalledMethods;
 		}
 		@Override
 		public Set<STMethod> getAllInternallyCallingMethods() {
@@ -248,6 +257,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			if (callingMethods == null)
 				callingMethods = new HashSet();
 			callingMethods.add(aMethod);
+//			allCallingMethods.add(aMethod); // what is the difference?
 			if (aMethod.getDeclaringClass().equals(getDeclaringClass())) {
 				if (internallyCallingMethods == null) {
 					internallyCallingMethods = new HashSet();
@@ -256,14 +266,17 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			}
 		}
 		
-		public static void setCalledMethods(STMethod aCallingMethod, Set<STMethod> aCalledMethods) {
+		public static void addCallerMethod(STMethod aCallingMethod, Set<STMethod> aCalledMethods) {
 			for (STMethod aCalledMethod:aCalledMethods) {
 				aCalledMethod.addCaller(aCallingMethod);
 			}
 		}
 // deprecated by getAllLocalMethods and getAllMethods
-		public static Set<STMethod> computeAllCalledMethods (STMethod aMethod) {
-			Set<STMethod> result = new HashSet();
+		public static Set<STMethod> computeAllDirectlyOrIndirectlyCalledMethods (Set<STMethod> result, STMethod aMethod) {
+//			Set<STMethod> result = new HashSet();
+//			if (visitedInternalOrExternalMethods.contains(aMethod))
+//				return aMethod.getAllDirectlyOrIndirectlyCalledMethods();
+//			visitedInternalOrExternalMethods.add(aMethod); // prevent recursion
 //			STType aDeclaringType = aMethod.getDeclaringSTType();
 //			if (aDeclaringType == null) {
 //				System.err.println("Declaring type should not be null");
@@ -274,10 +287,16 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
 				if (anAllDirectlyCalledMethods == null)
 					return null;
-				result.addAll(Arrays.asList(anAllDirectlyCalledMethods));
+//				result.addAll(Arrays.asList(anAllDirectlyCalledMethods));
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+					if (result.contains(aDirectlyCalledMethod)) {
+						continue;
+					}
 //					aDirectlyCalledMethod.addCaller(aMethod);
-					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllCalledMethods();
+					result.add(aDirectlyCalledMethod);
+//					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllDirectlyOrIndirectlyCalledMethods();
+					Set<STMethod> anAllIndirectlyCalledMethods = computeAllDirectlyOrIndirectlyCalledMethods(result, aDirectlyCalledMethod);
+
 					if (anAllIndirectlyCalledMethods == null) {
 						return null;
 					}
@@ -315,7 +334,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
 					
-					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyCalledMethods();
+					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods();
 					if (anAllIndirectlyCalledMethods == null) {
 						return null;
 					}
@@ -327,11 +346,12 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		}
 
 		
-		public static Set<STMethod> computeAllInternallyCalledMethods (STMethod aMethod) {
+		public static Set<STMethod> computeAllInternallyDirectlyOrIndirectlyCalledMethods (Set<STMethod> result, STMethod aMethod) {
 			
-			Set<STMethod> result = new HashSet();
-			if (visitedInternalMethods.contains(aMethod))
-				return result;
+//			Set<STMethod> result = new HashSet();
+//			if (visitedInternalMethods.contains(aMethod))
+//				return aMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods();
+//			visitedInternalMethods.add(aMethod); // prevent recursion
 //			STType aDeclaringType = aMethod.getDeclaringSTType();
 //			if (aDeclaringType == null) {
 //				System.err.println("Declaring type should not be null");
@@ -355,18 +375,28 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 					continue;
 //					return null;
 				}
-				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
-				visitedInternalMethods.addAll(result);
+//				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
+//				visitedInternalMethods.add(aMethod); // prevent recursion
+
+//				visitedInternalMethods.addAll(result);
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
+					if (result.contains(aDirectlyCalledMethod)) {
+						continue;
+					}
+					result.add(aDirectlyCalledMethod);
 					
-					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyCalledMethods();
+					Set<STMethod> anAllIndirectlyCalledMethods = computeAllInternallyDirectlyOrIndirectlyCalledMethods(result, aDirectlyCalledMethod);
+//							aDirectlyCalledMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods();
 					if (anAllIndirectlyCalledMethods == null) {
 						return null;
 					}
-					result.addAll(anAllIndirectlyCalledMethods); // add empty if already visited
-					visitedInternalMethods.addAll(anAllIndirectlyCalledMethods);
+//					result.addAll(anAllIndirectlyCalledMethods); // add empty if already visited
+//					visitedInternalMethods.addAll(anAllIndirectlyCalledMethods);
+//					visitedInternalMethods.add(aMethod); // do not wnat to recurse
+
 				}
 			}
+//			visitedInternalMethods.add(aMethod); // this is when the visit ends
 			return result;
 			
 			
@@ -383,9 +413,9 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		}
 		@Override
 		public Boolean calls(STMethod anSTMethod) {
-			if (getAllCalledMethods() == null)
+			if (getAllDirectlyOrIndirectlyCalledMethods() == null)
 				return null;
-			return getAllCalledMethods().contains(anSTMethod);			
+			return getAllDirectlyOrIndirectlyCalledMethods().contains(anSTMethod);			
 		}
 		@Override
 		public void setDeclaringSTType(STType declaringSTType) {

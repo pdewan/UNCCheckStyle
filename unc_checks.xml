@@ -19,7 +19,7 @@
 			<property name="includeTypeTags" value="*" />
 			<property name="severity" value="info" />
 			<property name="logNoMatches" value="true" />	
-			<property name="importsAsExistingClasses" value="false" />		
+			<property name="importsAsExistingClasses" value="true" />		
 
 		</module>
 		

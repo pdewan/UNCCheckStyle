@@ -226,12 +226,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		try {
 			Class aClass = Class.forName(aClassName);
 			STType anSTType = new AnSTTypeFromClass(aClass);
+			anSTType.setExternal(true);
 			addSTType(anSTType);
 		} catch (ClassNotFoundException e) {
-			if (existingClassesCollection.contains(aClassName))
-				System.err.println("Could not make existing class from: "
-						+ aClassName );
+//			if (existingClassesCollection.contains(aClassName))
+//				System.err.println("Could not make existing class from: "
+//						+ aClassName );
 			STType anSTType = new AnSTTypeFromClass(aClassName);
+			anSTType.setExternal(true);
+
 			addSTType(anSTType);
 			// e.printStackTrace();
 		}
@@ -537,7 +540,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		List<STNameable> derivedTags = derivedTags(typeAST, isInterface?INTERFACE_START:CLASS_START);
 		String aConfiguredName = classToConfiguredClass.get(shortTypeName);
 		
-		addAllNoDuplicates(result, derivedTags);
+		addAllNoDuplicates(result, new HashSet(derivedTags));
 		configuredTags.clear();
 		if (aConfiguredName != null) {
 			STNameable aNameable = new AnSTNameable(aConfiguredName);
@@ -550,7 +553,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected List<STNameable> computedAndDerivedMethodTags() {
 		List<STNameable> result = currentMethodComputedTags;
 		List<STNameable> derivedTags = derivedTags(currentMethodAST, METHOD_START);
-		addAllNoDuplicates(result, derivedTags);
+		addAllNoDuplicates(result, new HashSet(derivedTags));
 		return result;
 	}
 	@Override
@@ -560,7 +563,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected  List<STNameable> getComputedDerivedAndExplicitTags(DetailAST anAST, DetailAST aNameAST, String aTypeName, String aStart ) {
 		List<STNameable> result = getComputedAndExplicitTags(anAST, aNameAST, aTypeName);
 		List<STNameable> derivedTags = derivedTags(anAST, aStart);
-		addAllNoDuplicates(result, derivedTags);
+		addAllNoDuplicates(result, new HashSet (derivedTags));
 		return result;
 	}
 

@@ -900,8 +900,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			}
 			aCallInfo.setCalledType(aCalledSuperType);
 
-			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledSuperType);
-			aCallInfo.setCalledSTType(aCalledSTType);
+			STType aCalledSTSuperType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledSuperType);
+			aCallInfo.setCalledSTType(aCalledSTSuperType);
 		}
 
 	}
@@ -911,8 +911,12 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public List<CallInfo> getAllMethodsCalled() {
 		if (allMethodsCalled == null) {
+		
 			allMethodsCalled = computeAllCalls();
+			if (allMethodsCalled != null) {
 			addCalledSuperTypes(this, allMethodsCalled);
+			
+			}
 			
 		}
 		return allMethodsCalled;

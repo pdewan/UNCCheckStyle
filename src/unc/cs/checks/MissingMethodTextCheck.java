@@ -71,7 +71,7 @@ public  class MissingMethodTextCheck extends MissingMethodCallCheck {
 	    	return true;
 	    }
 	    
-	    Set<STMethod> aCalledMethodsSet =aCallingMethod.getAllCalledMethods();
+	    Set<STMethod> aCalledMethodsSet =aCallingMethod.getAllDirectlyOrIndirectlyCalledMethods();
 	    STMethod[] aCallerMethods = new STMethod[aCalledMethodsSet.size()];
 	    aCalledMethodsSet.toArray(aCallerMethods);
 	    

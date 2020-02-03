@@ -1062,7 +1062,7 @@ public static boolean isExternalType(String aFullName) {
 }
 
 public static boolean isExplicitlyTagged (STType anSTType) {
-	return anSTType.getTags().length > 0 || anSTType.getConfiguredTags().length > 0;
+	return (anSTType != null && anSTType.getTags() != null) && (anSTType.getTags().length > 0 || anSTType.getConfiguredTags().length > 0);
 }
 public static String[] toStrings(STNameable[] anSTNameables) {
 	String[] retVal = new String[anSTNameables.length];

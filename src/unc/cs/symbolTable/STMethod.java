@@ -26,9 +26,9 @@ public interface STMethod extends STNameable{
 	STType getDeclaringSTType();
 	void setDeclaringSTType(STType declaringSTType);
 	void addCaller(STMethod aMethod);
-	public Set<STMethod> getAllCalledMethods();
+	public Set<STMethod> getAllDirectlyOrIndirectlyCalledMethods();
 	public Set<STMethod> getAllCallingMethods() ;
-	public Set<STMethod> getAllInternallyCalledMethods() ;
+	public Set<STMethod> getAllInternallyDirectlyAndIndirectlyCalledMethods() ;
 	public Set<STMethod> getAllInternallyCallingMethods() ;
 	Set<STMethod> getCallingMethods();
 	Set<STMethod> getInternallyCallingMethods();

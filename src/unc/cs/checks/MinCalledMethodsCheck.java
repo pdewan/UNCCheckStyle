@@ -55,7 +55,7 @@ public class MinCalledMethodsCheck extends ComprehensiveVisitCheck {
     	STMethod[] anSTMethods = anSTClass.getDeclaredMethods();
     	int aMaxMethods = 0;
     	for (STMethod aMethod:anSTMethods) {
-    		aMaxMethods = Math.max(aMethod.getAllInternallyCalledMethods().size(), aMaxMethods);   		
+    		aMaxMethods = Math.max(aMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods().size(), aMaxMethods);   		
     	}
     	if (aMaxMethods < minCalledMethods) {
     		if (fullTypeName.contains("Cell")) {

@@ -20,6 +20,9 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// protected STNameable[] declaredPropertyNames,
 	// declaredEditablePropertyNames;
 	// protected final STNameable[] imports;
+	protected boolean external = false;
+	
+
 	protected STMethod[] initMethods;
 
 	protected STMethod[] declaredMethods; // initialized by subclass
@@ -1787,6 +1790,14 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 			}
 		}
 		return null;
+	}
+	@Override
+	public boolean isExternal() {
+		return external;
+	}
+	@Override
+	public void setExternal(boolean external) {
+		this.external = external;
 	}
 
 	// @Override

@@ -1,7 +1,9 @@
 package unc.cs.symbolTable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
 import unc.cs.checks.STTypeVisited;
@@ -27,6 +29,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	final boolean assignsToGlobal;
 //	final String[][] methodsCalled;
 	final CallInfo[] methodsCalled;
+//	protected Set<STMethod> callingMethods = new HashSet();
+	
 	protected List<STMethod> localMethodsCalled;
 	protected List<STMethod> localCallClosure;
 	
@@ -151,9 +155,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			for (CallInfo aCall:methodsCalled) {
 				if (ComprehensiveVisitCheck.toShortTypeName(aCall.getCalledType()).
 						equals(ComprehensiveVisitCheck.toShortTypeName(getDeclaringClass()))) {
-					int i = 0;
 //					STMethod anSTMethod = aCall.getMatchingCalledMethods();
-					List<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
+					Set<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
+					
 
 					if (anSTMethods == null) {
 						System.err.println("Could not create local st method, misguessed target type:" + aCall);
@@ -165,6 +169,9 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 				}
 			}
 			localMethodsCalled = aList;
+			for (STMethod aMethod:localMethodsCalled) {
+				aMethod.addCaller(this);
+			}
 		}
 		return localMethodsCalled;
 	}
@@ -174,15 +181,21 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			List<STMethod> aList = new ArrayList();
 			for (CallInfo aCall : methodsCalled) {
 
-				List<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
+				Set<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
 				if (anSTMethods == null) {
 					return null;
 				}
 //				aList.add(anSTMethod);
-				ComprehensiveVisitCheck.addAllNoDuplicates(allMethodsCalled, anSTMethods);
+//				ComprehensiveVisitCheck.addAllNoDuplicates(allMethodsCalled, anSTMethods);
+				ComprehensiveVisitCheck.addAllNoDuplicates(aList, anSTMethods);
+				
+
 
 			}
 			allMethodsCalled = aList;
+			for (STMethod aMethod:allMethodsCalled) {
+				aMethod.addCaller(this);
+			}
 		}
 		return localMethodsCalled;
 	}
@@ -385,4 +398,5 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		public List<STVariable> getParameters() {
 			return parameterSTVariables;
 		}
+		
 }
