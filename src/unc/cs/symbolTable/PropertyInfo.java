@@ -7,5 +7,12 @@ public interface PropertyInfo {
 	public void setSetter(STMethod setter) ;
 	public String getType();
 	public String getName();
+	public boolean isPublic();
+	boolean isReadOnly();
+	boolean isWriteOnly();
+	boolean isEditable();
+	STType getDefiningSTType();
+	STVariable getVariableSet();
+	STVariable getVariableGet();
 
 }

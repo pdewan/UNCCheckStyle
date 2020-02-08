@@ -142,8 +142,8 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 	protected boolean isSeedMethod(STMethod anSTMethod) {
 		return 
 //				anSTMethod.getGlobalsAccessed().isEmpty() ||
-				anSTMethod.isGetter() || 
-				anSTMethod.isSetter(); 
+				anSTMethod.isPublicGetter() || 
+				anSTMethod.isPublicSetter(); 
 //				!checkIncludeExcludeTagsOfMethod(Arrays.asList(anSTMethod.getComputedTags()));
 	}
 

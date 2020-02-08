@@ -38,6 +38,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	protected List<CallInfo> allMethodsCalled ;
 
 	protected List<STNameable> typesInstantiated;
+	protected Map<String, List<DetailAST>> globalIdentToRHS;
+	protected Map<String, List<DetailAST>> globalIdentToLHS ;
 
 
 //	protected Set<String> delegates = new HashSet();
@@ -68,7 +70,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //			Map<String, String> aGlobalVariableToType,
 //			Map<String, DetailAST> aGlobalVariableToRHS,
 			List<STNameable> aTypesInstantiated,
-			List<STVariable> aGlobalSTVariables
+			List<STVariable> aGlobalSTVariables,
+			Map<String, List<DetailAST>> aGlobalIdentToLHS,
+			Map<String, List<DetailAST>> aGlobalIdentToRHS
 			) {
 		super(ast, name);
 //		if (name.contains("Cell")) {
@@ -105,6 +109,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		}
 		typesInstantiated = aTypesInstantiated;
 		globalSTVariables = aGlobalSTVariables;
+		globalIdentToLHS = aGlobalIdentToLHS;
+		globalIdentToRHS = aGlobalIdentToRHS;
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
@@ -986,6 +992,23 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		}
 		return objectMethodNames.contains(aName);
 	}
+
+	public Map<String, List<DetailAST>> getGlobalIdentToRHS() {
+		return globalIdentToRHS;
+	}
+
+	public Map<String, List<DetailAST>> getGlobalIdentToLHS() {
+		return globalIdentToLHS;
+	}
+//	@Override
+//	public STVariable toSTVariable (String aName) {
+//		for (STVariable anSTVariable:globalSTVariables) {
+//			if (anSTVariable.getName().equals(aName)) {
+//				return anSTVariable;
+//			}
+//		}
+//		return null;
+//	}
 
 
 }

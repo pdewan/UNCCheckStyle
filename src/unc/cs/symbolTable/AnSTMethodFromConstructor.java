@@ -198,6 +198,11 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		return emptyList;
 	}
+	@Override
+	public boolean isSynchronized() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
 	
 

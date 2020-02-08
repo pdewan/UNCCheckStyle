@@ -32,9 +32,12 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 
 
 
+	protected  boolean isPublicGetter;
+	protected  boolean isPublicSetter;
 	protected  boolean isGetter;
 	protected  boolean isSetter;
 	protected  boolean isInit;
+	protected  boolean isSynchronized;
 	protected  String signature;
 //	final STNameable[] tags;
 //	final boolean assignsToGlobal;
@@ -52,8 +55,10 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //		signature = displayMethod();
 	}
 	protected void introspect() {
-		isSetter = computeIsSetter();
-		isGetter = computeIsGetter();
+//		isPublicSetter = computeIsPublicSetter();
+//		isPublicGetter = computeIsPublicGetter();
+		computeIsSetter();
+		computeIsGetter();
 		isInit = computeIsInit();
 		signature = toStringMethod();
 	}
@@ -101,6 +106,14 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //		return isProcedure;
 //	}
 	@Override
+	public boolean isPublicSetter() {
+		return isPublicSetter;
+	}
+	@Override
+	public boolean isPublicGetter() {
+		return isPublicGetter;
+	}
+	@Override
 	public boolean isSetter() {
 		return isSetter;
 	}
@@ -109,25 +122,47 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		return isGetter;
 	}
 	
-	protected boolean computeIsSetter() {
+//	protected boolean computeIsPublicSetter() {
+//		if (getParameterTypes() == null) {
+//			return false;
+//		}
+//		return getName() != null && getName().startsWith(SET) &&
+//				getName().length() > SET.length() &
+//				isPublic() &&
+//				getParameterTypes().length == 1 &&
+//				isProcedure();
+//	}
+	protected void computeIsSetter() {
 		if (getParameterTypes() == null) {
-			return false;
+			return ;
 		}
-		return getName() != null && getName().startsWith(SET) &&
+		isSetter = getName() != null && getName().startsWith(SET) &&
 				getName().length() > SET.length() &
-				isPublic() &&
+//				isPublic() &&
 				getParameterTypes().length == 1 &&
 				isProcedure();
+		isPublicSetter = isSetter && isPublic();
 	}
-	protected boolean computeIsGetter() {
+//	protected boolean computeIsPublicGetter() {
+//		if (getParameterTypes() == null) {
+//			return false;
+//		}
+//		return getName() != null && getName().startsWith(GET) &&
+//				getName().length() > GET.length() &&
+//				isPublic() &&
+//				getParameterTypes().length == 0 &&
+//				!isProcedure();
+//	}
+	protected void computeIsGetter() {
 		if (getParameterTypes() == null) {
-			return false;
+			return ;
 		}
-		return getName() != null && getName().startsWith(GET) &&
+		isGetter = getName() != null && getName().startsWith(GET) &&
 				getName().length() > GET.length() &&
-				isPublic() &&
+//				isPublic() &&
 				getParameterTypes().length == 0 &&
 				!isProcedure();
+		isPublicGetter = isGetter && isPublic();
 	}
 	protected boolean computeIsInit() {
 		 return isInit(getName());
@@ -147,6 +182,15 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	 }
 	 String toStringMethod() {
 		 StringBuilder result = new StringBuilder();
+		 String aStatic = isInstance()?"":"static ";
+//		 String aPublic = isPublic()?"public":"";
+		 result.append(aStatic);
+		 String aSynchronized = isSynchronized()?"":"synchronized ";
+		 result.append(aSynchronized);
+
+
+		 result.append(ComprehensiveVisitCheck.toAccessString(getAccessToken()));
+
 		 result.append(name);
 		 result.append(":");
 		 result.append(toStringParameterTypes());
@@ -420,6 +464,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		@Override
 		public void setDeclaringSTType(STType declaringSTType) {
 			this.declaringSTType = declaringSTType;
+			
 		}
 		static List<STNameable> emptyNameableList = new ArrayList();
 

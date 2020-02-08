@@ -528,21 +528,18 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	// }
 
 	protected void maybeProcessGetter(STMethod anSTMethod) {
-		// if (!isGetter(anSTMethod))
-		// return;
+	
+//		if (!anSTMethod.isPublicGetter())
+//			return;
 		if (!anSTMethod.isGetter())
 			return;
-		// if (!anSTMethod.getName().startsWith(GET) ||
-		// !anSTMethod.isPublic() ||
-		// anSTMethod.getParameterTypes().length != 0) return;
-		// String aPropertyName =
-		// anSTMethod.getName().substring(AnSTMethod.GET.length()).toLowerCase();
+		
 		String aPropertyName = anSTMethod.getName().substring(
 				AnSTMethod.GET.length());
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = declaredPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
-			aPropertyInfo = new APropertyInfo(aPropertyName, aPropertyType);
+			aPropertyInfo = new APropertyInfo(this, aPropertyName, aPropertyType);
 			declaredPropertyInfo.put(aPropertyName, aPropertyInfo);
 		}
 		aPropertyInfo.setGetter(anSTMethod);
@@ -558,23 +555,20 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	// "void".equals(anSTMethod.getReturnType());
 	// }
 	protected void maybeProcessSetter(STMethod anSTMethod) {
-		// if (!anSTMethod.getName().startsWith(SET) ||
-		// !anSTMethod.isPublic() ||
-		// anSTMethod.getParameterTypes().length != 1) return;
-		// if (!isSetter(anSTMethod))
-		// return;
+	
+//		if (!anSTMethod.isPublicSetter())
+//			return;
 		if (!anSTMethod.isSetter())
 			return;
 		hasSetter = true;
-		// String aPropertyName =
-		// anSTMethod.getName().substring(AnSTMethod.SET.length()).toLowerCase();
+		
 		String aPropertyName = anSTMethod.getName().substring(
 				AnSTMethod.SET.length());
 
 		String aPropertyType = anSTMethod.getParameterTypes()[0];
 		PropertyInfo aPropertyInfo = declaredPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {
-			aPropertyInfo = new APropertyInfo(aPropertyName, aPropertyType);
+			aPropertyInfo = new APropertyInfo(this, aPropertyName, aPropertyType);
 			declaredPropertyInfo.put(aPropertyName, aPropertyInfo);
 		}
 		aPropertyInfo.setSetter(anSTMethod);

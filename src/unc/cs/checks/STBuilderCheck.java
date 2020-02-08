@@ -35,11 +35,13 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class STBuilderCheck extends ComprehensiveVisitCheck {
-
+//	public static final String MSG_KEY = "stBuilder";
+	public static final String MSG_KEY = "typeDefined";
+	public static final String EXPECTED_TYPES = "expectedTypes";
 	protected Map<String, Map<String, String[]>> startToSpecification = new HashMap<>();
 
-
-	protected STType currentSTType;
+	public static final String  EMPTY_STRING = "";
+//	protected STType currentSTType;
 	protected List<STMethod> stMethods = new ArrayList();
 	protected Stack<List<STMethod>> stMethodsStack = new Stack();
 	protected List<STNameable> derivedTags = new ArrayList();
@@ -48,13 +50,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected List<STMethod> stConstructors = new ArrayList();
 	protected Stack<List<STMethod>> stConstructorsStack = new Stack();
 
-//	public static final String MSG_KEY = "stBuilder";
-	public static final String MSG_KEY = "typeDefined";
+
+
 	public static  String configurationFileName;
 
 	public static  String configurationFileFullName;
 	public static final Map<String, String> classToConfiguredClass = new HashMap();
-	public static final String EXPECTED_TYPES = "expectedTypes";
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework", "test", "comp", "proj", "ass", "hw" };
 	static String[] externalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen", "util", "gradingTools" };
@@ -85,6 +86,30 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //	protected Set<String> matchedTypes = new HashSet();
 	protected boolean overlappingTags = true;
 	protected boolean logNoMatches = true;
+	protected boolean logMethodsDeclared = false;
+	protected boolean logVariablesDeclared = false;
+	protected boolean logPropertiesDeclared = false;
+
+
+    protected String methodsDeclaredString;
+    protected String variablesDeclaredString;
+    protected String propertiesDeclaredString;
+
+
+	public STBuilderCheck() {
+		latestInstance = this;
+		startToSpecification.put(CLASS_START, classToSpecifications);
+		startToSpecification.put(INTERFACE_START, interfaceToSpecifications);
+		startToSpecification.put(METHOD_START, methodToSpecifications);
+		startToSpecification.put(VARIABLE_START, variableToSpecifications);
+		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
+//		System.err.println ("Setting checks name to:" + "Assignments" );
+//		checksName =  "Assignments";
+		checksName =  "CheckStyle_All";
+		setCheckOnBuild(true); //make symboltable incrementally
+		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
+
+	}
 
     public void setConfigurationFileName(String aConfigurationFileName) {
     	configurationFileName = aConfigurationFileName;
@@ -111,19 +136,87 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	}
 
 
-	public STBuilderCheck() {
-		latestInstance = this;
-		startToSpecification.put(CLASS_START, classToSpecifications);
-		startToSpecification.put(INTERFACE_START, interfaceToSpecifications);
-		startToSpecification.put(METHOD_START, methodToSpecifications);
-		startToSpecification.put(VARIABLE_START, variableToSpecifications);
-		startToSpecification.put(PARAMETER_START, parameterToSpecifications);
-//		System.err.println ("Setting checks name to:" + "Assignments" );
-//		checksName =  "Assignments";
-		checksName =  "CheckStyle_All";
-		setCheckOnBuild(true); //make symboltable incrementally
-		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
+	
+	
 
+	public void setVisitInnerClasses(boolean newVal) {
+		visitInnerClasses = newVal;
+	}
+
+	public boolean getVisitInnerClasses() {
+		return visitInnerClasses;
+	}
+	public void setProjectPackagePrefixes(String[] aPrefixes) {
+		projectPackagePrefixes = aPrefixes;
+	}
+	
+	public void setExternalPackagePrefixes(String[] aPrefixes) {
+		externalPackagePrefixes = aPrefixes;
+	}
+	public void setExternalMethodRegularExpressions(String[] newVal) {
+		externalMethodRegularExpressions = newVal;
+	}
+	
+	public void setExternalTypeRegularExpressions(String[] newVal) {
+		externalClassRegularExpressions = newVal;
+	}
+	
+	public static String[] getProjectPackagePrefixes() {
+		return projectPackagePrefixes;
+	}
+	public static String[] getExternalPackagePrefixes() {
+		return externalPackagePrefixes;
+	}
+	public static String[] getExternalMethodRegularExpressions() {
+		return externalMethodRegularExpressions;
+	}
+	public static String[] getExternalTypeRegularExpressions() {
+		return externalClassRegularExpressions;
+	}
+
+	public void setExistingClasses(String[] aClasses) {
+		existingClasses = aClasses;
+		existingClassesCollection = Arrays.asList(existingClasses);
+//		processExistingClasses();
+	}
+	
+	public void setChecksName(String newValue) {
+		checksName = newValue;
+		
+	}
+	public  String getChecksName() {
+		return checksName;
+	}
+
+	public static boolean getImportsAsExistingClasses() {
+		return importsAsExistingClasses;
+	}
+
+	public void setImportsAsExistingClasses(boolean aNewVal) {
+		importsAsExistingClasses = aNewVal;
+	}
+
+	public  String[] getExistingClasses() {
+		return existingClasses;
+	}
+	
+	public boolean isLogMethodsDeclared() {
+		return logMethodsDeclared;
+	}
+	public void setLogMethodsDeclared(boolean newVal) {
+		 logMethodsDeclared = newVal;
+	}
+	public boolean isLogVariablesDeclared() {
+		return logVariablesDeclared;
+	}
+	public void setLogVariablesDeclared(boolean newVal) {
+		logVariablesDeclared = newVal;
+	}
+	public boolean isLogPropertiesDeclared() {
+		return logPropertiesDeclared;
+	}
+	public void setLogPropertiesDeclared(boolean newVal) {
+		logPropertiesDeclared = newVal;
 	}
 	protected void newProjectDirectory(String aNewProjectDirectory) {
 		super.newProjectDirectory(aNewProjectDirectory);
@@ -132,14 +225,6 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //		System.err.println ("Clearing symbol table");
 //		SymbolTableFactory.getOrCreateSymbolTable().clear();
 		
-	}
-
-	public void setVisitInnerClasses(boolean newVal) {
-		visitInnerClasses = newVal;
-	}
-
-	public boolean getVisitInnerClasses() {
-		return visitInnerClasses;
 	}
 	protected void maybeProcessConfigurationFileName() {
 		String aProjectDirectory = ProjectDirectoryHolder.getCurrentProjectDirectory();
@@ -227,7 +312,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			Class aClass = Class.forName(aClassName);
 			STType anSTType = new AnSTTypeFromClass(aClass);
 			anSTType.setExternal(true);
-			addSTType(anSTType);
+			addAndUpateCurrentSTTType(anSTType);
 		} catch (ClassNotFoundException e) {
 //			if (existingClassesCollection.contains(aClassName))
 //				System.err.println("Could not make existing class from: "
@@ -235,7 +320,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			STType anSTType = new AnSTTypeFromClass(aClassName);
 			anSTType.setExternal(true);
 
-			addSTType(anSTType);
+			addAndUpateCurrentSTTType(anSTType);
 			// e.printStackTrace();
 		}
 
@@ -256,6 +341,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					currentMethodIsPublic || isInterface,
 					currentMethodIsInstance || isInterface,
 					currentMethodIsConstructor,
+					currentMethodIsSynchronized,
 					currentMethodType,
 					currentMethodIsVisible,
 					currentMethodTags.toArray(dummyArray),
@@ -280,61 +366,44 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		currentMethodName = null;
 
 	}
-
-	public void setProjectPackagePrefixes(String[] aPrefixes) {
-		projectPackagePrefixes = aPrefixes;
-	}
 	
-	public void setExternalPackagePrefixes(String[] aPrefixes) {
-		externalPackagePrefixes = aPrefixes;
-	}
-	public void setExternalMethodRegularExpressions(String[] newVal) {
-		externalMethodRegularExpressions = newVal;
-	}
 	
-	public void setExternalTypeRegularExpressions(String[] newVal) {
-		externalClassRegularExpressions = newVal;
-	}
-	
-	public static String[] getProjectPackagePrefixes() {
-		return projectPackagePrefixes;
-	}
-	public static String[] getExternalPackagePrefixes() {
-		return externalPackagePrefixes;
-	}
-	public static String[] getExternalMethodRegularExpressions() {
-		return externalMethodRegularExpressions;
-	}
-	public static String[] getExternalTypeRegularExpressions() {
-		return externalClassRegularExpressions;
-	}
-
-	public void setExistingClasses(String[] aClasses) {
-		existingClasses = aClasses;
-		existingClassesCollection = Arrays.asList(existingClasses);
-//		processExistingClasses();
-	}
-	
-	public void setChecksName(String newValue) {
-		checksName = newValue;
-		
-	}
-	public  String getChecksName() {
-		return checksName;
-	}
-
-	public static boolean getImportsAsExistingClasses() {
-		return importsAsExistingClasses;
-	}
-
-	public void setImportsAsExistingClasses(boolean aNewVal) {
-		importsAsExistingClasses = aNewVal;
-	}
-
-	public  String[] getExistingClasses() {
-		return existingClasses;
-	}
-
+	protected String computePropertiesDeclaredString() {
+    	return !isLogPropertiesDeclared()?
+    			EMPTY_STRING:
+    				toPropertiesDeclaredString(currentSTType);
+    		
+    }
+    protected String computeMethodsDeclaredString() {
+    	return !isLogMethodsDeclared()?
+    			EMPTY_STRING:
+    				toMethodsDeclaredString(currentSTType);
+    		
+    }
+    protected String computeVariablesDeclaredString() {
+    	return !isLogVariablesDeclared()?
+    			EMPTY_STRING:
+    				toVariablesDeclaredString(currentSTType);
+    		
+    }
+    protected String getPropertiesDeclaredString() {
+    	if (propertiesDeclaredString == null) {
+    		propertiesDeclaredString = computePropertiesDeclaredString();
+    	}
+    	return propertiesDeclaredString;
+    }
+    protected String getMethodsDeclaredString() {
+    	if (methodsDeclaredString == null) {
+    		methodsDeclaredString = computeMethodsDeclaredString();
+    	}
+    	return methodsDeclaredString;
+    }
+    protected String getVariablesDeclaredString() {
+    	if (variablesDeclaredString == null) {
+    		variablesDeclaredString = computeVariablesDeclaredString();
+    	}
+    	return variablesDeclaredString;
+    }
 	@Override
 	public void doFinishTree(DetailAST ast) {
 		if (!getVisitInnerClasses() && checkIncludeExcludeTagsOfCurrentType()) {
@@ -433,7 +502,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	STNameable[] dummyArray = new STNameable[0];
 	
-
+	protected void addAndUpateCurrentSTTType(STType anSTType) {
+		addSTType(anSTType);
+		currentSTType = anSTType;
+	}
 	protected static void addSTType(STType anSTClass) {
 		if (!anSTClass.isEnum()) {
 			anSTClass.introspect();
@@ -450,6 +522,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		
 		SymbolTableFactory.getOrCreateSymbolTable()
 		.putSTType(aName, anSTClass);
+		
 		
 
 	}
@@ -476,13 +549,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //				new HashMap(), 
 //				new HashMap(), 
 				new ArrayList(), 
-				new ArrayList());
+				new ArrayList(),
+				new HashMap(),
+				new HashMap()
+				);
 
 		// anSTClass.introspect();
 		// anSTClass.findDelegateTypes();
 		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 		// fullTypeName, anSTClass);
-		addSTType(anSTClass);
+		addAndUpateCurrentSTTType(anSTClass);
 
 		// shortTypeName = anEnumDef.getNextSibling().toString();
 		// DetailAST anEnumIdent =
@@ -634,14 +710,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //				new HashMap<>(globalVariableToType),
 //				new HashMap<>(globalVariableToRHS),
 				new ArrayList<>(typesInstantiated),
-				new ArrayList(globalSTVariables)
+				new ArrayList(globalSTVariables),
+				new HashMap<>(globalIdentToLHS),
+				new HashMap<>(globalIdentToRHS)
 				);
 
 		// anSTClass.introspect();
 		// anSTClass.findDelegateTypes();
 		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 		// fullTypeName, anSTClass);
-		addSTType(anSTClass);
+		addAndUpateCurrentSTTType(anSTClass);
 		// log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 		// if (!defined) {
 		// // log(ast.getLineNo(), MSG_KEY);
@@ -675,6 +753,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void setLogNoMatches(boolean newVal) {
 		logNoMatches = newVal;
 	}
+	public void setLogMethodsDefined(boolean newVal) {
+		logNoMatches = newVal;
+	}
 	public void checkTags(DetailAST ast) {
 		List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
 //    	System.err.println("Checking full type name: " + fullTypeName);
@@ -703,7 +784,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
 //    			String aClassOrInterface = isInterface?"Interface":"Class";
 //    			System.err.println ("STBuilder:" + aClassOrInterface + " " + anExpectedClassOrTag);
-    			log(ast, anExpectedClassOrTag, aClassOrInterface);
+    			log(ast, anExpectedClassOrTag, aClassOrInterface, getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
     			aFoundMatch = true;
 //
 //    			}
@@ -712,7 +793,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	if (!aFoundMatch && logNoMatches) {
     		
-			log(ast, "No Expected Tag", aClassOrInterface);
+			log(ast, "None", aClassOrInterface, getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
 		}
 //    		
 //    		

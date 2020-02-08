@@ -43,12 +43,22 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		ContinuationProcessor {
+	public static final Map<Integer, Integer> accessTokenToAccessDegree = new HashMap();
+	public static final Map<Integer, String> accessTokenToAccessString = new HashMap();
+	
+
 	public static final String CLASS_START = "CLASS_DEF ";
 	public static final String INTERFACE_START = "INTERFACE_DEF ";
 	public static final String METHOD_START = "METHOD_DEF ";
 	public static final String VARIABLE_START = "VARIABLE_DEF ";
 	public static final String PARAMETER_START = "PARAMETER_DEF ";
+	public static final Integer DEFAULT_ACCESS_TOKEN = -1;
 	protected boolean inMethodOrConstructor;
+	
+	protected Map<String, List<DetailAST>> globalIdentToRHS = new HashMap();
+	protected Map<String, List<DetailAST>> globalIdentToLHS = new HashMap();
+
+	
 
 	// public static final String MSG_KEY = "stBuilder";
 	protected boolean isEnum;
@@ -57,6 +67,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected STNameable superClass;
 	protected STNameable[] interfaces;
 	protected boolean currentMethodIsConstructor;
+	protected STType currentSTType;
 	protected String currentMethodName;
 	DetailAST currentMethodNameAST;
 	protected String currentMethodType;
@@ -71,6 +82,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected boolean currentMethodIsInstance;
 
 	protected boolean currentMethodIsVisible;
+	protected boolean currentMethodIsSynchronized;
 	protected List<String> currentMethodParameterTypes = new ArrayList();
 	protected List<String> currentMethodParameterNames = new ArrayList();
 
@@ -90,7 +102,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected List<STNameable> globalVariables = new ArrayList();
 	
 	protected Map<String, String> globalVariableToType = new HashMap();
-	protected Map<String, DetailAST> globalVariableToRHS = new HashMap();
+//	protected Map<String, DetailAST> globalVariableToRHS = new HashMap();
 
 	protected Map<String, List<CallInfo>> globalVariableToCall = new HashMap();
 	protected Map<String, String> currentMethodScope = new HashMap();
@@ -130,7 +142,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				TokenTypes.CTOR_DEF, TokenTypes.IMPORT,
 				TokenTypes.STATIC_IMPORT, TokenTypes.LCURLY, TokenTypes.RCURLY,
 				TokenTypes.METHOD_CALL, TokenTypes.IDENT, TokenTypes.ENUM_DEF,
-				TokenTypes.LITERAL_NEW, TokenTypes.IDENT, TokenTypes.LITERAL_RETURN };
+				TokenTypes.LITERAL_NEW,  TokenTypes.LITERAL_RETURN };
 	}
 
 	protected void resetProject() {
@@ -516,7 +528,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 								+ ", missing :\n Assuming parameters and return types do not matter");
 			}
 			return new AnSTMethod(null, aSignature.trim(), null, null, null,
-					true, true, false, null, false, null, null, false, null,
+					true, true, false, false, null, false, null, null, false, null,
 					null, null, null, null, null, null);
 		}
 		if (aNameAndRest.length > 2) {
@@ -544,7 +556,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
-				true, false, aReturnType, true, null, null, false, null, null,
+				true, false, false, aReturnType, true,  null, null, false, null, null,
 				null, null, null, null, null);
 
 	}
@@ -569,7 +581,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
-				true, false, aReturnType, true, null, null, false, null, null,
+				true, false, false, aReturnType, true, null, null, false, null, null,
 				null, null, null, null, null);
 
 	}
@@ -919,6 +931,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			// }
 		}
 		currentMethodAST = methodDef;
+		currentMethodIsSynchronized = isSynchronized(methodDef);
 		maybeVisitVisible(methodDef);
 		maybeVisitMethodTags(methodDef);
 
@@ -1166,6 +1179,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			anRHS = aMaybeAssign.getFirstChild();
 		}
 		STVariable anSTVariable = new AnSTVariable (
+				currentSTType,
 				paramOrVarDef, 
 				anIdentifier.getText(), 
 				aTypeName, anRHS, 
@@ -1199,7 +1213,6 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //		return retVal;
 //	}
 	public void addToScope(DetailAST paramOrVarDef, Map<String, String> aScope, VariableKind aVariableKind) {
-		int i = 0;
 		
 		final DetailAST anIdentifier = paramOrVarDef
 				.findFirstToken(TokenTypes.IDENT);
@@ -1216,7 +1229,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			if (aMaybeAssign != null
 					&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
 				anRHS = aMaybeAssign.getFirstChild();
-				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
+//				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
 			}
 			aTypeName = toLongTypeName(aTypeName);
 			// this code should go eventually
@@ -1259,7 +1272,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			if (aMaybeAssign != null
 					&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
 				anRHS = aMaybeAssign.getFirstChild();
-				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
+//				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
 			}
 
 			;
@@ -1268,6 +1281,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			globalVariables.add(anSTNameable);
 			globalVariableToType.put(anIdentifier.getText(), aTypeName);
 			STVariable anSTVariable = new AnSTVariable (
+					currentSTType,
 					paramOrVarDef, 
 					anIdentifier.getText(), 
 					aTypeName, anRHS, 
@@ -1623,6 +1637,21 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		String anIdentName = anIdentAST.getText();
 		if (!isGlobal(anIdentName))
 			return;
+		if (isLHSOfAssignment(anIdentAST)) {
+			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
+			if (aLHSs == null) {
+				aLHSs = new ArrayList();
+				globalIdentToLHS.put(anIdentName, aLHSs);
+			}
+			aLHSs.add(anIdentAST);
+		} else {
+			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
+			if (aRHSs == null) {
+				aRHSs = new ArrayList();
+				globalIdentToRHS.put(anIdentName, aRHSs);
+			}
+			aRHSs.add(anIdentAST);
+		}
 		if (!globalsAccessedByCurrentMethod.contains(anIdentName))
 		globalsAccessedByCurrentMethod.add(anIdentName);
 
@@ -1737,7 +1766,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typesInstantiatedByCurrentMethod.clear();
 		globalVariableToCall.clear();
 		globalVariableToType.clear();
-		globalVariableToRHS.clear();
+		globalIdentToLHS.clear();
+		globalIdentToRHS.clear();
+//		globalVariableToRHS.clear();
 		typeTagsInitialized = false;
 		propertyNames = emptyArrayList;
 		editablePropertyNames = emptyArrayList;
@@ -1753,6 +1784,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		methodsCalledByCurrentMethod.clear();
 		globalsAccessedByCurrentMethod.clear();
 		globalsAssignedByCurrentMethod.clear();
+//		globalIdentToLHS.clear();
+//		globalIdentToRHS.clear();
 		
 		// type initializations
 		if (!getVisitInnerClasses())
@@ -2829,6 +2862,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 	
+	
+	
 	public static Integer getAccessToken(Method aMethod) {
 		int aModifiers = aMethod.getModifiers();
 		if (Modifier.isPublic(aModifiers)) {
@@ -2867,6 +2902,18 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return null;
 	}
+	public static String toAccessString (Integer aToken) {
+		if (aToken == null) {
+			return "default ";
+		}
+		switch (aToken) {
+		case TokenTypes.LITERAL_PUBLIC: return "public ";
+		case TokenTypes.LITERAL_PROTECTED: return "protected ";
+		case TokenTypes.LITERAL_PRIVATE: return "private ";
+		default: return "default";
+
+		}
+	}
 	
 	public static boolean isProtected(DetailAST methodOrVariableDef) {
 		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PROTECTED);
@@ -2879,6 +2926,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	public static boolean isStatic(DetailAST methodOrVariableDef) {
 		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_STATIC);
+
+	}
+	public static boolean isSynchronized(DetailAST methodOrVariableDef) {
+		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_SYNCHRONIZED);
 
 	}
 
@@ -2902,7 +2953,93 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected boolean stopOnFailure() {
 		return true;
 	}
+	
+	public static String toMethodsDeclaredString(STType anSTType) {
+		return 
+				"NonGetterFunctions:" + getNonGetterFunctions (anSTType) + 
+				"NonSetterProcedures:" + getNonSetterProcedures (anSTType) + 
+				"Getters:" + getGetters(anSTType) +
+				"Setters:" + getSetters(anSTType);
+	}
+	public static String toVariablesDeclaredString(STType anSTType) {
+		return  "Variables:" +anSTType.getDeclaredSTGlobals().toString();
+//		return 
+//				"Global Variables:" + getNonGetterFunctions (anSTType) + 
+//				"NonSetterProcedures:" + getNonSetterProcedures (anSTType) + 
+//				"Getters:" + getGetters(anSTType) +
+//				"Setters:" + getSetters(anSTType);
+	}
+	public static String toPropertiesDeclaredString(STType anSTType) {
+		return "Properties:" + anSTType.getDeclaredPropertyInfos().values().toString();
+//		return 
+//				"Global Variables:" + getNonGetterFunctions (anSTType) + 
+//				"NonSetterProcedures:" + getNonSetterProcedures (anSTType) + 
+//				"Getters:" + getGetters(anSTType) +
+//				"Setters:" + getSetters(anSTType);
+	}
+	
+	public static List<STMethod> getNonGetterFunctions (STType anSTType) {
+		STMethod[] aMethods = anSTType.getDeclaredMethods();
+		List<STMethod> retVal = new ArrayList();
+		for (STMethod aMethod:aMethods ) {
+			if (!aMethod.isProcedure() && !aMethod.isGetter()) {
+				retVal.add(aMethod);
+			}
+		}
+		return retVal;
+	}
+	public static List<STMethod> getNonSetterProcedures (STType anSTType) {
+		STMethod[] aMethods = anSTType.getDeclaredMethods();
+		List<STMethod> retVal = new ArrayList();
+		for (STMethod aMethod:aMethods ) {
+			if (aMethod.isProcedure() && !aMethod.isSetter()) {
+				retVal.add(aMethod);
+			}
+		}
+		return retVal;
+	}
+	public static List<STMethod> getGetters(STType anSTType) {
+		STMethod[] aMethods = anSTType.getDeclaredMethods();
+		List<STMethod> retVal = new ArrayList();
+		for (STMethod aMethod:aMethods ) {
+			if (aMethod.isGetter()) {
+				retVal.add(aMethod);
+			}
+		}
+		return retVal;
+	}
+	public static List<STMethod> getSetters(STType anSTType) {
+		STMethod[] aMethods = anSTType.getDeclaredMethods();
+		List<STMethod> retVal = new ArrayList();
+		for (STMethod aMethod:aMethods ) {
+			if (aMethod.isSetter()) {
+				retVal.add(aMethod);
+			}
+		}
+		return retVal;
+	}
+	public static int toTokenAccessDegree(Integer aTokenAccess) {
+		return accessTokenToAccessDegree.get(aTokenAccess);
+	}
+	public static String toTokenAccessString(Integer aTokenAccess) {
+		return accessTokenToAccessString.get(aTokenAccess);
+	}
+	
+	
+	static {
+		accessTokenToAccessDegree.put(TokenTypes.LITERAL_PRIVATE, 0);
+		accessTokenToAccessDegree.put(DEFAULT_ACCESS_TOKEN, 1);
+		accessTokenToAccessDegree.put(null, 1);
 
+		accessTokenToAccessDegree.put(TokenTypes.LITERAL_PROTECTED, 2);
+		accessTokenToAccessDegree.put(TokenTypes.LITERAL_PUBLIC, 3);
+		accessTokenToAccessString.put(TokenTypes.LITERAL_PRIVATE, "private ");
+		accessTokenToAccessString.put(DEFAULT_ACCESS_TOKEN, "default ");
+		accessTokenToAccessString.put(null, "default ");
+
+		accessTokenToAccessString.put(TokenTypes.LITERAL_PROTECTED, "protected ");
+		accessTokenToAccessString.put(TokenTypes.LITERAL_PUBLIC, "public ");
+	}
 	public static void main (String[] args) {
 		System.out.println ( "Math.PI".matches("Math.(.*)"));
 	}

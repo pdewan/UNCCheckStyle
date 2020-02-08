@@ -2,6 +2,10 @@ package unc.cs.symbolTable;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTVariable extends AnSTNameable implements STVariable{
@@ -11,11 +15,22 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	STNameable[] tags;
 	STType declaringType;
 	Integer accessToken;
+	protected Set<STMethod> methodsAccessing = new HashSet() ;
+	protected Set<STMethod> methodsAssigning = new HashSet();
+	protected Set<STType> references;
+	protected Set<STType> assignments;
+	protected PropertyInfo setterPropertyInfo;
+	protected PropertyInfo getterPropertyInfo;
+
+
+
 
 	boolean isInstance;
 	boolean isFinal;
+	 
 
 	public AnSTVariable(
+			STType anSTType,
 			DetailAST ast, 
 			String aName,
 			String aTypeName,
@@ -25,6 +40,7 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 			STNameable[] aTags
 			) {
 		super(ast, aName);
+		declaringType = anSTType;
 		typeName = aTypeName;
 		rhs = anRHS;
 		tags = aTags;
@@ -57,7 +73,17 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 
 	@Override
 	public boolean isInstance() {
-		return false;
+		return isInstance;
+	}
+	
+	String toStatic() {
+		return isInstance()?"":"static ";
+	}
+	
+	public String toString() {
+		return 
+				ComprehensiveVisitCheck.toAccessString(getAccessToken()) +
+				toStatic() + getType() + " " + getName();
 	}
 
 	@Override
@@ -95,5 +121,55 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	public Integer getAccessToken() {
 		return accessToken;
 	}
+	@Override
+	public Set<STMethod> getMethodsAccessing() {
+		return methodsAccessing;
+	}
+	@Override
+	public Set<STMethod> getMethodsAssigning() {
+		return methodsAssigning;
+	}
+
+	public Set<STType> getReferences() {
+		return references;
+	}
+
+	public Set<STType> getAssignments() {
+		return assignments;
+	}
+	public void setMethodsAccessing(Set<STMethod> methodsAccessing) {
+		this.methodsAccessing = methodsAccessing;
+	}
+
+	public void setMethodsAssigning(Set<STMethod> methodsAssigning) {
+		this.methodsAssigning = methodsAssigning;
+	}
+
+	public void setReferences(Set<STType> references) {
+		this.references = references;
+	}
+
+	public void setAssignments(Set<STType> assignments) {
+		this.assignments = assignments;
+	}
+
+	@Override
+	public PropertyInfo getSetterPropertyInfo() {
+		return setterPropertyInfo;
+	}
+	@Override
+	public void setSetterPropertyInfo(PropertyInfo setterPropertyInfo) {
+		this.setterPropertyInfo = setterPropertyInfo;
+	}
+	@Override
+	public PropertyInfo getGetterPropertyInfo() {
+		return getterPropertyInfo;
+	}
+	@Override
+	public void setGetterPropertyInfo(PropertyInfo getterPropertyInfo) {
+		this.getterPropertyInfo = getterPropertyInfo;
+	}
+
+
 
 }

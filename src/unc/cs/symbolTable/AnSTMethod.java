@@ -50,7 +50,8 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 	public static final String INIT = "init";
-	
+	String returnType;
+
 	static List<STNameable> anEmptyList = new ArrayList();
 	
 	public AnSTMethod(
@@ -61,6 +62,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			String[] parameterTypes,
 			boolean isPublic, boolean anIsInstance, 
 			boolean anIsConstructor,
+			boolean anIsSychronized,
 			String returnType,
 			boolean anIsVisible, 
 			STNameable[] aTags,
@@ -93,6 +95,7 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		assignsToGlobal = isAssignsToGlobal;
 		methodsCalled = aMethodsCalled;
 		isConstructor = anIsConstructor;
+		isSynchronized = anIsSychronized;
 		if (methodsCalled != null) {
 		for (CallInfo aCallInfo:aMethodsCalled) {
 			aCallInfo.setCallingMethod(this);
@@ -100,17 +103,61 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		}
 		typesInstantiated = aTypesInstantiated;
 		globalsAssigned = aGlobalsAssigned;
+//		if (globalsAssigned != null) {
+//			for (String aGlobal:globalsAssigned) {
+//				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+//				if (anSTVariable != null) {
+//					anSTVariable.getMethodsAssigning().add(this);
+//				}
+//						
+//
+//			}
+//		}
 		globalsAccessed = aGlobalsAccessed;
+//		if (globalsAccessed != null) {
+//			for (String aGlobal:globalsAccessed) {
+//				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+//				if (anSTVariable != null) {
+//					anSTVariable.getMethodsAccessing().add(this);
+//				}
+//						
+//
+//			}
+//		}
 		localSTVariables = aLocalVariables;
 		parameterSTVariables = aParameters;
-		accessToken = anAccessToken;
+		accessToken = anAccessToken != null?anAccessToken:ComprehensiveVisitCheck.DEFAULT_ACCESS_TOKEN;
 		introspect();
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
 //		isInit = computeIsInit();
 //		signature = displayMethod();
 	}
-	String returnType;
+	@Override
+	public void setDeclaringSTType(STType declaringSTType) {
+		super.setDeclaringSTType(declaringSTType);
+		if (globalsAssigned != null) {
+		for (String aGlobal:globalsAssigned) {
+			STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+			if (anSTVariable != null) {
+				anSTVariable.getMethodsAssigning().add(this);
+			}
+					
+
+		}
+		if (globalsAccessed != null) {
+			for (String aGlobal:globalsAccessed) {
+				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+				if (anSTVariable != null) {
+					anSTVariable.getMethodsAccessing().add(this);
+				}
+						
+
+			}
+		}
+	}
+		
+	}
 	
 	public String getDeclaringClass() {
 		return declaringClass;
@@ -397,6 +444,10 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		@Override
 		public List<STVariable> getParameters() {
 			return parameterSTVariables;
+		}
+		@Override
+		public boolean isSynchronized() {
+			return isSynchronized;
 		}
 		
 }

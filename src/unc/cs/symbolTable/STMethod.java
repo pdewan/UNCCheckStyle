@@ -16,9 +16,12 @@ public interface STMethod extends STNameable{
 //	String[][] methodsCalled();
 	CallInfo[] getMethodsCalled();
 	boolean isProcedure();
+	boolean isPublicSetter();
+	boolean isPublicGetter();
 	boolean isSetter();
 	boolean isGetter();
 	boolean isInit();
+	boolean isSynchronized();
 	String getSignature();
 	boolean isInstance();
 	boolean isParsedMethod();

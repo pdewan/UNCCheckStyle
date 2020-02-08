@@ -132,12 +132,12 @@ public class SetterAssignsGlobalCheck extends MethodEffectCheck{
 
 @Override
 protected boolean shouldVisitRootMethod(STMethod aMethod) {
-	return aMethod.isSetter();
+	return aMethod.isPublicSetter();
 }
 
 @Override
 protected boolean shouldVisitCalledMethod(STMethod aMethod) {
-	return !aMethod.isSetter() && aMethod.isProcedure(); //assuming functions do not assign globals
+	return !aMethod.isPublicSetter() && aMethod.isProcedure(); //assuming functions do not assign globals
 }
 
 @Override

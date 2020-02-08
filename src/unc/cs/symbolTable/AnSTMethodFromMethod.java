@@ -206,6 +206,10 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public boolean isSynchronized() {
+		return Modifier.isSynchronized(method.getModifiers());
+	}
 	
 
 }
