@@ -44,6 +44,15 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// new HashMap();
 	protected Set<String> delegates = new HashSet();
 	protected boolean hasSetter = false;
+	protected List<String> subTypes;
+	protected List<STNameable> superTypes;
+
+	protected Set<STType> stSubTypes = new HashSet();
+	protected  Set<STType> superClasses = new HashSet();
+	protected STType stSuperClass;
+	protected List<STNameable> allTypes;
+
+//	Set<STType> superTypes = new HashSet();
 
 	public AnAbstractSTType(DetailAST ast, String name) {
 		super(ast, name);
@@ -977,7 +986,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		return result;
 	}
 	
-	List<STNameable> allTypes;
+//	List<STNameable> allTypes;
 
 	@Override
 	public List<STNameable> getAllTypes() {
@@ -1056,7 +1065,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 //		}
 //		return toNameList(aTypes);
 	}
-	List<STNameable> superTypes;
+//	List<STNameable> superTypes;
 	@Override
 	public List<STNameable> getAllSuperTypes() {
 		if (superTypes == null)
@@ -1128,15 +1137,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	 */
 
 	public List<String> computeSubTypes() {
-		// SymbolTable aSymbolTable =
-		// SymbolTableFactory.getOrCreateSymbolTable();
-		// List<String> anAllTypes;
-		// if (isInterface)
-		// anAllTypes = aSymbolTable.getAllInterfaceNames();
-		// else
-		// anAllTypes = aSymbolTable.getAllClassNames();
-		// List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
-		// List<String> anAllMyTypes = toNameList(getSuperTypes());
+	
 		List<String> aNonSuperTypes = getNonSuperTypes();
 		List<String> result = new ArrayList();
 		String myShortName = TypeVisitedCheck.toShortTypeName(name);
@@ -1163,7 +1164,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 //		result.remove(getShortName());
 		return result;
 	}
-	List<String> subTypes;
+//	List<String> subTypes;
 	public List<String> getSubTypes() {
 		if (subTypes == null)
 			subTypes = computeSubTypes();
@@ -1792,6 +1793,68 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	@Override
 	public void setExternal(boolean external) {
 		this.external = external;
+	}
+	protected Integer numberOfFunctions;
+	@Override
+	public int getNumberOfFunctions() {
+		if (numberOfFunctions == null) {
+			numberOfFunctions = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				numberOfFunctions += 
+						(aMethod.isProcedure()?0:1);
+			}
+		}
+		return numberOfFunctions;
+	}
+	protected Integer numberOfNonGetterFunctions;
+
+	@Override
+	public int getNumberOfNonGetterFunctions() {
+		if (numberOfNonGetterFunctions == null) {
+			numberOfNonGetterFunctions = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				numberOfNonGetterFunctions += 
+						(aMethod.isProcedure() || aMethod.isGetter()?0:1);
+			}
+		}
+		return numberOfNonGetterFunctions;
+	}
+	protected Integer numberOfGettersAndSetters;
+	@Override
+	public int getNumberOfGettersAndSetters() {
+		if (numberOfGettersAndSetters == null) {
+			numberOfGettersAndSetters = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				numberOfGettersAndSetters += 
+						(aMethod.isSetter() || aMethod.isGetter()?1:0);
+			}
+		}
+		return numberOfGettersAndSetters;
+	}
+	
+	protected Integer numberOfMethods;
+	@Override
+	public int getNumberOfMethods() {
+		if (numberOfMethods == null) {
+			numberOfMethods = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				numberOfMethods += 1;
+			}
+		}
+		return numberOfMethods;
+	}
+	
+	protected Integer numberOfNonGettersAndSetters;
+	@Override
+	public int getNumberOfNonGettersAndSetters() {
+		if (numberOfNonGettersAndSetters == null) {
+			numberOfNonGettersAndSetters = getNumberOfMethods() - getNumberOfGettersAndSetters();
+//			numberOfMethods = 0;
+//			for (STMethod aMethod: getDeclaredMethods()) {
+//				numberOfMethods += 1;
+		}
+		
+		return numberOfNonGettersAndSetters;
 	}
 
 	// @Override

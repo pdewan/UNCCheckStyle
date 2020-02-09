@@ -90,5 +90,12 @@ public interface STType extends STNameable{
 	STNameable[] getDerivedTags();
 	boolean isExternal();
 	void setExternal(boolean external);
+	int getNumberOfAsserts();
+	int getNumberOfTernaryConditionals();
+	int getNumberOfFunctions();
+	int getNumberOfNonGetterFunctions();
+	int getNumberOfGettersAndSetters();
+	int getNumberOfMethods();
 //	STVariable toSTVariable(String aName);
+	int getNumberOfNonGettersAndSetters();
 }

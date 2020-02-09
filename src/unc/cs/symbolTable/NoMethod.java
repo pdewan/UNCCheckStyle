@@ -7,7 +7,7 @@ public class NoMethod extends AnSTMethod implements STMethod{
 
 	public NoMethod() {
 		super(null, null, null, null, null, false, false, false, false, null, false, null, null, false, null,
-				null, null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, null, 0, null);
 	}
 	@Override
 	protected void introspect() {

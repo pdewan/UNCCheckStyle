@@ -16,7 +16,8 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
 	STNameable[] computedTags, tags, configuredTags;
 	Map emptyTable = new HashMap();
-	Object[] emptyArray = {};
+	static Object[] emptyArray = {};
+
 	public AnSTTypeFromClass(String aClassName) {
 		super (null, aClassName);
 		// all instance  variables are now initialized
@@ -369,6 +370,16 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public STNameable[] getDerivedTags() {
 		// TODO Auto-generated method stub
 		return emptyNameables;
+	}
+	@Override
+	public int getNumberOfAsserts() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public int getNumberOfTernaryConditionals() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 

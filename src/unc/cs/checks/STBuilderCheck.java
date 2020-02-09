@@ -49,6 +49,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	protected List<STMethod> stConstructors = new ArrayList();
 	protected Stack<List<STMethod>> stConstructorsStack = new Stack();
+	
 
 
 
@@ -89,11 +90,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected boolean logMethodsDeclared = false;
 	protected boolean logVariablesDeclared = false;
 	protected boolean logPropertiesDeclared = false;
+	
+	protected boolean logAggregateStatistics = false;
 
 
     protected String methodsDeclaredString;
     protected String variablesDeclaredString;
     protected String propertiesDeclaredString;
+    protected String statisticsString;
+
 
 
 	public STBuilderCheck() {
@@ -218,6 +223,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void setLogPropertiesDeclared(boolean newVal) {
 		logPropertiesDeclared = newVal;
 	}
+	
+	public boolean isLogAggregateStatistics() {
+		return logAggregateStatistics;
+	}
+
+	public void setLogAggregateStatistics(boolean logAggregateStatistics) {
+		this.logAggregateStatistics = logAggregateStatistics;
+	}
+
 	protected void newProjectDirectory(String aNewProjectDirectory) {
 		super.newProjectDirectory(aNewProjectDirectory);
 		maybeProcessExistingClasses();
@@ -353,9 +367,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					new ArrayList(typesInstantiatedByCurrentMethod),
 					new ArrayList(globalsAccessedByCurrentMethod),
 					new ArrayList(globalsAssignedByCurrentMethod),
+					new ArrayList(unknownAccessedByCurrentMethod),
+					new ArrayList(unknownAssignedByCurrentMethod),
 					new ArrayList(localSTVariables),
 					new ArrayList(parameterSTVariables),
-					getAccessToken(currentMethodAST)
+					new ArrayList(localsAssignedByCurrentMethod),
+					new ArrayList(parametersAssignedByCurrentMethod),
+					getAccessToken(currentMethodAST),
+					numberOfTernaryIfsInCurrentMethod,
+					new ArrayList(assertsInCurrentMethod)
 					);
 
 			if (currentMethodIsConstructor)
@@ -374,6 +394,18 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     				toPropertiesDeclaredString(currentSTType);
     		
     }
+	protected String computeStatisticsString() {
+    	return !isLogAggregateStatistics()?
+    			EMPTY_STRING:
+    				" Number of Asserts:" + currentSTType.getNumberOfAsserts() +
+    				" Number of Ternary Conditionals:" + currentSTType.getNumberOfTernaryConditionals() +
+    				" Number of Methods:" + currentSTType.getNumberOfMethods() +
+    				" Number of Functions:" + currentSTType.getNumberOfFunctions() +
+    				" Number of Non Getter Functions:" + currentSTType.getNumberOfNonGetterFunctions() +
+    				" Number of Getters and Setters:" + currentSTType.getNumberOfGettersAndSetters();
+
+    		
+    }
     protected String computeMethodsDeclaredString() {
     	return !isLogMethodsDeclared()?
     			EMPTY_STRING:
@@ -385,6 +417,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     			EMPTY_STRING:
     				toVariablesDeclaredString(currentSTType);
     		
+    }
+    protected String getStatisticsString() {
+    	if (statisticsString == null) {
+    		statisticsString = computeStatisticsString();
+    	}
+    	return statisticsString;
     }
     protected String getPropertiesDeclaredString() {
     	if (propertiesDeclaredString == null) {
@@ -784,7 +822,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
 //    			String aClassOrInterface = isInterface?"Interface":"Class";
 //    			System.err.println ("STBuilder:" + aClassOrInterface + " " + anExpectedClassOrTag);
-    			log(ast, anExpectedClassOrTag, aClassOrInterface, getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
+    			log(ast, anExpectedClassOrTag, aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
     			aFoundMatch = true;
 //
 //    			}
@@ -793,7 +831,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	if (!aFoundMatch && logNoMatches) {
     		
-			log(ast, "None", aClassOrInterface, getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
+			log(ast, "None", aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
 		}
 //    		
 //    		

@@ -20,6 +20,9 @@
 			<property name="severity" value="info" />
 			<property name="logNoMatches" value="true" />	
 			<property name="importsAsExistingClasses" value="true" />
+			
+			<property name="logAggregateStatistics" value="true" />		
+			
 			<property name="logMethodsDeclared" value="true" />	
 			<property name="logVariablesDeclared" value="true" />
 			<property name="logPropertiesDeclared" value="true" />					

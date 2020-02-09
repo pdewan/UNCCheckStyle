@@ -37,20 +37,26 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 	protected List<STMethod> allMethodsCalled;
 	protected List<STMethod> allCallClosure;
 	protected List<STNameable> typesInstantiated;
-	protected List<String> globalsAssigned;
-	
+	protected List<String> globalsAssigned;	
 	protected List<String> globalsAccessed;
+	protected List<String> unknownAccessed;
+	
+	protected List<String> unknownAssigned;
 	
 	protected List<STVariable> localSTVariables;
 	
 	protected List<STVariable> parameterSTVariables;
+	protected List<STVariable> parametersAssigned;
+	protected List<STVariable> localsAssigned;
 	protected Integer accessToken;
-
 	
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 	public static final String INIT = "init";
-	String returnType;
+	protected String returnType;
+	
+	protected int numberOfTernaryConditionals;
+	protected List<STType> asserts;
 
 	static List<STNameable> anEmptyList = new ArrayList();
 	
@@ -73,9 +79,16 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 			List<STNameable> aTypesInstantiated,
 			List<String> aGlobalsAccessed,
 			List<String> aGlobalsAssigned,
+			List<String> anUnknownAccessed,
+			List<String> anUnknownAssigned,		
 			List<STVariable> aLocalVariables,
 			List<STVariable> aParameters,
-			Integer anAccessToken
+			List<STVariable> aLocalsAssigned,
+			List<STVariable> aParametersAssigned,
+
+			Integer anAccessToken,
+			int aNumberOfTernaryOperators,
+			List<STType> anAsserts
 			) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
@@ -103,35 +116,17 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		}
 		typesInstantiated = aTypesInstantiated;
 		globalsAssigned = aGlobalsAssigned;
-//		if (globalsAssigned != null) {
-//			for (String aGlobal:globalsAssigned) {
-//				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
-//				if (anSTVariable != null) {
-//					anSTVariable.getMethodsAssigning().add(this);
-//				}
-//						
-//
-//			}
-//		}
+
 		globalsAccessed = aGlobalsAccessed;
-//		if (globalsAccessed != null) {
-//			for (String aGlobal:globalsAccessed) {
-//				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
-//				if (anSTVariable != null) {
-//					anSTVariable.getMethodsAccessing().add(this);
-//				}
-//						
-//
-//			}
-//		}
+		unknownAccessed = anUnknownAccessed;
+		unknownAssigned = anUnknownAssigned;
 		localSTVariables = aLocalVariables;
 		parameterSTVariables = aParameters;
 		accessToken = anAccessToken != null?anAccessToken:ComprehensiveVisitCheck.DEFAULT_ACCESS_TOKEN;
+		numberOfTernaryConditionals = aNumberOfTernaryOperators;
+		asserts = anAsserts;
 		introspect();
-//		isSetter = computeIsSetter();
-//		isGetter = computeIsGetter();
-//		isInit = computeIsInit();
-//		signature = displayMethod();
+		
 	}
 	@Override
 	public void setDeclaringSTType(STType declaringSTType) {
@@ -448,6 +443,20 @@ public class AnSTMethod extends AnAbstractSTMethod  implements STMethod {
 		@Override
 		public boolean isSynchronized() {
 			return isSynchronized;
+		}
+		@Override
+		public int getNumberOfTernaryConditionals() {
+			return numberOfTernaryConditionals;
+		}
+		@Override
+		public List<STType> getAsserts() {
+			return asserts;
+		}
+		@Override
+		public int getNumberOfAsserts() {
+			return 
+					asserts == null?0:asserts.size();
+			
 		}
 		
 }

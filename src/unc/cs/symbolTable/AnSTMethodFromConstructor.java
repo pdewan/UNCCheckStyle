@@ -203,6 +203,21 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		return false;
 	}
+	@Override
+	public int getNumberOfTernaryConditionals() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public List<STType> getAsserts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int getNumberOfAsserts() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 

@@ -52,5 +52,8 @@ public interface STMethod extends STNameable{
 	Integer getAccessToken();
 	List<STVariable> getLocalVariables();
 	List<STVariable> getParameters();
+	int getNumberOfTernaryConditionals();
+	List<STType> getAsserts();
+	int getNumberOfAsserts();
 
 }

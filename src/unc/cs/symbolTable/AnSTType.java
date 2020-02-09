@@ -1009,6 +1009,66 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		}
 //		return null;
 //	}
+	protected Integer numberOfAsserts;
+	@Override
+	public int getNumberOfAsserts() {
+		if (numberOfAsserts == null) {
+			numberOfAsserts = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				numberOfAsserts += aMethod.getNumberOfAsserts();
+			}
+		}
+		return numberOfAsserts;
+	}
+	protected Integer numberOfTernaryConditionals;
+
+	@Override
+	public int getNumberOfTernaryConditionals() {
+		if (numberOfTernaryConditionals == null) {
+			numberOfTernaryConditionals = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				numberOfTernaryConditionals += aMethod.getNumberOfTernaryConditionals();
+			}
+		}
+		return numberOfTernaryConditionals;
+	}
+//	protected Integer numberOfFunctions;
+//	@Override
+//	public int getNumberOfFunctions() {
+//		if (numberOfFunctions == null) {
+//			numberOfFunctions = 0;
+//			for (STMethod aMethod: getDeclaredMethods()) {
+//				numberOfFunctions += 
+//						(aMethod.isProcedure()?0:1);
+//			}
+//		}
+//		return numberOfFunctions;
+//	}
+//	protected Integer numberOfNonGetterFunctions;
+//
+//	@Override
+//	public int getNumberOfNonGetterFunctions() {
+//		if (numberOfNonGetterFunctions == null) {
+//			numberOfNonGetterFunctions = 0;
+//			for (STMethod aMethod: getDeclaredMethods()) {
+//				numberOfNonGetterFunctions += 
+//						(aMethod.isProcedure() || aMethod.isGetter()?0:1);
+//			}
+//		}
+//		return numberOfNonGetterFunctions;
+//	}
+//	protected Integer numberOfGettersAndSetters;
+//	@Override
+//	public int getNumberOfGettersAndSetters() {
+//		if (numberOfGettersAndSetters == null) {
+//			numberOfGettersAndSetters = 0;
+//			for (STMethod aMethod: getDeclaredMethods()) {
+//				numberOfGettersAndSetters += 
+//						(aMethod.isSetter() || aMethod.isGetter()?0:1);
+//			}
+//		}
+//		return numberOfNonGetterFunctions;
+//	}
 
 
 }

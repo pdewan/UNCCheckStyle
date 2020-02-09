@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -78,6 +79,15 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected List<CallInfo> methodsCalledByCurrentMethod = new ArrayList();
 	protected List<String> globalsAccessedByCurrentMethod = new ArrayList();
 	protected List<String> globalsAssignedByCurrentMethod = new ArrayList();
+	
+	protected List<String> unknownAccessedByCurrentMethod = new ArrayList();
+	protected List<String> unknownAssignedByCurrentMethod = new ArrayList();
+	
+	protected List<STVariable> parametersAssignedByCurrentMethod = new ArrayList();
+	protected List<STVariable> localsAssignedByCurrentMethod = new ArrayList();
+	
+
+
 
 	protected boolean currentMethodIsInstance;
 
@@ -109,6 +119,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected List<STNameable> typesInstantiated = new ArrayList();
 	protected List<STNameable> typesInstantiatedByCurrentMethod = new ArrayList();
+	protected Stack<DetailAST> openBlocksInCurrentMethod = new Stack();
+	protected List<DetailAST> assertsInCurrentMethod = new ArrayList();
+	protected int numberOfTernaryIfsInCurrentMethod = 0;
+
+	protected int maxOpenBlocksInCurrentMethod = 0;
 //	protected Map<String, String> importShortToLongName = new HashMap();
 
 
@@ -140,9 +155,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				TokenTypes.TYPE_PARAMETERS, TokenTypes.VARIABLE_DEF,
 				TokenTypes.PARAMETER_DEF, TokenTypes.METHOD_DEF,
 				TokenTypes.CTOR_DEF, TokenTypes.IMPORT,
-				TokenTypes.STATIC_IMPORT, TokenTypes.LCURLY, TokenTypes.RCURLY,
+				TokenTypes.STATIC_IMPORT, 
 				TokenTypes.METHOD_CALL, TokenTypes.IDENT, TokenTypes.ENUM_DEF,
-				TokenTypes.LITERAL_NEW,  TokenTypes.LITERAL_RETURN };
+				TokenTypes.LITERAL_NEW,  TokenTypes.LITERAL_RETURN,
+				TokenTypes.LITERAL_ASSERT, TokenTypes.COLON,
+				TokenTypes.LITERAL_SWITCH, TokenTypes.LITERAL_IF, TokenTypes.LITERAL_ELSE, TokenTypes.LITERAL_FOR, TokenTypes.LITERAL_WHILE, 
+				TokenTypes.LCURLY, TokenTypes.RCURLY};
 	}
 
 	protected void resetProject() {
@@ -529,7 +547,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			return new AnSTMethod(null, aSignature.trim(), null, null, null,
 					true, true, false, false, null, false, null, null, false, null,
-					null, null, null, null, null, null);
+					null, null, null, null, null, null, null, null, null, null, 0, null);
 		}
 		if (aNameAndRest.length > 2) {
 			System.err.println("Illegal signature," + aSignature
@@ -557,7 +575,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, false, aReturnType, true,  null, null, false, null, null,
-				null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, 0, null);
 
 	}
 
@@ -582,7 +600,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, false, aReturnType, true, null, null, false, null, null,
-				null, null, null, null, null);
+				null, null, null, null, null, null, null, null, null, 0, null);
 
 	}
 
@@ -906,10 +924,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		parameterSTVariables.clear();
 		methodsCalledByCurrentMethod.clear();
 		globalsAccessedByCurrentMethod.clear();
+		globalsAssignedByCurrentMethod.clear();
+		unknownAccessedByCurrentMethod.clear();
+		unknownAssignedByCurrentMethod.clear();
+		localsAssignedByCurrentMethod.clear();
+		parametersAssignedByCurrentMethod.clear();
 		currentMethodAssignsToGlobalVariable = false;
 		currentMethodTags = emptyNameableList;
 		currentMethodComputedTags = emptyNameableList;
 		typesInstantiatedByCurrentMethod.clear();
+		openBlocksInCurrentMethod.clear();
+		assertsInCurrentMethod.clear();
+		numberOfTernaryIfsInCurrentMethod = 0;
+		maxOpenBlocksInCurrentMethod = 0;
 		// DetailAST aMethodNameAST =
 		// methodDef.findFirstToken(TokenTypes.IDENT);
 		// currentMethodName = aMethodNameAST.getText();
@@ -1053,12 +1080,32 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// STNameable anSTNameable = new AnSTNameable(ast, anImport.getText());
 	// imports.add(anSTNameable);
 	// }
-
+    protected void maybePushAST(DetailAST anAST) {
+    	if (currentMethodAST != null) {
+    		openBlocksInCurrentMethod.push(anAST);
+    	}
+    }
+    protected void maybePopAST() {
+    	if (!openBlocksInCurrentMethod.isEmpty()) {
+    		openBlocksInCurrentMethod.pop();
+    	}
+    }
 	protected void visitLCurly(DetailAST ast) {
+//		if (currentMethodAST != null)
+//		maybePushAST(ast);
 
+
+	}
+	protected void leaveLCurly(DetailAST ast) {
+		
 	}
 
 	protected void visitRCurly(DetailAST ast) {
+//		maybePopAST();
+
+	}
+	protected void leaveRCurly(DetailAST ast) {
+//		maybePopAST();
 
 	}
 	// not used, so delete it
@@ -1171,6 +1218,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return result;
 	}
 	STNameable[] dummyArray = new STNameable[0];
+	protected DetailAST currentBlock() {
+		return openBlocksInCurrentMethod.isEmpty()?null:openBlocksInCurrentMethod.peek();
+	}
 	public void createSTVariable (DetailAST paramOrVarDef,DetailAST anIdentifier, String aTypeName,  VariableKind aVariableKind) {
 		DetailAST anRHS = null;
 		DetailAST aMaybeAssign = anIdentifier.getNextSibling();
@@ -1180,6 +1230,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		STVariable anSTVariable = new AnSTVariable (
 				currentSTType,
+				currentBlock(),
 				paramOrVarDef, 
 				anIdentifier.getText(), 
 				aTypeName, anRHS, 
@@ -1248,50 +1299,51 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 	}
 	
-	public void addToScopeOld(DetailAST paramOrVarDef, Map<String, String> aScope, VariableKind aVariableKind) {
-		int i = 0;
-		// final DetailAST aType =
-		// paramOrVarDef.findFirstToken(TokenTypes.TYPE);
-		final DetailAST anIdentifier = paramOrVarDef
-				.findFirstToken(TokenTypes.IDENT);
-		// final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
-		// final FullIdent anIdentifierType =
-		// FullIdent.createFullIdentBelow(aType);
-		String aTypeName = getTypeName(paramOrVarDef);
-
-		aScope.put(anIdentifier.getText(), aTypeName);
-		if (aScope == typeScope) {
-			// final DetailAST aTypeParent = paramOrVarDef
-			// .findFirstToken(TokenTypes.TYPE);
-			// FullIdent aTypeIdent =
-			// FullIdent.createFullIdentBelow(aTypeParent);
-			// final DetailAST anIdentifier = paramOrVarDef
-			// .findFirstToken(TokenTypes.IDENT);
-			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
-			DetailAST anRHS = null;
-			if (aMaybeAssign != null
-					&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
-				anRHS = aMaybeAssign.getFirstChild();
-//				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
-			}
-
-			;
-			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
-					anIdentifier.getText(), aTypeName);
-			globalVariables.add(anSTNameable);
-			globalVariableToType.put(anIdentifier.getText(), aTypeName);
-			STVariable anSTVariable = new AnSTVariable (
-					currentSTType,
-					paramOrVarDef, 
-					anIdentifier.getText(), 
-					aTypeName, anRHS, 
-					VariableKind.GLOBAL, 
-					getAccessToken(paramOrVarDef),
-					getAllTags(paramOrVarDef, anIdentifier, aTypeName, VARIABLE_START).toArray(dummyArray)
-					);
-
-		}
-	}
+//	public void addToScopeOld(DetailAST paramOrVarDef, Map<String, String> aScope, VariableKind aVariableKind) {
+//		int i = 0;
+//		// final DetailAST aType =
+//		// paramOrVarDef.findFirstToken(TokenTypes.TYPE);
+//		final DetailAST anIdentifier = paramOrVarDef
+//				.findFirstToken(TokenTypes.IDENT);
+//		// final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+//		// final FullIdent anIdentifierType =
+//		// FullIdent.createFullIdentBelow(aType);
+//		String aTypeName = getTypeName(paramOrVarDef);
+//
+//		aScope.put(anIdentifier.getText(), aTypeName);
+//		if (aScope == typeScope) {
+//			// final DetailAST aTypeParent = paramOrVarDef
+//			// .findFirstToken(TokenTypes.TYPE);
+//			// FullIdent aTypeIdent =
+//			// FullIdent.createFullIdentBelow(aTypeParent);
+//			// final DetailAST anIdentifier = paramOrVarDef
+//			// .findFirstToken(TokenTypes.IDENT);
+//			DetailAST aMaybeAssign = anIdentifier.getNextSibling();
+//			DetailAST anRHS = null;
+//			if (aMaybeAssign != null
+//					&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
+//				anRHS = aMaybeAssign.getFirstChild();
+////				globalVariableToRHS.put(anIdentifier.getText(), anRHS);
+//			}
+//
+//			;
+//			STNameable anSTNameable = new AnSTNameable(paramOrVarDef,
+//					anIdentifier.getText(), aTypeName);
+//			globalVariables.add(anSTNameable);
+//			globalVariableToType.put(anIdentifier.getText(), aTypeName);
+//			STVariable anSTVariable = new AnSTVariable (
+//					currentSTType,
+//					null,
+//					paramOrVarDef, 
+//					anIdentifier.getText(), 
+//					aTypeName, anRHS, 
+//					VariableKind.GLOBAL, 
+//					getAccessToken(paramOrVarDef),
+//					getAllTags(paramOrVarDef, anIdentifier, aTypeName, VARIABLE_START).toArray(dummyArray)
+//					);
+//
+//		}
+//	}
 
 	public void addToTypeScope(DetailAST paramOrVarDef) {
 
@@ -1305,6 +1357,24 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return false;
 	}
+	
+	public STVariable getLocalVariable(String aName) {
+		for (STVariable aVariable : parameterSTVariables) {
+			if (aVariable.getName().equals(aName))
+				return aVariable;
+		}
+		return null;
+	}
+	
+	public STVariable getParameterVariable(String aName) {
+		for (STVariable aVariable : localSTVariables) {
+			if (aVariable.getName().equals(aName))
+				return aVariable;
+		}
+		return null;
+	}
+	
+	
 
 	public static List<DetailAST> getEListComponents(DetailAST anEList) {
 		List<DetailAST> result = new ArrayList();
@@ -1635,15 +1705,63 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (currentMethodName == null)
 			return;
 		String anIdentName = anIdentAST.getText();
-		if (!isGlobal(anIdentName))
-			return;
-		if (isLHSOfAssignment(anIdentAST)) {
+		boolean isLHSOfAssignment = isLHSOfAssignment(anIdentAST);
+		if (isLHSOfAssignment) {
+			STVariable aVariable = getLocalVariable(anIdentName);
+			if (aVariable != null) {
+				localsAssignedByCurrentMethod.add(aVariable);
+				return;
+			}
+			aVariable = getParameterVariable(anIdentName);
+			if (aVariable != null) {
+				parametersAssignedByCurrentMethod.add(aVariable);
+				return;
+			}
+		}
+//		if (!isGlobal(anIdentName))
+//			return;
+//		if (isLHSOfAssignment(anIdentAST)) {
+//		if (isLHSOfAssignment) {
+//			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
+//			if (aLHSs == null) {
+//				aLHSs = new ArrayList();
+//				globalIdentToLHS.put(anIdentName, aLHSs);
+//			}
+//			aLHSs.add(anIdentAST);
+//		} else {
+//			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
+//			if (aRHSs == null) {
+//				aRHSs = new ArrayList();
+//				globalIdentToRHS.put(anIdentName, aRHSs);
+//			}
+//			aRHSs.add(anIdentAST);
+//		}
+		boolean isGlobal = isGlobal(anIdentName);
+		if (!isGlobal) {
+			unknownAccessedByCurrentMethod.add(anIdentName);
+		} else
+		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
+		globalsAccessedByCurrentMethod.add(anIdentName);
+		}
+
+		boolean isGlobalAssignedVariable = isGlobalAssignedVariable(anIdentAST);
+		if (isLHSOfAssignment) {
+			if (isGlobal) {
+			currentMethodAssignsToGlobalVariable = true; // this now redundant
+			if (!globalsAssignedByCurrentMethod.contains(anIdentName)) {
+
+			globalsAssignedByCurrentMethod.add(anIdentName);
+			}
 			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
 			if (aLHSs == null) {
 				aLHSs = new ArrayList();
 				globalIdentToLHS.put(anIdentName, aLHSs);
 			}
 			aLHSs.add(anIdentAST);
+			} else {
+				unknownAssignedByCurrentMethod.add(anIdentName);
+			}
+
 		} else {
 			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
 			if (aRHSs == null) {
@@ -1652,26 +1770,46 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			aRHSs.add(anIdentAST);
 		}
-		if (!globalsAccessedByCurrentMethod.contains(anIdentName))
-		globalsAccessedByCurrentMethod.add(anIdentName);
-
-		boolean isGlobalAssignedVariable = isGlobalAssignedVariable(anIdentAST);
-		if (isGlobalAssignedVariable) {
-			currentMethodAssignsToGlobalVariable = true; // this now redundant
-			if (!globalsAssignedByCurrentMethod.contains(anIdentName))
-
-			globalsAssignedByCurrentMethod.add(anIdentName);
-
-		}
-
-		// if (currentMethodAssignsToGlobalVariable)
-		// return;
-		//
-		//
-		// currentMethodAssignsToGlobalVariable =
-		// isGlobalAssignedVariable(anIdentAST);
+//		if (isGlobalAssignedVariable) {
+//			currentMethodAssignsToGlobalVariable = true; // this now redundant
+//			if (!globalsAssignedByCurrentMethod.contains(anIdentName)) {
+//
+//			globalsAssignedByCurrentMethod.add(anIdentName);
+//			}
+//			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
+//			if (aLHSs == null) {
+//				aLHSs = new ArrayList();
+//				globalIdentToLHS.put(anIdentName, aLHSs);
+//			}
+//			aLHSs.add(anIdentAST);
+//
+//		} else {
+//			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
+//			if (aRHSs == null) {
+//				aRHSs = new ArrayList();
+//				globalIdentToRHS.put(anIdentName, aRHSs);
+//			}
+//			aRHSs.add(anIdentAST);
+//		}
+//		
 
 	}
+	public static boolean inAssignment(DetailAST anIdentAST) {
+		return hasAncestor(anIdentAST, TokenTypes.ASSIGN);
+		
+	}
+	public static boolean hasAncestor(DetailAST aChildAST, int anAncestorTokenType) {
+		DetailAST aParentAST = aChildAST.getParent();
+		if (aParentAST == null) {
+			return false;
+		}
+		if (aParentAST.getType() == anAncestorTokenType) {
+			return true;
+		}
+		return hasAncestor(aParentAST, anAncestorTokenType);
+		
+	}
+
 
 	/*
 	 * Code taken from anIdentAST
@@ -1707,9 +1845,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public boolean isGlobalAssignedVariable(DetailAST anIdentAST) {
 		String aName = anIdentAST.getText();
 
-		return (lookupLocal(aName) == null || (anIdentAST.getPreviousSibling() != null && anIdentAST
-				.getPreviousSibling().getType() == TokenTypes.LITERAL_THIS))
+		return (lookupLocal(aName) == null || 
+				   (anIdentAST.getPreviousSibling() != null && 
+				       anIdentAST.getPreviousSibling().getType() == TokenTypes.LITERAL_THIS))
 				&& isLHSOfAssignment(anIdentAST);
+
+	}
+	
+	public boolean isGlobalOrUnknownVariable(DetailAST anIdentAST) {
+		String aName = anIdentAST.getText();
+
+		return (lookupLocal(aName) == null || 
+				   (anIdentAST.getPreviousSibling() != null && 
+				       anIdentAST.getPreviousSibling().getType() == TokenTypes.LITERAL_THIS));
+				
 
 	}
 
@@ -1784,6 +1933,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		methodsCalledByCurrentMethod.clear();
 		globalsAccessedByCurrentMethod.clear();
 		globalsAssignedByCurrentMethod.clear();
+		unknownAssignedByCurrentMethod.clear();
+		unknownAccessedByCurrentMethod.clear();
 //		globalIdentToLHS.clear();
 //		globalIdentToRHS.clear();
 		
@@ -2706,10 +2857,61 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		case TokenTypes.ENUM_DEF:
 			leaveEnum(ast);
 			break;
+		case TokenTypes.LITERAL_IF:
+			leaveLiteralIf(ast);
+			return;
+		case TokenTypes.LITERAL_ELSE:
+			leaveLiteralElse(ast);
+			return;
+		case TokenTypes.LITERAL_SWITCH:
+			leaveLiteralSwitch(ast);
+			return;
+		case TokenTypes.LITERAL_WHILE:
+			leaveLiteralWhile(ast);
+			return;
+		case TokenTypes.LITERAL_FOR:
+			leaveLiteralFor(ast);
+			return;
+		case TokenTypes.LITERAL_RETURN:
+			leaveReturn(ast);	
+			return;
+		case TokenTypes.LITERAL_ASSERT:
+			leaveAssert(ast);	
+			return;
+		case TokenTypes.COLON:
+			leaveColon(ast);	
+			return;
+		case TokenTypes.LCURLY:
+			leaveLCurly(ast);
+			return;
+		case TokenTypes.RCURLY:
+			leaveRCurly(ast);
+			return;
 		default:
 			// System.err.println(checkAndFileDescription + "Unexpected token");
 
 		}
+	}
+
+	
+	private void leaveLiteralElse(DetailAST ast) {
+		maybePopAST();
+		
+	}
+
+	private void leaveColon(DetailAST ast) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void leaveAssert(DetailAST ast) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void leaveReturn(DetailAST ast) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	protected void doVisitToken(DetailAST ast) {
@@ -2786,6 +2988,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		case TokenTypes.LITERAL_IF:
 			visitLiteralIf(ast);
 			return;
+		case TokenTypes.LITERAL_ELSE:
+			visitLiteralElse(ast);
+			return;
+		case TokenTypes.LITERAL_SWITCH:
+			visitLiteralSwitch(ast);
+			return;
 		case TokenTypes.LITERAL_WHILE:
 			visitLiteralWhile(ast);
 			return;
@@ -2795,6 +3003,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		case TokenTypes.LITERAL_RETURN:
 			visitReturn(ast);	
 			return;
+		case TokenTypes.LITERAL_ASSERT:
+			visitAssert(ast);	
+			return;
+		case TokenTypes.COLON:
+			visitColon(ast);	
+			return;
 
 		default:
 			System.err.println(checkAndFileDescription + "Unexpected token");
@@ -2802,16 +3016,54 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 
-	protected void visitLiteralIf(DetailAST anIfAST) {
+	private void visitLiteralElse(DetailAST anAST) {
+		maybePushAST(anAST);
+		
+	}
+
+	private void visitColon(DetailAST ast) {
+		numberOfTernaryIfsInCurrentMethod++;
+		
+	}
+
+	private void visitAssert(DetailAST ast) {
+		assertsInCurrentMethod.add(ast);
+	}
+
+	private void visitLiteralSwitch(DetailAST ast) {
+		maybePushAST(ast);
+
+		
+	}
+	private void leaveLiteralSwitch(DetailAST ast) {
+		maybePopAST();
+		
+	}
+
+
+	protected void visitLiteralIf(DetailAST anAST) {
+		maybePushAST(anAST);
+	}
+	protected void leaveLiteralIf(DetailAST anAST) {
+		maybePopAST();
 
 	}
 
-	protected void visitLiteralWhile(DetailAST anIfAST) {
+	protected void visitLiteralWhile(DetailAST anAST) {
+		maybePushAST(anAST);
+
+	}
+	protected void leaveLiteralWhile(DetailAST anAST) {
+		openBlocksInCurrentMethod.pop();
 
 	}
 
-	protected void visitLiteralFor(DetailAST anIfAST) {
+	protected void visitLiteralFor(DetailAST anAST) {
+		maybePushAST(anAST);
 
+	}
+	protected void leaveLiteralFor(DetailAST anAST) {
+		maybePopAST();
 	}
 
 	protected Map<String, String[]> typeToSpecifications = new HashMap<>();

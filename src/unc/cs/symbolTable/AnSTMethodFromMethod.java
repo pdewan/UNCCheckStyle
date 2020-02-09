@@ -210,6 +210,21 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 	public boolean isSynchronized() {
 		return Modifier.isSynchronized(method.getModifiers());
 	}
+	@Override
+	public int getNumberOfTernaryConditionals() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public List<STType> getAsserts() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int getNumberOfAsserts() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 
 }

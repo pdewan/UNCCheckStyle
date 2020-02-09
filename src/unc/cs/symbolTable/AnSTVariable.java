@@ -14,6 +14,8 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	VariableKind variableKind;
 	STNameable[] tags;
 	STType declaringType;
+	STMethod declaringMethod;
+	DetailAST declaringBlock;
 	Integer accessToken;
 	protected Set<STMethod> methodsAccessing = new HashSet() ;
 	protected Set<STMethod> methodsAssigning = new HashSet();
@@ -30,7 +32,8 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	 
 
 	public AnSTVariable(
-			STType anSTType,
+			STType anSTType,			
+			DetailAST aDeclaringBlock,
 			DetailAST ast, 
 			String aName,
 			String aTypeName,
@@ -41,6 +44,9 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 			) {
 		super(ast, aName);
 		declaringType = anSTType;
+//		declaringMethod = anSTMethod;
+		declaringBlock = aDeclaringBlock;
+				
 		typeName = aTypeName;
 		rhs = anRHS;
 		tags = aTags;
