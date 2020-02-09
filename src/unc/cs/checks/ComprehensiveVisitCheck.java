@@ -3054,7 +3054,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	}
 	protected void leaveLiteralWhile(DetailAST anAST) {
-		openBlocksInCurrentMethod.pop();
+		maybePopAST();
 
 	}
 

@@ -20,7 +20,6 @@
 			<property name="severity" value="info" />
 			<property name="logNoMatches" value="true" />	
 			<property name="importsAsExistingClasses" value="true" />
-			
 			<property name="logAggregateStatistics" value="true" />		
 			
 			<property name="logMethodsDeclared" value="true" />	
@@ -147,7 +146,14 @@
 		 	<property name="severity" value="info" />		 		
 			<property name="printComponents" value="true" />				
 		</module>
-		 
+		 <module name="MethodBlockLimit">
+			<property name="severity" value="warning" />		
+			<property name="max" value="1" />
+		</module>
+		 <module name="NestedBlockDepth">
+			<property name="severity" value="warning" />		
+			<property name="max" value="1" />
+		</module>
 		
 		
 		 <module name="ExpectedGetters">
