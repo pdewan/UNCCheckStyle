@@ -594,11 +594,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		String aParametersString = aReturnTypeAndParameters[0].trim();
 		String[] aParameterTypes = aParametersString.equals("") ? new String[0]
 				: aParametersString.split(STMethod.PARAMETER_SEPARATOR);
+		String[] aLongParameterTypes = toLongTypeNames(aParameterTypes);
 		for (int i = 0; i < aParameterTypes.length; i++) {
 			aParameterTypes[i] = aParameterTypes[i].trim();
 
 		}
-		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
+		return new AnSTMethod(null, aName, null, null, aLongParameterTypes, true,
 				true, false, false, aReturnType, true, null, null, false, null, null,
 				null, null, null, null, null, null, null, null, null, 0, null);
 

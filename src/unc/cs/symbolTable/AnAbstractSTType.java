@@ -132,12 +132,21 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			anAllTypes = getAllSuperTypes();
 		} else {
 			anAllTypes = new ArrayList();
+			STNameable aSuperClass = getSuperClass();
+			if (aSuperClass != null) {
 			anAllTypes.add(getSuperClass());
+			}
 		}
-		if (anAllTypes == null) {
+		if (anAllTypes == null) { // should never happen
 			return null;
 		}
 		for (STNameable aSuperType:anAllTypes) {
+			if (aSuperType == null || aSuperType.getName() == null) {
+				return null;
+			}
+			if (TagBasedCheck.isExternalType(aSuperType.getName())) {
+				continue;
+			}
 			Object aSuperTypeMethods = addMethodsOfSuperType(retVal, aSuperType);
 			if (aSuperTypeMethods == null) {
 				return null;

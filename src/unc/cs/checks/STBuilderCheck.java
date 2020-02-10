@@ -344,6 +344,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		if (currentMethodName != null) {
 			String[] aParameterTypes = currentMethodParameterTypes
 					.toArray(new String[0]);
+			String[] aLongParameterTypes = toLongTypeNames(aParameterTypes);
+
 			String[] aParameterNames = currentMethodParameterNames
 					.toArray(new String[0]);
 			STMethod anSTMethod = new AnSTMethod(
@@ -351,7 +353,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					currentMethodName,
 					fullTypeName,
 					aParameterNames,
-					aParameterTypes,
+					aLongParameterTypes,
 					currentMethodIsPublic || isInterface,
 					currentMethodIsInstance || isInterface,
 					currentMethodIsConstructor,

@@ -93,6 +93,9 @@ public class APropertyInfo implements PropertyInfo {
 	
 	public void setSetter(STMethod setter) {
 		this.setter = setter;
+		if (setter == null) {
+			return;
+		}
 		if (setter.assignsToGlobal()) {
 			List<String> anAssignedGlobals = setter.getGlobalsAssigned();
 			

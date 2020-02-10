@@ -82,7 +82,6 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		"boolean",
 		
 };
-
 	public static String[] javaLangTypes = {
 //		"int",
 //		"double",
@@ -977,13 +976,32 @@ public void maybeVisitMethodTags(DetailAST ast) {
 	currentMethodTags = getArrayLiterals(annotationAST);
 }
 private Map<String, String> importShortToLongName = new HashMap();
-protected String toLongTypeName (String aShortName) {
-	String retVal = aShortName;
-	String aPossibleLongName = importShortToLongName.get(aShortName);
+protected String toLongTypeName (String aShortOrLongName) {
+//	String retVal = aShortName;
+	if (aShortOrLongName.contains(".")) {
+		return aShortOrLongName;
+	}
+	String aPossibleLongName = importShortToLongName.get(aShortOrLongName);
 	if (aPossibleLongName != null) {
-		retVal = aPossibleLongName;
+		return aPossibleLongName;
+	}
+	if (isJavaLangClass(aShortOrLongName)) {
+		
+		return aShortOrLongName;
+	}
+	if (packageName != null && !packageName.isEmpty()) {
+		return packageName + "." + aShortOrLongName;
+	}
+	 
+	return  aShortOrLongName;
+}
+protected String[] toLongTypeNames (String[] aShortNames) {
+	String[] retVal = new String[aShortNames.length];
+	for (int i=0; i < aShortNames.length; i++) {
+		retVal[i] = toLongTypeName(aShortNames[i]);
 	}
 	return retVal;
+	
 }
 public void visitImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
@@ -1052,13 +1070,20 @@ public static String toShortTypeName (String aTypeName) {
  *
  */
 public static boolean isExternalType(String aFullName) {
+//	if (TagBasedCheck.isProjectImport(aFullName)) {
+//		return false;
+//	}
 	if (isExternalClass(toShortTypeName(aFullName))) return true;
+	
 	for (String aString:STBuilderCheck.getExternalTypeRegularExpressions()) {
 		if (aFullName.matches(aString)) {
 			return true;
 		}
 	}
-	return false;
+	if (TagBasedCheck.isProjectImport(aFullName)) {
+		return false;
+	}
+	return true;
 }
 
 public static boolean isExplicitlyTagged (STType anSTType) {
@@ -1070,6 +1095,28 @@ public static String[] toStrings(STNameable[] anSTNameables) {
 		retVal[i] = anSTNameables[i].getName();
 	}
 	return retVal;
+}
+public static String[] toNormalizedTypes(String[] aTypes) {
+	String[] retVal = new String[aTypes.length];
+	for (int anIndex = 0; anIndex < aTypes.length; anIndex++) {
+		retVal[anIndex] = toNormalizedType(aTypes[anIndex]);		
+	}
+	return retVal;
+}
+public static String toNormalizedType(String aType) {
+	if (isExternalType(aType))  {
+		return aType;
+	}
+	STType anSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aType);
+	if (anSTType == null) {
+		return aType; // not an internal type
+	}
+	Set<String> aTags = getNonComputedTags(anSTType);
+	if (aTags.size() == 1) {
+		return aTags.iterator().next();
+	}
+	return ".*";
+	
 }
 public static Set<String> getNonComputedTags (STType anSTType) {
 	Set<String> retVal = new HashSet();

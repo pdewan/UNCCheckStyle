@@ -62,7 +62,7 @@ public class PostProcessingMain {
 	}
 
 	public static void processTypes(List<STType> anSTTypes) {
-		
+		// create some side effects first
 		for (STType anSTType : anSTTypes) {
 			if (anSTType.isExternal()) {
 				continue; // these methods have no callers
@@ -144,18 +144,22 @@ public class PostProcessingMain {
 		}
 		
 		processTypeInterfaces(anSTType);
+		processTypeProperties(anSTType);
 		processTypeSuperTypes(anSTType);
 		processTypeMethodCalls(anSTType);
-		processTypeProperties(anSTType);
+		processDeclaredMethods(anSTType);
+		
 
 	}
 
 	public static boolean isExternalType(String aFullName) {
-		return !TagBasedCheck.isProjectImport(aFullName) || TagBasedCheck.isExternalType(aFullName);
+//		return !TagBasedCheck.isProjectImport(aFullName) || TagBasedCheck.isExternalType(aFullName);
+		return TagBasedCheck.isExternalType(aFullName);
+
 	}
 
 	public static void printImplementsExternal(STType anSTType, String anInterfaceFullName) {
-
+		System.out.println("printImplementsExternal:" + anSTType.getName() + "implements:" + anInterfaceFullName);
 	}
 
 	public static void printImplementsTagged(STType anSTType, STType anInterfaceType) {
@@ -169,6 +173,9 @@ public class PostProcessingMain {
 	}
 
 	public static void processTypeSuperTypes(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
 		List<STNameable> aSuperClasses = anSTType.getAllSuperTypes();
 		if (aSuperClasses == null) {
 			STNameable aSuperClass = anSTType.getSuperClass();
@@ -218,7 +225,7 @@ public class PostProcessingMain {
 		}
 		for (STNameable anInterface : anInterfaces) {
 			String aFullName = anInterface.getName();
-			if (isExternalType(aFullName)) {
+			if (isExternalType(aFullName) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
 				printImplementsExternal(anSTType, aFullName);
 				return;
 			}
@@ -227,12 +234,30 @@ public class PostProcessingMain {
 				// continue;
 				anInterfaceSTType = symbolTable.getSTClassByShortName(anInterface.getName());
 			}
-			if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType)) {
+			if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
 				printImplementsTagged(anSTType, anInterfaceSTType);
 			}
 		}
 
 	}
+	public static void processDeclaredMethods(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
+		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+		for (STMethod aMethod:aMethods) {
+			if (!aMethod.isPublic()) {
+				continue;
+			}
+			String[] aNormalizedTypes = TagBasedCheck.toNormalizedTypes(aMethod.getParameterTypes());
+			String aReturnType = aMethod.getReturnType();
+			String aNormalizedReturnType = TagBasedCheck.toNormalizedType(aReturnType);
+			
+			System.out.println("Types:" + Arrays.toString(aNormalizedTypes) + " return:" +aNormalizedReturnType);
+			
+		}
+	}
+
 
 	public static void printCallInfo(STType aCallerSTType, STType aCalledSTType, CallInfo aCallInfo) {
 		String aCallingTypeName = aCallerSTType.getName();
@@ -244,6 +269,9 @@ public class PostProcessingMain {
 				+ aCalledSTType + aCalledMethods);
 	}
 	public static void processTypeProperties(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
 		Map<String,  PropertyInfo> aProperties = anSTType.getPropertyInfos();
 		if (aProperties == null) {
 			aProperties = anSTType.getDeclaredPropertyInfos();
@@ -251,7 +279,7 @@ public class PostProcessingMain {
 		for (String aKey:aProperties.keySet()) {
 			PropertyInfo aPropertyInfo = aProperties.get(aKey);
 			if (aPropertyInfo.getGetter() != null && aPropertyInfo.getGetter().isPublic()) {
-				System.out.println ("Property:" + aPropertyInfo);
+				System.out.println (anSTType.getName() + " Property:" + aPropertyInfo);
 			}
 		}
 		 
@@ -259,6 +287,9 @@ public class PostProcessingMain {
 	}
 
 	public static void processTypeMethodCalls(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
 		List<CallInfo> aCallInfos = anSTType.getAllMethodsCalled();
 		if (aCallInfos == null) {
 			aCallInfos = anSTType.getMethodsCalled();
