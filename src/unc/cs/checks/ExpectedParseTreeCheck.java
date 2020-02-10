@@ -239,7 +239,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 			int i = 0;
 //			for (STMethod anSTMethod:anActualMethods) {
 				String aNormalizedLongName = ComprehensiveVisitCheck.toLongName(aCallInfo.getNormalizedCall());
-				String shortMethodName = ComprehensiveVisitCheck.toShortTypeName(aNormalizedLongName);
+				String shortMethodName = ComprehensiveVisitCheck.toShortTypeOrVariableName(aNormalizedLongName);
 				// specified method has been matched already, matches will assume aSpecifiation has a caller
 				Boolean aMatch = matches(aMethod.getDeclaringSTType(), maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
 				if (aMatch == null) {
@@ -340,7 +340,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 		Boolean foundNull = false;
 		boolean retVal = true;
 		Boolean aMatch = null;
-		currentType = toShortTypeName(anSTType.getName());
+		currentType = toShortTypeOrVariableName(anSTType.getName());
 		DetailAST matchedAST = anSTType.getAST();
 		for (String aSpecification : aSpecifications) {
 			currentSpecification = aSpecification;

@@ -19,17 +19,11 @@ import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public class AnSTType extends AnAbstractSTType implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, configuredTags, derivedTags, computedTags, imports;
-//	protected final STMethod[] declaredMethods;
-//	protected final STMethod[] declaredConstructors;
-//	protected final STNameable[] interfaces;
-//	protected final STNameable[] declaredFields;
-//	protected final String packageName;
+
 	protected final boolean isInterface, isGeneric, isElaboration, isEnum;
 //	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
-//	protected STMethod[] inits;
-//	protected Map<String, PropertyInfo> actualPropertyInfo = new HashMap();
-//	protected List<STMethod> declaredInits = new ArrayList();
+
 	protected List<STVariable>	globalSTVariables;
 	protected Map<String, List<CallInfo>> globalVariableToCall ;
 //	protected Map<String, String> globalVariableToType ;
@@ -323,6 +317,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		}			
 //		aPropertyInfo.setGetter(anSTMethod);
 //	}
+	@Override
 	public STNameable[] getDeclaredFields() {
 		return declaredFields;
 	}
@@ -935,9 +930,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	public Boolean instantiatesType (String aShortOrLongName) {
 		for (STNameable anInsantiatedNameable:typesInstantiated) {
 			String anInstantiatedType = 
-					ComprehensiveVisitCheck.toShortTypeName(anInsantiatedNameable.getName());
+					ComprehensiveVisitCheck.toShortTypeOrVariableName(anInsantiatedNameable.getName());
 			String anExpectedType =
-					ComprehensiveVisitCheck.toShortTypeName(aShortOrLongName);
+					ComprehensiveVisitCheck.toShortTypeOrVariableName(aShortOrLongName);
 //			if (anInstantiatedType.equals(anExpectedType))
 //				return true;
 			Boolean result = ComprehensiveVisitCheck.matchesType(anExpectedType, anInstantiatedType);

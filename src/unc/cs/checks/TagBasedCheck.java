@@ -556,7 +556,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		} else if (aDescriptor.startsWith(TAG_STRING)) {
 			return hasTag(aTags, aDescriptor);
 		}	else {
-			String aShortName = toShortTypeName(aName);
+			String aShortName = toShortTypeOrVariableName(aName);
 //			return aName.matches(aDescriptor) || aName.contains(aDescriptor); // allow regex
 			// do not want user scanner to match Scanner class so do not use contains
 			// allow regex
@@ -891,7 +891,7 @@ public static STNameable toShortPatternName(STNameable aLongName) {
 //		System.out.println("Null a long nane:" + aLongName);
 		return null;
 	}
-	String aShortName = toShortTypeName(aLongName.getName());
+	String aShortName = toShortTypeOrVariableName(aLongName.getName());
 
 	return  new AnSTNameable(aLongName.getAST(), aShortName);
 }
@@ -975,6 +975,7 @@ public void maybeVisitMethodTags(DetailAST ast) {
 	}
 	currentMethodTags = getArrayLiterals(annotationAST);
 }
+
 private Map<String, String> importShortToLongName = new HashMap();
 protected String toLongTypeName (String aShortOrLongName) {
 //	String retVal = aShortName;
@@ -994,6 +995,47 @@ protected String toLongTypeName (String aShortOrLongName) {
 	}
 	 
 	return  aShortOrLongName;
+}
+public static boolean isFieldDeclaredIn (STType aType, String aName) {
+	STNameable[] aFields = aType.getDeclaredFields();
+	if (aFields == null) {
+		return false;
+	}
+	for (STNameable aField:aFields) {
+		if (aField.getName().equals(aName)) {
+			return true;
+		}
+	}
+	return false;
+}
+public static String toLongVariableName (STNameable aNameable, String aShortOrLongName) {
+	STType aType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aNameable.getName());
+	if (aType == null) {
+		return null;
+	}
+	if (isFieldDeclaredIn(aType, aShortOrLongName)) {
+		return aType.getName() + "." + aShortOrLongName;
+	}
+	return null;
+	
+}
+
+public static String toLongVariableName (STType aType, String aShortOrLongName) {
+//	String retVal = aShortName;
+	if (aType == null || aShortOrLongName.contains(".")) {
+		return aShortOrLongName;
+	}
+//	if (isFieldDeclaredIn(aType, aShortOrLongName)) {
+//		return aType.getName() + "." + aShortOrLongName;
+//	}
+	List<STNameable> aTypes = aType.getAllTypes(); 
+	for (STNameable aSuperType:aTypes) {
+		String retVal = toLongVariableName(aSuperType, aShortOrLongName) ;
+		if (retVal != null)
+			return retVal;
+	}
+	return aShortOrLongName;	
+	
 }
 protected String[] toLongTypeNames (String[] aShortNames) {
 	String[] retVal = new String[aShortNames.length];
@@ -1056,7 +1098,7 @@ public static boolean isMaybeProjectImport (String aPackageName, String aClassNa
 //	}
 //	return retVal;
 //}
-public static String toShortTypeName (String aTypeName) {
+public static String toShortTypeOrVariableName (String aTypeName) {
 	if (aTypeName == null)
 		return aTypeName;
 	int aDotIndex = aTypeName.lastIndexOf(".");
@@ -1073,7 +1115,7 @@ public static boolean isExternalType(String aFullName) {
 //	if (TagBasedCheck.isProjectImport(aFullName)) {
 //		return false;
 //	}
-	if (isExternalClass(toShortTypeName(aFullName))) return true;
+	if (isExternalClass(toShortTypeOrVariableName(aFullName))) return true;
 	
 	for (String aString:STBuilderCheck.getExternalTypeRegularExpressions()) {
 		if (aFullName.matches(aString)) {
@@ -1429,7 +1471,7 @@ public static STType getSTType(DetailAST aTreeAST) {
 //	return anSTType;
 	STType result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 	if (result == null && ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
-		result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(toShortTypeName(aFullName));
+		result = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(toShortTypeOrVariableName(aFullName));
 		
 	}
 	return result;

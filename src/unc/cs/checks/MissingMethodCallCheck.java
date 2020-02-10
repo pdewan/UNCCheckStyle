@@ -122,7 +122,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 			boolean found = false;
 			for (CallInfo aCallInfo:aCallsToBeChecked ) {
 				String aNormalizedLongName = toLongName(aCallInfo.getNormalizedCall());
-				String shortMethodName = toShortTypeName(aNormalizedLongName);
+				String shortMethodName = toShortTypeOrVariableName(aNormalizedLongName);
 
 //				if (aCallInfo.toString().contains("move"))	{
 //					System.out.println ("found move");

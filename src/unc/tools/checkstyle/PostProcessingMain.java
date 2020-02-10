@@ -70,6 +70,7 @@ public class PostProcessingMain {
 			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 			for (STMethod aMethod:aMethods) {
 				aMethod.getLocalMethodsCalled(); // side effect of adding caller
+				aMethod.addFullNamesToUnknowns();
 //				aMethod.getAllMethodsCalled();
 			}
 			

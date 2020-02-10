@@ -204,7 +204,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	
 	protected  Boolean matches (STType aCallingSTType, String aSpecifier, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
-		String aCallingType = toShortTypeName(aCallingSTType.getName());
+		String aCallingType = toShortTypeOrVariableName(aCallingSTType.getName());
 		String[] aCallerAndRest = aSpecifier.split(CALLER_TYPE_SEPARATOR);
 		String aCaller = MATCH_ANYTHING;
 		String aNonTargetPart = aSpecifier;
@@ -467,7 +467,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			 if (!retVal) {
 				 return  false;
 			 }
-			 return matchTypeISA(aSpecifiedTarget, toShortTypeName(aTypeName));
+			 return matchTypeISA(aSpecifiedTarget, toShortTypeOrVariableName(aTypeName));
 
 		 }
 		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);

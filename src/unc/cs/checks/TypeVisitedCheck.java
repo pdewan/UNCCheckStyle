@@ -219,7 +219,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		
 	}
 	public static String toShortTypeName (String aTypeName) {
-		return TagBasedCheck.toShortTypeName(aTypeName);
+		return TagBasedCheck.toShortTypeOrVariableName(aTypeName);
 	}
 //	public static String toShortTypeName (String aTypeName) {
 //		if (aTypeName == null)

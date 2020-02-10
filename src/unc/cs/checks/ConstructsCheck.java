@@ -155,7 +155,7 @@ public abstract class ConstructsCheck extends MethodCallCheck{
 //			int i = 0;
 //			for (STMethod anSTMethod:anActualMethods) {
 				String aNormalizedLongName = ComprehensiveVisitCheck.toLongName(aCallInfo.getNormalizedCall());
-				String shortMethodName = ComprehensiveVisitCheck.toShortTypeName(aNormalizedLongName);
+				String shortMethodName = ComprehensiveVisitCheck.toShortTypeOrVariableName(aNormalizedLongName);
 				Boolean aMatch = matches(aMethod.getDeclaringSTType(), maybeStripComment(aSpecification), shortMethodName, aNormalizedLongName, aCallInfo);
 				if (aMatch == null) {
 					foundNull = true;
@@ -262,7 +262,7 @@ public abstract class ConstructsCheck extends MethodCallCheck{
 			STMethod aSpecifiedMethod = aMethodStrings.getMethod();
 			String[] aKeywords = aMethodStrings.getSpecifications();
 			DetailAST aMatchedAST = null;
-			String aType = toShortTypeName(anSTType.getName());
+			String aType = toShortTypeOrVariableName(anSTType.getName());
 			if (aSpecifiedMethod == null) {
 				List<DetailAST> aMatchedNodes = new ArrayList();
 				aMatchedAST = anSTType.getAST();

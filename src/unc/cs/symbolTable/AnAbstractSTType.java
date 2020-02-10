@@ -24,6 +24,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	
 
 	protected STMethod[] initMethods;
+//	protected List<STVariable>	globalSTVariables;
+
 
 	protected STMethod[] declaredMethods; // initialized by subclass
 	protected STMethod[] methods; // initialized on demand
@@ -1752,9 +1754,9 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		return initMethods;
 	}
 	public static boolean contains (List<STNameable> anInterfaces, String anInterface) {
-		String aShortInterface = ComprehensiveVisitCheck.toShortTypeName(anInterface);
+		String aShortInterface = ComprehensiveVisitCheck.toShortTypeOrVariableName(anInterface);
 		for (STNameable aNameable:anInterfaces) {
-			String aMember = ComprehensiveVisitCheck.toShortTypeName(aNameable.getName());
+			String aMember = ComprehensiveVisitCheck.toShortTypeOrVariableName(aNameable.getName());
 			return aMember.equals(aShortInterface);
 		}
 		return false;

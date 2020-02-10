@@ -109,7 +109,7 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 //				.getSTClassByShortName(
 //						aShortTypeName);
-		String aShortTypeName = toShortTypeName(aShortOrLongTypeName);
+		String aShortTypeName = toShortTypeOrVariableName(aShortOrLongTypeName);
 		if (visitedTypes.contains(aShortTypeName)) {
 			typeRevisited(aShortTypeName);
 			return true;
@@ -125,7 +125,7 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 //			// either the getter or setter will be null
 //			String aTypeName = aGetter != null?aGetter.getReturnType():aSetter.getParameterTypes()[0]; 
 			String aTypeName = aPropertyInfos.get(aKey).getType();
-			associate(aPropertyName, toShortTypeName(aTypeName));
+			associate(aPropertyName, toShortTypeOrVariableName(aTypeName));
 
 			if (isExternalClass(aTypeName)) continue;
 			STType aPropertySTType = SymbolTableFactory.getOrCreateSymbolTable()

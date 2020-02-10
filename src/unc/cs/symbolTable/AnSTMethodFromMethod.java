@@ -225,6 +225,11 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	@Override
+	public void addFullNamesToUnknowns() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 
 }

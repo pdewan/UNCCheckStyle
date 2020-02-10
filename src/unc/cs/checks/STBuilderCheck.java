@@ -273,7 +273,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected  void processExistingClasses() {
 		for (String aClassName : existingClasses) {
 			existingClassesShortNamesCollection
-					.add(toShortTypeName(aClassName));
+					.add(toShortTypeOrVariableName(aClassName));
 			processExistingClass(aClassName);
 			// if
 			// (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aClassName)
@@ -301,7 +301,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		for (STNameable aClassName : allImportsOfThisClass) {
 			String aLongName = aClassName.getName();
 			// star imports?
-			String aShortName = toShortTypeName(aLongName);
+			String aShortName = toShortTypeOrVariableName(aLongName);
 //			if (aShortName != null && !aShortName.isEmpty()) {
 //			importShortToLongName.put(aShortName, aLongName);
 //			}

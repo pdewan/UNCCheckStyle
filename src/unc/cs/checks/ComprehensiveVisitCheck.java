@@ -1360,7 +1360,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	
 	public STVariable getLocalVariable(String aName) {
-		for (STVariable aVariable : parameterSTVariables) {
+		for (STVariable aVariable : localSTVariables) {
+
+//		for (STVariable aVariable : parameterSTVariables) {
 			if (aVariable.getName().equals(aName))
 				return aVariable;
 		}
@@ -1368,7 +1370,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	
 	public STVariable getParameterVariable(String aName) {
-		for (STVariable aVariable : localSTVariables) {
+//		for (STVariable aVariable : localSTVariables) {
+
+		for (STVariable aVariable : parameterSTVariables) {
 			if (aVariable.getName().equals(aName))
 				return aVariable;
 		}
@@ -1583,7 +1587,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 		}
 		String aNormalizedLongName = toLongName(aNormalizedParts);
-		String aCallee = toShortTypeName(aNormalizedLongName);
+		String aCallee = toShortTypeOrVariableName(aNormalizedLongName);
 		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(
 				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]), aCallee,
 				aCallParameters, aNormalizedParts, aCastType);
@@ -1618,11 +1622,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		String shortMethodName = null;
 		if (ast.getText().startsWith("this")) {// cannot find a type
-			shortMethodName = toShortTypeName(getFullTypeName(currentTree));
+			shortMethodName = toShortTypeOrVariableName(getFullTypeName(currentTree));
 		} else {
 
 			FullIdent anIdentifierType = FullIdent.createFullIdentBelow(ast);
-			shortMethodName = toShortTypeName(anIdentifierType.getText());
+			shortMethodName = toShortTypeOrVariableName(anIdentifierType.getText());
 		}
 
 		// final FullIdent anIdentifierType =
@@ -1699,25 +1703,77 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// methodsCalledByCurrentMethod.add(aNormalizedParts);
 		methodsCalledByCurrentMethod.add(aCallInfo);
 	}
-
+	public static boolean isMethodDefOrCall (DetailAST anIdentAST) {
+		DetailAST aParent = anIdentAST.getParent();
+		if (aParent != null && aParent.getType() == TokenTypes.DOT) {
+			return isMethodDefOrCall (aParent);
+		}
+		DetailAST aRightSibling = anIdentAST.getNextSibling();
+		return aRightSibling != null && (aRightSibling.getType() == TokenTypes.LPAREN || aRightSibling.getType() == TokenTypes.ELIST) ;
+	}
+	public static boolean isType (DetailAST anIdentAST) {
+		
+		DetailAST aParent= anIdentAST.getParent();
+		if ( aParent != null && (aParent.getType() == TokenTypes.TYPE )) {
+			return true;
+		};
+		if (aParent == null) {
+			return false;
+		}
+		return isType (aParent); // for arrays
+	}
+    public static boolean isAnnotation (DetailAST anIdentAST) {
+		
+		DetailAST aParent= anIdentAST.getParent();
+		return aParent != null && (aParent.getType() == TokenTypes.ANNOTATION ) ;
+	}
+    protected DetailAST toFullIdentAST(DetailAST anIdentAST) {
+    	DetailAST aParent= anIdentAST.getParent();
+    	if (aParent == null || aParent.getType() != TokenTypes.DOT) {
+    		return anIdentAST;
+    	}
+    	return toFullIdentAST(aParent);
+    	
+    }
+//    protected DetailAST lastFullIdentAST = null; /// hack hack !!!
 	protected void visitIdent(DetailAST anIdentAST) {
 		// if (!checkIncludeExcludeTagsOfCurrentType())
 		// return;
+		
 		if (currentMethodName == null)
 			return;
+		DetailAST aFullIdentAST = toFullIdentAST(anIdentAST);
+		DetailAST aNextSibling = anIdentAST.getNextSibling();
+		if (aFullIdentAST != anIdentAST && aNextSibling != null && aNextSibling.getType() == TokenTypes.IDENT) {
+			return;
+		}
+		if (isMethodDefOrCall(aFullIdentAST) || isType (anIdentAST) || isAnnotation(anIdentAST)) {
+			return;
+		}
+		FullIdent aFullIdent = FullIdent.createFullIdent(aFullIdentAST);
 		String anIdentName = anIdentAST.getText();
+		String aFullIdentName = aFullIdent.getText();
+
 		boolean isLHSOfAssignment = isLHSOfAssignment(anIdentAST);
+		 STVariable aLocalVariable = getLocalVariable(anIdentName);
+		 STVariable aParameter = null;
+		 if (aLocalVariable == null) {
+			 aParameter = getParameterVariable(anIdentName);
+		 }
 		if (isLHSOfAssignment) {
-			STVariable aVariable = getLocalVariable(anIdentName);
-			if (aVariable != null) {
-				localsAssignedByCurrentMethod.add(aVariable);
+//			STVariable aVariable = getLocalVariable(anIdentName);
+			if (aLocalVariable != null) {
+				localsAssignedByCurrentMethod.add(aLocalVariable);
 				return;
 			}
-			aVariable = getParameterVariable(anIdentName);
-			if (aVariable != null) {
-				parametersAssignedByCurrentMethod.add(aVariable);
+//			aLocalVariable = getParameterVariable(anIdentName);
+			if (aLocalVariable != null) {
+				parametersAssignedByCurrentMethod.add(aLocalVariable);
 				return;
 			}
+		}
+		if (aLocalVariable != null || aParameter != null) {
+			return; // not interested in accesses
 		}
 //		if (!isGlobal(anIdentName))
 //			return;
@@ -1739,7 +1795,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //		}
 		boolean isGlobal = isGlobal(anIdentName);
 		if (!isGlobal) {
-			unknownAccessedByCurrentMethod.add(anIdentName);
+			unknownAccessedByCurrentMethod.add(aFullIdentName);
 		} else
 		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
 		globalsAccessedByCurrentMethod.add(anIdentName);

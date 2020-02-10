@@ -98,4 +98,5 @@ public interface STType extends STNameable{
 	int getNumberOfMethods();
 //	STVariable toSTVariable(String aName);
 	int getNumberOfNonGettersAndSetters();
+	STNameable[] getDeclaredFields();
 }

@@ -218,6 +218,11 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	@Override
+	public void addFullNamesToUnknowns() {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 

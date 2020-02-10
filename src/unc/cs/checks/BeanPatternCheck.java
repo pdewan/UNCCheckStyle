@@ -35,7 +35,7 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	
 	public static void connect (String aSpecifiedName, String anAlternateName) {
 		specifiedToAlternateName.put(aSpecifiedName, anAlternateName);	
-		specifiedToAlternateName.put(toShortTypeName(aSpecifiedName), anAlternateName);	
+		specifiedToAlternateName.put(toShortTypeOrVariableName(aSpecifiedName), anAlternateName);	
 
 	}
 	

@@ -29,6 +29,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		declaredInterfaces = new STNameable[0];
 		interfaces  = new STNameable[0] ;
 		declaredFields = new STNameable[0];
+//		globalSTVariables = new ArrayList();
 
 	}
 	public AnSTTypeFromClass(Class aClass) {
@@ -380,6 +381,11 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public int getNumberOfTernaryConditionals() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	@Override
+	public STNameable[] getDeclaredFields() {
+		// TODO Auto-generated method stub
+		return declaredFields;
 	}
 
 

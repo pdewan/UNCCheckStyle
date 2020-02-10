@@ -55,5 +55,6 @@ public interface STMethod extends STNameable{
 	int getNumberOfTernaryConditionals();
 	List<STType> getAsserts();
 	int getNumberOfAsserts();
+	void addFullNamesToUnknowns();
 
 }
