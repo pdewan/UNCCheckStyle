@@ -757,7 +757,7 @@ public static Boolean matchesType(String aDescriptor, String aShortClassName) {
 		try {
 		return aShortClassName.matches(aDescriptor);
 		} catch (PatternSyntaxException e) {
-			System.out.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aShortClassName);
+			System.err.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aShortClassName);
 			e.printStackTrace();
 			return false;
 		}
@@ -1615,7 +1615,7 @@ protected void setIntValueOfType(String newVal) {
 		typeToInt.put(aType, aValue);
 
 	} catch (Exception e) {
-		System.out.println ("Did not get int type value");
+		System.err.println ("Did not get int type value");
 		e.printStackTrace();
 	}	
 }
@@ -1707,8 +1707,8 @@ protected  String[] getStringArrayToBeChecked(STType anSTType, Map<String, Strin
 protected  String[] getStringArrayToBeChecked(DetailAST anAST, DetailAST aTree){
 	STType anSTType = getSTType(aTree);
 	if (anSTType == null) {
-		System.out.println("ST Type is null!");
-		System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+		System.err.println("ST Type is null!");
+		System.err.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
 		 return null; // this was commented out
 	}
 	if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate
@@ -1742,8 +1742,8 @@ public Boolean doStringArrayBasedPendingCheck(DetailAST anAST, DetailAST aTree) 
 	}
 //	STType anSTType = getSTType(aTree);
 	if (anSTType == null) {
-		System.out.println("ST Type is null!");
-		System.out.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
+		System.err.println("ST Type is null!");
+		System.err.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
 		 return true; // this was commented out
 	}
 	if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate

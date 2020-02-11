@@ -87,7 +87,7 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
     	List<String> aCommonSignatures = anSTType.signaturesCommonWith(aPeerType);
 		if (aCommonSignatures == null)
 			return null;
-		System.out.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);
+		System.err.println (anSTType.getName() + " common signaures " + aPeerType + " = " + aCommonSignatures);
 		List<String> aCommonSuperTypes = anSTType.namesOfSuperTypesInCommonWith(aPeerType);
 		if (aCommonSuperTypes == null)
 			return null;

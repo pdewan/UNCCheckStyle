@@ -102,8 +102,8 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //			}
 			Set<String> missingFiles = new HashSet(fileNameToMessages.keySet());
 			missingFiles.removeAll(aFilesInLastPhase);			
-			System.out.println("files in last phase: " + aFilesInLastPhase.size() + " < files with messages " +  fileNameToMessages.size() + ", not doing merge");
-			System.out.println ("Missing files:" + missingFiles);
+			System.err.println("files in last phase: " + aFilesInLastPhase.size() + " < files with messages " +  fileNameToMessages.size() + ", not doing merge");
+			System.err.println ("Missing files:" + missingFiles);
 //			return;
 		}
 //		int aNumFilesInLastPhase = aFilesInLastPhase.size();
@@ -123,7 +123,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	}
 	
 	protected void incrementalMergeWithLastPhase(Set<String> aFilesInLastPhase) {
-		System.out.println("Merging with last phase");
+		System.err.println("Merging with last phase");
 
 		for (String aFileName:aFilesInLastPhase) { // only the files we received errors from
 //		for (String aFileName:fileNameToMessages.keySet()) { 

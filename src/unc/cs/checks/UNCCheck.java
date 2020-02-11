@@ -424,7 +424,7 @@ public abstract class UNCCheck extends Check {
 			// " " + getFileContents().getFilename());
 
 		} catch (RuntimeException e) {
-			System.out.println("Description:" + checkAndFileDescription);
+			System.err.println("Description:" + checkAndFileDescription);
 
 			e.printStackTrace();
 			errorOccurred = true;

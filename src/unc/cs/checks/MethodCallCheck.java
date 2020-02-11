@@ -251,12 +251,12 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		String aCalledType = aCallInfo.getCalledType();
 		if (aSignatureAndTarget == null ) {
 			
-			System.out.println ("Null signature!");
+			System.err.println ("Null signature!");
 			return false;
 		}
 		if (aSignatureAndTarget.length == 0 ) {
 			
-			System.out.println ("signature with no elements");
+			System.err.println ("signature with no elements");
 			return false;
 		}
 		
