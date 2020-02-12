@@ -181,9 +181,11 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			return null;
 		}
 		STType aCurrentClass = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCurrentClassName.getName());
-
+		if (aCurrentClass == null) {
+			return null;
+		}
 		Set<STMethod> aMethods = ComprehensiveVisitCheck.getMatchingCalledMethods(aCurrentClass, aCallInfo);
-		if (aMethods.size() > 0) {
+		if (aMethods != null && aMethods.size() > 0) {
 			return aCurrentClass;
 		}
 		STNameable aSuperClassName = aCurrentClass.getSuperClass();

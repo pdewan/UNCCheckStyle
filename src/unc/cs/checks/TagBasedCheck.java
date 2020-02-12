@@ -1029,6 +1029,9 @@ public static String toLongVariableName (STType aType, String aShortOrLongName) 
 //		return aType.getName() + "." + aShortOrLongName;
 //	}
 	List<STNameable> aTypes = aType.getAllTypes(); 
+	if (aTypes == null) {
+		return aShortOrLongName;
+	}
 	if (aTypes == null)
 	for (STNameable aSuperType:aTypes) {
 		String retVal = toLongVariableName(aSuperType, aShortOrLongName) ;
