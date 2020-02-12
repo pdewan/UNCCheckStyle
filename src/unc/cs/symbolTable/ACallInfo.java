@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
+
 public class ACallInfo implements CallInfo {
 	DetailAST ast;
 	String caller;
@@ -14,12 +16,13 @@ public class ACallInfo implements CallInfo {
 	String callee;
 	List<String> callerParameterTypes;
 	STType calledSTType;
-	
+	String callingType;;
 	List<DetailAST> actuals;
 	
 	String[] normalizedCall;
 	STMethod callingMethod;
 	Set<STMethod> matchingCalledMethods;
+	boolean hasUnkownCalledType = false;
 	
 	
 //	public ACallInfo(String caller, String calledType,
@@ -29,19 +32,24 @@ public class ACallInfo implements CallInfo {
 //		this.calledType = calledType;
 //		this.calleee = calleee;
 //	}
-	public ACallInfo(DetailAST anAST, String caller, List<String> aCallerParameterTypes, String calledType, String aCallee,
-			List<DetailAST> actuals, String[] notmalizedCall, String aCalledCastType) {
+	public ACallInfo(DetailAST anAST, String aCallingType, String caller, List<String> aCallerParameterTypes, String calledType, String aCallee,
+			List<DetailAST> actuals, String[] aNormalizedCall, String aCalledCastType) {
 		super();
 		ast = anAST;
 		this.caller = caller;
 		this.calledType = calledType;
 		this.callee = aCallee;
 		this.actuals = actuals;
-		this.normalizedCall = notmalizedCall;
+		this.normalizedCall = aNormalizedCall;
 		callerParameterTypes = aCallerParameterTypes;
 		calledCastType = aCalledCastType;
+		callingType = aCallingType;
+		if (calledType.equals("super") || calledType.equals(callingType)) {
+			hasUnkownCalledType = true;
+		}
 		
 	}
+	
 	@Override
 	public void setCallingMethod (STMethod anSTMethod) {
 		callingMethod = anSTMethod;
@@ -72,6 +80,8 @@ public class ACallInfo implements CallInfo {
 	@Override
 	public void setCalledSTType(STType newVal) {
 		calledSTType = newVal; 
+		hasUnkownCalledType = false;
+
 	}
 	@Override
 	public String getCallee() {
@@ -95,21 +105,39 @@ public class ACallInfo implements CallInfo {
 		}
 		return calledSTType;
 	}
-	@Override
+//	@Override
+//	public Set<STMethod> getMatchingCalledMethods() {
+//		if (matchingCalledMethods == null) {
+//			matchingCalledMethods = new HashSet();
+//			STType aCalledType = getCalledSTType();
+//			if (aCalledType == null)
+//				return null;
+//			for (STMethod anSTMethod:aCalledType.getDeclaredMethods()) {
+//				if (anSTMethod.getName().equals(callee) &&
+//						anSTMethod.getParameterTypes().length == actuals.size()) { // at some point do overload resolution?
+//					matchingCalledMethods.add(anSTMethod);
+////					anSTMethod.addCaller(callingMethod);
+////					break;
+//				}
+//			}
+//		}
+//		return matchingCalledMethods;
+//	}
 	public Set<STMethod> getMatchingCalledMethods() {
 		if (matchingCalledMethods == null) {
-			matchingCalledMethods = new HashSet();
-			STType aCalledType = getCalledSTType();
-			if (aCalledType == null)
-				return null;
-			for (STMethod anSTMethod:aCalledType.getDeclaredMethods()) {
-				if (anSTMethod.getName().equals(callee) &&
-						anSTMethod.getParameterTypes().length == actuals.size()) { // at some point do overload resolution?
-					matchingCalledMethods.add(anSTMethod);
-//					anSTMethod.addCaller(callingMethod);
-//					break;
-				}
-			}
+			matchingCalledMethods = ComprehensiveVisitCheck.getMatchingCalledMethods( getCalledSTType(), this);
+//			matchingCalledMethods = new HashSet();
+//			STType aCalledType = getCalledSTType();
+//			if (aCalledType == null)
+//				return null;
+//			for (STMethod anSTMethod:aCalledType.getDeclaredMethods()) {
+//				if (anSTMethod.getName().equals(callee) &&
+//						anSTMethod.getParameterTypes().length == actuals.size()) { // at some point do overload resolution?
+//					matchingCalledMethods.add(anSTMethod);
+////					anSTMethod.addCaller(callingMethod);
+////					break;
+//				}
+//			}
 		}
 		return matchingCalledMethods;
 	}
@@ -119,5 +147,12 @@ public class ACallInfo implements CallInfo {
 	public DetailAST getAST() {
 		return ast;
 	}
-
+	@Override
+	public boolean hasUnknownCalledType() {
+		return hasUnkownCalledType;
+	}
+	@Override
+	public String getCallingType() {
+		return callingType;
+	}
 }

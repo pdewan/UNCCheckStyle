@@ -65,6 +65,9 @@ public class APropertyInfo implements PropertyInfo {
 	}
 	public void setGetter(STMethod getter) {
 		this.getter = getter;
+		if (getter == null) {
+			return;
+		}
 		List<String> anAccessedGlobals = getter.getGlobalsAccessed();
 		if (anAccessedGlobals == null || anAccessedGlobals.size() == 0 ) {
 			return;

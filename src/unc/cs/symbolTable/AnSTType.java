@@ -891,18 +891,26 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		}
 		for (CallInfo aCallInfo : aCallInfos) {
 			STType aCalledType = aCallInfo.getCalledSTType();
-			if (aCalledType != anSTType)
-				continue;
+			if (!aCallInfo.hasUnknownCalledType()) {
+				return;
+			}
+//			if (aCalledType != anSTType && !"super".equals(aCallInfo.getCalledType()))
+//				continue;
 
 			String aCallee = aCallInfo.getCallee();
-			String aCalledSuperType = getDefiningSuperType(anSTType, aCallee);
-			if (aCalledType.getName().equals(aCalledSuperType)) {
-				continue;
+			STType aCalledSuperType = AnSTMethod.getDeclaringISAClass(anSTType, aCallInfo);
+			if (aCalledSuperType != null) {
+				aCallInfo.setCalledSTType(aCalledSuperType);
+				aCallInfo.setCalledType(aCalledSuperType.getName());
 			}
-			aCallInfo.setCalledType(aCalledSuperType);
-
-			STType aCalledSTSuperType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledSuperType);
-			aCallInfo.setCalledSTType(aCalledSTSuperType);
+//			String aCalledSuperType = getDefiningSuperType(anSTType, aCallee);
+//			if (aCalledType.getName().equals(aCalledSuperType)) {
+//				continue;
+//			}
+//			aCallInfo.setCalledType(aCalledSuperType);
+//
+//			STType aCalledSTSuperType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledSuperType);
+//			aCallInfo.setCalledSTType(aCalledSTSuperType);
 		}
 
 	}

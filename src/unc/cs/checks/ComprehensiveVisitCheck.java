@@ -80,8 +80,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected List<String> globalsAccessedByCurrentMethod = new ArrayList();
 	protected List<String> globalsAssignedByCurrentMethod = new ArrayList();
 	
-	protected List<String> unknownAccessedByCurrentMethod = new ArrayList();
-	protected List<String> unknownAssignedByCurrentMethod = new ArrayList();
+	protected List<String> unknownVariablesAccessedByCurrentMethod = new ArrayList();
+	protected List<String> unknownVariablesAssignedByCurrentMethod = new ArrayList();
+//	protected List<String> unknownMethodsCalledByCurrentMethod = new ArrayList();
+
 	
 	protected List<STVariable> parametersAssignedByCurrentMethod = new ArrayList();
 	protected List<STVariable> localsAssignedByCurrentMethod = new ArrayList();
@@ -926,8 +928,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		methodsCalledByCurrentMethod.clear();
 		globalsAccessedByCurrentMethod.clear();
 		globalsAssignedByCurrentMethod.clear();
-		unknownAccessedByCurrentMethod.clear();
-		unknownAssignedByCurrentMethod.clear();
+		unknownVariablesAccessedByCurrentMethod.clear();
+		unknownVariablesAssignedByCurrentMethod.clear();
+//		unknownMethodsCalledByCurrentMethod.clear();
 		localsAssignedByCurrentMethod.clear();
 		parametersAssignedByCurrentMethod.clear();
 		currentMethodAssignsToGlobalVariable = false;
@@ -1351,13 +1354,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		addToScope(paramOrVarDef, typeScope, VariableKind.GLOBAL);
 	}
 
-	public Boolean isGlobal(String aName) {
+	public Boolean isGlobalDeclaredVariable(String aName) {
 		for (STNameable aGlobal : globalVariables) {
 			if (aGlobal.getName().equals(aName))
 				return true;
 		}
 		return false;
 	}
+
 	
 	public STVariable getLocalVariable(String aName) {
 		for (STVariable aVariable : localSTVariables) {
@@ -1588,8 +1592,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeOrVariableName(aNormalizedLongName);
-		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(
-				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]), aCallee,
+		String aNormalizedLongTypeName = toLongTypeName(aNormalizedParts[0]);
+		CallInfo result = new ACallInfo(ast, fullTypeName, currentMethodName, new ArrayList(
+//				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]), aCallee,
+				currentMethodParameterTypes), aNormalizedLongTypeName, aCallee,
+
 				aCallParameters, aNormalizedParts, aCastType);
 		if (aLeftMostMethodTargetAST != null) {
 			// String aTargetName;
@@ -1602,7 +1609,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			// }
 			// // String aTargetName = aLeftMostMethodTargetAST.getText();
 
-			if (isGlobal(aTargetName)) {
+			if (isGlobalDeclaredVariable(aTargetName)) {
 				List<CallInfo> aVariableCalls = getVariableCalls(aTargetName);
 				// CallInfo aCall = new ACallInfo(
 				// currentMethodName, aNormalizedParts[0], aNormalizedParts[1],
@@ -1659,7 +1666,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			aNormalizedParts = new String[] { shortMethodName, shortMethodName };
 		}
 		// need to worry about cast at some point I assume
-		CallInfo result = new ACallInfo(ast, currentMethodName, new ArrayList(
+		CallInfo result = new ACallInfo(ast, fullTypeName, currentMethodName, new ArrayList(
 				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]),
 				aNormalizedParts[1], aCallParameters, aNormalizedParts, null);
 
@@ -1793,9 +1800,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //			}
 //			aRHSs.add(anIdentAST);
 //		}
-		boolean isGlobal = isGlobal(anIdentName);
+		boolean isGlobal = isGlobalDeclaredVariable(anIdentName);
 		if (!isGlobal) {
-			unknownAccessedByCurrentMethod.add(aFullIdentName);
+			unknownVariablesAccessedByCurrentMethod.add(aFullIdentName);
 		} else
 		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
 		globalsAccessedByCurrentMethod.add(anIdentName);
@@ -1816,7 +1823,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			aLHSs.add(anIdentAST);
 			} else {
-				unknownAssignedByCurrentMethod.add(anIdentName);
+				unknownVariablesAssignedByCurrentMethod.add(anIdentName);
 			}
 
 		} else {
@@ -1990,8 +1997,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		methodsCalledByCurrentMethod.clear();
 		globalsAccessedByCurrentMethod.clear();
 		globalsAssignedByCurrentMethod.clear();
-		unknownAssignedByCurrentMethod.clear();
-		unknownAccessedByCurrentMethod.clear();
+		unknownVariablesAssignedByCurrentMethod.clear();
+		unknownVariablesAccessedByCurrentMethod.clear();
+//		unknownMethodsCalledByCurrentMethod.clear();
 //		globalIdentToLHS.clear();
 //		globalIdentToRHS.clear();
 		
@@ -3333,7 +3341,21 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public static String toTokenAccessString(Integer aTokenAccess) {
 		return accessTokenToAccessString.get(aTokenAccess);
 	}
-	
+	public static Set<STMethod> getMatchingCalledMethods(STType aCalledType, CallInfo aCallInfo) {
+		Set<STMethod> retVal = new HashSet();
+		if (aCalledType == null)
+				return null;
+			for (STMethod anSTMethod:aCalledType.getDeclaredMethods()) {
+				if (anSTMethod.getName().equals(aCallInfo.getCallee()) &&
+						anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) { // at some point do overload resolution?
+					retVal.add(anSTMethod);
+//					anSTMethod.addCaller(callingMethod);
+//					break;
+				}
+			}
+		
+		return retVal;
+	}
 	
 	static {
 		accessTokenToAccessDegree.put(TokenTypes.LITERAL_PRIVATE, 0);

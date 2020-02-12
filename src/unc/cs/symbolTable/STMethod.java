@@ -56,5 +56,7 @@ public interface STMethod extends STNameable{
 	List<STType> getAsserts();
 	int getNumberOfAsserts();
 	void addFullNamesToUnknowns();
+	List<String> getUnknownAccessed();
+	List<String> getUnknownAssigned();
 
 }

@@ -1,6 +1,11 @@
 package test;
 
-public class TestSuperClass {
+import java.awt.Component;
+
+public class TestSuperClass extends Component{
 	static int superGlobal;
+	protected void superMethod() {
+		
+	}
 
 }

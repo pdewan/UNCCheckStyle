@@ -339,7 +339,13 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		}
 
 	}
-
+//	public static List isGlobalDeclaredMethod(STMethod[] anSTMethods, CallInfo aCallInfo) {
+//		for (STMethod aMethod : anSTMethods) {
+//			if (aMethod.getName().equals(aCallInfo.getCallee()))
+//				return true;
+//		}
+//		return false;
+//	}
 	protected void processPreviousMethodData() {
 		if (currentMethodName != null) {
 			String[] aParameterTypes = currentMethodParameterTypes
@@ -369,8 +375,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					new ArrayList(typesInstantiatedByCurrentMethod),
 					new ArrayList(globalsAccessedByCurrentMethod),
 					new ArrayList(globalsAssignedByCurrentMethod),
-					new ArrayList(unknownAccessedByCurrentMethod),
-					new ArrayList(unknownAssignedByCurrentMethod),
+					new ArrayList(unknownVariablesAccessedByCurrentMethod),
+					new ArrayList(unknownVariablesAssignedByCurrentMethod),
 					new ArrayList(localSTVariables),
 					new ArrayList(parameterSTVariables),
 					new ArrayList(localsAssignedByCurrentMethod),

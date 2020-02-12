@@ -230,6 +230,16 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public List<String> getUnknownAccessed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<String> getUnknownAssigned() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 
 }

@@ -979,7 +979,7 @@ public void maybeVisitMethodTags(DetailAST ast) {
 private Map<String, String> importShortToLongName = new HashMap();
 protected String toLongTypeName (String aShortOrLongName) {
 //	String retVal = aShortName;
-	if (aShortOrLongName.contains(".")) {
+	if (aShortOrLongName.contains(".") || aShortOrLongName.equals("super") ) {
 		return aShortOrLongName;
 	}
 	String aPossibleLongName = importShortToLongName.get(aShortOrLongName);

@@ -149,6 +149,7 @@ public class PostProcessingMain {
 		processTypeSuperTypes(anSTType);
 		processTypeMethodCalls(anSTType);
 		processDeclaredMethods(anSTType);
+		processGlobalVariables(anSTType);
 		
 
 	}
@@ -255,6 +256,26 @@ public class PostProcessingMain {
 			String aNormalizedReturnType = TagBasedCheck.toNormalizedType(aReturnType);
 			
 			System.out.println("Types:" + Arrays.toString(aNormalizedTypes) + " return:" +aNormalizedReturnType);
+			
+		}
+	}
+	public static void processGlobalVariables(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
+		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+		for (STMethod aMethod:aMethods) {
+			
+			List<String> anUnknownsAccessed = aMethod.getUnknownAccessed();
+			List<String> anUnknownAssigned = aMethod.getUnknownAssigned();
+			if (anUnknownsAccessed != null) {
+			for (String anUnknown:anUnknownsAccessed) {
+				if (anUnknown.contains(".")) {
+					System.out.println ("type:" + anSTType.getName() + " method " + aMethod.getName() + " anKnown " + anUnknown);
+				}
+			}
+			}
+			
 			
 		}
 	}

@@ -8,6 +8,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 public interface CallInfo {
 
 	public abstract String getCaller();
+	boolean hasUnknownCalledType();
 
 	public abstract String getCalledType();
 
@@ -33,5 +34,6 @@ public interface CallInfo {
 	void setCalledSTType(STType newVal);
 
 	void setCalledType(String newVal);
+	String getCallingType();
 
 }

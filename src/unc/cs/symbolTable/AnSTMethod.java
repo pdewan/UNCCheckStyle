@@ -175,12 +175,51 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	public CallInfo[] getMethodsCalled() {
 		return methodsCalled;
 	}
+	
+	public static STType getDeclaringISAClass(STNameable aCurrentClassName, CallInfo aCallInfo) {
+		if (aCurrentClassName == null) {
+			return null;
+		}
+		STType aCurrentClass = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCurrentClassName.getName());
+
+		Set<STMethod> aMethods = ComprehensiveVisitCheck.getMatchingCalledMethods(aCurrentClass, aCallInfo);
+		if (aMethods.size() > 0) {
+			return aCurrentClass;
+		}
+		STNameable aSuperClassName = aCurrentClass.getSuperClass();
+		return getDeclaringISAClass(aSuperClassName, aCallInfo);
+		
+	}
+	
+	public void correctCallers () {
+		for (CallInfo aCall : methodsCalled) {
+			if (!aCall.hasUnknownCalledType()) {
+				continue;
+			}
+			STNameable aCalledType = aCall.getCalledSTType();
+			if (aCalledType == null || "super".equals(aCall.getCalledType())) {
+				String aCalledTypeName = aCall.getCallingType();
+				if (aCalledTypeName != null) {
+					STType aCallingType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aCalledTypeName);
+						aCalledType = aCallingType;
+					}
+				
+			}
+			STType anSTType = getDeclaringISAClass(aCalledType, aCall);
+			if (anSTType == null) {
+				continue;
+			}
+			aCall.setCalledSTType(anSTType);
+		}
+	}
 
 	@Override
 	public List<STMethod> getLocalMethodsCalled() {
+		correctCallers();
 		if (localMethodsCalled == null) {
 			List<STMethod> aList = new ArrayList();
 			for (CallInfo aCall : methodsCalled) {
+				
 				if (ComprehensiveVisitCheck.toShortTypeOrVariableName(aCall.getCalledType())
 						.equals(ComprehensiveVisitCheck.toShortTypeOrVariableName(getDeclaringClass()))) {
 					// STMethod anSTMethod = aCall.getMatchingCalledMethods();
@@ -205,6 +244,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	@Override
 	public List<STMethod> getAllMethodsCalled() {
+		correctCallers();
 		if (allMethodsCalled == null) {
 			List<STMethod> aList = new ArrayList();
 			for (CallInfo aCall : methodsCalled) {
@@ -455,12 +495,21 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	}
 	@Override
+	public List<String> getUnknownAccessed() {
+		return unknownAccessed;
+	}
+	@Override
+	public List<String> getUnknownAssigned() {
+		return unknownAssigned;
+	}
+
+	@Override
 	public void addFullNamesToUnknowns() {
 		for (int i = 0; i < unknownAccessed.size(); i++) {
 			String anUnknown = unknownAccessed.get(i);
 			String aShortName = anUnknown;
 			if (anUnknown.contains(".")) {
-				if (anUnknown.startsWith("super")) {
+				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
 					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
 				} else {
 					continue;
