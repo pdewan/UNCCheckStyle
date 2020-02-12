@@ -2702,7 +2702,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //		DetailAST anEnclosingTypeAST = getEnclosingTypeDeclaration(anAST);
 //		String  anEnclosingTypeName = getEnclosingShortTypeName(anEnclosingTypeAST);
 		if (anArgs[2] == null || anArgs[2].toString().isEmpty()) {
-			System.out.println("Empty name");
+			System.err.println("Empty name");
 		}
 //		if (anArgs[2].toString().contains("Bridge")) {
 //			System.out.println("Found Bridge");
