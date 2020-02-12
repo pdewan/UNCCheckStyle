@@ -70,15 +70,15 @@ public class TestSubClass extends TestSuperClass implements PropertyChangeListen
 //	public int getP() {
 //		return 0;
 //	}
-	public void setP(int newVal) {
-		superGlobal = 3;
-		TestSuperClass.superGlobal = 4;
-		super.superGlobal =3;
-		Object a = this.testSuperClass;
-		Object b = this.TOP_ALIGNMENT;
-
-//		protectedP = newVal;
-	}
+//	public void setP(int newVal) {
+//		superGlobal = 3;
+//		TestSuperClass.superGlobal = 4;
+//		super.superGlobal =3;
+//		Object a = this.testSuperClass;
+//		Object b = this.TOP_ALIGNMENT;
+//
+////		protectedP = newVal;
+//	}
 //	protected void subMethod() {
 //		super.superMethod();
 //		superMethod();
@@ -92,6 +92,11 @@ public class TestSubClass extends TestSuperClass implements PropertyChangeListen
 //	int getPureExpression() {
 //		return 0;
 //	}
+	protected void blockUsing() {
+		for (int i = 1; i < 3; i++) {
+			
+		}
+	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		// TODO Auto-generated method stub
