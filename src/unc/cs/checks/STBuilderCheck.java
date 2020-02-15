@@ -375,8 +375,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					new ArrayList(typesInstantiatedByCurrentMethod),
 					new ArrayList(globalsAccessedByCurrentMethod),
 					new ArrayList(globalsAssignedByCurrentMethod),
-					new ArrayList(unknownVariablesAccessedByCurrentMethod),
-					new ArrayList(unknownVariablesAssignedByCurrentMethod),
+//					new ArrayList(unknownVariablesAccessedByCurrentMethod),
+					new HashMap(unknownVariablesAccessedByCurrentMethod),
+//					new ArrayList(unknownVariablesAssignedByCurrentMethod),
+					new HashMap(unknownVariablesAssignedByCurrentMethod),
+
 					new ArrayList(localSTVariables),
 					new ArrayList(parameterSTVariables),
 					new ArrayList(localsAssignedByCurrentMethod),

@@ -70,7 +70,7 @@ public class PostProcessingMain {
 			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 			for (STMethod aMethod:aMethods) {
 				aMethod.getLocalMethodsCalled(); // side effect of adding caller
-				aMethod.addFullNamesToUnknowns();
+				aMethod.refreshUnknowns();
 //				aMethod.getAllMethodsCalled();
 			}
 			
@@ -266,8 +266,8 @@ public class PostProcessingMain {
 		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 		for (STMethod aMethod:aMethods) {
 			
-			List<String> anUnknownsAccessed = aMethod.getUnknownAccessed();
-			List<String> anUnknownAssigned = aMethod.getUnknownAssigned();
+			Set<String> anUnknownsAccessed = aMethod.getUnknownAccessed().keySet();
+			Set<String> anUnknownAssigned = aMethod.getUnknownAssigned().keySet();
 			if (anUnknownsAccessed != null) {
 			for (String anUnknown:anUnknownsAccessed) {
 				if (anUnknown.contains(".")) {

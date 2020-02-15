@@ -12,6 +12,8 @@ import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
+import unc.cs.checks.ComprehensiveVisitCheck;
+
 public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
 	STNameable[] computedTags, tags, configuredTags;
@@ -53,8 +55,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		}
 		Field[] aFields = aClass.getFields();
 		declaredFields = new STNameable[aFields.length];
+		globalSTVariables = new ArrayList(aFields.length);
 		for (int i = 0; i < declaredFields.length; i++) {
 			declaredFields[i] = new AnSTNameable(aFields[i].getName());
+			globalSTVariables.add(new AnSTVariable(this, null, null, aFields[i].getName(), this.getName(), null, VariableKind.GLOBAL, ComprehensiveVisitCheck.getAccessToken(aFields[i]), null));
 		}
 		Class aSuperClass = aClass.getSuperclass();
 		if (aSuperClass != null)
@@ -348,11 +352,11 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 
-	@Override
-	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	@Override
 	public STMethod getGetter(String aPropertyName) {
 		// TODO Auto-generated method stub

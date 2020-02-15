@@ -1032,12 +1032,13 @@ public static String toLongVariableName (STType aType, String aShortOrLongName) 
 	if (aTypes == null) {
 		return aShortOrLongName;
 	}
-	if (aTypes == null)
+//	if (aTypes != null) {
 	for (STNameable aSuperType:aTypes) {
 		String retVal = toLongVariableName(aSuperType, aShortOrLongName) ;
 		if (retVal != null)
 			return retVal;
 	}
+//	}
 	return aShortOrLongName;	
 	
 }
@@ -1111,6 +1112,26 @@ public static String toShortTypeOrVariableName (String aTypeName) {
 		aShortTypeName = aTypeName.substring(aDotIndex + 1);
 	return aShortTypeName;
 }
+
+public static STType fromVariableToSTType(String aVariableName) {
+	String aTypeName = fromVariableToTypeName(aVariableName);
+	if (aTypeName == null) {
+		return null;
+	}
+	STType retVal = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aTypeName);
+	return retVal;
+}
+
+public static String fromVariableToTypeName(String aVariableName) {
+	if (aVariableName == null)
+		return null;
+	int aDotIndex = aVariableName.lastIndexOf(".");
+	String aRetVal = aVariableName;
+	if (aDotIndex != -1)
+		aRetVal = aRetVal.substring(0, aDotIndex);
+	return aRetVal;
+}
+
 /**
  * Related is isExternalClass,w hich takes short name
  *

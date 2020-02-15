@@ -3,6 +3,7 @@ package unc.cs.symbolTable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
@@ -40,9 +41,17 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	protected List<STNameable> typesInstantiated;
 	protected List<String> globalsAssigned;
 	protected List<String> globalsAccessed;
-	protected List<String> unknownAccessed;
+	protected Map<String, Set<DetailAST>> unknownAccessed;
 
-	protected List<String> unknownAssigned;
+//	protected List<String> unknownAccessed;
+
+//	protected List<String> unknownAssigned;
+	protected Map<String, Set<DetailAST>> unknownAssigned;
+	Set<String> unknownsWithShortNames = new HashSet();
+//	Set<String> unknownsWithLongNamesWithUnknownTypes = new HashSet();
+	Set<String> unknownsWithLongNamesWithUnknownSTTypes = new HashSet();
+
+
 
 	protected List<STVariable> localSTVariables;
 
@@ -61,13 +70,18 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	static List<STNameable> anEmptyList = new ArrayList();
 
+
 	public AnSTMethod(DetailAST ast, String name, String declaringClass, String[] aParameterNames,
 			String[] parameterTypes, boolean isPublic, boolean anIsInstance, boolean anIsConstructor,
 			boolean anIsSychronized, String returnType, boolean anIsVisible, STNameable[] aTags,
 			STNameable[] aComputedTags, boolean isAssignsToGlobal,
 			// String[][] aMethodsCalled
 			CallInfo[] aMethodsCalled, List<STNameable> aTypesInstantiated, List<String> aGlobalsAccessed,
-			List<String> aGlobalsAssigned, List<String> anUnknownAccessed, List<String> anUnknownAssigned,
+			List<String> aGlobalsAssigned, 
+//			List<String> anUnknownAccessed, 
+//			List<String> anUnknownAssigned,
+			Map<String, Set<DetailAST>> anUnknownAccessed, 
+			Map<String, Set<DetailAST>> anUnknownAssigned,
 			List<STVariable> aLocalVariables, List<STVariable> aParameters, List<STVariable> aLocalsAssigned,
 			List<STVariable> aParametersAssigned,
 
@@ -107,9 +121,18 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		accessToken = anAccessToken != null ? anAccessToken : ComprehensiveVisitCheck.DEFAULT_ACCESS_TOKEN;
 		numberOfTernaryConditionals = aNumberOfTernaryOperators;
 		asserts = anAsserts;
+		
+		initUnkowns(unknownAccessed);
+		initUnkowns(unknownAssigned);
+//		refreshUnknowns();
+
+		
+//		refreshUnknowns(unknownAccessed);
+//		refreshUnknowns(unknownAssigned); // will duplicate work done by accessed
 		introspect();
 
 	}
+	
 
 	@Override
 	public void setDeclaringSTType(STType declaringSTType) {
@@ -497,54 +520,311 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	}
 	@Override
-	public List<String> getUnknownAccessed() {
+	public Map<String, Set<DetailAST>> getUnknownAccessed() {
 		return unknownAccessed;
 	}
 	@Override
-	public List<String> getUnknownAssigned() {
+	public Map<String, Set<DetailAST>> getUnknownAssigned() {
 		return unknownAssigned;
 	}
-
+	
+	public static void replaceKey (Map aMap, Object anOriginalKey, Object aNewKey) {
+		Object aValue = aMap.get(anOriginalKey);
+		if (aValue == null) {
+			return;
+		}
+		aMap.remove(anOriginalKey);
+		aMap.put(aNewKey, aValue);
+	}
 	@Override
-	public void addFullNamesToUnknowns() {
-		for (int i = 0; i < unknownAccessed.size(); i++) {
-			String anUnknown = unknownAccessed.get(i);
+	public void refreshUnknowns() {
+		refreshShortNames();
+		refreshLongNames();
+	}
+	void initUnkowns(Map<String, Set<DetailAST>> anUnknowns) {
+		if (anUnknowns == null || anUnknowns.isEmpty()) {
+			return;
+		}
+		Set<String> aKeysCopy = new HashSet( anUnknowns.keySet());
+		for (String anUnknown : aKeysCopy) {
+			
 			String aShortName = anUnknown;
-			if (anUnknown.contains(".")) {
-				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
-					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
-				} else {
-					continue;
-				}
+			 
+			if (anUnknown.startsWith("super.") || anUnknown.startsWith("this.")) {
+				aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+				replaceKey(anUnknowns, anUnknown, aShortName); // first replacement
 			}
+			if (aShortName.contains(".")) {
+				unknownsWithLongNamesWithUnknownSTTypes.add(anUnknown);
+			} else {
+			
+				unknownsWithShortNames.add(aShortName);	
+			}
+			
+			
+		}
+	}
+
+
+	void refreshShortNames() {
+	
+		if (unknownsWithShortNames == null || unknownsWithShortNames.isEmpty() ) {
+			return;
+		}
+		Set<String> aCopy = new HashSet (unknownsWithShortNames);
+		for (String aShortName: aCopy) {
 			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
 			if (aFullName != aShortName) {
-				unknownAccessed.set(i, aFullName);
-				if (unknownAssigned != null) {
-					int anAssignedIndex = unknownAssigned.indexOf(anUnknown);
-					if (anAssignedIndex >= 0) {
-						unknownAssigned.set(anAssignedIndex, aFullName);
+					replaceKey(unknownAccessed, aShortName, aFullName); 
+					replaceKey(unknownAssigned, aShortName, aFullName); 
+					unknownsWithShortNames.remove(aShortName);
+					unknownsWithLongNamesWithUnknownSTTypes.add(aFullName);
+			}
+		}
+	}
+
+	void refreshLongNames() {
+		if (unknownsWithLongNamesWithUnknownSTTypes == null || unknownsWithLongNamesWithUnknownSTTypes.isEmpty()) {
+			return;
+		}
+		Set<String> aCopy = new HashSet(unknownsWithLongNamesWithUnknownSTTypes);
+		for (String aLongName : aCopy) {
+
+			STType anSTType = TagBasedCheck.fromVariableToSTType(aLongName);
+			if (anSTType != null) {
+				STVariable anSTVariable = anSTType.getDeclaredGlobalSTVariable(aLongName);
+				if (anSTVariable != null) {
+					unknownsWithLongNamesWithUnknownSTTypes.remove(aLongName);
+					Set<DetailAST> aReferences = unknownAccessed.get(aLongName);
+					Set<DetailAST> anAssignments = unknownAssigned.get(aLongName);
+					if (aReferences != null) {
+						anSTVariable.getReferences().addAll(aReferences);
 					}
-					anAssignedIndex = unknownAssigned.indexOf(aShortName);
-					if (anAssignedIndex >= 0) {
-						unknownAssigned.set(anAssignedIndex, aFullName);
+					if (anAssignments != null) {
+						anSTVariable.getAssignments().addAll(aReferences);
 					}
+
 				}
 			}
 		}
-
-		for (int i = 0; i < unknownAssigned.size(); i++) {
-			String anUnknown = unknownAssigned.get(i);
-			if (anUnknown.contains(".")) {
-				continue;
-			}
-			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), anUnknown);
-			if (aFullName != anUnknown) {
-				unknownAssigned.set(i, aFullName);
-
-			}
-		}
-
 	}
+	
+//	@Override
+//	public void addFullNamesToUnknowns() {
+//		for (String anUnknown:unknownAccessed.keySet()) {
+////			String anUnknown = unknownAccessed.get(i);
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != aShortName) {
+//				replaceKey(unknownAccessed, anUnknown, aFullName);
+////				Set<DetailAST> anAccesses = unknownAccessed.get(anUnknown);
+//////				unknownAccessed.set(i, aFullName);
+////				unknownAccessed.remove(anUnknown);
+////				unknownAccessed.put(aFullName, anAccesses);
+//				if (unknownAssigned != null) {
+//					replaceKey(unknownAssigned, anUnknown, aFullName);
+////					Set<DetailAST> anAssignments = unknownAssigned.get(anUnknown);
+////					if (anAssignments != null) {
+////						unknownAssigned.remove(anUnknown);
+////						unknownAssigned.put(aFullName, anAssignments);	
+////						
+////
+////
+////					}
+//				
+//					
+//				}
+//			}
+//		}
+//
+//		for (String anUnknown:unknownAccessed.keySet()) {
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != anUnknown) {
+//				replaceKey(unknownAssigned, anUnknown, aFullName);
+////
+////				Set<DetailAST> anAssignments = unknownAssigned.get(anUnknown);
+////				unknownAssigned.remove(anUnknown);
+////				unknownAssigned.put(aFullName, anAssignments);	
+//////				unknownAssigned.set(i, aFullName);
+//
+//			}
+//		}
+//
+//	}
+	
+	
+//	@Override
+//	public void addFullNamesToUnknowns() {
+//		for (String anUnknown:unknownAccessed.keySet()) {
+////			String anUnknown = unknownAccessed.get(i);
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != aShortName) {
+//				replaceKey(unknownAccessed, anUnknown, aFullName);
+////				Set<DetailAST> anAccesses = unknownAccessed.get(anUnknown);
+//////				unknownAccessed.set(i, aFullName);
+////				unknownAccessed.remove(anUnknown);
+////				unknownAccessed.put(aFullName, anAccesses);
+//				if (unknownAssigned != null) {
+//					replaceKey(unknownAssigned, anUnknown, aFullName);
+////					Set<DetailAST> anAssignments = unknownAssigned.get(anUnknown);
+////					if (anAssignments != null) {
+////						unknownAssigned.remove(anUnknown);
+////						unknownAssigned.put(aFullName, anAssignments);	
+////						
+////
+////
+////					}
+//				
+//					
+//				}
+//			}
+//		}
+//
+//		for (String anUnknown:unknownAccessed.keySet()) {
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != anUnknown) {
+//				replaceKey(unknownAssigned, anUnknown, aFullName);
+////
+////				Set<DetailAST> anAssignments = unknownAssigned.get(anUnknown);
+////				unknownAssigned.remove(anUnknown);
+////				unknownAssigned.put(aFullName, anAssignments);	
+//////				unknownAssigned.set(i, aFullName);
+//
+//			}
+//		}
+//
+//	}
+//	
+
+//	@Override
+//	public void addFullNamesToUnknowns() {
+//		for (String anUnknown:unknownAccessed.keySet()) {
+////			String anUnknown = unknownAccessed.get(i);
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != aShortName) {
+//				replaceKey(unknownAccessed, anUnknown, aFullName);
+////				Set<DetailAST> anAccesses = unknownAccessed.get(anUnknown);
+//////				unknownAccessed.set(i, aFullName);
+////				unknownAccessed.remove(anUnknown);
+////				unknownAccessed.put(aFullName, anAccesses);
+//				if (unknownAssigned != null) {
+//					replaceKey(unknownAssigned, anUnknown, aFullName);
+////					Set<DetailAST> anAssignments = unknownAssigned.get(anUnknown);
+////					if (anAssignments != null) {
+////						unknownAssigned.remove(anUnknown);
+////						unknownAssigned.put(aFullName, anAssignments);	
+////						
+////
+////
+////					}
+//				
+//					
+//				}
+//			}
+//		}
+//
+//		for (String anUnknown:unknownAssigned.keySet()) {
+////			String anUnknown = unknownAssigned.get(i);
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != anUnknown) {
+//				replaceKey(unknownAssigned, anUnknown, aFullName);
+////
+////				Set<DetailAST> anAssignments = unknownAssigned.get(anUnknown);
+////				unknownAssigned.remove(anUnknown);
+////				unknownAssigned.put(aFullName, anAssignments);	
+//////				unknownAssigned.set(i, aFullName);
+//
+//			}
+//		}
+//
+//	}
+//	@Override
+//	public void addFullNamesToUnknowns() {
+//		for (int i = 0; i < unknownAccessed.size(); i++) {
+//			String anUnknown = unknownAccessed.get(i);
+//			String aShortName = anUnknown;
+//			if (anUnknown.contains(".")) {
+//				if (anUnknown.startsWith("super") || anUnknown.startsWith("this") ) {
+//					aShortName = ComprehensiveVisitCheck.toShortTypeOrVariableName(anUnknown);
+//				} else {
+//					continue;
+//				}
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), aShortName);
+//			if (aFullName != aShortName) {
+//				unknownAccessed.set(i, aFullName);
+//				if (unknownAssigned != null) {
+//					int anAssignedIndex = unknownAssigned.indexOf(anUnknown);
+//					if (anAssignedIndex >= 0) {
+//						unknownAssigned.set(anAssignedIndex, aFullName);
+//					}
+//					anAssignedIndex = unknownAssigned.indexOf(aShortName);
+//					if (anAssignedIndex >= 0) {
+//						unknownAssigned.set(anAssignedIndex, aFullName);
+//					}
+//				}
+//			}
+//		}
+//
+//		for (int i = 0; i < unknownAssigned.size(); i++) {
+//			String anUnknown = unknownAssigned.get(i);
+//			if (anUnknown.contains(".")) {
+//				continue;
+//			}
+//			String aFullName = TagBasedCheck.toLongVariableName(getDeclaringSTType(), anUnknown);
+//			if (aFullName != anUnknown) {
+//				unknownAssigned.set(i, aFullName);
+//
+//			}
+//		}
+//
+//	}
 
 }

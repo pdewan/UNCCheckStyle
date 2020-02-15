@@ -1,6 +1,8 @@
 package unc.cs.symbolTable;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -11,6 +13,8 @@ public class AnSTNameable implements STNameable {
 	DetailAST ast;
 	String name;
 	Object data;
+//	int numReferences;
+	Set<DetailAST> references = new HashSet<>();
 //	String[] components;
 	public AnSTNameable( String name) {
 		super();
@@ -51,6 +55,21 @@ public class AnSTNameable implements STNameable {
 	public String toString() {
 		return name;
 	}
+	@Override
+	public int getNumReferences() {
+		return references.size();
+	}
+	@Override
+	public Set<DetailAST> getReferences() {
+		return references;
+	}
+//	@Override
+//	public void setNumReferences(int numReferences) {
+//		this.numReferences = numReferences;
+//	}
+//	public void incrementNumReferences() {
+//		numReferences++;
+//	}
 //	@Override
 //	public String[] getComponents() {
 //		return components;

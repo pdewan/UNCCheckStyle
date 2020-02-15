@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
@@ -225,20 +227,25 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		return 0;
 	}
+//	@Override
+//	public void addFullNamesToUnknowns() {
+//		// TODO Auto-generated method stub
+//		
+//	}
 	@Override
-	public void addFullNamesToUnknowns() {
+	public Map<String, Set<DetailAST>> getUnknownAccessed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Map<String, Set<DetailAST>> getUnknownAssigned() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public void refreshUnknowns() {
 		// TODO Auto-generated method stub
 		
-	}
-	@Override
-	public List<String> getUnknownAccessed() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public List<String> getUnknownAssigned() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 

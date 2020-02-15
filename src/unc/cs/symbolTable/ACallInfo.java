@@ -80,6 +80,7 @@ public class ACallInfo implements CallInfo {
 	@Override
 	public void setCalledSTType(STType newVal) {
 		calledSTType = newVal; 
+		calledType = calledSTType.getName();
 		hasUnkownCalledType = false;
 
 	}

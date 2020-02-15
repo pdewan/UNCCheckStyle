@@ -1,6 +1,7 @@
 package unc.cs.checks;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -80,8 +81,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected List<String> globalsAccessedByCurrentMethod = new ArrayList();
 	protected List<String> globalsAssignedByCurrentMethod = new ArrayList();
 	
-	protected List<String> unknownVariablesAccessedByCurrentMethod = new ArrayList();
-	protected List<String> unknownVariablesAssignedByCurrentMethod = new ArrayList();
+//	protected List<String> unknownVariablesAccessedByCurrentMethod = new ArrayList();
+	protected Map<String, Set<DetailAST>> unknownVariablesAccessedByCurrentMethod = new HashMap();
+	protected Map<String, Set<DetailAST>> unknownVariablesAssignedByCurrentMethod = new HashMap();
+
+
+//	protected List<String> unknownVariablesAssignedByCurrentMethod = new ArrayList();
 //	protected List<String> unknownMethodsCalledByCurrentMethod = new ArrayList();
 
 	
@@ -1355,11 +1360,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public Boolean isGlobalDeclaredVariable(String aName) {
+//		for (STNameable aGlobal : globalVariables) {
+//			if (aGlobal.getName().equals(aName))
+//				return true;
+//		}
+//		return false;
+		return getGlobalDeclaredVariable(aName) != null;
+	}
+	
+	public STNameable getGlobalDeclaredVariable(String aName) {
 		for (STNameable aGlobal : globalVariables) {
 			if (aGlobal.getName().equals(aName))
-				return true;
+				return aGlobal;
 		}
-		return false;
+		return null;
 	}
 
 	
@@ -1742,6 +1756,22 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
     	return toFullIdentAST(aParent);
     	
     }
+    protected void addToUnknownsAccessed(String aFullName, DetailAST anAST) {
+    	Set<DetailAST> aReferences = unknownVariablesAccessedByCurrentMethod.get(aFullName);
+    	if (aReferences == null) {
+    		aReferences = new HashSet();
+    		unknownVariablesAccessedByCurrentMethod.put(aFullName, aReferences);
+    	}
+    	aReferences.add(anAST);
+    }
+    protected void addToUnknownsAssigned(String aFullName, DetailAST anAST) {
+    	Set<DetailAST> aReferences = unknownVariablesAssignedByCurrentMethod.get(aFullName);
+    	if (aReferences == null) {
+    		aReferences = new HashSet();
+    		unknownVariablesAccessedByCurrentMethod.put(aFullName, aReferences);
+    	}
+    	aReferences.add(anAST);
+    }
 //    protected DetailAST lastFullIdentAST = null; /// hack hack !!!
 	protected void visitIdent(DetailAST anIdentAST) {
 		// if (!checkIncludeExcludeTagsOfCurrentType())
@@ -1800,9 +1830,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //			}
 //			aRHSs.add(anIdentAST);
 //		}
-		boolean isGlobal = isGlobalDeclaredVariable(anIdentName);
+		STNameable aGlobal = getGlobalDeclaredVariable(anIdentName);
+		boolean isGlobal = aGlobal != null;
+//		boolean isGlobal = isGlobalDeclaredVariable(anIdentName);
 		if (!isGlobal) {
-			unknownVariablesAccessedByCurrentMethod.add(aFullIdentName);
+//			unknownVariablesAccessedByCurrentMethod.add(aFullIdentName);
+			addToUnknownsAccessed(aFullIdentName, anIdentAST);
 		} else
 		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
 		globalsAccessedByCurrentMethod.add(anIdentName);
@@ -1823,7 +1856,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			aLHSs.add(anIdentAST);
 			} else {
-				unknownVariablesAssignedByCurrentMethod.add(anIdentName);
+//				unknownVariablesAssignedByCurrentMethod.add(anIdentName);
+				addToUnknownsAssigned(aFullIdentName, anIdentAST);
 			}
 
 		} else {
@@ -3178,8 +3212,32 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		return methodOrVariableDef.branchContains(TokenTypes.LITERAL_PUBLIC);
 
 	}
+	public static boolean isPublic(Field aField) {
+		return Modifier.isPublic(aField.getModifiers());
+
+	}
+	public static boolean isProtected(Field aField) {
+		return Modifier.isPublic(aField.getModifiers());
+
+	}
+	public static boolean isPrivate(Field aField) {
+		return Modifier.isPrivate(aField.getModifiers());
+
+	}
 	
-	
+	public static Integer getAccessToken(Field aField) {
+		int aModifiers = aField.getModifiers();
+		if (Modifier.isPublic(aModifiers)) {
+			return TokenTypes.LITERAL_PUBLIC;
+		}
+		if (Modifier.isProtected(aModifiers)) {
+			return TokenTypes.LITERAL_PROTECTED;
+		}
+		if (Modifier.isPrivate(aModifiers)) {
+			return TokenTypes.LITERAL_PRIVATE;
+		}
+		return null;
+	}
 	
 	public static Integer getAccessToken(Method aMethod) {
 		int aModifiers = aMethod.getModifiers();

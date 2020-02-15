@@ -24,7 +24,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
 
-	protected List<STVariable>	globalSTVariables;
+//	protected List<STVariable>	globalSTVariables;
 	protected Map<String, List<CallInfo>> globalVariableToCall ;
 //	protected Map<String, String> globalVariableToType ;
 //	protected Map<String, DetailAST> globalVariableToRHS ;
@@ -820,15 +820,17 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	public List<STVariable> getDeclaredSTGlobals() {
 		return globalSTVariables;
 	}
-	@Override
-	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
-//		STVariable result = null;
-		for (STVariable anSTVariable:globalSTVariables) {
-			if (anSTVariable.getName().equals(aGlobal))
-				return anSTVariable;
-		}
-		return null;
-	}
+//	@Override
+//	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
+////		STVariable result = null;
+//		for (STVariable anSTVariable:globalSTVariables) {
+//			String aShortGlobalName = TagBasedCheck.toShortTypeOrVariableName(aGlobal);			 
+//			if (anSTVariable.getName().equals(aShortGlobalName)) {
+//				return anSTVariable;
+//			}
+//		}
+//		return null;
+//	}
 //	@Override
 //	public String getDeclaredGlobalVariableType(String aGlobal) {
 //		return globalVariableToType.get(aGlobal);

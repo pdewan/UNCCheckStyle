@@ -34,6 +34,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	protected STNameable[] declaredInterfaces;
 	protected STNameable[] interfaces;
 	protected STNameable[] declaredFields;
+	protected List<STVariable>	globalSTVariables;
+
 	protected String packageName;
 	// protected final boolean isInterface, isGeneric, isElaboration;
 	protected STNameable superClass;
@@ -1867,7 +1869,17 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		
 		return numberOfNonGettersAndSetters;
 	}
-
+	@Override
+	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
+//		STVariable result = null;
+		for (STVariable anSTVariable:globalSTVariables) {
+			String aShortGlobalName = TagBasedCheck.toShortTypeOrVariableName(aGlobal);			 
+			if (anSTVariable.getName().equals(aShortGlobalName)) {
+				return anSTVariable;
+			}
+		}
+		return null;
+	}
 	// @Override
 	// public boolean isParsedClass() {
 	// return true;

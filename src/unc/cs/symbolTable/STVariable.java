@@ -24,5 +24,9 @@ public interface STVariable extends STNameable {
 	void setGetterPropertyInfo(PropertyInfo getterPropertyInfo);
 	Set<STMethod> getMethodsAccessing();
 	Set<STMethod> getMethodsAssigning();
+	Set<DetailAST> getAssignments();
+
+//	int getNumReferences();
+//	void setNumReferences(int numReferences);
 	
 }

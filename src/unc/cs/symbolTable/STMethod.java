@@ -1,7 +1,10 @@
 package unc.cs.symbolTable;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public interface STMethod extends STNameable{
 	String PARAMETER_SEPARATOR = ";";
@@ -55,8 +58,10 @@ public interface STMethod extends STNameable{
 	int getNumberOfTernaryConditionals();
 	List<STType> getAsserts();
 	int getNumberOfAsserts();
-	void addFullNamesToUnknowns();
-	List<String> getUnknownAccessed();
-	List<String> getUnknownAssigned();
+//	void addFullNamesToUnknowns();
+	Map<String, Set<DetailAST>> getUnknownAccessed();
+	Map<String, Set<DetailAST>> getUnknownAssigned();
+	void refreshUnknowns();
+	
 
 }

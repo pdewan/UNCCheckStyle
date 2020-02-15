@@ -19,10 +19,12 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	Integer accessToken;
 	protected Set<STMethod> methodsAccessing = new HashSet() ;
 	protected Set<STMethod> methodsAssigning = new HashSet();
-	protected Set<STType> references;
-	protected Set<STType> assignments;
+	protected Set<STType> referenceTypes;
+	protected Set<DetailAST> assignments = new HashSet<>();
 	protected PropertyInfo setterPropertyInfo;
 	protected PropertyInfo getterPropertyInfo;
+
+//	protected int numReferences;
 
 
 
@@ -51,8 +53,11 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 		rhs = anRHS;
 		tags = aTags;
 		variableKind = aVariableKind;
-		isFinal = ComprehensiveVisitCheck.isFinal(ast);
+		if (ast != null) {
+			isFinal = ComprehensiveVisitCheck.isFinal(ast);
+		
 		isInstance = !ComprehensiveVisitCheck.isStatic(ast);
+		}
 		accessToken = anAccessToken;
 		
 	}
@@ -136,13 +141,13 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 		return methodsAssigning;
 	}
 
-	public Set<STType> getReferences() {
-		return references;
+	public Set<STType> getReferencingTypes() {
+		return referenceTypes;
 	}
 
-	public Set<STType> getAssignments() {
-		return assignments;
-	}
+//	public Set<STType> getAssignments() {
+//		return assignments;
+//	}
 	public void setMethodsAccessing(Set<STMethod> methodsAccessing) {
 		this.methodsAccessing = methodsAccessing;
 	}
@@ -151,13 +156,13 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 		this.methodsAssigning = methodsAssigning;
 	}
 
-	public void setReferences(Set<STType> references) {
-		this.references = references;
+	public void setReferenceTypes(Set<STType> references) {
+		this.referenceTypes = references;
 	}
 
-	public void setAssignments(Set<STType> assignments) {
-		this.assignments = assignments;
-	}
+//	public void setAssignments(Set<STType> assignments) {
+//		this.assignments = assignments;
+//	}
 
 	@Override
 	public PropertyInfo getSetterPropertyInfo() {
@@ -175,7 +180,22 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 	public void setGetterPropertyInfo(PropertyInfo getterPropertyInfo) {
 		this.getterPropertyInfo = getterPropertyInfo;
 	}
+//	@Override
+//	public int getNumReferences() {
+//		return numReferences;
+//	}
+//	@Override
+//	public void setNumReferences(int numReferences) {
+//		this.numReferences = numReferences;
+//	}
+//	public void incrementNumReferences() {
+//		numReferences++;
+//	}
 
+	@Override
+	public Set<DetailAST> getAssignments() {
+		return assignments;
+	}
 
 
 }
