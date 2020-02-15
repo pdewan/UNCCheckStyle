@@ -101,8 +101,14 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 
 	@Override
 	public STMethod[] getMethods() {
-		if (methods == null)
+		if (methods == null) {
 			methods = computeMethods();
+			if (methods != null) {
+				for (STMethod aMethod:methods) {
+					aMethod.refreshUnknowns();
+				}
+			}
+		}
 		return methods;
 //		List<STMethod> retVal = new ArrayList();
 //		addToList(retVal, getDeclaredMethods());
