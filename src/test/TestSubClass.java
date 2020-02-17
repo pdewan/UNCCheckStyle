@@ -5,7 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 public class TestSubClass extends TestSuperClass implements PropertyChangeListener{
-	TestSuperClass testSuperClass;
+//	TestSuperClass testSuperClass;
 //	PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 //	private String aPrivate;
 //	String aDefault;
@@ -70,15 +70,20 @@ public class TestSubClass extends TestSuperClass implements PropertyChangeListen
 //	public int getP() {
 //		return 0;
 //	}
-	public void setP(int newVal) {
-		superGlobal = 3;
-		TestSuperClass.superGlobal = 4;
-		super.superGlobal =3;
-		Object a = this.testSuperClass;
-		Object b = this.TOP_ALIGNMENT;
-
-//		protectedP = newVal;
-	}
+//	public void setP(int newVal) {
+//		try {
+//		testSuperClass = null;
+//		superGlobal = 3;
+//		TestSuperClass.superGlobal = 4;
+//		super.superGlobal =3;
+//		Object a = this.testSuperClass;
+//		Object b = this.TOP_ALIGNMENT;
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//
+////		protectedP = newVal;
+//	}
 //	protected void subMethod() {
 //		super.superMethod();
 //		superMethod();
@@ -92,9 +97,17 @@ public class TestSubClass extends TestSuperClass implements PropertyChangeListen
 //	int getPureExpression() {
 //		return 0;
 //	}
-	protected void blockUsing() {
-		for (int i = 1; i < 3; i++) {
+//	protected void blockUsing() {
+//		for (int i = 1; i < 3; i++) {
+//			
+//		}
+//	}
+	protected void exceptionCatch() {
+		try {
+			((Object) this).notify();
+		} catch (Exception e) {
 			
+			e.printStackTrace();
 		}
 	}
 	@Override

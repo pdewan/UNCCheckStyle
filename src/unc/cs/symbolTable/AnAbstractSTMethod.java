@@ -247,7 +247,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		}
 		@Override
 		public Set<STMethod> getAllDirectlyOrIndirectlyCalledMethods() {
-			if (allCalledMethods == null) {
+			if (allCalledMethods == null || isIndirectMethodsNotFullProcessed()) {
 				allCalledMethods = computeAllDirectlyOrIndirectlyCalledMethods(new HashSet(), this);
 			}
 			if (allCalledMethods != null)
@@ -315,8 +315,15 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 				aCalledMethod.addCaller(aCallingMethod);
 			}
 		}
+		protected boolean indirectMethodsNotFullProcessed = false;
+		// duplicates in MethodEffectCheck: 	 protected Boolean checkCalledMethodsOf (STMethod aMethod) {	
+
 // deprecated by getAllLocalMethods and getAllMethods
-		public static Set<STMethod> computeAllDirectlyOrIndirectlyCalledMethods (Set<STMethod> result, STMethod aMethod) {
+		@Override
+		public boolean isIndirectMethodsNotFullProcessed() {
+			return indirectMethodsNotFullProcessed;
+		}
+		public  Set<STMethod> computeAllDirectlyOrIndirectlyCalledMethods (Set<STMethod> result, STMethod aMethod) {
 //			Set<STMethod> result = new HashSet();
 //			if (visitedInternalOrExternalMethods.contains(aMethod))
 //				return aMethod.getAllDirectlyOrIndirectlyCalledMethods();
@@ -326,11 +333,15 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //				System.err.println("Declaring type should not be null");
 //				return null;
 //			}
-			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
 				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
-				if (anAllDirectlyCalledMethods == null)
-					return null;
+				if (anAllDirectlyCalledMethods == null) {
+//					return null;
+					indirectMethodsNotFullProcessed = true;
+					continue;
+				}
+					
 //				result.addAll(Arrays.asList(anAllDirectlyCalledMethods));
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
 					if (result.contains(aDirectlyCalledMethod)) {
@@ -342,7 +353,10 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 					Set<STMethod> anAllIndirectlyCalledMethods = computeAllDirectlyOrIndirectlyCalledMethods(result, aDirectlyCalledMethod);
 
 					if (anAllIndirectlyCalledMethods == null) {
-						return null;
+//						return null;
+						indirectMethodsNotFullProcessed = true;
+
+						continue;
 					}
 					result.addAll(anAllIndirectlyCalledMethods);
 				}
@@ -361,7 +375,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //			}
 			if (result.contains(aMethod))
 				return result; // recursion
-			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
 				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
 						continue;
@@ -401,7 +415,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 //				System.err.println("Declaring type should not be null");
 //				return null;
 //			}
-			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
 				if (!aMethod.getDeclaringClass().contains(aCallInfo.getCalledType()))
 						continue;

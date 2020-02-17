@@ -1877,6 +1877,9 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	}
 	@Override
 	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
+		if (globalSTVariables == null) {
+			return null;
+		}
 //		STVariable result = null;
 		for (STVariable anSTVariable:globalSTVariables) {
 			String aShortGlobalName = TagBasedCheck.toShortTypeOrVariableName(aGlobal);			 

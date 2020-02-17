@@ -7,6 +7,7 @@ import java.util.Set;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.TagBasedCheck;
 
 public class ACallInfo implements CallInfo {
 	DetailAST ast;
@@ -44,7 +45,7 @@ public class ACallInfo implements CallInfo {
 		callerParameterTypes = aCallerParameterTypes;
 		calledCastType = aCalledCastType;
 		callingType = aCallingType;
-		if (calledType.equals("super") || calledType.equals(callingType)) {
+		if (calledType.equals("super") || calledType.equals(callingType) || TagBasedCheck.hasVariableNameSyntax(calledType)) {
 			hasUnkownCalledType = true;
 		}
 		

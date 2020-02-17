@@ -95,10 +95,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		globalVariableToType = aGlobalVariableToType;
 		if (!isInterface) {
 			for (STMethod aMethod:declaredMethods) {
-				methodsCalled.addAll(Arrays.asList(aMethod.getMethodsCalled()));
+				methodsCalled.addAll(Arrays.asList(aMethod.getCallInfoOfMethodsCalled()));
 			}
 			for (STMethod aConstructor:declaredConstructors) {
-				methodsCalled.addAll(Arrays.asList(aConstructor.getMethodsCalled()));
+				methodsCalled.addAll(Arrays.asList(aConstructor.getCallInfoOfMethodsCalled()));
 			}
 		}
 		typesInstantiated = aTypesInstantiated;

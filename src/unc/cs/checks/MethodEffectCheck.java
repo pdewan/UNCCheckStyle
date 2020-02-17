@@ -134,12 +134,16 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 			return checkCalledMethodsOf(aPossibleCalledMethod);
 		 
 	 }
+	 
+	 // duplicates: public static Set<STMethod> computeAllDirectlyOrIndirectlyCalledMethods (Set<STMethod> result, STMethod aMethod) {
+	 // in AnAbstractSTMethods
 	 // get rid of aClass as we are foing global checks
+	 // could just compute directly or indirecttly called methods
 	 protected Boolean checkCalledMethodsOf (STMethod aMethod) {	
 		 if (!shouldTraverseVisitedMethod(aMethod))
 				return true;
 //			String[][] aCalledMethods = aMethod.methodsCalled();
-			CallInfo[] aCalledMethods = aMethod.getMethodsCalled();
+			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
 			for (CallInfo aCallInfo: aCalledMethods) {
 //				if (!aCalledMethod[0].equals(fullTypeName)) break;
 				String[] aCalledMethod = aCallInfo.getNormalizedCall();
@@ -192,6 +196,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 			}
 			return stopOnFailure();	    	//nothing failed, so true in one case, nothing succeeded, so false in another
 	 }
+	
 	 
 	 public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
 //		 STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName (

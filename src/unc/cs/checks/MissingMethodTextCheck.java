@@ -52,7 +52,7 @@ public  class MissingMethodTextCheck extends MissingMethodCallCheck {
 	 * For parsing, we can have overrident method.
 	 * 
 	 */
-	protected boolean matchMethodToString(STMethod aCallingMethod, String aSpecifiedText, Pattern aSpecifiedPattern) {
+	protected Boolean matchMethodToString(STMethod aCallingMethod, String aSpecifiedText, Pattern aSpecifiedPattern) {
 		String aMethodText = toStringList(aCallingMethod.getAST());
 //	    return aMethodText.matches(aSpecifiedText);
 		return aSpecifiedPattern.matcher(aMethodText).matches();
@@ -67,6 +67,9 @@ public  class MissingMethodTextCheck extends MissingMethodCallCheck {
 		}
 //		String aMethodText = toStringList(aCallingMethod.getAST());
 	    Boolean retVal = matchMethodToString(aCallingMethod, aSpecifiedText, aSpecifiedPattern);
+	    if (retVal == null) {
+	    	return null;
+	    }
 	    if (retVal) {
 	    	return true;
 	    }
@@ -143,10 +146,18 @@ public  class MissingMethodTextCheck extends MissingMethodCallCheck {
 				retVal = null;
 				continue;
 			}
-			if (!aStringCheck) {
-				log(anAST, aTree, aString);
-
+		
+			boolean aDoLog = 
+					isInfo()?
+							aStringCheck:
+							!aStringCheck;
+			if (aDoLog) {
+	    		log(anAST, aTree, anAST);
 			}
+//			if (!aStringCheck) {
+//				log(anAST, aTree, aString);
+//
+//			}
 			if (retVal != null) {
 				retVal = retVal && aStringCheck;
 			}

@@ -230,6 +230,16 @@
 			/>			
 		</module>
 		
+		<module name="MethodAccessesGlobal">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ModelClass" />					
+			<property name="expectedReferences"
+				value="
+				    toString#.*MODEL.*,
+				" 
+			/>			
+		</module>
+		
 		<module name="MissingMethodText">
 			<property name="severity" value="warning" />
 			<property name="includeTypeTags" value="ViewClass" />					

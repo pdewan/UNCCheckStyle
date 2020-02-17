@@ -17,7 +17,7 @@ public interface STMethod extends STNameable{
 	STNameable[] getTags();
 	boolean assignsToGlobal();
 //	String[][] methodsCalled();
-	CallInfo[] getMethodsCalled();
+	CallInfo[] getCallInfoOfMethodsCalled();
 	boolean isProcedure();
 	boolean isPublicSetter();
 	boolean isPublicGetter();
@@ -62,6 +62,7 @@ public interface STMethod extends STNameable{
 	Map<String, Set<DetailAST>> getUnknownAccessed();
 	Map<String, Set<DetailAST>> getUnknownAssigned();
 	void refreshUnknowns();
+	boolean isIndirectMethodsNotFullProcessed();
 	
 
 }

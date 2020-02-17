@@ -139,7 +139,7 @@ public abstract class ConstructsCheck extends MethodCallCheck{
 	
 	public  Boolean matchCall(STMethod aMethod,
 			DetailAST anAST, CallOperation aCallOperation, List<DetailAST> aMatchedNodes) {
-		CallInfo[] aCalls = aMethod.getMethodsCalled();
+		CallInfo[] aCalls = aMethod.getCallInfoOfMethodsCalled();
 		Boolean foundNull = false;	
 
 		for (CallInfo aCallInfo:aCalls) {

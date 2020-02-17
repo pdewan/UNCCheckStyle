@@ -11,6 +11,7 @@ import java.util.Set;
 import com.puppycrawl.tools.checkstyle.NonExitingMain;
 import com.puppycrawl.tools.checkstyle.Main;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
@@ -121,8 +122,8 @@ public class PostProcessingMain {
 			}
 			for (STMethod aMethod:aMethods) {
 //				aMethod.getLocalMethodsCalled();
-				Set<STMethod> aCalledMethods = aMethod.getCallingMethods();
-				if (aCalledMethods != null) {
+				Set<STMethod> aCallingMethods = aMethod.getCallingMethods();
+				if (aCallingMethods != null) {
 				System.out.println (anSTType + ":" + aMethod + ":" + aMethod.getCallingMethods());
 				}
 			}			
@@ -144,12 +145,13 @@ public class PostProcessingMain {
 			return;
 		}
 		
-		processTypeInterfaces(anSTType);
-		processTypeProperties(anSTType);
-		processTypeSuperTypes(anSTType);
-		processTypeMethodCalls(anSTType);
-		processDeclaredMethods(anSTType);
-		processGlobalVariables(anSTType);
+//		processTypeInterfaces(anSTType);
+//		processTypeProperties(anSTType);
+//		processTypeSuperTypes(anSTType);
+//		processTypeCallInfos(anSTType);
+//		processDeclaredMethods(anSTType);
+		processMethodsCalled(anSTType);
+//		processUnknownVariablesAccessed(anSTType);
 		
 
 	}
@@ -259,27 +261,127 @@ public class PostProcessingMain {
 			
 		}
 	}
-	public static void processGlobalVariables(STType anSTType) {
+	public static void processUnknownVariablesAccessed(STType aSubjectType, STMethod aRootMethod, STMethod aMethod) {
+		Map<String, Set<DetailAST>> anUnKnownsAccessed = aMethod.getUnknownAccessed();
+		if (anUnKnownsAccessed == null) {
+			return;
+		}
+		Set<String> anUnknownsAccessedSet = anUnKnownsAccessed.keySet();
+		for (String anUnkown:anUnknownsAccessedSet) {
+			if (!anUnkown.contains(".")) continue;
+			String aClassName = TagBasedCheck.fromVariableToTypeName(anUnkown);
+			if (TagBasedCheck.isExternalType(aClassName)) {
+				System.out.println ("type:" + aSubjectType.getName() + " method " + aRootMethod.getName() + " global " + anUnkown);
+
+			}
+		}
+
+	}
+	
+	public static void processUnknownVariablesAccessed(STType aSubjectType, STMethod aRootMethod, Set<STMethod> aMethods) {
+		if (aMethods == null) {
+			return;
+		}
+		for (STMethod aMethod:aMethods) {
+			processUnknownVariablesAccessed(aSubjectType, aRootMethod, aMethod);
+		}
+	}
+	public static void processUnknownVariablesAccessed(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
 			return;
 		}
 		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 		for (STMethod aMethod:aMethods) {
-			
-			Set<String> anUnknownsAccessed = aMethod.getUnknownAccessed().keySet();
-			Set<String> anUnknownAssigned = aMethod.getUnknownAssigned().keySet();
-			if (anUnknownsAccessed != null) {
-			for (String anUnknown:anUnknownsAccessed) {
-				if (anUnknown.contains(".")) {
-					System.out.println ("type:" + anSTType.getName() + " method " + aMethod.getName() + " anKnown " + anUnknown);
-				}
+			if (! aMethod.isPublic()) {
+				continue;
 			}
-			}
+			Set<STMethod> aCalledMethods = aMethod.getAllDirectlyOrIndirectlyCalledMethods();
+//			Set<String> anUnknownsAccessed = aMethod.getUnknownAccessed().keySet();
+			processUnknownVariablesAccessed(anSTType, aMethod, aMethod);
+			processUnknownVariablesAccessed(anSTType, aMethod, aCalledMethods);
+
+//			Set<String> anUnknownAssigned = aMethod.getUnknownAssigned().keySet();
+//			if (anUnknownsAccessed != null) {
+//			for (String anUnknown:anUnknownsAccessed) {
+//				if (anUnknown.contains(".")) {
+//					System.out.println ("type:" + anSTType.getName() + " method " + aMethod.getName() + " anKnown " + anUnknown);
+//				}
+//			}
+//			}
 			
 			
 		}
 	}
+	protected static String getSubtypeTagged (STType anSTType) {
+		if (TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return anSTType.getName();
+		}
+		List<String> aSubtypes = anSTType.getSubTypes();
+		for (String aSubtype:aSubtypes) {
+			if (TagBasedCheck.isExplicitlyTagged(aSubtype)) {
+				return aSubtype;
+			}
+		}
+	    return null;
+	}
+	protected static String getSubtypeExternal (STType anSTType) {
+		if (TagBasedCheck.isExternalType(anSTType.getName())) {
+			return anSTType.getName();
+		}
+		List<String> aSubtypes = anSTType.getSubTypes();
+		for (String aSubtype:aSubtypes) {
+			if (TagBasedCheck.isExternalType(aSubtype)) {
+				return aSubtype;
+			}
+		}
+	    return null;
+	}
+	public static void processMethodsCalled(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
+		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+		for (STMethod aMethod:aMethods) {
+			if (! aMethod.isPublic()) {
+				continue;
+			}
+			Set<STMethod> aCalledMethods = aMethod.getAllDirectlyOrIndirectlyCalledMethods();
+			if (aCalledMethods == null) {
+				continue;
+			}
+			for (STMethod aCalledMethod: aCalledMethods) {
+				if (!aCalledMethod.isPublic()) {
+					continue;
+				}
+				STType aCalledType = aCalledMethod.getDeclaringSTType();
+				String aSubtype = getSubtypeTagged(aCalledType);
+				if (aSubtype == null) {
+					aSubtype = getSubtypeExternal(anSTType);
+				}
+				if (aSubtype != null) {
+					System.out.println("Calling type:" + anSTType + " calling method: " + aMethod + " called type " + aSubtype + " called method " + aCalledMethod);
 
+				}
+				
+
+			
+			}
+//			Set<String> anUnknownsAccessed = aMethod.getUnknownAccessed().keySet();
+			processUnknownVariablesAccessed(anSTType, aMethod, aMethod);
+			processUnknownVariablesAccessed(anSTType, aMethod, aCalledMethods);
+
+//			Set<String> anUnknownAssigned = aMethod.getUnknownAssigned().keySet();
+//			if (anUnknownsAccessed != null) {
+//			for (String anUnknown:anUnknownsAccessed) {
+//				if (anUnknown.contains(".")) {
+//					System.out.println ("type:" + anSTType.getName() + " method " + aMethod.getName() + " anKnown " + anUnknown);
+//				}
+//			}
+//			}
+			
+			
+		}
+	}
 
 	public static void printCallInfo(STType aCallerSTType, STType aCalledSTType, CallInfo aCallInfo) {
 		String aCallingTypeName = aCallerSTType.getName();
@@ -308,7 +410,7 @@ public class PostProcessingMain {
 		
 	}
 
-	public static void processTypeMethodCalls(STType anSTType) {
+	public static void processTypeCallInfos(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
 			return;
 		}

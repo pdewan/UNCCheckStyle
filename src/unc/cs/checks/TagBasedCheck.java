@@ -93,7 +93,11 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		"String",
 		"Boolean",
 		"Runnable",
-		"Thread"
+		"Thread",
+		"Exception",
+		"InterruptedException",
+		"System",
+		"Object"
 };
 	static List<STNameable> emptyList = new ArrayList();
 
@@ -180,7 +184,10 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	   }
 	
 	public static  Boolean matchesSomeStoredTag (Collection<STNameable> aStoredTags, String aDescriptor) {
-		int i = 0;
+//		int i = 0;
+		if (aStoredTags == null) {
+			return true;
+		}
 		for (STNameable aStoredTag:aStoredTags) {
 			if (aStoredTag == null) {
 //				System.err.println("Null stored tag!");
@@ -977,6 +984,9 @@ public void maybeVisitMethodTags(DetailAST ast) {
 }
 
 private Map<String, String> importShortToLongName = new HashMap();
+public static boolean hasVariableNameSyntax(String aName) {
+	return !aName.contains(".") && aName.length() > 0 && !Character.isUpperCase(aName.charAt(0));
+}
 protected String toLongTypeName (String aShortOrLongName) {
 //	String retVal = aShortName;
 	if (aShortOrLongName.contains(".") || aShortOrLongName.equals("super") ) {
@@ -990,7 +1000,7 @@ protected String toLongTypeName (String aShortOrLongName) {
 		
 		return aShortOrLongName;
 	}
-	if (packageName != null && !packageName.isEmpty()) {
+	if (packageName != null && !packageName.isEmpty() && !hasVariableNameSyntax(aShortOrLongName)) {
 		return packageName + "." + aShortOrLongName;
 	}
 	 
@@ -1155,6 +1165,13 @@ public static boolean isExternalType(String aFullName) {
 
 public static boolean isExplicitlyTagged (STType anSTType) {
 	return (anSTType != null && anSTType.getTags() != null) && (anSTType.getTags().length > 0 || anSTType.getConfiguredTags().length > 0);
+}
+public static Boolean isExplicitlyTagged (String aFullName) {
+	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
+	if (anSTType == null) {
+		return false;
+	}
+	return isExplicitlyTagged(anSTType);
 }
 public static String[] toStrings(STNameable[] anSTNameables) {
 	String[] retVal = new String[anSTNameables.length];

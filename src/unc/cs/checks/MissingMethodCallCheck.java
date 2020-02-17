@@ -42,6 +42,26 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 				};
 
 	}
+	protected Boolean check(STType aCallingType, DetailAST ast,
+			String aShortMethodName, String aLongMethodName, CallInfo aCallInfo) {
+		matchedSignature = "";
+//		String[] aSignaturesWithTargets = typeToSignaturesWithTargets.get(specifiedType);
+		String[] aSignaturesWithTargets = typeToStrings.get(specifiedType);
+
+		for (String aSignatureWithTarget:aSignaturesWithTargets) {
+			
+//			Boolean retVal = matches(toShortTypeName (aCallingType.getName()),aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+			Boolean retVal = matches(aCallingType, aSignatureWithTarget, aShortMethodName, aLongMethodName, aCallInfo);
+
+			if (retVal == null)
+				return null;
+			if (retVal) {
+				matchedSignature = aSignatureWithTarget;
+				return returnValueOnMatch();
+			}
+		}
+		return !returnValueOnMatch();
+	}
 	public void setExpectedCalls(String[] aPatterns) {
 		super.setExpectedStrings(aPatterns);
 //		for (String aPattern : aPatterns) {

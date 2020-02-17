@@ -120,6 +120,9 @@ public class AnSTVariable extends AnSTNameable implements STVariable{
 
 	@Override
 	public STType getDeclaringSTType() {
+		if (declaringType == null) {
+			declaringType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(typeName);
+		}
 		return declaringType;
 	}
 

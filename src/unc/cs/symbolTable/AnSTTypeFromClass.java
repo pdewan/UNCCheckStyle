@@ -60,6 +60,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 			declaredFields[i] = new AnSTNameable(aFields[i].getName());
 			globalSTVariables.add(new AnSTVariable(this, null, null, aFields[i].getName(), this.getName(), null, VariableKind.GLOBAL, ComprehensiveVisitCheck.getAccessToken(aFields[i]), null));
 		}
+		
 		Class aSuperClass = aClass.getSuperclass();
 		if (aSuperClass != null)
 		   superClass = new AnSTNameable(aSuperClass.getSimpleName());

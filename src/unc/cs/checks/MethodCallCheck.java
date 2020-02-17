@@ -30,37 +30,6 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	
 
 
-//	protected Map<String, String[]> typeToSignaturesWithTargets = new HashMap<>();
-//	protected Map<String, List<STMethod>> typeToMethods = new HashMap<>();
-
-	
-//	public static final String SEPARATOR = ">";
-	
-
-	// this should be in an abstract class
-//	public void setExpectedSignaturesOfType(String aPattern) {
-//		String[] extractTypeAndSignatures = aPattern.split(TYPE_SEPARATOR);
-//		String aType = extractTypeAndSignatures[0].trim();
-//		String[] aSignaturesWithTarget = extractTypeAndSignatures[1].split(SET_MEMBER_SEPARATOR);
-//		trim (aSignaturesWithTarget);
-//		typeToSignaturesWithTargets.put(aType, aSignaturesWithTarget);
-////		typeToMethods.put(aType, signaturesToMethods(aSignaturesWithTarget));
-//
-//	}
-
-	/*
-	 * @StructurePatternNames.LinePattern> X:int | Y:int | Width:int
-	 * |Height:int,
-	 * 
-	 * @StructurePatternNames.OvalPatetrn> X:int | Y:int | Width:int |Height:int
-	 */
-//	public void setExpectedCalls(String[] aPatterns) {
-//		for (String aPattern : aPatterns) {
-//			setExpectedSignaturesOfType(aPattern);
-//		}
-//
-//	}
-    // "fail" if method matches
 	
 //	protected abstract boolean returnValueOnMatch();
     String matchedSignature;

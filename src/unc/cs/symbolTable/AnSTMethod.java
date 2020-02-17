@@ -195,7 +195,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	// }
 
 	@Override
-	public CallInfo[] getMethodsCalled() {
+	public CallInfo[] getCallInfoOfMethodsCalled() {
 		return methodsCalled;
 	}
 	
@@ -215,6 +215,22 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		return getDeclaringISAClass(aSuperClassName, aCallInfo);
 		
 	}
+	public static STType getVariableType(STNameable aCurrentClassName, String aVariableName) {
+		if (aCurrentClassName == null) {
+			return null;
+		}
+		STType aCurrentClass = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCurrentClassName.getName());
+		if (aCurrentClass == null) {
+			return null;
+		}
+		STVariable aVariable = aCurrentClass.getDeclaredGlobalSTVariable(aVariableName);
+		if (aVariable == null) {
+			return getVariableType(aCurrentClass.getSuperClass(), aVariableName);
+		}
+		return aVariable.getDeclaringSTType();
+		
+		
+	}
 	
 	public void correctCallers () {
 		for (CallInfo aCall : methodsCalled) {
@@ -222,8 +238,20 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 				continue;
 			}
 			STNameable aCalledType = aCall.getCalledSTType();
+			String aCalledTypeName = aCall.getCalledType();
+			if (aCalledTypeName != null && TagBasedCheck.hasVariableNameSyntax(aCalledTypeName)) {
+				STType aCallingType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aCall.getCallingType());
+				if (aCallingType == null) {
+					continue;
+				}
+				STType aVariableType = getVariableType(aCallingType.getSuperClass(), aCalledTypeName);
+				if (aVariableType != null) {
+					aCall.setCalledSTType(aVariableType);
+					continue;
+				}
+			}
 			if (aCalledType == null || "super".equals(aCall.getCalledType())) {
-				String aCalledTypeName = aCall.getCallingType();
+//				String aCalledTypeName = aCall.getCallingType();
 				if (aCalledTypeName != null) {
 					STType aCallingType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aCalledTypeName);
 						aCalledType = aCallingType;
@@ -538,6 +566,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	}
 	@Override
 	public void refreshUnknowns() {
+//		if (this.getName().contains("toString")) {
+//			System.out.println ("to String methods");
+//		}
 		refreshShortNames();
 		refreshLongNames();
 	}

@@ -15,6 +15,7 @@ import java.util.Set;
 
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
+import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -83,6 +84,10 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 //		return anSTVariable.getName().matches(aVariableSpecification);
 		return unifyingMatchesNameVariableOrTag(aDescriptor, anSTVariable.getName(), anSTVariable.getTags());
 	}
+	protected boolean matchesNameable(STNameable anSTVariable, String aDescriptor) {
+//		return anSTVariable.getName().matches(aVariableSpecification);
+		return unifyingMatchesNameVariableOrTag(aDescriptor, anSTVariable.getName(), null);
+	}
 	
 
 	public Boolean matchGlobal(String aVariableSpecification,
@@ -90,7 +95,7 @@ public  class ExpectedGlobalsCheck extends ComprehensiveVisitCheck {
 //		Set<String> aSet = anSTType.getDeclaredGlobals();
 		List<STVariable> aSet = anSTType.getDeclaredSTGlobals();
 
-		int i = 0;
+//		int i = 0;
 		for (STVariable aVariable : anUnmatchedGlobals) {
 			
 			if (matchesVariable(aVariable, aVariableSpecification)) {
