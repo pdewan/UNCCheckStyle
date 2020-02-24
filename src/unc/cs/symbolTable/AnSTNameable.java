@@ -2,17 +2,21 @@ package unc.cs.symbolTable;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
 
 
-public class AnSTNameable implements STNameable {
-	DetailAST ast;
-	String name;
-	Object data;
+public  class AnSTNameable implements STNameable {
+	protected DetailAST ast;
+	protected String name;
+	protected Object data;
+	protected AccessModifier accessModifier = AccessModifier.PACKAGE;
+
 //	int numReferences;
 	Set<DetailAST> references = new HashSet<>();
 //	String[] components;
@@ -42,6 +46,12 @@ public class AnSTNameable implements STNameable {
 			return super.equals(anObject);
 	}
 
+//	public boolean equals (Object anObject) {
+//		if (anObject instanceof STNameable) {
+//			return name.equals(((STNameable) anObject).getName());
+//		}
+//		return super.equals(anObject);
+//	}
 	
 
 	@Override
@@ -63,6 +73,10 @@ public class AnSTNameable implements STNameable {
 	public Set<DetailAST> getReferences() {
 		return references;
 	}
+	@Override
+	public AccessModifier getAccessModifier() {
+		return accessModifier;
+	}
 //	@Override
 //	public void setNumReferences(int numReferences) {
 //		this.numReferences = numReferences;
@@ -74,6 +88,11 @@ public class AnSTNameable implements STNameable {
 //	public String[] getComponents() {
 //		return components;
 //	}
+	@Override
+	public List<AccessModifierUsage> getAccessModifiersUsed() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 //	public static void main (String[] args) {
 //		String[] aSplit = ComprehensiveVisitCheck.splitCamelCase("hel_loABC23Goo-dbye");

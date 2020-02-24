@@ -55,6 +55,9 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	protected  Set<STType> superClasses = new HashSet();
 	protected STType stSuperClass;
 	protected List<STNameable> allTypes;
+//	protected AccessModifier accessModifier = AccessModifier.PACKAGE;
+	protected boolean isAbstract = false;
+	protected Set<STType> referenceTypes;
 
 //	Set<STType> superTypes = new HashSet();
 
@@ -1893,4 +1896,42 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	// public boolean isParsedClass() {
 	// return true;
 	// }
+
+	@Override
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+	
+	@Override
+	public Set<STType> getReferenceTypes() {
+		if (referenceTypes == null) {
+			referenceTypes = new HashSet();
+			List<STVariable> aDeclaredSTGlobals = getDeclaredSTGlobals();
+			if (aDeclaredSTGlobals != null) {
+			for (STVariable anSTVariable:aDeclaredSTGlobals) {
+				Set<STType> aVariableReferences = anSTVariable.getReferenceTypes();
+				if (aVariableReferences != null)
+				referenceTypes.addAll(anSTVariable.getReferenceTypes());
+			}
+			}
+			STMethod[] aDeclaredMethods = getDeclaredMethods();
+
+			for (STMethod anSTMethod:aDeclaredMethods) {
+				Set<STType> aMethodReferences = anSTMethod.getCallingTypes();
+				if (aMethodReferences != null)
+				referenceTypes.addAll(aMethodReferences);				
+			}
+		}
+		return referenceTypes;
+	}
+	@Override
+	public List<AccessModifierUsage> getAccessModifiersUsed() {
+		
+		return AnSTVariable.getAccessModifiersUsed (this, this.getAccessModifier(), this, getReferenceTypes());
+		
+	}
+//	@Override
+//	public AccessModifier getAccessModifier() {
+//		return accessModifier;
+//	}
 }

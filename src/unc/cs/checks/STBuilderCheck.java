@@ -2,6 +2,7 @@ package unc.cs.checks;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Stack;
 
 import unc.cs.symbolTable.AnSTType;
@@ -33,6 +35,7 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public class STBuilderCheck extends ComprehensiveVisitCheck {
 //	public static final String MSG_KEY = "stBuilder";
@@ -56,6 +59,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static  String configurationFileName;
 
 	public static  String configurationFileFullName;
+//	protected static STType objectSTType;
+	
 	public static final Map<String, String> classToConfiguredClass = new HashMap();
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework", "test", "comp", "proj", "ass", "hw" };
@@ -90,14 +95,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected boolean logMethodsDeclared = false;
 	protected boolean logVariablesDeclared = false;
 	protected boolean logPropertiesDeclared = false;
+	protected boolean logAccessModifiersUsed = false;
+
 	
 	protected boolean logAggregateStatistics = false;
 
-
-    protected String methodsDeclaredString;
-    protected String variablesDeclaredString;
-    protected String propertiesDeclaredString;
-    protected String statisticsString;
+//
+//    protected String methodsDeclaredString;
+//    protected String variablesDeclaredString;
+//    protected String propertiesDeclaredString;
+//    protected String statisticsString;
 
 
 
@@ -113,6 +120,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		checksName =  "CheckStyle_All";
 		setCheckOnBuild(true); //make symboltable incrementally
 		CheckStyleLogManagerFactory.getOrCreateCheckStyleLogManager().checkStyleStarted();
+//		if (objectSTType == null) {
+//			objectSTType = processExistingClass(Object.class);
+//		}
 
 	}
 
@@ -220,12 +230,19 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public boolean isLogPropertiesDeclared() {
 		return logPropertiesDeclared;
 	}
+
 	public void setLogPropertiesDeclared(boolean newVal) {
 		logPropertiesDeclared = newVal;
 	}
 	
 	public boolean isLogAggregateStatistics() {
 		return logAggregateStatistics;
+	}
+	public boolean isLogAccessModifiersUsed() {
+		return logAccessModifiersUsed;
+	}
+	public void setLogAccessModifiersUsed (boolean newVal) {
+		logAccessModifiersUsed = newVal;
 	}
 
 	public void setLogAggregateStatistics(boolean logAggregateStatistics) {
@@ -315,26 +332,68 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public Collection<String> getExistingClassShortNameCollection() {
 		return existingClassesShortNamesCollection;
 	}
+	protected  STType processExistingClass(Class aClass) {
+		STType anSTType = getExistingClassSTType(aClass);
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+//				aClass.getName());
+//		if (anSTType != null) {
+//			return anSTType;
+//		}
+//		 anSTType = new AnSTTypeFromClass(aClass);
+//		anSTType.setExternal(true);
+//		upateCurrentSTTType(anSTType);
+		return anSTType;
+	}
+	public static  STType getExistingClassSTType(Class aClass) {
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+				aClass.getName());
+		if (anSTType != null) {
+			return anSTType;
+		}
+		 anSTType = new AnSTTypeFromClass(aClass);
+		 addSTType(anSTType);
+//		 anSTType.setExternal(true);
+//		 SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+//					aClass.getName());
+		
+		return anSTType;
+	}
 
-	protected  void processExistingClass(String aClassName) {
+
+
+	protected  STType processExistingClass(String aClassName) {
 		if (aClassName.endsWith("*"))
-			return;
-		if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
-				aClassName) != null)
-			return;
+			return null;
+//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+//				aClassName);
+////		if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+////				aClassName) != null)
+//		if (anSTType != null)
+//			return anSTType;
 		try {
 			Class aClass = Class.forName(aClassName);
-			STType anSTType = new AnSTTypeFromClass(aClass);
-			anSTType.setExternal(true);
-			addAndUpateCurrentSTTType(anSTType);
+			return processExistingClass(aClass);
+//			STType anSTType = new AnSTTypeFromClass(aClass);
+//			anSTType.setExternal(true);
+//			addAndUpateCurrentSTTType(anSTType);
 		} catch (ClassNotFoundException e) {
 //			if (existingClassesCollection.contains(aClassName))
 //				System.err.println("Could not make existing class from: "
 //						+ aClassName );
-			STType anSTType = new AnSTTypeFromClass(aClassName);
-			anSTType.setExternal(true);
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+					aClassName);
+//			if (SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
+//					aClassName) != null)
+			if (anSTType != null)
+				return anSTType;
+			anSTType = new AnSTTypeFromClass(aClassName);
+//			STType anSTType = new AnSTTypeFromClass(aClassName);
 
-			addAndUpateCurrentSTTType(anSTType);
+			anSTType.setExternal(true);
+			addSTType(anSTType);
+
+//			upateCurrentSTTType(anSTType);
+			return anSTType;
 			// e.printStackTrace();
 		}
 
@@ -354,6 +413,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 			String[] aParameterNames = currentMethodParameterNames
 					.toArray(new String[0]);
+			DetailAST modifierAST = currentMethodAST.findFirstToken(TokenTypes.MODIFIERS);
+			Set<Integer> aModifiers = extractModifiers(modifierAST);
+			
 			STMethod anSTMethod = new AnSTMethod(
 					currentMethodAST,
 					currentMethodName,
@@ -386,7 +448,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					new ArrayList(parametersAssignedByCurrentMethod),
 					getAccessToken(currentMethodAST),
 					numberOfTernaryIfsInCurrentMethod,
-					new ArrayList(assertsInCurrentMethod)
+					new ArrayList(assertsInCurrentMethod),
+					aModifiers
 					);
 
 			if (currentMethodIsConstructor)
@@ -403,6 +466,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	return !isLogPropertiesDeclared()?
     			EMPTY_STRING:
     				toPropertiesDeclaredString(currentSTType);
+    		
+    }
+	protected String computeAccessModifiersUsedString() {
+    	return !isLogAccessModifiersUsed()?
+    			EMPTY_STRING:
+    				toAccessModifiersUsedString(currentSTType);
     		
     }
 	protected String computeStatisticsString() {
@@ -551,11 +620,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	STNameable[] dummyArray = new STNameable[0];
 	
-	protected void addAndUpateCurrentSTTType(STType anSTType) {
-		addSTType(anSTType);
-		currentSTType = anSTType;
+	protected void upateCurrentSTTType(STType anSTType) {
+//		addSTType(anSTType);
+		currentSTType = anSTType; //is this really correct as imports are processed here also
 	}
-	protected static void addSTType(STType anSTClass) {
+	public static void addSTType(STType anSTClass) {
 		if (!anSTClass.isEnum()) {
 			anSTClass.introspect();
 			anSTClass.findDelegateTypes();
@@ -583,14 +652,20 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	@Override
 	public void visitEnumDef(DetailAST anEnumDef) {
 		DetailAST aTypeAST = getEnclosingTypeDeclaration(anEnumDef);
-		if (aTypeAST == anEnumDef) { // top-level enum
-			super.visitEnumDef(anEnumDef);
-			return;
-		}
+		// why not build symbol table for top level rnums also?
+//		if (aTypeAST == anEnumDef) { // top-level enum
+//			super.visitEnumDef(anEnumDef);
+//			return;
+//		}
 		// isEnum = true;
 		String anEnumName = getEnumName(anEnumDef);
 		String aFullName = packageName + "." + shortTypeName + "." + anEnumName;
-		STType anSTClass = new AnSTType(anEnumDef, anEnumName, emptyMethods,
+		if (aTypeAST == anEnumDef) { // top-level enum
+			aFullName = packageName + "." + anEnumName;
+		}
+		DetailAST modifierAST = anEnumDef.findFirstToken(TokenTypes.MODIFIERS);
+		Set<Integer> aModifiers = extractModifiers(modifierAST);
+		STType anSTClass = new AnSTType(anEnumDef, aFullName, emptyMethods,
 				emptyMethods, emptyTypes, null, packageName, false, false,
 				false, true, null, dummyArray, dummyArray, dummyArray,
 				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
@@ -600,14 +675,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				new ArrayList(), 
 				new ArrayList(),
 				new HashMap(),
-				new HashMap()
+				new HashMap(),
+				aModifiers
 				);
 
 		// anSTClass.introspect();
 		// anSTClass.findDelegateTypes();
 		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 		// fullTypeName, anSTClass);
-		addAndUpateCurrentSTTType(anSTClass);
+		addSTType(anSTClass);
+		upateCurrentSTTType(anSTClass);
 
 		// shortTypeName = anEnumDef.getNextSibling().toString();
 		// DetailAST anEnumIdent =
@@ -735,11 +812,71 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected boolean hasTaggedMethod(String aTag) {
 		return getTaggedMethod(aTag) != null;
 	}
-
+//	public static Integer[] MODIFIERS_ARRAY = {
+//		TokenTypes.ABSTRACT, 
+//		TokenTypes.LITERAL_PROTECTED,
+//		TokenTypes.LITERAL_PUBLIC,
+//		TokenTypes.LITERAL_PRIVATE,
+//		TokenTypes.LITERAL_STATIC
+//	};
+//	public static Set<Integer> MODIFIERS_SET = new HashSet(Arrays.asList(MODIFIERS_ARRAY ));
+//	public static Set<Integer> extractModifiers(DetailAST modifiersToken) {
+//		
+//		
+//		  Set<Integer> retVal = new HashSet();
+//		  if (modifiersToken == null)
+//			  return retVal;
+//
+//	        
+//	        for (DetailAST token = modifiersToken.getFirstChild(); token != null;
+//	             token = token.getNextSibling()) {
+//	        	
+//	            final int tokenType = token.getType();
+//	            if (MODIFIERS_SET.contains(tokenType)) {
+//	            	retVal.add(tokenType);
+//	            }
+//	            
+//	        }
+//	        return retVal;
+//	   
+//	}
+	public static AccessModifier toAccessModifier (Set<Integer> aModifiers) {
+		if (aModifiers.contains(TokenTypes.LITERAL_PUBLIC)) {
+			return AccessModifier.PUBLIC;
+		} else if (aModifiers.contains(TokenTypes.LITERAL_PROTECTED)) {
+			return AccessModifier.PROTECTED;
+		} else if (aModifiers.contains(TokenTypes.LITERAL_PRIVATE)) {
+			return AccessModifier.PRIVATE;
+		} else {
+			return AccessModifier.PACKAGE;
+		}
+	}
+	public static AccessModifier toAccessModifier (int aModifier) {
+		if (Modifier.isPublic(aModifier)) {
+		
+			return AccessModifier.PUBLIC;
+		} else if (Modifier.isProtected(aModifier)) {
+			return AccessModifier.PROTECTED;
+		} else if (Modifier.isPrivate(aModifier)) {
+			return AccessModifier.PRIVATE;
+		} else {
+			return AccessModifier.PACKAGE;
+		}
+	}
 	protected void processMethodAndClassData() {
+		if (typeAST == null) { // isEnum probably
+			return;
+		}
 		processImports();
+		
 		STMethod[] aMethods = stMethods.toArray(new STMethod[0]);
 		STMethod[] aConstructors = stConstructors.toArray(new STMethod[0]);
+//		List<DetailAST> aModifiers = findAllInOrderMatchingNodes(typeAST, TokenTypes.MODIFIERS);
+		DetailAST modifierAST = typeAST.findFirstToken(TokenTypes.MODIFIERS);
+		Set<Integer> aModifiers = extractModifiers(modifierAST);
+		
+//		List<DetailAST> modifierASTs = findAllInOrderMatchingNodes(modifiers, 62);
+		
 		STType anSTClass = new AnSTType(
 				typeAST,
 				fullTypeName, // may be an inner class
@@ -761,14 +898,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				new ArrayList<>(typesInstantiated),
 				new ArrayList(globalSTVariables),
 				new HashMap<>(globalIdentToLHS),
-				new HashMap<>(globalIdentToRHS)
+				new HashMap<>(globalIdentToRHS),
+				aModifiers
 				);
 
 		// anSTClass.introspect();
 		// anSTClass.findDelegateTypes();
 		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
 		// fullTypeName, anSTClass);
-		addAndUpateCurrentSTTType(anSTClass);
+		addSTType(anSTClass);
+		upateCurrentSTTType(anSTClass);
 		// log (typeNameAST.getLineNo(), msgKey(), fullTypeName);
 		// if (!defined) {
 		// // log(ast.getLineNo(), MSG_KEY);
@@ -833,7 +972,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
 //    			String aClassOrInterface = isInterface?"Interface":"Class";
 //    			System.err.println ("STBuilder:" + aClassOrInterface + " " + anExpectedClassOrTag);
-    			log(ast, anExpectedClassOrTag, aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
+    			log(ast, anExpectedClassOrTag, aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
     			aFoundMatch = true;
 //
 //    			}
@@ -842,7 +981,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	if (!aFoundMatch && logNoMatches) {
     		
-			log(ast, "None", aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString());
+			log(ast, "None", aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
 		}
 //    		
 //    		
@@ -949,6 +1088,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		
 		
 	}
-	
+//	public static STType getObjectSTType() {
+//		return objectSTType;
+//	}
+
 
 }

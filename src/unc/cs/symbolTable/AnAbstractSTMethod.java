@@ -12,6 +12,7 @@ import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public abstract class AnAbstractSTMethod extends AnSTNameable implements STMethod {
 //	final String declaringClass;
@@ -25,10 +26,11 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	Set<STMethod> allInternallyCalledMethods;
 	
 	// to avoid duplicates, set
-	Set<STMethod> allCallingMethods;
+//	Set<STMethod> allCallingMethods;
 	Set<STMethod> allInternallyCallingMethods;
 	Set<STMethod> callingMethods;
 	Set<STMethod> internallyCallingMethods;
+	Set<STType> callingTypes;
 
 
 
@@ -39,6 +41,8 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	protected  boolean isInit;
 	protected  boolean isSynchronized;
 	protected  String signature;
+//	protected AccessModifier accessModifier = AccessModifier.PACKAGE;
+	protected boolean isAbstract = false;
 //	final STNameable[] tags;
 //	final boolean assignsToGlobal;
 //	final String[][] methodsCalled;
@@ -255,16 +259,27 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			return allCalledMethods;
 		}
 		
-		@Override
-		public Set<STMethod> getAllCallingMethods() {
-			return allCallingMethods;
-		}
+//		@Override
+//		public Set<STMethod> getAllCallingMethods() {
+//			return allCallingMethods;
+//		}
 		@Override
 		public Set<STMethod> getCallingMethods() {
 			return callingMethods;
 		}
+		
 		@Override
-	
+		public Set<STType> getCallingTypes() {
+			return callingTypes;
+		}
+		@Override
+		public List<AccessModifierUsage> getAccessModifiersUsed() {
+			
+			return AnSTVariable.getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), callingTypes);
+			
+		}
+		
+		@Override	
 		public Set<STMethod> getInternallyCallingMethods() {
 			if (allInternallyCalledMethods == null) {
 				Set<STMethod> result = new HashSet();
@@ -300,7 +315,11 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		public void addCaller(STMethod aMethod) {
 			if (callingMethods == null)
 				callingMethods = new HashSet();
+			if (callingTypes == null) {
+				callingTypes = new HashSet();
+			}
 			callingMethods.add(aMethod);
+			callingTypes.add(aMethod.getDeclaringSTType());
 //			allCallingMethods.add(aMethod); // what is the difference?
 			if (aMethod.getDeclaringClass().equals(getDeclaringClass())) {
 				if (internallyCallingMethods == null) {
@@ -485,6 +504,15 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		@Override
 		public List<STNameable> getTypesInstantiated() {
 			return emptyNameableList;
+		}
+		@Override
+		public boolean isAbstract() {
+			return isAbstract;
+		}
+
+		@Override
+		public AccessModifier getAccessModifier() {
+			return accessModifier;
 		}
 //		@Override
 //		public boolean isParsedMethod() {

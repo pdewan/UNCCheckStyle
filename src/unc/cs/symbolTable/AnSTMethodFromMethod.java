@@ -10,6 +10,7 @@ import java.util.Set;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.STBuilderCheck;
 
 public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod{
 	Method method;
@@ -20,6 +21,8 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		super(null, aMethod.getName());
 		method = aMethod;	
 		accessToken = ComprehensiveVisitCheck.getAccessToken(method);
+		accessModifier = STBuilderCheck.toAccessModifier(aMethod.getModifiers());
+		isAbstract = Modifier.isAbstract(aMethod.getModifiers());
 		introspect();
 	}
 	@Override

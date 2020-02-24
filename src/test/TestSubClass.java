@@ -4,13 +4,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class TestSubClass extends TestSuperClass implements PropertyChangeListener{
+public abstract class TestSubClass extends TestSuperClass implements PropertyChangeListener{
 //	TestSuperClass testSuperClass;
 //	PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 //	private String aPrivate;
-//	String aDefault;
-//	protected int protectedP;
-//	int p2;
+	String aDefault;
+	protected int protectedP;
+	int p2;
 //	int foo;
 //	void f1() {
 //		f2();
@@ -58,15 +58,15 @@ public class TestSubClass extends TestSuperClass implements PropertyChangeListen
 //		f2();
 //		
 //	}
-//	protected int getProtectedP() {
-//		return protectedP;
-//	}
-//	private void setProtectedP(int newVal) {
+	protected int getProtectedP() {
+		return protectedP;
+	}
+	protected void setProtectedP(int newVal) {
 //		super.superGlobal = 2;;
-//		protectedP = newVal;
+		protectedP = newVal;
 //		p2 = newVal + 1;
 //		System.out.println(aDefault);
-//	}
+	}
 //	public int getP() {
 //		return 0;
 //	}
@@ -112,6 +112,7 @@ public class TestSubClass extends TestSuperClass implements PropertyChangeListen
 	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+		superGlobal = 3;
 		// TODO Auto-generated method stub
 		
 	}

@@ -3,6 +3,7 @@ package unc.cs.symbolTable;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public interface STVariable extends STNameable {
 	VariableKind getVariableKind();
@@ -25,6 +26,9 @@ public interface STVariable extends STNameable {
 	Set<STMethod> getMethodsAccessing();
 	Set<STMethod> getMethodsAssigning();
 	Set<DetailAST> getAssignments();
+	AccessModifier getAccessModifier();
+	Set<STType> getReferenceTypes();
+
 
 //	int getNumReferences();
 //	void setNumReferences(int numReferences);

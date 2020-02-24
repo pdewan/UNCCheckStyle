@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import sun.reflect.generics.scope.MethodScope;
 import unc.cs.symbolTable.ACallInfo;
+import unc.cs.symbolTable.AccessModifierUsage;
 import unc.cs.symbolTable.AnSTMethodFromMethod;
 import unc.cs.symbolTable.AnSTType;
 import unc.cs.symbolTable.AnSTMethod;
@@ -42,6 +43,7 @@ import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.ScopeUtils;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		ContinuationProcessor {
@@ -132,6 +134,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected int numberOfTernaryIfsInCurrentMethod = 0;
 
 	protected int maxOpenBlocksInCurrentMethod = 0;
+
+    protected String methodsDeclaredString;
+    protected String variablesDeclaredString;
+    protected String propertiesDeclaredString;
+    protected String statisticsString;
 //	protected Map<String, String> importShortToLongName = new HashMap();
 
 
@@ -159,8 +166,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] { TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,
-				TokenTypes.INTERFACE_DEF, TokenTypes.TYPE_ARGUMENTS,
+				TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
+				TokenTypes.TYPE_ARGUMENTS,
 				TokenTypes.TYPE_PARAMETERS, TokenTypes.VARIABLE_DEF,
+				
 				TokenTypes.PARAMETER_DEF, TokenTypes.METHOD_DEF,
 				TokenTypes.CTOR_DEF, TokenTypes.IMPORT,
 				TokenTypes.STATIC_IMPORT, 
@@ -555,7 +564,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 			return new AnSTMethod(null, aSignature.trim(), null, null, null,
 					true, true, false, false, null, false, null, null, false, null,
-					null, null, null, null, null, null, null, null, null, null, 0, null);
+					null, null, null, null, null, null, null, null, null, null, 0, null, null);
 		}
 		if (aNameAndRest.length > 2) {
 			System.err.println("Illegal signature," + aSignature
@@ -583,7 +592,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aParameterTypes, true,
 				true, false, false, aReturnType, true,  null, null, false, null, null,
-				null, null, null, null, null, null, null, null, null, 0, null);
+				null, null, null, null, null, null, null, null, null, 0, null, null);
 
 	}
 
@@ -609,7 +618,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return new AnSTMethod(null, aName, null, null, aLongParameterTypes, true,
 				true, false, false, aReturnType, true, null, null, false, null, null,
-				null, null, null, null, null, null, null, null, null, 0, null);
+				null, null, null, null, null, null, null, null, null, 0, null, null);
 
 	}
 
@@ -973,11 +982,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		// DetailAST aTypeNameAST = aType.findFirstToken(TokenTypes.IDENT);
 		// String aTypeName = aTypeNameAST.getText();
+//		final DetailAST arrayDeclAST = aType
+//				.findFirstToken(TokenTypes.ARRAY_DECLARATOR);
+		String text = "";
+		List<DetailAST> anIdentifiers = findAllInOrderMatchingNodes(aType, TokenTypes.IDENT);
+		if (anIdentifiers.size() > 1) {
+			text = anIdentifiers.get(0).getText();
+		} else {
+		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
+
+		 text = anIdentifierType.getText();
+		}
+		
 		final DetailAST arrayDeclAST = aType
 				.findFirstToken(TokenTypes.ARRAY_DECLARATOR);
-
-		final FullIdent anIdentifierType = CheckUtils.createFullType(aType);
-		String text = anIdentifierType.getText();
 		if (arrayDeclAST != null)
 			text = text + "[]";
 		if ((grandParentAST.getType() != TokenTypes.METHOD_DEF && grandParentAST
@@ -1245,6 +1263,35 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected Map<String, String> currentOpenScope() {
 		return openScopesInCurrentMethod.isEmpty()?null:openScopesInCurrentMethod.peek();
 	}
+	public static Integer[] MODIFIERS_ARRAY = {
+			TokenTypes.ABSTRACT, 
+			TokenTypes.LITERAL_PROTECTED,
+			TokenTypes.LITERAL_PUBLIC,
+			TokenTypes.LITERAL_PRIVATE,
+			TokenTypes.LITERAL_STATIC
+		};
+	public static Set<Integer> MODIFIERS_SET = new HashSet(Arrays.asList(MODIFIERS_ARRAY ));
+
+	public static Set<Integer> extractModifiers(DetailAST modifiersToken) {
+		
+		
+		  Set<Integer> retVal = new HashSet();
+		  if (modifiersToken == null)
+			  return retVal;
+
+	        
+	        for (DetailAST token = modifiersToken.getFirstChild(); token != null;
+	             token = token.getNextSibling()) {
+	        	
+	            final int tokenType = token.getType();
+	            if (MODIFIERS_SET.contains(tokenType)) {
+	            	retVal.add(tokenType);
+	            }
+	            
+	        }
+	        return retVal;
+	   
+	}
 	public void createSTVariable (DetailAST paramOrVarDef,DetailAST anIdentifier, String aTypeName,  VariableKind aVariableKind) {
 		DetailAST anRHS = null;
 		DetailAST aMaybeAssign = anIdentifier.getNextSibling();
@@ -1252,8 +1299,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				&& aMaybeAssign.getType() == TokenTypes.ASSIGN) {
 			anRHS = aMaybeAssign.getFirstChild();
 		}
+		DetailAST modifierAST = paramOrVarDef.findFirstToken(TokenTypes.MODIFIERS);
+		Set<Integer> aModifiers = extractModifiers(modifierAST);
 		STVariable anSTVariable = new AnSTVariable (
-				currentSTType,
+				fullTypeName,
+//				currentSTType,
 				currentBlock(),
 				paramOrVarDef, 
 				anIdentifier.getText(), 
@@ -1264,7 +1314,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 						anIdentifier, 
 						aTypeName, 
 						(aVariableKind == VariableKind.PARAMETER)?PARAMETER_START:VARIABLE_START)
-						.toArray(dummyArray)
+						.toArray(dummyArray).clone(),
+						aModifiers
 				);
 		switch (aVariableKind) {
 		case GLOBAL:
@@ -2089,6 +2140,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typeTagsInitialized = false;
 		propertyNames = emptyArrayList;
 		editablePropertyNames = emptyArrayList;
+		methodsDeclaredString = null;
+		variablesDeclaredString = null;
+		propertiesDeclaredString = null;
+		statisticsString = null;
 	}
 
 	@Override
@@ -3426,6 +3481,15 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //				"Getters:" + getGetters(anSTType) +
 //				"Setters:" + getSetters(anSTType);
 	}
+	public static String toAccessModifiersUsedString(STType anSTType) {
+		List<AccessModifierUsage> anAccessMidifersUsed = anSTType.getAccessModifiersUsed();
+		return "Access Modifiers Used: " + 
+				(anAccessMidifersUsed == null?
+				"":
+				anAccessMidifersUsed.toString());
+	
+	}
+
 	public static String toPropertiesDeclaredString(STType anSTType) {
 		return "Properties:" + anSTType.getDeclaredPropertyInfos().values().toString();
 //		return 

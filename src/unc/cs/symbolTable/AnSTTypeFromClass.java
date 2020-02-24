@@ -3,6 +3,7 @@ package unc.cs.symbolTable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,14 +12,18 @@ import java.util.Map;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.STBuilderCheck;
 
 public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	Class reflectedClass;
 	STNameable[] computedTags, tags, configuredTags;
 	Map emptyTable = new HashMap();
 	static Object[] emptyArray = {};
+//	AccessModifier accessModifier = AccessModifier.PUBLIC;
+//	boolean isAbstract = false;
 
 	public AnSTTypeFromClass(String aClassName) {
 		super (null, aClassName);
@@ -31,6 +36,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		declaredInterfaces = new STNameable[0];
 		interfaces  = new STNameable[0] ;
 		declaredFields = new STNameable[0];
+		
 //		globalSTVariables = new ArrayList();
 
 	}
@@ -58,14 +64,27 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		globalSTVariables = new ArrayList(aFields.length);
 		for (int i = 0; i < declaredFields.length; i++) {
 			declaredFields[i] = new AnSTNameable(aFields[i].getName());
-			globalSTVariables.add(new AnSTVariable(this, null, null, aFields[i].getName(), this.getName(), null, VariableKind.GLOBAL, ComprehensiveVisitCheck.getAccessToken(aFields[i]), null));
+			AccessModifier aFieldAccessModifier = STBuilderCheck.toAccessModifier(aFields[i].getModifiers());
+//			globalSTVariables.add(
+//						new AnSTVariable(this, null, null, aFields[i].getName(), this.getName(), null, VariableKind.GLOBAL, ComprehensiveVisitCheck.getAccessToken(aFields[i]), 
+//								null, aFieldAccessModifier ));
+			globalSTVariables.add(
+					new AnSTVariableFromField(this, aFields[i]));
 		}
 		
 		Class aSuperClass = aClass.getSuperclass();
-		if (aSuperClass != null)
-		   superClass = new AnSTNameable(aSuperClass.getSimpleName());
+		if (aSuperClass != null ) {
+		   superClass = STBuilderCheck.getExistingClassSTType(aSuperClass);
+//		   if (superClass != null) {
+//		   STBuilderCheck.addSTType(((STType) superClass)); 
+//		   }
+		}
 		STNameable typeNameable = new AnSTNameable(null, getName());
 		computedTags = new STNameable[] {typeNameable};
+		
+		accessModifier = STBuilderCheck.toAccessModifier(aClass.getModifiers());
+		isAbstract = Modifier.isAbstract(aClass.getModifiers());
+		
 		
 	}
 	

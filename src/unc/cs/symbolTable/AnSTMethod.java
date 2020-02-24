@@ -7,11 +7,13 @@ import java.util.Map;
 import java.util.Set;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.STTypeVisited;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	final String declaringClass;
@@ -43,6 +45,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	protected List<String> globalsAccessed;
 	protected Map<String, Set<DetailAST>> unknownAccessed;
 
+
 //	protected List<String> unknownAccessed;
 
 //	protected List<String> unknownAssigned;
@@ -69,6 +72,8 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	protected List<STType> asserts;
 
 	static List<STNameable> anEmptyList = new ArrayList();
+	protected Set<Integer> modifiers;
+
 
 
 	public AnSTMethod(DetailAST ast, String name, String declaringClass, String[] aParameterNames,
@@ -85,7 +90,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			List<STVariable> aLocalVariables, List<STVariable> aParameters, List<STVariable> aLocalsAssigned,
 			List<STVariable> aParametersAssigned,
 
-			Integer anAccessToken, int aNumberOfTernaryOperators, List<STType> anAsserts) {
+			Integer anAccessToken, int aNumberOfTernaryOperators, List<STType> anAsserts,
+
+			Set<Integer> aModifiers) {
 		super(ast, name);
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
@@ -124,6 +131,11 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		
 		initUnkowns(unknownAccessed);
 		initUnkowns(unknownAssigned);
+		modifiers = aModifiers;
+		if (aModifiers != null) {
+		accessModifier = STBuilderCheck.toAccessModifier(aModifiers);
+		}
+		isAbstract = aModifiers != null && aModifiers.contains(TokenTypes.ABSTRACT);
 //		refreshUnknowns();
 
 		
@@ -630,9 +642,16 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 					Set<DetailAST> anAssignments = unknownAssigned.get(aLongName);
 					if (aReferences != null) {
 						anSTVariable.getReferences().addAll(aReferences);
+						if (aReferences.size() > 0) {
+							anSTVariable.getMethodsAccessing().add(this);
+
+						}
 					}
 					if (anAssignments != null) {
-						anSTVariable.getAssignments().addAll(aReferences);
+						anSTVariable.getAssignments().addAll(anAssignments);
+						if (anAssignments.size() > 0) {
+							anSTVariable.getMethodsAssigning().add(this);
+						}
 					}
 
 				}

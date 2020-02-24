@@ -1,5 +1,7 @@
 package unc.cs.symbolTable;
 
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
+
 public interface PropertyInfo {
 	public STMethod getGetter();
 	public void setGetter(STMethod getter) ;
@@ -14,5 +16,7 @@ public interface PropertyInfo {
 	STType getDefiningSTType();
 	STVariable getVariableSet();
 	STVariable getVariableGet();
+	AccessModifier getVariableAccessModifier();
+	int getGetterMinusSetterAccessMode();
 
 }

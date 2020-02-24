@@ -1,5 +1,7 @@
 package unc.cs.symbolTable;
 
+import java.util.List;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 public class AnSTAnnotatable extends AnSTNameable implements STAnnotatable{
@@ -13,6 +15,11 @@ public class AnSTAnnotatable extends AnSTNameable implements STAnnotatable{
 	public String[] getActualParameters() {
 		// TODO Auto-generated method stub
 		return actualParameters;
+	}
+	@Override
+	public List<AccessModifierUsage> getAccessModifiersUsed() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 

@@ -2,10 +2,12 @@ package unc.cs.symbolTable;
 
 import java.util.List;
 
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
+
 import unc.cs.checks.ComprehensiveVisitCheck;
 
 public class APropertyInfo implements PropertyInfo {
-	private static final int INFINITE_ACCESS_DIFFERENCE = 4;
+	public static final int INFINITE_ACCESS_DIFFERENCE = 5;
 	STMethod getter;
 	STMethod setter;
 	String name;
@@ -19,6 +21,8 @@ public class APropertyInfo implements PropertyInfo {
 	boolean propertyInReadVariableName = false;
 	
 	boolean propertyInWrittenVariableName = false;
+//	protected AccessModifier accessModifier = AccessModifier.PACKAGE;
+
 
 
 	
@@ -58,6 +62,30 @@ public class APropertyInfo implements PropertyInfo {
 			}
 		}
 		return isPublic;
+	}
+	public AccessModifier getAccessModifier() {
+		if (getter != null && setter == null) {
+			return getter.getAccessModifier();
+		} else if (getter == null && setter != null) {
+			return setter.getAccessModifier();
+		} else if (getter.getAccessModifier().ordinal() > setter.getAccessModifier().ordinal()) {
+			return getter.getAccessModifier();
+		} else {
+			return setter.getAccessModifier();
+		}
+	
+	}
+	@Override
+	public AccessModifier getVariableAccessModifier() {
+		if (variableGet != null && variableSet == null) {
+			return variableGet.getAccessModifier();
+		} else if (variableSet != null && variableGet == null) {
+			return variableSet.getAccessModifier();
+		} else if (variableGet == variableSet || variableGet.equals(variableSet)) {
+			return variableGet.getAccessModifier();
+		} else {
+			return variableGet.getAccessModifier();
+		}
 	}
 	
 	public STMethod getGetter() {
@@ -134,9 +162,16 @@ public class APropertyInfo implements PropertyInfo {
 	public String toString() {
 		return 
 //				(isPublic()?"public ":"") + 
-				(isEditable()?"editable " + getGetterMinusSetterAccess() + " " :"") +
+				
 				(isReadOnly()?"readonly ":"") + 
 				(isWriteOnly()?"writeonly ":"") + 
+				(isEditable()?
+						("editable, "
+						+ "g-s:" + getGetterMinusSetterAccess()) :
+							"") +
+				" p-v:" + getPropertyMinusVariableAccessMode() +
+				" access:" + getAccessModifier() + " " +
+			
 				getName() + ":" + getType() + "(" +
 				((getter != null)?ComprehensiveVisitCheck.toTokenAccessString(getter.getAccessToken()):" null") +
 				"," +
@@ -154,12 +189,27 @@ public class APropertyInfo implements PropertyInfo {
 			return super.equals(anOther);
 		}
 	}
-	public Integer getGetterMinusSetterAccess() {
+	protected int getGetterMinusSetterAccess() {
 		if (isReadOnly()) return INFINITE_ACCESS_DIFFERENCE;
 		if (isWriteOnly()) return -INFINITE_ACCESS_DIFFERENCE;
 		return
 				ComprehensiveVisitCheck.toTokenAccessDegree(getter.getAccessToken()) - 
 				ComprehensiveVisitCheck.toTokenAccessDegree(setter.getAccessToken());
+	}
+	@Override
+	public int getGetterMinusSetterAccessMode() {
+		if (isReadOnly()) return INFINITE_ACCESS_DIFFERENCE;
+		if (isWriteOnly()) return -INFINITE_ACCESS_DIFFERENCE;
+		return
+				- (getter.getAccessModifier().ordinal() - setter.getAccessModifier().ordinal()) ;
+	}
+	public int getPropertyMinusVariableAccessMode() {
+		if (variableSet == null && variableGet == null) {
+			return INFINITE_ACCESS_DIFFERENCE;
+		} else {
+			return - ( getAccessModifier().ordinal() - getVariableAccessModifier().ordinal());
+		}
+		
 	}
 	@Override
 	public STType getDefiningSTType() {

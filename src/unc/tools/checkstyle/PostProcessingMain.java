@@ -15,11 +15,13 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
+import unc.cs.symbolTable.AccessModifierUsage;
 import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
+import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
@@ -150,8 +152,9 @@ public class PostProcessingMain {
 //		processTypeSuperTypes(anSTType);
 //		processTypeCallInfos(anSTType);
 //		processDeclaredMethods(anSTType);
-		processMethodsCalled(anSTType);
+//		processMethodsCalled(anSTType);
 //		processUnknownVariablesAccessed(anSTType);
+		processAccessModifiersUsed(anSTType);
 		
 
 	}
@@ -335,6 +338,23 @@ public class PostProcessingMain {
 			}
 		}
 	    return null;
+	}
+	public static void processAccessModifiersUsed(STType anSTType) {
+		System.out.println(anSTType.getName() + " "  + STBuilderCheck.toAccessModifiersUsedString(anSTType));
+		STMethod[] aMethods = anSTType.getDeclaredMethods();
+		if (aMethods != null) {
+		for (STMethod aMethod:aMethods) {
+			List<AccessModifierUsage> aUsage = aMethod.getAccessModifiersUsed();
+			if (aUsage != null)
+				System.out.println("Access Modifier Usage:" + anSTType.getName() + "," +  aUsage);
+		}
+		}
+		List<STVariable> aVariables = anSTType.getDeclaredSTGlobals();
+		if (aVariables != null) {
+		for (STVariable aVariable:anSTType.getDeclaredSTGlobals()) {
+			System.out.println("Access Modifier Usage:" + anSTType.getName() + "," + aVariable.getAccessModifiersUsed());
+		}
+		}
 	}
 	public static void processMethodsCalled(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {

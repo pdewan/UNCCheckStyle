@@ -11,10 +11,13 @@ import java.util.Map;
 import java.util.Set;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public class AnSTType extends AnAbstractSTType implements STType {
@@ -34,6 +37,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	protected List<STNameable> typesInstantiated;
 	protected Map<String, List<DetailAST>> globalIdentToRHS;
 	protected Map<String, List<DetailAST>> globalIdentToLHS ;
+	protected Set<Integer> modifiers;
+//	protected AccessModifier accessModifier;
+//	protected boolean isAbstract; 
 
 
 //	protected Set<String> delegates = new HashSet();
@@ -66,7 +72,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			List<STNameable> aTypesInstantiated,
 			List<STVariable> aGlobalSTVariables,
 			Map<String, List<DetailAST>> aGlobalIdentToLHS,
-			Map<String, List<DetailAST>> aGlobalIdentToRHS
+			Map<String, List<DetailAST>> aGlobalIdentToRHS,
+			Set<Integer> aModifiers
 			) {
 		super(ast, name);
 //		if (name.contains("Cell")) {
@@ -76,6 +83,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		this.declaredConstructors = aDeclaredConstructors;
 		this.declaredInterfaces = interfaces;
 		this.superClass = superClass;
+		if (superClass == null) {
+			superClass = STBuilderCheck.getExistingClassSTType(Object.class);
+		}
 		this.packageName = packageName;
 		this.isInterface = isInterface;
 		isGeneric = anIsGeneric;
@@ -105,6 +115,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		globalSTVariables = aGlobalSTVariables;
 		globalIdentToLHS = aGlobalIdentToLHS;
 		globalIdentToRHS = aGlobalIdentToRHS;
+		modifiers = aModifiers;
+		accessModifier = STBuilderCheck.toAccessModifier(modifiers);
+		isAbstract = modifiers != null && modifiers.contains(TokenTypes.ABSTRACT);
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());
@@ -1074,6 +1087,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		}
 //		return numberOfNonGetterFunctions;
 //	}
+	
+	
+
 
 
 }

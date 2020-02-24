@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public interface STMethod extends STNameable{
 	String PARAMETER_SEPARATOR = ";";
@@ -33,7 +34,7 @@ public interface STMethod extends STNameable{
 	void setDeclaringSTType(STType declaringSTType);
 	void addCaller(STMethod aMethod);
 	public Set<STMethod> getAllDirectlyOrIndirectlyCalledMethods();
-	public Set<STMethod> getAllCallingMethods() ;
+//	public Set<STMethod> getAllCallingMethods() ;
 	public Set<STMethod> getAllInternallyDirectlyAndIndirectlyCalledMethods() ;
 	public Set<STMethod> getAllInternallyCallingMethods() ;
 	Set<STMethod> getCallingMethods();
@@ -53,6 +54,8 @@ public interface STMethod extends STNameable{
 	List<String> getGlobalsAssigned();
 	List<String> getGlobalsAccessed();
 	Integer getAccessToken();
+	AccessModifier getAccessModifier();
+	boolean isAbstract();
 	List<STVariable> getLocalVariables();
 	List<STVariable> getParameters();
 	int getNumberOfTernaryConditionals();
@@ -63,6 +66,7 @@ public interface STMethod extends STNameable{
 	Map<String, Set<DetailAST>> getUnknownAssigned();
 	void refreshUnknowns();
 	boolean isIndirectMethodsNotFullProcessed();
+	Set<STType> getCallingTypes();
 	
 
 }

@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public interface STType extends STNameable{
 	STMethod getGetter(String aPropertyName);
@@ -16,6 +17,8 @@ public interface STType extends STNameable{
 	STMethod getMethod(String aName, String[] aParameterTypes);
 	String getPackage();
 	boolean isInterface();
+	boolean isAbstract();
+	AccessModifier getAccessModifier();
 	boolean isEnum();
 	STNameable getSuperClass();
 //	void initDeclaredPropertyNames(STNameable[] aPropertyNames);
@@ -99,4 +102,5 @@ public interface STType extends STNameable{
 //	STVariable toSTVariable(String aName);
 	int getNumberOfNonGettersAndSetters();
 	STNameable[] getDeclaredFields();
+	Set<STType> getReferenceTypes();
 }
