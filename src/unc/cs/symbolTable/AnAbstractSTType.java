@@ -58,6 +58,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 //	protected AccessModifier accessModifier = AccessModifier.PACKAGE;
 	protected boolean isAbstract = false;
 	protected Set<STType> referenceTypes;
+	protected List<AccessModifierUsage> accessModifierUsage;
 
 //	Set<STType> superTypes = new HashSet();
 
@@ -1926,8 +1927,12 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	}
 	@Override
 	public List<AccessModifierUsage> getAccessModifiersUsed() {
+		if (accessModifierUsage == null) {
+			accessModifierUsage = AnSTVariable.getAccessModifiersUsed (this, this.getAccessModifier(), this, getReferenceTypes(), null);
+		}
+		return accessModifierUsage;
 		
-		return AnSTVariable.getAccessModifiersUsed (this, this.getAccessModifier(), this, getReferenceTypes());
+//		return AnSTVariable.getAccessModifiersUsed (this, this.getAccessModifier(), this, getReferenceTypes(), null);
 		
 	}
 //	@Override

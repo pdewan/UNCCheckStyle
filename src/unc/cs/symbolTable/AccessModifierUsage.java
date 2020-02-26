@@ -1,5 +1,9 @@
 package unc.cs.symbolTable;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 import unc.cs.checks.STBuilderCheck;
@@ -9,12 +13,27 @@ public class AccessModifierUsage {
 	AccessModifier declared;
 	AccessModifier used;
 	int difference;
+	Collection<STMethod> methodsReferencing;
+	
+	STType typeReferencing;
 
-	public AccessModifierUsage(STNameable aSubject, AccessModifier declared, AccessModifier used) {
+	public AccessModifierUsage(STNameable aSubject, AccessModifier declared, AccessModifier used, STType aTypeReferencing, Collection<STMethod> aMethodsReferencing) {
 		super();
 		this.declared = declared;
 		this.used = used;
 		subject = aSubject;
+		typeReferencing = aTypeReferencing;
+//		methodsReferencing = aMethodsReferencing;
+		if (typeReferencing != null && aMethodsReferencing != null) {
+			methodsReferencing = new HashSet();
+			for (STMethod anSTMethod:aMethodsReferencing) {
+				if (anSTMethod.getDeclaringSTType() == typeReferencing) {
+					methodsReferencing.add(anSTMethod);
+				}
+			}
+
+		}
+		
 	}
 	public STNameable getSubject() {
 		return subject;
@@ -31,8 +50,11 @@ public class AccessModifierUsage {
 		}
 		return (used.ordinal() - declared.ordinal());
 	}
+	public Collection<STMethod> getMethodsReferencing() {
+		return methodsReferencing;
+	}
 	public String toString() {
-		return "(" + subject + ", " +  declared + ", " + used  + ", " + getDifference() + ")";
+		return "(" + subject + ", " +  declared + ", " + used  + ", " + getDifference() + ", " + methodsReferencing + " )";
 	}
 	
 

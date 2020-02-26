@@ -24,6 +24,8 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 	Integer accessToken;
 	protected Set<STMethod> methodsAccessing = new HashSet() ;
 	protected Set<STMethod> methodsAssigning = new HashSet();
+	protected Set<STMethod> methodsReferencing = new HashSet();
+
 	protected Set<STType> referenceTypes;
 	
 
@@ -31,6 +33,8 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 	protected PropertyInfo setterPropertyInfo;
 	protected PropertyInfo getterPropertyInfo;
 	protected Set<Integer> modifiers;
+	protected List<AccessModifierUsage> accessModifiersUsage;
+
 //	protected AccessModifier accessModifier;
 
 
@@ -39,8 +43,8 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 
 
 
-	boolean isInstance;
-	boolean isFinal;
+	protected boolean isInstance;
+	protected boolean isFinal;
 	 
 	public AnAbstractSTVariable(String aName) {
 		super (aName);
@@ -169,41 +173,54 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 		return aRealSuperTypes.contains(aPossibleSuperType);
 	}
 	
-	public static List<AccessModifierUsage> getAccessModifiersUsed (STNameable aSubject, AccessModifier aDeclared, STType aReferenced, Collection<? extends STType> aReferences) {
-		if (aReferences == null) {
+	public static List<AccessModifierUsage> getAccessModifiersUsed (STNameable aSubject, AccessModifier aDeclared, STType aReferenced,
+			Collection<? extends STType> aReferenceTypes,
+			Collection<STMethod> aReferenceMethods) {
+		if (aReferenceTypes == null) {
 			return null;
 		}
 		List<AccessModifierUsage> retVal = new ArrayList();
-		for (STType aReferencer:aReferences) {
+		for (STType aReferencer:aReferenceTypes) {
 			if (aReferencer == null) {
-				retVal.add(new AccessModifierUsage(aSubject, aDeclared, null));
+				retVal.add(new AccessModifierUsage(aSubject, aDeclared, null, aReferencer, aReferenceMethods));
 			}
 			else if (aReferenced == aReferencer || aReferenced.equals(aReferencer)) {
-				retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PRIVATE));
+				retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PRIVATE, aReferencer, aReferenceMethods));
 			} else if (inSamePackage(aReferenced, aReferencer)) {
-				retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PACKAGE));
+				retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PACKAGE, aReferencer, aReferenceMethods));
 			} else {
 				Boolean isSubType = isSubType(aReferenced, aReferencer);
 				if (isSubType == null) {
 					retVal.add(null);
 				} else if (isSubType) {
-					retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PROTECTED));
+					retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PROTECTED, aReferencer, aReferenceMethods));
 				}
 			}
 		}
 		return retVal;
 	}
 	
+	
 	public List<AccessModifierUsage> getAccessModifiersUsed() {
 //		return null;
+		if (accessModifiersUsage == null) {
+			accessModifiersUsage = getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), getReferenceTypes(), getMethodsReferencing());
+		}
+		return accessModifiersUsage;
 		
-		return getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), getReferenceTypes());
+//		return getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), getReferenceTypes(), getMethodsReferencing());
 		
 	}
 	@Override
 	public Set<STMethod> getMethodsAssigning() {
 		return methodsAssigning;
 	}
+	
+	@Override
+	public Set<STMethod> getMethodsReferencing() {
+		return methodsReferencing;
+	}
+
 
 	public Set<STType> getReferencingTypes() {
 		return referenceTypes;
@@ -281,5 +298,7 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 //		}
 		return referenceTypes;
 	}
+	
+	
 
 }

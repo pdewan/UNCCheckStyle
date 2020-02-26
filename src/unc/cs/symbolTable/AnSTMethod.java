@@ -154,6 +154,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
 				if (anSTVariable != null) {
 					anSTVariable.getMethodsAssigning().add(this);
+					anSTVariable.getMethodsReferencing().add(this);
 				}
 
 			}
@@ -162,6 +163,8 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 					STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
 					if (anSTVariable != null) {
 						anSTVariable.getMethodsAccessing().add(this);
+						anSTVariable.getMethodsReferencing().add(this);
+
 					}
 
 				}
@@ -644,6 +647,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 						anSTVariable.getReferences().addAll(aReferences);
 						if (aReferences.size() > 0) {
 							anSTVariable.getMethodsAccessing().add(this);
+							anSTVariable.getMethodsReferencing().add(this);
 
 						}
 					}
@@ -651,6 +655,8 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 						anSTVariable.getAssignments().addAll(anAssignments);
 						if (anAssignments.size() > 0) {
 							anSTVariable.getMethodsAssigning().add(this);
+							anSTVariable.getMethodsReferencing().add(this);
+
 						}
 					}
 

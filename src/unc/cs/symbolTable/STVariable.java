@@ -28,6 +28,7 @@ public interface STVariable extends STNameable {
 	Set<DetailAST> getAssignments();
 	AccessModifier getAccessModifier();
 	Set<STType> getReferenceTypes();
+	Set<STMethod> getMethodsReferencing();
 
 
 //	int getNumReferences();

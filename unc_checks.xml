@@ -24,7 +24,9 @@
 			
 			<property name="logMethodsDeclared" value="true" />	
 			<property name="logVariablesDeclared" value="true" />
-			<property name="logPropertiesDeclared" value="true" />					
+			<property name="logPropertiesDeclared" value="true" />
+			<property name="logAccessModifiersUsed" value="true" />					
+								
 					
 
 		</module>

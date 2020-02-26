@@ -49,6 +49,7 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 	public  static final String GET = "get";
 	public  static final String SET = "set";
 	public static final String INIT = "init";
+	protected List<AccessModifierUsage> accessModifierUsage;
 	
 	
 	public AnAbstractSTMethod(DetailAST ast, String name) {
@@ -274,8 +275,11 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		}
 		@Override
 		public List<AccessModifierUsage> getAccessModifiersUsed() {
-			
-			return AnSTVariable.getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), callingTypes);
+			if (accessModifierUsage == null) {
+				accessModifierUsage = AnSTVariable.getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), callingTypes, getCallingMethods());
+			}
+			return accessModifierUsage;
+//			return AnSTVariable.getAccessModifiersUsed (this, getAccessModifier(), this.getDeclaringSTType(), callingTypes, getCallingMethods());
 			
 		}
 		
