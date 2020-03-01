@@ -18,5 +18,6 @@ public interface PropertyInfo {
 	STVariable getVariableGet();
 	AccessModifier getVariableAccessModifier();
 	int getGetterMinusSetterAccessMode();
+	AccessModifier getAccessModifier();
 
 }

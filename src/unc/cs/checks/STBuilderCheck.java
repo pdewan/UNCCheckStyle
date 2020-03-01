@@ -482,8 +482,31 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     				" Number of Methods:" + currentSTType.getNumberOfMethods() +
     				" Number of Functions:" + currentSTType.getNumberOfFunctions() +
     				" Number of Non Getter Functions:" + currentSTType.getNumberOfNonGetterFunctions() +
-    				" Number of Getters and Setters:" + currentSTType.getNumberOfGettersAndSetters();
-
+    				" Number of Getters and Setters:" + currentSTType.getNumberOfGettersAndSetters() +
+    				" Public Methods Fraction:" + currentSTType.getFractionOfPublicMethods() +
+    				" Protected Methods Fraction:" + currentSTType.getFractionOfProtectedMethods() +
+    				" Package Access Methods Fraction:" + currentSTType.getFractionOfPackageAccessMethods() +
+    				" Private  Methods Fraction:" + currentSTType.getFractionOfPrivateMethods() +
+    				" Average Method Access:" + currentSTType.getAverageAccessModeOfMethods() +
+    				" Number of Variables:" + currentSTType.getNumberOfDeclaredVariables() +
+    				" Public Variables Fraction:" + currentSTType.getFractionOfPublicVariables() +
+    				" Protected Variables Fraction:" + currentSTType.getFractionOfProtectedVariables() +
+    				" Package Access Variables Fraction:" + currentSTType.getFractionOfPackageAccessVariables() +
+    				" Private  Variable Fraction:" + currentSTType.getFractionOfPrivateVariables() +
+    				" Average Variable Access:" + currentSTType.getAverageAccessModeOfVariables() +
+    				
+    				" Number of Properties:" + currentSTType.getNumberOfDeclaredProperties() +
+    				" Public Properties Fraction:" + currentSTType.getFractionOfPublicProperties() +
+    				" Protected Properties Fraction:" + currentSTType.getFractionOfProtectedProperties() +
+    				" Package Access Properties Fraction:" + currentSTType.getFractionOfPackageAccessProperties() +
+    				" Private  Properties Fraction:" + currentSTType.getFractionOfPrivateProperties() +
+    				
+    				" Editable Properties Fraction:" + currentSTType.getFractionOfEditableProperties() +
+    				" ReadOnly Access Properties Fraction:" + currentSTType.getFractionOfReadOnlyProperties() +
+    				" WriteOnly  Properties Fraction:" + currentSTType.getFractionOfWriteOnlyProperties() +
+    				
+    				" Average Properties Access:" + currentSTType.getAverageAccessModeOfProperties();
+//    				" Average references per variable:" + currentSTType.getNumberOfReferencesPerVariable();
     		
     }
     protected String computeMethodsDeclaredString() {

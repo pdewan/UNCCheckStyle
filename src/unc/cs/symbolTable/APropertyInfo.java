@@ -63,6 +63,7 @@ public class APropertyInfo implements PropertyInfo {
 		}
 		return isPublic;
 	}
+	@Override
 	public AccessModifier getAccessModifier() {
 		if (getter != null && setter == null) {
 			return getter.getAccessModifier();

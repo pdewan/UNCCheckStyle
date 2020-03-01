@@ -14,6 +14,7 @@ import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 
 public abstract class AnAbstractSTType extends AnSTNameable implements STType {
@@ -1829,6 +1830,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		}
 		return numberOfFunctions;
 	}
+	
 	protected Integer numberOfNonGetterFunctions;
 
 	@Override
@@ -1859,10 +1861,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	@Override
 	public int getNumberOfMethods() {
 		if (numberOfMethods == null) {
-			numberOfMethods = 0;
-			for (STMethod aMethod: getDeclaredMethods()) {
-				numberOfMethods += 1;
-			}
+			numberOfMethods = getDeclaredMethods().length;
 		}
 		return numberOfMethods;
 	}
@@ -1879,6 +1878,355 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		
 		return numberOfNonGettersAndSetters;
 	}
+	protected Integer numberOfPublicMethods;
+	@Override
+	public int getNumberOfPublicMethods() {
+		if (numberOfPublicMethods == null) {
+			numberOfPublicMethods = getNumberOfDeclaredMethodsWithAccessMode(AccessModifier.PUBLIC);
+			
+		}
+		return numberOfPublicMethods;		
+	}
+	protected Integer numberOfProtectedMethods;
+	@Override
+	public int getNumberOfProtectedMethods() {
+		if (numberOfProtectedMethods == null) {
+			numberOfProtectedMethods = getNumberOfDeclaredMethodsWithAccessMode(AccessModifier.PROTECTED);
+			
+		}
+		return numberOfProtectedMethods;		
+	}
+	protected Integer numberOfPackageAccessMethods;
+	@Override
+	public int getNumberOfPackageAccessMethods() {
+		if (numberOfPackageAccessMethods == null) {
+			numberOfPackageAccessMethods = getNumberOfDeclaredMethodsWithAccessMode(AccessModifier.PACKAGE);
+			
+		}
+		return numberOfPackageAccessMethods;		
+	}
+	protected Integer numberOfPrivateMethods;
+	@Override
+	public int getNumberOfPrivateMethods() {
+		if (numberOfPrivateMethods == null) {
+			numberOfPrivateMethods = getNumberOfDeclaredMethodsWithAccessMode(AccessModifier.PRIVATE);
+			
+		}
+		return numberOfPrivateMethods;		
+	}
+	@Override
+	public double getFractionOfPrivateMethods() {
+		return ((double) getNumberOfPrivateMethods())/getNumberOfMethods();
+	}
+	@Override
+	public double getFractionOfProtectedMethods() {
+		return ((double) getNumberOfProtectedMethods())/getNumberOfMethods();
+	}
+	@Override
+	public double getFractionOfPackageAccessMethods() {
+		return ((double) getNumberOfPackageAccessMethods())/getNumberOfMethods();
+	}
+	@Override
+	public double getFractionOfPublicMethods() {
+		return ((double) getNumberOfPublicMethods())/getNumberOfMethods();
+	}
+	@Override
+	public double getAverageAccessModeOfMethods() {
+	
+		return getFractionOfPrivateMethods()*(AccessModifier.PRIVATE.ordinal()) +
+				getFractionOfProtectedMethods()*(AccessModifier.PROTECTED.ordinal()) +
+				getFractionOfPackageAccessMethods()*(AccessModifier.PACKAGE.ordinal()) +
+				getFractionOfPublicMethods()*(AccessModifier.PUBLIC.ordinal());
+		
+	}
+	
+	//
+	
+	protected Integer numberOfDeclaredVariables;
+	@Override
+	public int getNumberOfDeclaredVariables() {
+		if (numberOfDeclaredVariables == null) {
+			numberOfDeclaredVariables = getDeclaredSTGlobals().size();
+			
+		}
+		return numberOfDeclaredVariables;		
+	}
+	protected Integer numberOfPublicVariables;
+	@Override
+	public int getNumberOfPublicVariables() {
+		if (numberOfPublicVariables == null) {
+			numberOfPublicVariables = getNumberOfDeclaredVariablesWithAccessMode(AccessModifier.PUBLIC);
+			
+		}
+		return numberOfPublicVariables;		
+	}
+	protected Integer numberOfProtectedVariables;
+	@Override
+	public int getNumberOfProtectedVariables() {
+		if (numberOfProtectedVariables == null) {
+			numberOfProtectedVariables = getNumberOfDeclaredVariablesWithAccessMode(AccessModifier.PROTECTED);
+			
+		}
+		return numberOfProtectedVariables;		
+	}
+	protected Integer numberOfPackageAccessVariables;
+	@Override
+	public int getNumberOfPackageAccessVariables() {
+		if (numberOfPackageAccessVariables == null) {
+			numberOfPackageAccessVariables = getNumberOfDeclaredVariablesWithAccessMode(AccessModifier.PACKAGE);
+			
+		}
+		return numberOfPackageAccessVariables;		
+	}
+	protected Integer numberOfPrivateVariables;
+	@Override
+	public int getNumberOfPrivateVariables() {
+		if (numberOfPrivateVariables == null) {
+			numberOfPrivateVariables = getNumberOfDeclaredVariablesWithAccessMode(AccessModifier.PRIVATE);
+			
+		}
+		return numberOfPrivateVariables;		
+	}
+	
+	@Override
+	public double getFractionOfPrivateVariables() {
+		return ((double) getNumberOfPrivateVariables())/getNumberOfDeclaredVariables();
+	}
+	@Override
+	public double getFractionOfProtectedVariables() {
+		return ((double) getNumberOfProtectedVariables())/getNumberOfDeclaredVariables();
+	}
+	@Override
+	public double getFractionOfPackageAccessVariables() {
+		return ((double) getNumberOfPackageAccessVariables())/getNumberOfDeclaredVariables();
+	}
+	@Override
+	public double getFractionOfPublicVariables() {
+		return ((double) getNumberOfPublicVariables())/getNumberOfDeclaredVariables();
+	}
+	@Override
+	public double getAverageAccessModeOfVariables() {
+	
+		return getFractionOfPrivateVariables()*(AccessModifier.PRIVATE.ordinal()) +
+				getFractionOfProtectedVariables()*(AccessModifier.PROTECTED.ordinal()) +
+				getFractionOfPackageAccessVariables()*(AccessModifier.PACKAGE.ordinal()) +
+				getFractionOfPublicVariables()*(AccessModifier.PUBLIC.ordinal());
+		
+	}
+	//-----------
+	@Override
+	public int getNumberOfDeclaredProperties() {
+		return declaredPropertyInfo.size();
+	}
+	protected Integer numberOfDeclaredProperties;
+	
+	protected Integer numberOfPublicProperties;
+	@Override
+	public int getNumberOfPublicProperties() {
+		if (numberOfPublicProperties == null) {
+			numberOfPublicProperties = getNumberOfDeclaredPropertiesWithAccessMode(AccessModifier.PUBLIC);
+			
+		}
+		return numberOfPublicProperties;		
+	}
+	protected Integer numberOfProtectedProperties;
+	@Override
+	public int getNumberOfProtectedProperties() {
+		if (numberOfProtectedProperties == null) {
+			numberOfProtectedProperties = getNumberOfDeclaredPropertiesWithAccessMode(AccessModifier.PROTECTED);
+			
+		}
+		return numberOfProtectedProperties;		
+	}
+	protected Integer numberOfPackageAccessProperties;
+	@Override
+	public int getNumberOfPackageAccessProperties() {
+		if (numberOfPackageAccessProperties == null) {
+			numberOfPackageAccessProperties = getNumberOfDeclaredPropertiesWithAccessMode(AccessModifier.PACKAGE);
+			
+		}
+		return numberOfPackageAccessProperties;		
+	}
+	protected Integer numberOfPrivateProperties;
+	@Override
+	public int getNumberOfPrivateProperties() {
+		if (numberOfPrivateProperties == null) {
+			numberOfPrivateProperties = getNumberOfDeclaredPropertiesWithAccessMode(AccessModifier.PRIVATE);
+			
+		}
+		return numberOfPrivateProperties;		
+	}
+	
+	protected Integer numberOfEditableProperties;
+
+	@Override
+	public int getNumberOfEditableProperties() {
+		if (numberOfEditableProperties == null) {
+			numberOfEditableProperties = getNumberOfDeclaredEditableProperties(declaredPropertyInfo.values());
+			
+		}
+		return numberOfEditableProperties;		
+	}
+	protected Integer numberOfReadOnlyProperties;
+
+	@Override
+	public int getNumberOfReadOnlyProperties() {
+		
+		if (numberOfReadOnlyProperties == null) {
+			numberOfReadOnlyProperties = getNumberOfDeclaredReadOnlyProperties(declaredPropertyInfo.values());
+			
+		}
+		return numberOfReadOnlyProperties;			
+	}
+	protected Integer numberOfWriteOnlyProperties;
+
+	@Override
+	public int getNumberOfWriteOnlyProperties() {
+		
+		if (numberOfWriteOnlyProperties == null) {
+			numberOfWriteOnlyProperties = getNumberOfDeclaredWriteOnlyProperties(declaredPropertyInfo.values());
+			
+		}
+		return numberOfWriteOnlyProperties;			
+	}
+	
+	@Override
+	public double getFractionOfPrivateProperties() {
+		return ((double) getNumberOfPrivateProperties())/getNumberOfDeclaredProperties();
+	}
+	@Override
+	public double getFractionOfProtectedProperties() {
+		return ((double) getNumberOfProtectedProperties())/getNumberOfDeclaredProperties();
+	}
+	@Override
+	public double getFractionOfPackageAccessProperties() {
+		return ((double) getNumberOfPackageAccessProperties())/getNumberOfDeclaredProperties();
+	}
+	@Override
+	public double getFractionOfPublicProperties() {
+		return ((double) getNumberOfPublicProperties())/getNumberOfDeclaredProperties();
+	}
+	
+	@Override
+	public double getFractionOfReadOnlyProperties() {
+		return ((double) getNumberOfReadOnlyProperties())/getNumberOfDeclaredProperties();
+	}
+	@Override
+	public double getFractionOfEditableProperties() {
+		return ((double) getNumberOfEditableProperties())/getNumberOfDeclaredProperties();
+	}
+	@Override
+	public double getFractionOfWriteOnlyProperties() {
+		return ((double) getNumberOfWriteOnlyProperties())/getNumberOfDeclaredProperties();
+	}
+	
+	
+	
+	@Override
+	public double getAverageAccessModeOfProperties() {
+	
+		return getFractionOfPrivateProperties()*(AccessModifier.PRIVATE.ordinal()) +
+				getFractionOfProtectedProperties()*(AccessModifier.PROTECTED.ordinal()) +
+				getFractionOfPackageAccessProperties()*(AccessModifier.PACKAGE.ordinal()) +
+				getFractionOfPublicProperties()*(AccessModifier.PUBLIC.ordinal());
+		
+	}
+	//-----------
+	
+	public static int getNumberOfMethodsWithAccessMode(STMethod[] anSTMethods, AccessModifier anAccessModifier) {
+		if (anSTMethods == null) {
+			return 0;
+		}
+		int retVal = 0;
+			for (STMethod aMethod: anSTMethods) {
+				retVal += 
+						(aMethod.getAccessModifier() == anAccessModifier?1:0);
+			}
+		
+		return retVal;
+		
+	}
+	/*
+	 * Ugh, should really combine STMethod and STVariable in one type with getAccessmodifier.
+	 */
+	public static int getNumberOfVariablesWithAccessMode(List<STVariable> anSTVariables, AccessModifier anAccessModifier) {
+		if (anSTVariables == null) {
+			return 0;
+		}
+		int retVal = 0;
+			for (STVariable aVariable: anSTVariables) {
+				retVal += 
+						(aVariable.getAccessModifier() == anAccessModifier?1:0);
+			}
+		
+		return retVal;
+		
+	}
+	public static int getNumberOfDeclaredPropertiesWithAccessMode(Collection<PropertyInfo> aProperties, AccessModifier anAccessModifier) {
+		if (aProperties == null) {
+			return 0;
+		}
+		int retVal = 0;
+			for (PropertyInfo aProperty: aProperties) {
+				retVal += 
+						(aProperty.getAccessModifier() == anAccessModifier?1:0);
+			}
+		
+		return retVal;
+		
+	}
+	public static int getNumberOfDeclaredEditableProperties(Collection<PropertyInfo> aProperties) {
+		if (aProperties == null) {
+			return 0;
+		}
+		int retVal = 0;
+			for (PropertyInfo aProperty: aProperties) {
+				retVal += 
+						(aProperty.isEditable()?1:0);
+			}
+		
+		return retVal;
+		
+	}
+	public static int getNumberOfDeclaredReadOnlyProperties(Collection<PropertyInfo> aProperties) {
+		if (aProperties == null) {
+			return 0;
+		}
+		int retVal = 0;
+			for (PropertyInfo aProperty: aProperties) {
+				retVal += 
+						(aProperty.isReadOnly()?1:0);
+			}
+		
+		return retVal;
+		
+	}
+	public static int getNumberOfDeclaredWriteOnlyProperties(Collection<PropertyInfo> aProperties) {
+		if (aProperties == null) {
+			return 0;
+		}
+		int retVal = 0;
+			for (PropertyInfo aProperty: aProperties) {
+				retVal += 
+						(aProperty.isWriteOnly()?1:0);
+			}
+		
+		return retVal;
+		
+	}
+	protected  int getNumberOfDeclaredMethodsWithAccessMode(AccessModifier anAccessModifier) {
+		return getNumberOfMethodsWithAccessMode(getDeclaredMethods(), anAccessModifier);
+		
+	}
+	protected  int getNumberOfDeclaredVariablesWithAccessMode(AccessModifier anAccessModifier) {
+		return getNumberOfVariablesWithAccessMode(getDeclaredSTGlobals(), anAccessModifier);
+		
+	}
+	protected  int getNumberOfDeclaredPropertiesWithAccessMode(AccessModifier anAccessModifier) {
+		return getNumberOfDeclaredPropertiesWithAccessMode(declaredPropertyInfo.values(), anAccessModifier);
+		
+	}
+	
 	@Override
 	public STVariable getDeclaredGlobalSTVariable(String aGlobal) {
 		if (globalSTVariables == null) {
@@ -1934,6 +2282,15 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		
 //		return AnSTVariable.getAccessModifiersUsed (this, this.getAccessModifier(), this, getReferenceTypes(), null);
 		
+	}
+	@Override
+	public double getNumberOfReferencesPerVariable() {
+		double aTotalReferences = 0.0;
+		for (STVariable aVariable:getDeclaredSTGlobals()) {
+			Set<DetailAST> aReferences = aVariable.getReferences();
+			aTotalReferences = aReferences == null?0:aReferences.size();
+		}
+		return aTotalReferences/getDeclaredSTGlobals().size();
 	}
 //	@Override
 //	public AccessModifier getAccessModifier() {
