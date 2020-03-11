@@ -510,7 +510,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     				" Average Properties Access:" + currentSTType.getAverageAccessModeOfProperties() +
     				" Average Local References per Constant:" + currentSTType.getNumberOfReferencesPerConstant() +
 
-    				" Average Local References per Variable:" + currentSTType.getNumberOfReferencesPerVariable();
+    				" Average Local References per Variable:" + currentSTType.getNumberOfReferencesPerVariable() +
+    				" Average Local Assignments per Variable:" + currentSTType.getNumberOfReferencesPerVariable();
+
     		
     }
     protected String computeMethodsDeclaredString() {
