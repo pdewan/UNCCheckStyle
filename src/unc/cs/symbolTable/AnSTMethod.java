@@ -16,23 +16,23 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
-	final String declaringClass;
-	final String[] parameterNames;
-	final String[] parameterTypes;
-	final boolean isPublic;
-	final boolean isProcedure;
-	final boolean isInstance;
-	final boolean isVisible;
-	final boolean isConstructor;
+	protected String declaringClass;
+	protected String[] parameterNames;
+	protected String[] parameterTypes;
+	protected boolean isPublic;
+	protected boolean isProcedure;
+	protected boolean isInstance;
+	protected boolean isVisible;
+	protected boolean isConstructor;
 	// protected final boolean isGetter;
 	// protected final boolean isSetter;
 	// protected final boolean isInit;
 	// protected final String signature;
-	final STNameable[] tags;
-	final STNameable[] computedTags;
-	final boolean assignsToGlobal;
+	protected STNameable[] tags;
+	protected STNameable[] computedTags;
+	protected boolean assignsToGlobal;
 	// final String[][] methodsCalled;
-	final CallInfo[] methodsCalled;
+	protected CallInfo[] methodsCalled;
 	// protected Set<STMethod> callingMethods = new HashSet();
 
 	protected List<STMethod> localMethodsCalled;
@@ -41,8 +41,11 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	protected List<STMethod> allMethodsCalled;
 	protected List<STMethod> allCallClosure;
 	protected List<STNameable> typesInstantiated;
-	protected List<String> globalsAssigned;
-	protected List<String> globalsAccessed;
+//	protected List<String> globalsAssigned;
+//	protected List<String> globalsAccessed;
+	protected Map<String, Set<DetailAST>> globalsAssignedMap;
+	protected Map<String, Set<DetailAST>> globalsAccessedMap;
+	
 	protected Map<String, Set<DetailAST>> unknownAccessed;
 
 
@@ -60,7 +63,10 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	protected List<STVariable> parameterSTVariables;
 	protected List<STVariable> parametersAssigned;
+	
+
 	protected List<STVariable> localsAssigned;
+	
 	protected Integer accessToken;
 
 	public static final String GET = "get";
@@ -73,16 +79,29 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	static List<STNameable> anEmptyList = new ArrayList();
 	protected Set<Integer> modifiers;
+	
+	protected boolean unknownsInitialized = false;
 
-
+	/*
+	 * Need it to simulate static methods and global statements
+	 */
+	public AnSTMethod (String aName) {
+		super(null, aName);
+		isPublic = false;
+	}
+	
+	
 
 	public AnSTMethod(DetailAST ast, String name, String declaringClass, String[] aParameterNames,
 			String[] parameterTypes, boolean isPublic, boolean anIsInstance, boolean anIsConstructor,
 			boolean anIsSychronized, String returnType, boolean anIsVisible, STNameable[] aTags,
 			STNameable[] aComputedTags, boolean isAssignsToGlobal,
 			// String[][] aMethodsCalled
-			CallInfo[] aMethodsCalled, List<STNameable> aTypesInstantiated, List<String> aGlobalsAccessed,
-			List<String> aGlobalsAssigned, 
+			CallInfo[] aMethodsCalled, List<STNameable> aTypesInstantiated, 
+//			List<String> aGlobalsAccessed,
+//			List<String> aGlobalsAssigned, 
+			Map<String, Set<DetailAST>> aGlobalsAccessed, 
+			Map<String, Set<DetailAST>> aGlobalsAssigned,
 //			List<String> anUnknownAccessed, 
 //			List<String> anUnknownAssigned,
 			Map<String, Set<DetailAST>> anUnknownAccessed, 
@@ -118,9 +137,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			}
 		}
 		typesInstantiated = aTypesInstantiated;
-		globalsAssigned = aGlobalsAssigned;
+		globalsAssignedMap = aGlobalsAssigned;
 
-		globalsAccessed = aGlobalsAccessed;
+		globalsAccessedMap = aGlobalsAccessed;
 		unknownAccessed = anUnknownAccessed;
 		unknownAssigned = anUnknownAssigned;
 		localSTVariables = aLocalVariables;
@@ -128,9 +147,10 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		accessToken = anAccessToken != null ? anAccessToken : ComprehensiveVisitCheck.DEFAULT_ACCESS_TOKEN;
 		numberOfTernaryConditionals = aNumberOfTernaryOperators;
 		asserts = anAsserts;
-		
-		initUnkowns(unknownAccessed);
-		initUnkowns(unknownAssigned);
+		initUnknowns();
+//		
+//		initUnkowns(unknownAccessed);
+//		initUnkowns(unknownAssigned);
 		modifiers = aModifiers;
 		if (aModifiers != null) {
 		accessModifier = STBuilderCheck.toAccessModifier(aModifiers);
@@ -145,12 +165,19 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	}
 	
+	protected void initUnknowns() {
+		if (unknownsInitialized)
+			return;
+		initUnkowns(unknownAccessed);
+		initUnkowns(unknownAssigned);
+		unknownsInitialized = true;
+	}
 
 	@Override
 	public void setDeclaringSTType(STType declaringSTType) {
 		super.setDeclaringSTType(declaringSTType);
-		if (globalsAssigned != null) {
-			for (String aGlobal : globalsAssigned) {
+		if (globalsAssignedMap != null) {
+			for (String aGlobal : globalsAssignedMap.keySet()) {
 				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
 				if (anSTVariable != null) {
 					anSTVariable.getMethodsAssigning().add(this);
@@ -158,8 +185,8 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 				}
 
 			}
-			if (globalsAccessed != null) {
-				for (String aGlobal : globalsAccessed) {
+			if (globalsAccessedMap != null) {
+				for (String aGlobal : globalsAccessedMap.keySet()) {
 					STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
 					if (anSTVariable != null) {
 						anSTVariable.getMethodsAccessing().add(this);
@@ -516,15 +543,23 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		}
 		return false;
 	}
-
 	@Override
-	public List<String> getGlobalsAssigned() {
-		return globalsAssigned;
+	public Map<String, Set<DetailAST>> getGlobalsAssignedMap() {
+		return globalsAssignedMap;
+	}
+	@Override
+	public Map<String, Set<DetailAST>> getGlobalsAccessedMap() {
+		return globalsAccessedMap;
 	}
 
 	@Override
-	public List<String> getGlobalsAccessed() {
-		return globalsAccessed;
+	public Set<String> getGlobalsAssigned() {
+		return globalsAssignedMap.keySet();
+	}
+
+	@Override
+	public Set<String> getGlobalsAccessed() {
+		return globalsAccessedMap.keySet();
 	}
 
 	@Override
@@ -579,15 +614,18 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		aMap.remove(anOriginalKey);
 		aMap.put(aNewKey, aValue);
 	}
+	
 	@Override
 	public void refreshUnknowns() {
 //		if (this.getName().contains("toString")) {
 //			System.out.println ("to String methods");
 //		}
+		initUnknowns();
 		refreshShortNames();
 		refreshLongNames();
 	}
-	void initUnkowns(Map<String, Set<DetailAST>> anUnknowns) {
+	
+	protected void initUnkowns(Map<String, Set<DetailAST>> anUnknowns) {
 		if (anUnknowns == null || anUnknowns.isEmpty()) {
 			return;
 		}
@@ -628,6 +666,43 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			}
 		}
 	}
+	/*
+	 * Duplicated code in method below, should remove duplication
+	 */
+	@Override
+    public void processGlobals() {
+    	if (globalsAccessedMap == null ) {
+			return;
+		}
+		for (String aLongName : globalsAccessedMap.keySet()) {
+
+			STType anSTType = getDeclaringSTType();
+			if (anSTType != null) {
+				STVariable anSTVariable = anSTType.getDeclaredGlobalSTVariable(aLongName);
+				if (anSTVariable != null) {
+					Set<DetailAST> aReferences = globalsAccessedMap.get(aLongName);
+					Set<DetailAST> anAssignments = globalsAssignedMap.get(aLongName);
+					if (aReferences != null) {
+						anSTVariable.getReferences().addAll(aReferences);
+						if (aReferences.size() > 0) {
+							anSTVariable.getMethodsAccessing().add(this);
+							anSTVariable.getMethodsReferencing().add(this);
+
+						}
+					}
+					if (anAssignments != null) {
+						anSTVariable.getAssignments().addAll(anAssignments);
+						if (anAssignments.size() > 0) {
+							anSTVariable.getMethodsAssigning().add(this);
+							anSTVariable.getMethodsReferencing().add(this);
+
+						}
+					}
+
+				}
+			}
+		}
+	}
 
 	void refreshLongNames() {
 		if (unknownsWithLongNamesWithUnknownSTTypes == null || unknownsWithLongNamesWithUnknownSTTypes.isEmpty()) {
@@ -664,7 +739,14 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			}
 		}
 	}
-	
+	@Override
+	public List<STVariable> getParametersAssigned() {
+		return parametersAssigned;
+	}
+	@Override
+	public List<STVariable> getLocalsAssigned() {
+		return localsAssigned;
+	}
 //	@Override
 //	public void addFullNamesToUnknowns() {
 //		for (String anUnknown:unknownAccessed.keySet()) {

@@ -8,9 +8,10 @@ public abstract class TestSubClass extends TestSuperClass implements PropertyCha
 //	TestSuperClass testSuperClass;
 //	PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 //	private String aPrivate;
-	String aDefault;
-	protected int protectedP;
-	int p2;
+	public static final int subConstant = superConstant + superConstant2;
+//	String aDefault;
+//	protected int protectedP;
+//	int p2;
 //	int foo;
 //	void f1() {
 //		f2();
@@ -58,15 +59,15 @@ public abstract class TestSubClass extends TestSuperClass implements PropertyCha
 //		f2();
 //		
 //	}
-	protected int getProtectedP() {
-		return protectedP;
-	}
-	protected void setProtectedP(int newVal) {
-//		super.superGlobal = 2;;
-		protectedP = newVal;
-//		p2 = newVal + 1;
-//		System.out.println(aDefault);
-	}
+//	protected int getProtectedP() {
+//		return protectedP ;
+//	}
+//	protected void setProtectedP(int newVal) {
+////		super.superGlobal = 2;;
+//		protectedP = newVal + subConstant;
+////		p2 = newVal + 1;
+////		System.out.println(aDefault);
+//	}
 //	public int getP() {
 //		return 0;
 //	}
@@ -102,17 +103,18 @@ public abstract class TestSubClass extends TestSuperClass implements PropertyCha
 //			
 //		}
 //	}
-	protected void exceptionCatch() {
-		try {
-			((Object) this).notify();
-		} catch (Exception e) {
-			
-			e.printStackTrace();
-		}
-	}
+//	protected void exceptionCatch() {
+//		try {
+//			((Object) this).notify();
+//		} catch (Exception e) {
+//			
+//			e.printStackTrace();
+//		}
+//	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		superGlobal = 3;
+		System.out.println(superGlobal + superConstant + subConstant);
 		// TODO Auto-generated method stub
 		
 	}

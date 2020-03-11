@@ -42,6 +42,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 	public AnSTTypeFromClass(Class aClass) {
 		super (null, aClass.getName());
+		external = true;
 		reflectedClass = aClass;
 		Method[] aMethods = aClass.getDeclaredMethods();	
 		declaredMethods = new STMethod[aMethods.length];
@@ -413,7 +414,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 
 
-
+	@Override
+	public boolean isExternal() {
+		return true;
+	}
 //	@Override
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;

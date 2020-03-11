@@ -8,6 +8,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public interface STType extends STNameable{
+	public static final String STATIC_BLOCKS_NAME = "Static Blocks";
+
 	STMethod getGetter(String aPropertyName);
 	STMethod getSetter(String aPropertyName);
 
@@ -139,4 +141,8 @@ public interface STType extends STNameable{
 	double getFractionOfEditableProperties();
 	int getNumberOfWriteOnlyProperties();
 	double getFractionOfWriteOnlyProperties();
+	double getNumberOfAssignmentsPerVariable();
+	double getNumberOfReferencesPerConstant();
+	STMethod getStaticBlocks();
+	void setStaticBlocks(STMethod staticBlocks);
 }

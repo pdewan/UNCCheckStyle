@@ -251,7 +251,7 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			retVal = aFileName;
 		}
 		if (retVal.isEmpty() || retVal.equals(" ")) {
-			System.err.println(" Empty key:" +  retVal);
+//			System.err.println(" Empty key:" +  retVal);
 		}
 		return retVal;
 	}

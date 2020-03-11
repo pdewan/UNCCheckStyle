@@ -150,7 +150,7 @@ public  class ClassDecompositionCheck extends ComprehensiveVisitCheck {
 	public Boolean matchType(String aSpecifiedType, String anActualType) {
 		return unifyingMatchesNameVariableOrTag(aSpecifiedType, anActualType, null);
 	}
-	public static <T> Set<T> intersection (List<T> aList1, List<T> aList2) {
+	public static <T> Set<T> intersection (Collection<T> aList1, Collection<T> aList2) {
 		
 		Set<T> aSet1 = new HashSet(aList1);
 		Set<T> aSet2 = new HashSet(aList2);

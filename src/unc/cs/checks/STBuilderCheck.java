@@ -435,8 +435,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					// methodsCalledByCurrentMethod.toArray(new String[0][0]));
 					methodsCalledByCurrentMethod.toArray(new CallInfo[0]),
 					new ArrayList(typesInstantiatedByCurrentMethod),
-					new ArrayList(globalsAccessedByCurrentMethod),
-					new ArrayList(globalsAssignedByCurrentMethod),
+//					new ArrayList(globalsAccessedByCurrentMethod),
+//					new ArrayList(globalsAssignedByCurrentMethod),
+					new HashMap<>(globalsAccessedByCurrentMethod),
+					new HashMap<>(globalsAssignedByCurrentMethod),
 //					new ArrayList(unknownVariablesAccessedByCurrentMethod),
 					new HashMap(unknownVariablesAccessedByCurrentMethod),
 //					new ArrayList(unknownVariablesAssignedByCurrentMethod),
@@ -688,7 +690,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		}
 		DetailAST modifierAST = anEnumDef.findFirstToken(TokenTypes.MODIFIERS);
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
-		STType anSTClass = new AnSTType(anEnumDef, aFullName, emptyMethods,
+		STType anSTClass = new AnSTType(anEnumDef, aFullName, currentStaticBlocks, emptyMethods,
 				emptyMethods, emptyTypes, null, packageName, false, false,
 				false, true, null, dummyArray, dummyArray, dummyArray,
 				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
@@ -903,6 +905,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		STType anSTClass = new AnSTType(
 				typeAST,
 				fullTypeName, // may be an inner class
+				currentStaticBlocks,
 				aMethods, aConstructors, interfaces, superClass, packageName,
 				isInterface, isGeneric, isElaboration, isEnum,
 				structurePattern, propertyNames.toArray(dummyArray),

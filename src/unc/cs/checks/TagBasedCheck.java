@@ -931,7 +931,7 @@ public void maybeVisitTypeTags(DetailAST ast) {
 	if (typeTagsInitialized) return;
 	typeTagsInitialized = true;
 	if (ast == null) {
-		System.err.println("Null ast in maybeVisitTypeTags");
+//		System.err.println("Null ast in maybeVisitTypeTags");
 		return;
 	}
 	DetailAST annotationAST = AnnotationUtility.getAnnotation(ast, "Tags");		
@@ -1561,7 +1561,7 @@ public static String getOutermostOrEnclosingShortTypeName(DetailAST ast) {
 public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 //	DetailAST result = null;
 	if (anAST == null) {
-		System.err.println ("Null AST:" + anAST);
+//		System.err.println ("Null AST:" + anAST);
 		return null;
 	}
 	if (anAST.getType() == TokenTypes.INTERFACE_DEF) {

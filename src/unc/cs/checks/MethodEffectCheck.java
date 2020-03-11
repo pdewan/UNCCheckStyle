@@ -203,7 +203,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //				 getName(getEnclosingTypeDeclaration(aTree)));
 			STType anSTType = getSTType(aTree);
 			if (anSTType == null) {
-				System.err.println("Did not find sttype, returning from MethodeffectCheckdoPendingChecks:" + getFullTypeName(anAST));
+//				System.err.println("Did not find sttype, returning from MethodeffectCheckdoPendingChecks:" + getFullTypeName(anAST));
 				return null;
 			}
 			if (anSTType.isEnum() || anSTType.isInterface())

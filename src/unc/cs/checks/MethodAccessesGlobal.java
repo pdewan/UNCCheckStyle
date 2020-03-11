@@ -50,7 +50,7 @@ public class MethodAccessesGlobal extends  MissingMethodTextCheck {
 	 */
 	protected Boolean matchMethodToString(STMethod aCallingMethod, String aSpecifiedText, Pattern aSpecifiedPattern) {
 //		String aMethodText = toStringList(aCallingMethod.getAST());
-		List<String> aGlobalsAccessed = aCallingMethod.getGlobalsAccessed();
+		Set<String> aGlobalsAccessed = aCallingMethod.getGlobalsAccessed();
 		if (aGlobalsAccessed != null) {
 			for (String aGlobalAccessed:aGlobalsAccessed) {
 				if (aSpecifiedPattern.matcher(aGlobalAccessed).matches()) {

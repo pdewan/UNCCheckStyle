@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import sun.management.jmxremote.ConnectorBootstrap.PropertyNames;
 import sun.reflect.generics.scope.MethodScope;
 import unc.cs.symbolTable.ACallInfo;
+import unc.cs.symbolTable.AStaticBlocks;
 import unc.cs.symbolTable.AccessModifierUsage;
 import unc.cs.symbolTable.AnSTMethodFromMethod;
 import unc.cs.symbolTable.AnSTType;
@@ -65,12 +66,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	
 
 	// public static final String MSG_KEY = "stBuilder";
+	protected boolean leftCurlySeen;
 	protected boolean isEnum;
 	protected boolean isInterface;
 	protected boolean isElaboration;
 	protected STNameable superClass;
 	protected STNameable[] interfaces;
 	protected boolean currentMethodIsConstructor;
+	protected STMethod currentStaticBlocks;
 	protected STType currentSTType;
 	protected String currentMethodName;
 	DetailAST currentMethodNameAST;
@@ -80,8 +83,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected boolean currentMethodAssignsToGlobalVariable;
 	// protected List<String[]> methodsCalledByCurrentMethod = new ArrayList();
 	protected List<CallInfo> methodsCalledByCurrentMethod = new ArrayList();
-	protected List<String> globalsAccessedByCurrentMethod = new ArrayList();
-	protected List<String> globalsAssignedByCurrentMethod = new ArrayList();
+	protected Map<String, Set<DetailAST>> globalsAccessedByCurrentMethod = new HashMap();
+	protected Map<String, Set<DetailAST>> globalsAssignedByCurrentMethod = new HashMap();
 	
 //	protected List<String> unknownVariablesAccessedByCurrentMethod = new ArrayList();
 	protected Map<String, Set<DetailAST>> unknownVariablesAccessedByCurrentMethod = new HashMap();
@@ -1115,6 +1118,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
     	}
     }
 	protected void visitLCurly(DetailAST ast) {
+		leftCurlySeen = true;
 //		if (currentMethodAST != null)
 //		maybePushAST(ast);
 
@@ -1866,29 +1870,278 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
     	return toFullIdentAST(aParent);
     	
     }
-    protected void addToUnknownsAccessed(String aFullName, DetailAST anAST) {
-    	Set<DetailAST> aReferences = unknownVariablesAccessedByCurrentMethod.get(aFullName);
-    	if (aReferences == null) {
-    		aReferences = new HashSet();
-    		unknownVariablesAccessedByCurrentMethod.put(aFullName, aReferences);
-    	}
-    	aReferences.add(anAST);
+    protected void addToUnknownsAccessed(String aName, DetailAST anAST) {
+    	Map<String, Set<DetailAST>> aMap = 
+    			(currentMethodName == null)?
+    					currentStaticBlocks.getUnknownAccessed():    			
+    						unknownVariablesAccessedByCurrentMethod;
+    	addToKeyToSetMap(
+    			aName, 
+    			anAST, 
+    			aMap
+    			);
+    	
+//    	Set<DetailAST> aReferences = unknownVariablesAccessedByCurrentMethod.get(aName);
+//    	if (aReferences == null) {
+//    		aReferences = new HashSet();
+//    		unknownVariablesAccessedByCurrentMethod.put(aName, aReferences);
+//    	}
+//    	aReferences.add(anAST);
     }
-    protected void addToUnknownsAssigned(String aFullName, DetailAST anAST) {
-    	Set<DetailAST> aReferences = unknownVariablesAssignedByCurrentMethod.get(aFullName);
-    	if (aReferences == null) {
-    		aReferences = new HashSet();
-    		unknownVariablesAccessedByCurrentMethod.put(aFullName, aReferences);
-    	}
-    	aReferences.add(anAST);
+   
+    protected void addToUnknownsAssigned(String aName, DetailAST anAST) {
+    	Map<String, Set<DetailAST>> aMap = 
+    			(currentMethodName == null)?
+    					currentStaticBlocks.getUnknownAssigned():    			
+    						unknownVariablesAssignedByCurrentMethod;
+    	addToKeyToSetMap(
+    			aName, 
+    			anAST, 
+    			aMap
+    			);
+//    	Set<DetailAST> aReferences = unknownVariablesAssignedByCurrentMethod.get(aFullName);
+//    	if (aReferences == null) {
+//    		aReferences = new HashSet();
+//    		unknownVariablesAssignedByCurrentMethod.put(aFullName, aReferences);
+//    	}
+//    	aReferences.add(anAST);
     }
+    protected void addToGlobalsAccessed(String aName, DetailAST anAST) {    	
+    	Map<String, Set<DetailAST>> aMap = 
+    			(currentMethodName == null)?
+    					currentStaticBlocks.getGlobalsAccessedMap():    			
+    					globalsAccessedByCurrentMethod;
+    	addToKeyToSetMap(
+    			aName, 
+    			anAST, 
+    			aMap
+    			);
+//    	Set<DetailAST> aReferences = globalsAccessedByCurrentMethod.get(aName);
+//    	if (aReferences == null) {
+//    		aReferences = new HashSet();
+//    		globalsAccessedByCurrentMethod.put(aName, aReferences);
+//    	}
+//    	aReferences.add(anAST);
+    }
+    
+    
+    public static <KeyType, MapElementType> void addToKeyToSetMap(KeyType aKey, MapElementType anElement, Map<KeyType, Set<MapElementType>> aStringToSet) {
+    	Set<MapElementType> aSet = aStringToSet.get(aKey);
+    	if (aSet == null) {
+    		aSet = new HashSet();
+    		aStringToSet.put(aKey, aSet);
+    	}
+    	aSet.add(anElement);
+    }
+    protected void addToGlobalsAssigned(String aName, DetailAST anAST) {
+    	Map<String, Set<DetailAST>> aMap = 
+    			(currentMethodName == null)?
+    					currentStaticBlocks.getGlobalsAssignedMap():    			
+    					globalsAssignedByCurrentMethod;
+    	addToKeyToSetMap(
+    			aName, 
+    			anAST, 
+    			aMap
+    			);
+//    	
+//    	
+//    	Set<DetailAST> aReferences = globalsAssignedByCurrentMethod.get(aName);
+//    	if (aReferences == null) {
+//    		aReferences = new HashSet();
+//    		globalsAssignedByCurrentMethod.put(aName, aReferences);
+//    	}
+//    	aReferences.add(anAST);
+    }
+    
+    
+
+	protected void addToLocalsAssigned(STVariable aLocalVariable) {
+		if (aLocalVariable != null) {
+			((currentMethodName == null)?
+					currentStaticBlocks.getLocalsAssigned():
+						localsAssignedByCurrentMethod).
+			add(aLocalVariable);
+			return;
+		}
+		//localsAssignedByCurrentMethod
+	}
+	
+	protected void addToParametersAssigned(STVariable aLocalVariable) {
+		if (aLocalVariable != null) {
+			((currentMethodName == null)?
+				currentStaticBlocks.getParametersAssigned():
+				parametersAssignedByCurrentMethod).
+			add(aLocalVariable);
+			return;
+		}
+	}
 //    protected DetailAST lastFullIdentAST = null; /// hack hack !!!
 	protected void visitIdent(DetailAST anIdentAST) {
 		// if (!checkIncludeExcludeTagsOfCurrentType())
 		// return;
-		
-		if (currentMethodName == null)
+//		if (currentMethodIsConstructor) {
+//			System.out.println("constructor");
+//		}
+		if (!leftCurlySeen) {
 			return;
+		}
+		if (fullTypeName == null)
+		return;
+//		if (currentMethodName == null)
+//			return;
+		DetailAST aFullIdentAST = toFullIdentAST(anIdentAST);
+		DetailAST aNextSibling = anIdentAST.getNextSibling();
+		if (aFullIdentAST != anIdentAST && aNextSibling != null && aNextSibling.getType() == TokenTypes.IDENT) {
+			return;
+		}
+		if (isMethodDefOrCall(aFullIdentAST) || isType (anIdentAST) || isAnnotation(anIdentAST)) {
+			return;
+		}
+		String anIdentName = anIdentAST.getText();
+//		if (fullTypeName.equals(anIdentName) || fullTypeName.endsWith("." + anIdentName )) {
+//			return;
+//		}
+		Map<String, String> anOpenMethodScope = currentOpenScope();
+
+		if (anOpenMethodScope != null) {
+			if (anOpenMethodScope.get(anIdentName) != null) {
+				return;
+			}
+		}
+		FullIdent aFullIdent = FullIdent.createFullIdent(aFullIdentAST);
+
+		String aFullIdentName = aFullIdent.getText();
+		
+
+		boolean isLHSOfAssignment = isLHSOfAssignment(anIdentAST);
+		 STVariable aLocalVariable = getLocalVariable(anIdentName);
+		 STVariable aParameter = null;
+		 if (aLocalVariable == null) {
+			 aParameter = getParameterVariable(anIdentName);
+		 }
+		if (isLHSOfAssignment) {
+//			STVariable aVariable = getLocalVariable(anIdentName);
+			if (aLocalVariable != null) {
+				addToLocalsAssigned(aLocalVariable);
+//				localsAssignedByCurrentMethod.add(aLocalVariable);
+				return;
+			}
+//			aLocalVariable = getParameterVariable(anIdentName); //this was commented out
+			if (aParameter != null) { // this was aLocalVariable
+				addToParametersAssigned(aParameter);
+//				parametersAssignedByCurrentMethod.add(aLocalVariable);
+				return;
+			}
+		}
+		if (aLocalVariable != null || aParameter != null) {
+			return; // not interested in accesses
+		}
+//		if (!isGlobal(anIdentName))
+//			return;
+//		if (isLHSOfAssignment(anIdentAST)) {
+//		if (isLHSOfAssignment) {
+//			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
+//			if (aLHSs == null) {
+//				aLHSs = new ArrayList();
+//				globalIdentToLHS.put(anIdentName, aLHSs);
+//			}
+//			aLHSs.add(anIdentAST);
+//		} else {
+//			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
+//			if (aRHSs == null) {
+//				aRHSs = new ArrayList();
+//				globalIdentToRHS.put(anIdentName, aRHSs);
+//			}
+//			aRHSs.add(anIdentAST);
+//		}
+		STNameable aGlobal = getGlobalDeclaredVariable(anIdentName);
+		boolean isGlobal = aGlobal != null;
+//		boolean isGlobal = isGlobalDeclaredVariable(anIdentName);
+		if (!isGlobal) {
+//			unknownVariablesAccessedByCurrentMethod.add(aFullIdentName);
+			addToUnknownsAccessed(aFullIdentName, anIdentAST);
+		} else {
+			addToGlobalsAccessed(anIdentName, anIdentAST);
+//			Set<DetailAST> anAccesses = globalsAccessedByCurrentMethod.get(anIdentName);
+//			if (anAccesses == null) {
+//				anAccesses = new HashSet();
+//				globalsAccessedByCurrentMethod.put(anIdentName, anAccesses);			
+//			}
+//			anAccesses.add(anIdentAST);
+//		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
+////		globalsAccessedByCurrentMethod.add(anIdentName);
+//		globalsAccessedByCurrentMethod.add(fullTypeName + "." + anIdentName);
+//		}
+
+		}
+
+		boolean isGlobalAssignedVariable = isGlobalAssignedVariable(anIdentAST);
+		if (isLHSOfAssignment) {
+			if (isGlobal) {
+			currentMethodAssignsToGlobalVariable = true; // this now redundant
+			addToGlobalsAssigned(anIdentName, anIdentAST);
+//			Set<DetailAST> anAssignments = globalsAssignedByCurrentMethod.get(anIdentName);
+//			if (anAssignments == null) {
+//				anAssignments = new HashSet();
+//				globalsAssignedByCurrentMethod.put(anIdentName, anAssignments);
+//			}
+//			anAssignments.add(anIdentAST);
+//			if (!globalsAssignedByCurrentMethod.contains(anIdentName)) {
+//
+//			globalsAssignedByCurrentMethod.add(fullTypeName + "." + anIdentName);
+//			}
+			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
+			if (aLHSs == null) {
+				aLHSs = new ArrayList();
+				globalIdentToLHS.put(anIdentName, aLHSs);
+			}
+			aLHSs.add(anIdentAST);
+			} else {
+//				unknownVariablesAssignedByCurrentMethod.add(anIdentName);
+				addToUnknownsAssigned(aFullIdentName, anIdentAST);
+			}
+
+		} else {
+			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
+			if (aRHSs == null) {
+				aRHSs = new ArrayList();
+				globalIdentToRHS.put(anIdentName, aRHSs);
+			}
+			aRHSs.add(anIdentAST);
+		}
+//		if (isGlobalAssignedVariable) {
+//			currentMethodAssignsToGlobalVariable = true; // this now redundant
+//			if (!globalsAssignedByCurrentMethod.contains(anIdentName)) {
+//
+//			globalsAssignedByCurrentMethod.add(anIdentName);
+//			}
+//			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
+//			if (aLHSs == null) {
+//				aLHSs = new ArrayList();
+//				globalIdentToLHS.put(anIdentName, aLHSs);
+//			}
+//			aLHSs.add(anIdentAST);
+//
+//		} else {
+//			List<DetailAST> aRHSs = globalIdentToRHS.get(anIdentName);
+//			if (aRHSs == null) {
+//				aRHSs = new ArrayList();
+//				globalIdentToRHS.put(anIdentName, aRHSs);
+//			}
+//			aRHSs.add(anIdentAST);
+//		}
+//		
+
+	}
+	protected void oldVisitIdent(DetailAST anIdentAST) {
+		// if (!checkIncludeExcludeTagsOfCurrentType())
+		// return;
+//		if (currentMethodIsConstructor) {
+//			System.out.println("constructor");
+//		}
+		
+//		if (currentMethodName == null)
+//			return;
 		DetailAST aFullIdentAST = toFullIdentAST(anIdentAST);
 		DetailAST aNextSibling = anIdentAST.getNextSibling();
 		if (aFullIdentAST != anIdentAST && aNextSibling != null && aNextSibling.getType() == TokenTypes.IDENT) {
@@ -1955,10 +2208,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (!isGlobal) {
 //			unknownVariablesAccessedByCurrentMethod.add(aFullIdentName);
 			addToUnknownsAccessed(aFullIdentName, anIdentAST);
-		} else
-		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
-//		globalsAccessedByCurrentMethod.add(anIdentName);
-		globalsAccessedByCurrentMethod.add(fullTypeName + "." + anIdentName);
+		} else {
+			Set<DetailAST> anAccesses = globalsAccessedByCurrentMethod.get(anIdentName);
+			if (anAccesses == null) {
+				anAccesses = new HashSet();
+				globalsAccessedByCurrentMethod.put(anIdentName, anAccesses);			
+			}
+			anAccesses.add(anIdentAST);
+//		if (!globalsAccessedByCurrentMethod.contains(anIdentName)) {
+////		globalsAccessedByCurrentMethod.add(anIdentName);
+//		globalsAccessedByCurrentMethod.add(fullTypeName + "." + anIdentName);
+//		}
 
 		}
 
@@ -1966,10 +2226,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (isLHSOfAssignment) {
 			if (isGlobal) {
 			currentMethodAssignsToGlobalVariable = true; // this now redundant
-			if (!globalsAssignedByCurrentMethod.contains(anIdentName)) {
-
-			globalsAssignedByCurrentMethod.add(fullTypeName + "." + anIdentName);
+			Set<DetailAST> anAssignments = globalsAssignedByCurrentMethod.get(anIdentName);
+			if (anAssignments == null) {
+				anAssignments = new HashSet();
+				globalsAssignedByCurrentMethod.put(anIdentName, anAssignments);
 			}
+			anAssignments.add(anIdentAST);
+//			if (!globalsAssignedByCurrentMethod.contains(anIdentName)) {
+//
+//			globalsAssignedByCurrentMethod.add(fullTypeName + "." + anIdentName);
+//			}
 			List<DetailAST> aLHSs = globalIdentToLHS.get(anIdentName);
 			if (aLHSs == null) {
 				aLHSs = new ArrayList();
@@ -2123,6 +2389,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		fullTypeName = null;
 		shortTypeName = null;
 		isInterface = false;
+		leftCurlySeen = false;
 		isEnum = false;
 		isGeneric = false;
 		isElaboration = false;
@@ -2150,6 +2417,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public void doBeginTree(DetailAST ast) {
 		super.doBeginTree(ast);
 		// method initializations, should be in visit method
+		currentStaticBlocks = new AStaticBlocks(STType.STATIC_BLOCKS_NAME);
 		currentMethodName = null;
 		currentMethodAssignsToGlobalVariable = false;
 		currentMethodScope.clear();

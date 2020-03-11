@@ -51,8 +51,8 @@ public interface STMethod extends STNameable{
 	List<STNameable> getTypesInstantiated();
 	Boolean instantiatesType(String aShortOrLongName);
 	String[] getParameterNames();
-	List<String> getGlobalsAssigned();
-	List<String> getGlobalsAccessed();
+	Set<String> getGlobalsAssigned();
+	Set<String> getGlobalsAccessed();
 	Integer getAccessToken();
 	AccessModifier getAccessModifier();
 	boolean isAbstract();
@@ -67,6 +67,12 @@ public interface STMethod extends STNameable{
 	void refreshUnknowns();
 	boolean isIndirectMethodsNotFullProcessed();
 	Set<STType> getCallingTypes();
-	
+	void processGlobals();
+	void setDeclaringType(STType newVal);
+	Map<String, Set<DetailAST>> getGlobalsAssignedMap();
+	Map<String, Set<DetailAST>> getGlobalsAccessedMap();
+	List<STVariable> getParametersAssigned();
+	List<STVariable> getLocalsAssigned();
+
 
 }

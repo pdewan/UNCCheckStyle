@@ -178,12 +178,12 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		return null;
 	}
 	@Override
-	public List<String> getGlobalsAssigned() {
+	public Set<String> getGlobalsAssigned() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public List<String> getGlobalsAccessed() {
+	public Set<String> getGlobalsAccessed() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -239,6 +239,31 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 	public void refreshUnknowns() {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public void processGlobals() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public Map<String, Set<DetailAST>> getGlobalsAssignedMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public Map<String, Set<DetailAST>> getGlobalsAccessedMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<STVariable> getParametersAssigned() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<STVariable> getLocalsAssigned() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

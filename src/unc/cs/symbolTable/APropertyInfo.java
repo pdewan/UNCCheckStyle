@@ -1,6 +1,7 @@
 package unc.cs.symbolTable;
 
 import java.util.List;
+import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
@@ -97,12 +98,12 @@ public class APropertyInfo implements PropertyInfo {
 		if (getter == null) {
 			return;
 		}
-		List<String> anAccessedGlobals = getter.getGlobalsAccessed();
+		Set<String> anAccessedGlobals = getter.getGlobalsAccessed();
 		if (anAccessedGlobals == null || anAccessedGlobals.size() == 0 ) {
 			return;
 		}
 			if (anAccessedGlobals.size() == 1) {
-				String aVariableName = anAccessedGlobals.get(0);
+				String aVariableName = anAccessedGlobals.iterator().next();
 				variableGet = definingSTType.getDeclaredGlobalSTVariable(aVariableName);
 				propertyInReadVariableName = aVariableName.toLowerCase().contains(name.toLowerCase());
 				
@@ -129,10 +130,10 @@ public class APropertyInfo implements PropertyInfo {
 			return;
 		}
 		if (setter.assignsToGlobal()) {
-			List<String> anAssignedGlobals = setter.getGlobalsAssigned();
+			Set<String> anAssignedGlobals = setter.getGlobalsAssigned();
 			
 			if (anAssignedGlobals.size() == 1) {
-				String aVariableName = anAssignedGlobals.get(0);
+				String aVariableName = anAssignedGlobals.iterator().next();
 				variableSet = definingSTType.getDeclaredGlobalSTVariable(aVariableName);
 				propertyInWrittenVariableName = aVariableName.toLowerCase().contains(name.toLowerCase());
 			} else {

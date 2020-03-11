@@ -23,6 +23,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// protected final STNameable[] imports;
 	protected boolean external = false;
 	
+	protected STMethod staticBlocks ;
+	
 
 	protected STMethod[] initMethods;
 //	protected List<STVariable>	globalSTVariables;
@@ -109,6 +111,9 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		if (methods == null) {
 			methods = computeMethods();
 			if (methods != null) {
+				if (getStaticBlocks() != null) {
+				getStaticBlocks().refreshUnknowns();
+				}
 				for (STMethod aMethod:methods) {
 					aMethod.refreshUnknowns();
 				}
@@ -2285,15 +2290,59 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	}
 	@Override
 	public double getNumberOfReferencesPerVariable() {
+		List<STVariable> aGlobals = getDeclaredSTGlobals();
+		if (aGlobals == null || aGlobals.size() == 0) {
+			return -1;
+		}
 		double aTotalReferences = 0.0;
-		for (STVariable aVariable:getDeclaredSTGlobals()) {
+
+		for (STVariable aVariable:aGlobals) {
 			Set<DetailAST> aReferences = aVariable.getReferences();
-			aTotalReferences = aReferences == null?0:aReferences.size();
+			aTotalReferences += aReferences == null?0:aReferences.size();
 		}
 		return aTotalReferences/getDeclaredSTGlobals().size();
+	}
+	@Override
+	public double getNumberOfReferencesPerConstant() {
+		List<STVariable> aGlobals = getDeclaredSTGlobals();
+		if (aGlobals == null || aGlobals.size() == 0) {
+			return -1;
+		}
+		double aTotalReferences = 0.0;
+		int aNumConstants = 0;
+		for (STVariable aVariable:aGlobals) {
+			if (!aVariable.isFinal())
+				continue;
+			aNumConstants++;
+			Set<DetailAST> aReferences = aVariable.getReferences();
+			aTotalReferences += aReferences == null?0:aReferences.size();
+		}
+		return aTotalReferences/aNumConstants;
+	}
+	@Override
+	public double getNumberOfAssignmentsPerVariable() {
+		List<STVariable> aGlobals = getDeclaredSTGlobals();
+		if (aGlobals == null || aGlobals.size() == 0) {
+			return -1;
+		}
+		double aTotalAssignments = 0.0;
+
+		for (STVariable aVariable:aGlobals) {
+			Set<DetailAST> anAssignments = aVariable.getAssignments();
+			aTotalAssignments += anAssignments == null?0:anAssignments.size();
+		}
+		return aTotalAssignments/getDeclaredSTGlobals().size();
+	}
+	@Override
+	public STMethod getStaticBlocks() {
+		return staticBlocks;
 	}
 //	@Override
 //	public AccessModifier getAccessModifier() {
 //		return accessModifier;
 //	}
+	@Override
+	public void setStaticBlocks(STMethod staticBlocks) {
+		this.staticBlocks = staticBlocks;
+	}
 }

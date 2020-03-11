@@ -70,6 +70,10 @@ public class PostProcessingMain {
 			if (anSTType.isExternal()) {
 				continue; // these methods have no callers
 			}
+			if (anSTType.getStaticBlocks() != null) {
+				
+			anSTType.getStaticBlocks().refreshUnknowns();
+			}
 			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 			for (STMethod aMethod:aMethods) {
 				aMethod.getLocalMethodsCalled(); // side effect of adding caller
@@ -155,6 +159,7 @@ public class PostProcessingMain {
 //		processMethodsCalled(anSTType);
 //		processUnknownVariablesAccessed(anSTType);
 		processAccessModifiersUsed(anSTType);
+		processReferencesPerVariable(anSTType);
 		
 
 	}
@@ -354,7 +359,19 @@ public class PostProcessingMain {
 		for (STVariable aVariable:anSTType.getDeclaredSTGlobals()) {
 			System.out.println("Access Modifier Usage:" + anSTType.getName() + "," + aVariable.getAccessModifiersUsed());
 		}
+		
 		}
+	}
+	public static void processReferencesPerVariable(STType anSTType) {
+		if (anSTType.isExternal()) {
+			return; // these methods have no callers
+		}
+		System.out.println(anSTType.getName() + " Average references per constant:" + anSTType.getNumberOfReferencesPerConstant());
+
+		System.out.println(anSTType.getName() + " Average references per variable:" + anSTType.getNumberOfReferencesPerVariable());
+
+		System.out.println(anSTType.getName() + " Average assignments per variable:" + anSTType.getNumberOfAssignmentsPerVariable());
+
 	}
 	public static void processMethodsCalled(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {

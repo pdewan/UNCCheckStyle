@@ -122,7 +122,7 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 	@Override
 	public boolean isFinal() {
 		// TODO Auto-generated method stub
-		return false;
+		return isFinal;
 	}
 
 	@Override

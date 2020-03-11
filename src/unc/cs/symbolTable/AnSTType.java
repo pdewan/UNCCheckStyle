@@ -50,6 +50,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	public AnSTType(
 			DetailAST ast, 
 			String name, 
+			STMethod aStaticBlocks,
 			STMethod[] declaredMethods,
 			STMethod[] aDeclaredConstructors,
 			STNameable[] interfaces, STNameable superClass,
@@ -79,6 +80,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		if (name.contains("Cell")) {
 //			System.out.println (" found an inner class");
 //		}
+		staticBlocks = aStaticBlocks;
 		this.declaredMethods = declaredMethods;
 		this.declaredConstructors = aDeclaredConstructors;
 		this.declaredInterfaces = interfaces;
@@ -103,14 +105,18 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		globalVariableToRHS = aGlobalVariableToRHS;
 		computedTags = aComputedTags;
 //		globalVariableToType = aGlobalVariableToType;
-		if (!isInterface) {
-			for (STMethod aMethod:declaredMethods) {
-				methodsCalled.addAll(Arrays.asList(aMethod.getCallInfoOfMethodsCalled()));
-			}
-			for (STMethod aConstructor:declaredConstructors) {
-				methodsCalled.addAll(Arrays.asList(aConstructor.getCallInfoOfMethodsCalled()));
-			}
-		}
+//		if (!isInterface) {
+//			for (STMethod aMethod:declaredMethods) {
+//				methodsCalled.addAll(Arrays.asList(aMethod.getCallInfoOfMethodsCalled()));
+//				aMethod.setDeclaringType(this);
+//				aMethod.processGlobals();
+//			}
+//			for (STMethod aConstructor:declaredConstructors) {
+//				aConstructor.setDeclaringSTType(this);
+//				methodsCalled.addAll(Arrays.asList(aConstructor.getCallInfoOfMethodsCalled()));
+//				aConstructor.processGlobals();
+//			}
+//		}
 		typesInstantiated = aTypesInstantiated;
 		globalSTVariables = aGlobalSTVariables;
 		globalIdentToLHS = aGlobalIdentToLHS;
@@ -118,6 +124,22 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		modifiers = aModifiers;
 		accessModifier = STBuilderCheck.toAccessModifier(modifiers);
 		isAbstract = modifiers != null && modifiers.contains(TokenTypes.ABSTRACT);
+		if (!isInterface) {
+			getStaticBlocks().setDeclaringSTType(this);
+			getStaticBlocks().processGlobals();
+			// need to process callinfos also
+			
+			for (STMethod aMethod:declaredMethods) {
+				methodsCalled.addAll(Arrays.asList(aMethod.getCallInfoOfMethodsCalled()));
+				aMethod.setDeclaringType(this);
+				aMethod.processGlobals();
+			}
+			for (STMethod aConstructor:declaredConstructors) {
+				aConstructor.setDeclaringSTType(this);
+				methodsCalled.addAll(Arrays.asList(aConstructor.getCallInfoOfMethodsCalled()));
+				aConstructor.processGlobals();
+			}
+		}
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());

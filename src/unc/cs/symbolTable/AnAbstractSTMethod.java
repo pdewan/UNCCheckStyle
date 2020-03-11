@@ -234,6 +234,10 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 			return declaringSTType;
 			
 		}
+		@Override
+		public void setDeclaringType (STType newVal) {
+			declaringSTType = newVal;
+		}
 		static STMethod[] emptySTMethods = {};
 		//should check length of argument list
 		public static STMethod[] toSTMethods (CallInfo aCallInfo) {
