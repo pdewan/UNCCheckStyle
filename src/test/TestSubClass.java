@@ -8,6 +8,7 @@ public abstract class TestSubClass extends TestSuperClass implements PropertyCha
 //	TestSuperClass testSuperClass;
 //	PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 //	private String aPrivate;
+	static int staticVariable;
 	public static final int subConstant = superConstant + superConstant2;
 //	String aDefault;
 //	protected int protectedP;
@@ -117,6 +118,9 @@ public abstract class TestSubClass extends TestSuperClass implements PropertyCha
 		System.out.println(superGlobal + superConstant + subConstant);
 		// TODO Auto-generated method stub
 		
+	}
+	{
+		staticVariable = subConstant + subConstant + subConstant;
 	}
 
 }

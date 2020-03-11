@@ -507,8 +507,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     				" ReadOnly Access Properties Fraction:" + currentSTType.getFractionOfReadOnlyProperties() +
     				" WriteOnly  Properties Fraction:" + currentSTType.getFractionOfWriteOnlyProperties() +
     				
-    				" Average Properties Access:" + currentSTType.getAverageAccessModeOfProperties();
-//    				" Average references per variable:" + currentSTType.getNumberOfReferencesPerVariable();
+    				" Average Properties Access:" + currentSTType.getAverageAccessModeOfProperties() +
+    				" Average Local References per Constant:" + currentSTType.getNumberOfReferencesPerConstant() +
+
+    				" Average Local References per Variable:" + currentSTType.getNumberOfReferencesPerVariable();
     		
     }
     protected String computeMethodsDeclaredString() {
