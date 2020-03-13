@@ -166,10 +166,38 @@ public class PostProcessingMain {
 //		processDeclaredMethods(anSTType);
 //		processMethodsCalled(anSTType);
 //		processUnknownVariablesAccessed(anSTType);
-		processAccessModifiersUsed(anSTType);
-		processReferencesPerVariable(anSTType);
+//		processAccessModifiersUsed(anSTType);
+//		processReferencesPerVariable(anSTType);
 		
 
+	}
+//	<module name="IllegalPropertyNotification">
+//	<property name="severity" value="warning" />		
+//	<property name="excludeProperties" value="this" />
+//</module>
+	public static void printProperty(String aProperty, String aValue) {
+		System.out.println ("	<property name=\"" + aProperty + "\" value=\"" + aValue + "\"/>");
+
+	}
+	
+	public static void printWarningModuleAndProperties(String aModule, String[] aPropertyNamesAndValues) {
+		printModuleAndProperties(aModule, "warning", aPropertyNamesAndValues);
+	}
+	public static void printInfoModuleAndProperties(String aModule, String[] aPropertyNamesAndValues) {
+		printModuleAndProperties(aModule, "info", aPropertyNamesAndValues);
+	}
+
+	public static void printModuleAndProperties(String aModule, String aSeverity, String[] aPropertyNamesAndValues) {
+		if (aPropertyNamesAndValues.length %2 != 0) {
+			System.out.println ("mismatched property name and values ");
+		}
+		System.out.println ("<module name=\"" + aModule + "\">");
+		printProperty("severity", aSeverity);
+
+		for (int i = 0; i < aPropertyNamesAndValues.length; i = i + 2) {
+			printProperty(aPropertyNamesAndValues[i], aPropertyNamesAndValues[i+1]);
+		}
+		System.out.println ("</module>");
 	}
 
 	public static boolean isExternalType(String aFullName) {
@@ -582,6 +610,9 @@ public class PostProcessingMain {
 		}
 		if    (xmlLogger != null)     
 			xmlLogger.auditFinished(null);
+		String[] aPropertyNamesAndValues = {"prop", "1", "prop2", "2"};
+		
+		printWarningModuleAndProperties("test moudule", aPropertyNamesAndValues);
 
 //		testXMLLogger();
 
