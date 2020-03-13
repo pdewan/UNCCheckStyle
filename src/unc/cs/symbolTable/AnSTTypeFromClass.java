@@ -422,6 +422,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 //	public Map<String, PropertyInfo> getDeclaredPropertyInfos() {
 //		return null;
 //	}
+	@Override
+	public String getFileName() {
+		return getName();
+	}
 
 
 //

@@ -694,7 +694,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		}
 		DetailAST modifierAST = anEnumDef.findFirstToken(TokenTypes.MODIFIERS);
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
-		STType anSTClass = new AnSTType(anEnumDef, aFullName, currentStaticBlocks, emptyMethods,
+		STType anSTClass = new AnSTType(currentFullFileName, anEnumDef, aFullName, currentStaticBlocks, emptyMethods,
 				emptyMethods, emptyTypes, null, packageName, false, false,
 				false, true, null, dummyArray, dummyArray, dummyArray,
 				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
@@ -907,6 +907,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //		List<DetailAST> modifierASTs = findAllInOrderMatchingNodes(modifiers, 62);
 		
 		STType anSTClass = new AnSTType(
+				currentFullFileName,
 				typeAST,
 				fullTypeName, // may be an inner class
 				currentStaticBlocks,

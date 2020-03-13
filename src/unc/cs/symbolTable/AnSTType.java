@@ -38,6 +38,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	protected Map<String, List<DetailAST>> globalIdentToRHS;
 	protected Map<String, List<DetailAST>> globalIdentToLHS ;
 	protected Set<Integer> modifiers;
+	protected String fileName;
 //	protected AccessModifier accessModifier;
 //	protected boolean isAbstract; 
 
@@ -48,6 +49,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	
 
 	public AnSTType(
+			String aFileName,
 			DetailAST ast, 
 			String name, 
 			STMethod aStaticBlocks,
@@ -77,6 +79,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			Set<Integer> aModifiers
 			) {
 		super(ast, name);
+		if (aFileName != null)
+			fileName = aFileName;
+		else
+			fileName = name;
 //		if (name.contains("Cell")) {
 //			System.out.println (" found an inner class");
 //		}
@@ -149,7 +155,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	 * How about adding class name to this?
 	 */
 	
-//	protected STNameable[] computeTags() {
+
+
+	//	protected STNameable[] computeTags() {
 //		STNameable[] result;
 //		if (structurePatternName == null) {
 //			result = tags;
@@ -1110,8 +1118,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		return numberOfNonGetterFunctions;
 //	}
 	
-	
-
+	@Override
+	public String getFileName() {
+		return fileName;
+	}
 
 
 }

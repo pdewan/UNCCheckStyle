@@ -54,6 +54,7 @@ public abstract class UNCCheck extends Check {
 	protected  boolean checkOnBuild = false;
 	boolean visitedTree = true;
 	boolean newSequenceNumber;
+	protected String currentFullFileName;
 
 	public UNCCheck() {
 		initCheck();
@@ -136,6 +137,7 @@ public abstract class UNCCheck extends Check {
 		if (anIndex < 0) {
 			return;
 		}
+		currentFullFileName = aFileName;
 		currentFile = aFileName.substring(anIndex + "src".length() + 1);
 		filesInCurrentPhase.add(currentFile);
 		allFilesInProject.add(currentFile);

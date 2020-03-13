@@ -1,6 +1,8 @@
 package unc.tools.checkstyle;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,12 +11,18 @@ import java.util.Map;
 import java.util.Set;
 
 import com.puppycrawl.tools.checkstyle.NonExitingMain;
+import com.puppycrawl.tools.checkstyle.XMLLogger;
 import com.puppycrawl.tools.checkstyle.Main;
+import com.puppycrawl.tools.checkstyle.api.AuditEvent;
 import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
+import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
+import unc.cs.checks.ClassDefinedCheck;
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
+import unc.cs.parseTree.AnIFStatement;
 import unc.cs.symbolTable.AccessModifierUsage;
 import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.PropertyInfo;
@@ -351,13 +359,16 @@ public class PostProcessingMain {
 		for (STMethod aMethod:aMethods) {
 			List<AccessModifierUsage> aUsage = aMethod.getAccessModifiersUsed();
 			if (aUsage != null)
-				System.out.println("Access Modifier Usage:" + anSTType.getName() + "," +  aUsage);
+//				System.out.println("Access Modifier Usage:" + anSTType.getName() + "," +  aUsage);
+				writeXMLMessage(anSTType.getFileName(), anSTType.getAST(), anSTType.getName() + "," +  aUsage);
 		}
 		}
 		List<STVariable> aVariables = anSTType.getDeclaredSTGlobals();
 		if (aVariables != null) {
 		for (STVariable aVariable:anSTType.getDeclaredSTGlobals()) {
-			System.out.println("Access Modifier Usage:" + anSTType.getName() + "," + aVariable.getAccessModifiersUsed());
+//			System.out.println("Access Modifier Usage:" + anSTType.getName() + "," + aVariable.getAccessModifiersUsed());
+			writeXMLMessage(anSTType.getFileName(), anSTType.getAST(), anSTType.getName() + "," +  aVariable.getAccessModifiersUsed());
+
 		}
 		
 		}
@@ -366,12 +377,71 @@ public class PostProcessingMain {
 		if (anSTType.isExternal()) {
 			return; // these methods have no callers
 		}
-		System.out.println(anSTType.getName() + " Average references per constant:" + anSTType.getNumberOfReferencesPerConstant());
+		writeXMLMessage(anSTType.getFileName(), anSTType.getAST(), anSTType.getName() + " Average references per constant:" + anSTType.getNumberOfReferencesPerConstant());
+		writeXMLMessage(anSTType.getFileName(), anSTType.getAST(), anSTType.getName() + " Average references per variable:" + anSTType.getNumberOfReferencesPerVariable());
+		writeXMLMessage(anSTType.getFileName(), anSTType.getAST(), anSTType.getName() + " Average assignments per variable:" + anSTType.getNumberOfAssignmentsPerVariable());
 
-		System.out.println(anSTType.getName() + " Average references per variable:" + anSTType.getNumberOfReferencesPerVariable());
+//		System.out.println(anSTType.getName() + " Average references per constant:" + anSTType.getNumberOfReferencesPerConstant());
+//
+//		System.out.println(anSTType.getName() + " Average references per variable:" + anSTType.getNumberOfReferencesPerVariable());
+//
+//		System.out.println(anSTType.getName() + " Average assignments per variable:" + anSTType.getNumberOfAssignmentsPerVariable());
 
-		System.out.println(anSTType.getName() + " Average assignments per variable:" + anSTType.getNumberOfAssignmentsPerVariable());
+	}
+	public static void writeXMLMessage(String aFileName, DetailAST anAST, String aMessage) {
+		if (xmlLogger == null) {
+			xmlLogger = new XMLLogger(System.out, true) ;
+			xmlLogger.auditStarted(null);
+		}
+		 final LocalizedMessage message =
+		            new LocalizedMessage(anAST.getLineNo(), anAST.getColumnNo(),
+		                "messages.properties", aMessage, null, SeverityLevel.INFO, "module",
+		           PostProcessingCustomMain.class, null);
+		        final AuditEvent evstart = new AuditEvent(new Object(), aFileName, null);
+		        xmlLogger.fileStarted(evstart);
+		        final AuditEvent ev = new AuditEvent(new Object(), aFileName, message);
 
+//		        xmlLogger.fileStarted(ev);
+		        xmlLogger.addError(ev);
+//		        xmlLogger.fileFinished(ev);
+		        xmlLogger.fileFinished(evstart);
+		;
+
+	}
+	/*
+	 * <error line="8" column="9" severity="info" message="test.TestSuperClass.Global Constant superConstant2 Identifier Components= [super, Constant, 2]" source="unc.cs.checks.MnemonicNameCheck"/>
+
+	 */
+	static XMLLogger xmlLogger;
+	
+//	public static void 
+	public static void testXMLLogger() {
+		xmlLogger = new XMLLogger(System.out, false) ;
+		xmlLogger.auditStarted(null);
+		String[] args = {"FooClass", "FooTag", "2", "3", "4"};
+        final LocalizedMessage message =
+            new LocalizedMessage(1, 1,
+                "messages.properties", "classDefined", args, SeverityLevel.INFO, "module",
+           ClassDefinedCheck.class, null);
+        final AuditEvent evstart = new AuditEvent(new Object(), "Test.java", null);
+
+
+        final AuditEvent ev = new AuditEvent(new Object(), "Test.java", message);
+        xmlLogger.fileStarted(evstart);
+
+//        xmlLogger.fileStarted(ev);
+        xmlLogger.addError(ev);
+//        xmlLogger.fileFinished(ev);
+        xmlLogger.fileFinished(evstart);
+        xmlLogger.fileStarted(evstart);
+
+//      xmlLogger.fileStarted(ev);
+      xmlLogger.addError(ev);
+//      xmlLogger.fileFinished(ev);
+      xmlLogger.fileFinished(evstart);
+
+        xmlLogger.auditFinished(null);
+//        verifyXml(getPath("ExpectedXMLLoggerError.xml"), outStream, message.getMessage());
 	}
 	public static void processMethodsCalled(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
@@ -510,6 +580,11 @@ public class PostProcessingMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		if    (xmlLogger != null)     
+			xmlLogger.auditFinished(null);
+
+//		testXMLLogger();
+
 
 	}
 

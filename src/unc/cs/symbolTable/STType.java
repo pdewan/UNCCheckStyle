@@ -145,4 +145,5 @@ public interface STType extends STNameable{
 	double getNumberOfReferencesPerConstant();
 	STMethod getStaticBlocks();
 	void setStaticBlocks(STMethod staticBlocks);
+	String getFileName();
 }
