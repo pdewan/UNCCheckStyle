@@ -179,20 +179,45 @@ public class PostProcessingMain {
 		System.out.println ("	<property name=\"" + aProperty + "\" value=\"" + aValue + "\"/>");
 
 	}
+//	 <module name="ExpectedGetters">
+//		<property name="severity" value="warning" />	
+//		<property name="includeTypeTags" value="KeyValueClass" />				
+//		<property name="expectedProperties" 
+//		         value="
+//					 Key:.*, 
+//					 Value:.*				
+//					" 
+//		/>
+//	</module>
+	public static void printExectedGetters(String aScopingType, String[] aPropertyNameAndType) {
+		if (aPropertyNameAndType.length %2 != 0) {
+			System.err.println("odd array");
+			return;
+		}
+		StringBuilder aPropertiesAndTypesString = new StringBuilder();
 	
-	public static void printWarningModuleAndProperties(String aModule, String[] aPropertyNamesAndValues) {
-		printModuleAndProperties(aModule, "warning", aPropertyNamesAndValues);
+		for (int i  = 0; i < aPropertyNameAndType.length; i = i+2) {
+			aPropertiesAndTypesString.append("\n\t\t" + aPropertyNameAndType[i] + ":" + aPropertyNameAndType[i+1] + "," );
+		}
+		String[] aPropertyNameAndValue = {"expectedProperties", aPropertiesAndTypesString.toString()};
+		
+		printWarningModuleAndProperties("ExpectedGetters", aScopingType, aPropertyNameAndValue);
 	}
-	public static void printInfoModuleAndProperties(String aModule, String[] aPropertyNamesAndValues) {
-		printModuleAndProperties(aModule, "info", aPropertyNamesAndValues);
+	
+	public static void printWarningModuleAndProperties(String aModule, String aScopingType,  String[] aPropertyNamesAndValues) {
+		printModuleAndProperties(aModule,"warning",  aScopingType, aPropertyNamesAndValues);
+	}
+	public static void printInfoModuleAndProperties(String aModule, String aScopingType, String[] aPropertyNamesAndValues) {
+		printModuleAndProperties(aModule, "info", aScopingType, aPropertyNamesAndValues);
 	}
 
-	public static void printModuleAndProperties(String aModule, String aSeverity, String[] aPropertyNamesAndValues) {
+	public static void printModuleAndProperties(String aModule, String aSeverity, String aScopingType,  String[] aPropertyNamesAndValues) {
 		if (aPropertyNamesAndValues.length %2 != 0) {
 			System.out.println ("mismatched property name and values ");
 		}
 		System.out.println ("<module name=\"" + aModule + "\">");
 		printProperty("severity", aSeverity);
+		printProperty("includeTypeTags", aScopingType);
 
 		for (int i = 0; i < aPropertyNamesAndValues.length; i = i + 2) {
 			printProperty(aPropertyNamesAndValues[i], aPropertyNamesAndValues[i+1]);
@@ -612,8 +637,9 @@ public class PostProcessingMain {
 			xmlLogger.auditFinished(null);
 		String[] aPropertyNamesAndValues = {"prop", "1", "prop2", "2"};
 		
-		printWarningModuleAndProperties("test moudule", aPropertyNamesAndValues);
-
+		printWarningModuleAndProperties("test module", "KeyValueClass", aPropertyNamesAndValues);
+		String[] aGetterProperties = {"Key", ".*", "Value", ".*"};
+		printExectedGetters("KeyValueClass", aGetterProperties);
 //		testXMLLogger();
 
 
