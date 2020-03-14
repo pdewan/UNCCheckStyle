@@ -34,7 +34,11 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 				};
 	}
 	
-
+	@Override
+	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
+		return matchTypes(anSTType, aStrings, aTree);
+		
+	}
 
 	
 	// this should be in an abstract class
@@ -104,7 +108,39 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	}
 
 	
-	public Boolean matchType(List<String> aSpecifications,
+//	public Boolean matchType(List<String> aSpecifications,
+//			List<String> aTypes, DetailAST aTypeAST, DetailAST aTreeAST) {
+//		Boolean retVal = true;
+//		List<String> aSingleElementCollection = new ArrayList();
+//		aSingleElementCollection.add("");
+//		STType anSTType = getSTType(aTypeAST);
+//		for (String aSpecification : aSpecifications) {
+//			aSingleElementCollection.set(0, aSpecification);
+//			if (findMatchingType (aSingleElementCollection, anSTType) != null) {
+//				// cannot be subtype of yourself
+//				continue;
+//			}
+////			String[] aPropertiesPath = aPropertySpecification.split(".");	
+//			Boolean hasMatched = matchType(maybeStripComment(aSpecification), aTypes);
+//			if (hasMatched == null) {
+////				return null;
+//				retVal = null; // means we will try again later
+//				continue;
+//
+//			}
+////			if (!hasMatched) {
+////				logTypeNotMatched(aTreeAST, aSpecification);
+////				retVal = false;
+////			}
+//			if ((!hasMatched && logOnNoMatch()) || (hasMatched && !logOnNoMatch())) {
+//				logTypeNotMatched(aTypeAST, aTreeAST, aSpecification);
+//				if (retVal != null)
+//					retVal = false;
+//			}
+//		}
+//		return retVal;
+//	}
+	public Boolean matchType(String[] aSpecifications,
 			List<String> aTypes, DetailAST aTypeAST, DetailAST aTreeAST) {
 		Boolean retVal = true;
 		List<String> aSingleElementCollection = new ArrayList();
@@ -158,7 +194,16 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 	
 	
 	abstract protected List<STNameable> getTypes(STType anSTType) ;
-	public Boolean matchTypes(STType anSTType, List<String> aSpecifiedInterfaces, DetailAST aTree) {
+//	public Boolean matchTypes(STType anSTType, List<String> aSpecifiedInterfaces, DetailAST aTree) {
+////		int i = 3;
+//		List<STNameable> aClassNames = getTypes(anSTType);
+//		if (aClassNames == null) {
+//			return null;
+//		}
+//		
+//		return matchType(aSpecifiedInterfaces, toNames(aClassNames), anSTType.getAST(), aTree);
+//	}
+	public Boolean matchTypes(STType anSTType, String[] aSpecifiedInterfaces, DetailAST aTree) {
 //		int i = 3;
 		List<STNameable> aClassNames = getTypes(anSTType);
 		if (aClassNames == null) {
@@ -172,34 +217,36 @@ public abstract class ExpectedTypesCheck extends ComprehensiveVisitCheck {
 
 
 	public Boolean doPendingCheck(DetailAST anAST, DetailAST aTree) {
-//		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
-//				.getSTClassByShortName(
-//						getName(getEnclosingTypeDeclaration(aTree)));
-		STType anSTType = getSTType(anAST);
-		if (anSTType == null) {
-//			System.err.println ("ExpectedTypesCheck Did not find sttype for " + getFullTypeName(anAST));
-			return true;
-		}
-//		if (anSTType.getName().contains("mage")) {
-//			System.out.println ("found test type");
+		return super.doStringArrayBasedPendingCheck(anAST, aTree);
+
+////		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
+////				.getSTClassByShortName(
+////						getName(getEnclosingTypeDeclaration(aTree)));
+//		STType anSTType = getSTType(anAST);
+//		if (anSTType == null) {
+////			System.err.println ("ExpectedTypesCheck Did not find sttype for " + getFullTypeName(anAST));
+//			return true;
 //		}
-		if (anSTType.isEnum())
-			return true;
-		boolean doCheck = doCheck(anSTType);
-		if (!doCheck)
-			return true;
-		
-		String aSpecifiedType = findMatchingType(typeToTypes.keySet(),
-				anSTType);
-		
-		if (aSpecifiedType == null)
-			return true; // the constraint does not apply to us
-	
-		List<String> aSpecifiedTypes = typeToTypes.get(aSpecifiedType);
-//		if (aSpecifiedType.equals("ABridgeSceneController")) {
-//			System.out.println ("found ABridgeSceneController")
-//		}
-		return matchTypes(anSTType, aSpecifiedTypes, aTree);
+////		if (anSTType.getName().contains("mage")) {
+////			System.out.println ("found test type");
+////		}
+//		if (anSTType.isEnum())
+//			return true;
+//		boolean doCheck = doCheck(anSTType);
+//		if (!doCheck)
+//			return true;
+//		
+//		String aSpecifiedType = findMatchingType(typeToTypes.keySet(),
+//				anSTType);
+//		
+//		if (aSpecifiedType == null)
+//			return true; // the constraint does not apply to us
+//	
+//		List<String> aSpecifiedTypes = typeToTypes.get(aSpecifiedType);
+////		if (aSpecifiedType.equals("ABridgeSceneController")) {
+////			System.out.println ("found ABridgeSceneController")
+////		}
+//		return matchTypes(anSTType, aSpecifiedTypes, aTree);
 	}
 
 	@Override

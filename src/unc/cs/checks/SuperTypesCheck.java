@@ -28,7 +28,10 @@ public  class SuperTypesCheck extends ExpectedTypesCheck {
 				};
 	}
 	public void setExpectedSuperTypes(String[] aSpecifications) {
-		setExpectedTypes(aSpecifications);
+//		setExpectedTypes(aSpecifications);
+		super.setExpectedStrings(aSpecifications);
+
+		
 
 	}
 	// this should be in an abstract type

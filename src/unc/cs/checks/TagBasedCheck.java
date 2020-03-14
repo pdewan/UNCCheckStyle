@@ -28,6 +28,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final char TAG_CHAR = '@';
 	public static final String TAG_STRING = "" + TAG_CHAR;
 	public static final String MATCH_ANYTHING = "*";
+	public static final String MATCH_ANYTHING_REGULAR_EXPERSSON = ".*";
+
 
 	public static final String TYPE_SEPARATOR = "=";
 //	public static final String BASIC_SET_MEMBER_SEPARATOR = "|";

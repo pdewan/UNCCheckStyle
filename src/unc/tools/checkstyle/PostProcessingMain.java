@@ -163,7 +163,7 @@ public class PostProcessingMain {
 			return;
 		}
 		
-//		processTypeInterfaces(anSTType);
+		processTypeInterfaces(anSTType);
 		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);
 //		processTypeCallInfos(anSTType);
@@ -333,6 +333,10 @@ public class PostProcessingMain {
 	}
 
 	public static void processTypeInterfaces(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
+
 
 		List<STNameable> anInterfaces = anSTType.getAllInterfaces();
 		if (anInterfaces == null) {
@@ -340,6 +344,11 @@ public class PostProcessingMain {
 		}
 		for (STNameable anInterface : anInterfaces) {
 			String aFullName = anInterface.getName();
+			String anOutputName = toOutputType(aFullName);
+			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON) {
+				
+				continue;
+			}
 			if (isExternalType(aFullName) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
 				printImplementsExternal(anSTType, aFullName);
 				return;
@@ -616,7 +625,9 @@ public class PostProcessingMain {
 //				return aTypeName;
 //			}
 		}
-		return ".*";
+		return TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON;
+
+//		return ".*";
 	}
 	static String[] stringArray = {};
 	public static void processTypeProperties(STType anSTType) {

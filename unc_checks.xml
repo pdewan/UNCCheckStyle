@@ -157,6 +157,15 @@
 			<property name="max" value="1" />
 		</module>
 		
+		 <module name="ExpectedInterfaces">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ModelClass" />				
+			<property name="expectedInterfaces" 
+			         value="
+						java.rmi.Remote				
+						" 
+			/>
+		</module>
 		
 		 <module name="ExpectedGetters">
 			<property name="severity" value="warning" />	
@@ -169,20 +178,7 @@
 			/>
 		</module>
 		
-	<module name="ExpectedGetters">
-	<property name="severity" value="warning"/>
-	<property name="includeTypeTags" value="@ModelClass"/>
-	<property name="expectedProperties" value="
-		Threads:java.util.List,
-		TokenizedInput:String\[\],
-		Joiner:@JoinerClass,
-		NumThreads:int,
-		KeyValueQueue:java.util.concurrent.BlockingQueue,
-		ReductionQueueList:java.util.List,
-		InputString:String,
-		Barrier:@BarrierClass,
-		Result:java.util.Map,"/>
-	</module>
+
 			
 		 <module name="ExpectedGetters">
 			<property name="severity" value="warning" />	

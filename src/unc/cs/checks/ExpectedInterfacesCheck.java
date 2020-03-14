@@ -28,7 +28,9 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 	}
 	
 	public void setExpectedInterfaces(String[] aSpecifications) {
-		setExpectedTypes(aSpecifications);
+//		super.setExpectedStrings(aPatterns);
+
+		super.setExpectedStrings(aSpecifications);
 
 	}
 	
@@ -46,5 +48,14 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 	protected String msgKey() {
 		return MSG_KEY;
 	}
-
+//	@Override
+//	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
+//		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
+//
+//		if (aPropertyInfos == null)
+//			return null;
+//
+//		Map<String, PropertyInfo> anUmmatchedPropertyInfos = new HashMap(aPropertyInfos);
+//		return matchProperties(aStrings, anUmmatchedPropertyInfos, aTree);
+//	}
 }
