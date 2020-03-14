@@ -410,6 +410,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			String[] aParameterTypes = currentMethodParameterTypes
 					.toArray(new String[0]);
 			String[] aLongParameterTypes = toLongTypeNames(aParameterTypes);
+			String aLongReturnType = toLongTypeName(currentMethodType);
+
+			
 
 			String[] aParameterNames = currentMethodParameterNames
 					.toArray(new String[0]);
@@ -426,7 +429,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					currentMethodIsInstance || isInterface,
 					currentMethodIsConstructor,
 					currentMethodIsSynchronized,
-					currentMethodType,
+					aLongReturnType,
+//					currentMethodType,
 					currentMethodIsVisible,
 					currentMethodTags.toArray(dummyArray),
 					// currentMethodComputedTags.toArray(dummyArray),

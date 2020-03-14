@@ -175,7 +175,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	return true;
    }
 	public  boolean matchesSomeSpecificationTags (Collection<STNameable> aStoredTags, Collection<String> aSpecifications) {
-		for (String aSpecificationTag:aSpecifications) {
+		for (String aSpecificationTag:aSpecifications) {			
+			aSpecificationTag = maybeStripAt(aSpecificationTag);
 			if (aSpecificationTag.equals(MATCH_ANYTHING) || 
 					matchesAllAndedSpecificationTag(aStoredTags, aSpecificationTag))
 				return true;
@@ -987,11 +988,25 @@ private Map<String, String> importShortToLongName = new HashMap();
 public static boolean hasVariableNameSyntax(String aName) {
 	return !aName.contains(".") && aName.length() > 0 && !Character.isUpperCase(aName.charAt(0));
 }
-protected String toLongTypeName (String aShortOrLongName) {
+protected String toLongTypeNameNoArray (String aShortOrLongName) {
 //	String retVal = aShortName;
+	if (aShortOrLongName == null || aShortOrLongName.isEmpty()) {
+		return aShortOrLongName;
+	}
+	if (aShortOrLongName.equals("void") ) {
+		return aShortOrLongName;
+	}
+
 	if (aShortOrLongName.contains(".") || aShortOrLongName.equals("super") ) {
 		return aShortOrLongName;
 	}
+//	int aSubscriptStart = aShortOrLongName.indexOf("[");
+//	String aSubscriptSuffix = "";
+//	String aShortOrLongNameWithoutSuffix = aShortOrLongName;
+//	if (aSubscriptStart >= -1) {
+//		aShortOrLongNameWithoutSuffix = aShortOrLongName.substring(0, aSubscriptStart);
+//		aSubscriptSuffix = aShortOrLongName.substring(aSubscriptStart);
+//	}
 	String aPossibleLongName = importShortToLongName.get(aShortOrLongName);
 	if (aPossibleLongName != null) {
 		return aPossibleLongName;
@@ -1005,6 +1020,27 @@ protected String toLongTypeName (String aShortOrLongName) {
 	}
 	 
 	return  aShortOrLongName;
+}
+protected String toLongTypeName (String aShortOrLongName) {
+//	String retVal = aShortName;
+	
+	int aSubscriptStart = aShortOrLongName.indexOf("[");
+	String aSubscriptSuffix = "";
+	String aShortOrLongNameWithoutSuffix = aShortOrLongName;
+	if (aSubscriptStart >= 0) {
+		aShortOrLongNameWithoutSuffix = aShortOrLongName.substring(0, aSubscriptStart);
+		aSubscriptSuffix = aShortOrLongName.substring(aSubscriptStart);
+	}
+	String aNameWithoutSuffix = toLongTypeNameNoArray(aShortOrLongNameWithoutSuffix);
+	return aNameWithoutSuffix + aSubscriptSuffix;
+
+}
+public static String toElementTypeName(String aShortOrLongName) {
+	int aSubscriptStart = aShortOrLongName.indexOf("[");
+	if (aSubscriptStart < 0) {
+		return aShortOrLongName;
+	}
+	return aShortOrLongName.substring(0, aSubscriptStart);
 }
 public static boolean isFieldDeclaredIn (STType aType, String aName) {
 	STNameable[] aFields = aType.getDeclaredFields();
@@ -1141,12 +1177,14 @@ public static String fromVariableToTypeName(String aVariableName) {
 		aRetVal = aRetVal.substring(0, aDotIndex);
 	return aRetVal;
 }
-
+public static boolean isExternalType(String aFullName) {
+	return isExternalTypeElement(toElementTypeName(aFullName));
+}
 /**
  * Related is isExternalClass,w hich takes short name
  *
  */
-public static boolean isExternalType(String aFullName) {
+public static boolean isExternalTypeElement(String aFullName) {
 //	if (TagBasedCheck.isProjectImport(aFullName)) {
 //		return false;
 //	}
@@ -1204,6 +1242,16 @@ public static String toNormalizedType(String aType) {
 }
 public static Set<String> getNonComputedTags (STType anSTType) {
 	Set<String> retVal = new HashSet();
+	
+	retVal.addAll(Arrays.asList(toStrings(anSTType.getDerivedTags())));
+	retVal.addAll(Arrays.asList(toStrings(anSTType.getConfiguredTags())));
+	retVal.addAll(Arrays.asList(toStrings(anSTType.getTags())));
+	return retVal;
+
+
+}
+public static List<String> getNonComputedTagsList (STType anSTType) {
+	List<String> retVal = new ArrayList();
 	
 	retVal.addAll(Arrays.asList(toStrings(anSTType.getDerivedTags())));
 	retVal.addAll(Arrays.asList(toStrings(anSTType.getConfiguredTags())));

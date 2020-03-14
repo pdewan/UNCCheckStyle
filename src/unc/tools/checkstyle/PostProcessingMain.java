@@ -1,8 +1,10 @@
 package unc.tools.checkstyle;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +55,8 @@ public class PostProcessingMain {
 	static String[] externalMethodRegularExpressions;
 	static String[] externalClassRegularExpressions;
 	static List<STType> sTTypes;
+	static final String  CHECKS_FILE_NAME = "generated_checks.xml";
+	static PrintStream checksPrintStream;
 
 	public static void initGlobals() {
 		symbolTable = SymbolTableFactory.getSymbolTable();
@@ -160,7 +164,7 @@ public class PostProcessingMain {
 		}
 		
 //		processTypeInterfaces(anSTType);
-//		processTypeProperties(anSTType);
+		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);
 //		processTypeCallInfos(anSTType);
 //		processDeclaredMethods(anSTType);
@@ -176,7 +180,7 @@ public class PostProcessingMain {
 //	<property name="excludeProperties" value="this" />
 //</module>
 	public static void printProperty(String aProperty, String aValue) {
-		System.out.println ("	<property name=\"" + aProperty + "\" value=\"" + aValue + "\"/>");
+		checksPrintStream.println ("	<property name=\"" + aProperty + "\" value=\"" + aValue + "\"/>");
 
 	}
 //	 <module name="ExpectedGetters">
@@ -189,21 +193,59 @@ public class PostProcessingMain {
 //					" 
 //		/>
 //	</module>
-	public static void printExectedGetters(String aScopingType, String[] aPropertyNameAndType) {
-		if (aPropertyNameAndType.length %2 != 0) {
+	public static void printExectedPairs(String aCheckName, String aPropertyName, String aScopingType, String[] aPairs) {
+		if (aPairs.length %2 != 0) {
 			System.err.println("odd array");
 			return;
 		}
 		StringBuilder aPropertiesAndTypesString = new StringBuilder();
 	
-		for (int i  = 0; i < aPropertyNameAndType.length; i = i+2) {
-			aPropertiesAndTypesString.append("\n\t\t" + aPropertyNameAndType[i] + ":" + aPropertyNameAndType[i+1] + "," );
+		for (int i  = 0; i < aPairs.length; i = i+2) {
+			aPropertiesAndTypesString.append("\n\t\t" + aPairs[i] + ":" + aPairs[i+1] + "," );
 		}
-		String[] aPropertyNameAndValue = {"expectedProperties", aPropertiesAndTypesString.toString()};
-		
-		printWarningModuleAndProperties("ExpectedGetters", aScopingType, aPropertyNameAndValue);
+		String[] aPropertyNameAndValue = {aPropertyName, aPropertiesAndTypesString.toString()};
+
+		printWarningModuleAndProperties(aCheckName, aScopingType, aPropertyNameAndValue);
 	}
-	
+	public static void printExpectedGetters(String aScopingType, String[] aPropertyNameAndType) {
+		printExectedPairs("ExpectedGetters", "expectedProperties", aScopingType, aPropertyNameAndType);
+	}
+//	<module name="ExpectedSetters">
+//	<property name="severity" value="warning" />	
+//	<property name="includeTypeTags" value="ModelClass" />				
+//	<property name="expectedProperties" 
+//	         value="
+//				 InputString:String, 
+//				" 
+//	/>
+//</module>
+	public static void printExpectedSetters(String aScopingType, String[] aPropertyNameAndType) {
+		printExectedPairs("ExpectedSetters", "expectedProperties", aScopingType, aPropertyNameAndType);
+	}
+//	<module name="ExpectedSignatures">
+//	<property name="severity" value="warning" />
+//	<property name="includeTypeTags" value="ModelClass" />					
+//	<property name="expectedSignatures"
+//		value="
+//		    addPropertyChangeListener:PropertyChangeListener->void,
+//		" 
+//	/>
+//</module>
+	public static void printExpectedSignatures(String aScopingType, String[] aPropertyNameAndType) {
+		printExectedPairs("ExpectedSignatures", "expectedSignatures", aScopingType, aPropertyNameAndType);
+	}
+//	<module name="MissingMethodCall">
+//	<property name="severity" value="warning" />
+//	<property name="includeTypeTags" value="ControllerClass" />					
+//	<property name="expectedCalls"
+//		value="
+//		    .*!setInputString:String->void,
+//		" 
+//	/>
+//</module>
+	public static void printExpectedCalls(String aScopingType, String[] aPropertyNameAndType) {
+		printExectedPairs("MissingMethodCall", "expectedCalls", aScopingType, aPropertyNameAndType);
+	}
 	public static void printWarningModuleAndProperties(String aModule, String aScopingType,  String[] aPropertyNamesAndValues) {
 		printModuleAndProperties(aModule,"warning",  aScopingType, aPropertyNamesAndValues);
 	}
@@ -213,16 +255,16 @@ public class PostProcessingMain {
 
 	public static void printModuleAndProperties(String aModule, String aSeverity, String aScopingType,  String[] aPropertyNamesAndValues) {
 		if (aPropertyNamesAndValues.length %2 != 0) {
-			System.out.println ("mismatched property name and values ");
+			System.err.println ("mismatched property name and values ");
 		}
-		System.out.println ("<module name=\"" + aModule + "\">");
+		checksPrintStream.println ("<module name=\"" + aModule + "\">");
 		printProperty("severity", aSeverity);
 		printProperty("includeTypeTags", aScopingType);
 
 		for (int i = 0; i < aPropertyNamesAndValues.length; i = i + 2) {
 			printProperty(aPropertyNamesAndValues[i], aPropertyNamesAndValues[i+1]);
 		}
-		System.out.println ("</module>");
+		checksPrintStream.println ("</module>");
 	}
 
 	public static boolean isExternalType(String aFullName) {
@@ -552,20 +594,67 @@ public class PostProcessingMain {
 		System.out.println(aCallingTypeName + ":" + aCallingMethod + ":" + aCalledTypeName + ":" + aCallee + ":"
 				+ aCalledSTType + aCalledMethods);
 	}
+	public static String toTaggedType(STType anSTType) {
+		List<String> aTags = TagBasedCheck.getNonComputedTagsList(anSTType);
+		if (aTags.size() == 0) {
+			return null;
+		}
+		return aTags.get(0);
+	}
+	public static String toOutputType (String aTypeName) {
+		if (TagBasedCheck.isExternalType(aTypeName)) {
+			return aTypeName;
+		}
+		String anElementTypeName = TagBasedCheck.toElementTypeName(aTypeName);
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(anElementTypeName);
+		if (anSTType != null) {
+			String aTag = toTaggedType(anSTType);
+			if (aTag != null) {
+				return "@" + aTag;
+			}
+//			if (TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//				return aTypeName;
+//			}
+		}
+		return ".*";
+	}
+	static String[] stringArray = {};
 	public static void processTypeProperties(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
 			return;
 		}
+		String aTaggedType = toOutputType(anSTType.getName());
 		Map<String,  PropertyInfo> aProperties = anSTType.getPropertyInfos();
 		if (aProperties == null) {
 			aProperties = anSTType.getDeclaredPropertyInfos();
 		}
-		for (String aKey:aProperties.keySet()) {
-			PropertyInfo aPropertyInfo = aProperties.get(aKey);
+		Set<String> aKeys = aProperties.keySet();
+		if (aKeys.size() == 0) {
+			return;
+		}
+		List<String> aNamesAndTypes = new ArrayList(aKeys.size()*2);
+//		int anIndex = 0;
+		for (String aKey:aKeys) {
+			PropertyInfo aPropertyInfo = aProperties.get(aKey);			
 			if (aPropertyInfo.getGetter() != null && aPropertyInfo.getGetter().isPublic()) {
-				System.out.println (anSTType.getName() + " Property:" + aPropertyInfo);
+				String aPropertyName = aPropertyInfo.getName();
+				String aPropertyType = aPropertyInfo.getType();
+				String anOutputPropertyType = toOutputType(aPropertyType);
+				aNamesAndTypes.add(aPropertyName);
+				aNamesAndTypes.add(anOutputPropertyType);
+//
+//				aNamesAndTypes[anIndex] = aPropertyName;
+//				aNamesAndTypes[anIndex+1] = anOutputPropertyType;
+//				anIndex = anIndex + 2;				
+//				System.out.println (anSTType.getName() + 
+//						"name:" +  aPropertyName +
+//						" type:" + anOutputPropertyType);
+						
 			}
 		}
+//		printExpectedGetters(anSTType.getName(), aNamesAndTypes);
+		printExpectedGetters(aTaggedType, aNamesAndTypes.toArray(stringArray));
+
 		 
 		
 	}
@@ -623,6 +712,16 @@ public class PostProcessingMain {
 	}
 
 	public static void main(String[] args) {
+		File aFile = new File(CHECKS_FILE_NAME);
+			try {
+				aFile.createNewFile();
+				checksPrintStream = new PrintStream(new File(CHECKS_FILE_NAME));
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 		// Main.main(ARGS);
 
 		try {
@@ -639,7 +738,8 @@ public class PostProcessingMain {
 		
 		printWarningModuleAndProperties("test module", "KeyValueClass", aPropertyNamesAndValues);
 		String[] aGetterProperties = {"Key", ".*", "Value", ".*"};
-		printExectedGetters("KeyValueClass", aGetterProperties);
+		printExpectedGetters("KeyValueClass", aGetterProperties);
+		checksPrintStream.close();
 //		testXMLLogger();
 
 

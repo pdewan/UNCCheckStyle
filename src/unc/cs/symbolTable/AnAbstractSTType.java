@@ -574,6 +574,9 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		
 		String aPropertyName = anSTMethod.getName().substring(
 				AnSTMethod.GET.length());
+		if (aPropertyName.equals("Class")) {
+			return; // all objects have this
+		}
 		String aPropertyType = anSTMethod.getReturnType();
 		PropertyInfo aPropertyInfo = declaredPropertyInfo.get(aPropertyName);
 		if (aPropertyInfo == null) {

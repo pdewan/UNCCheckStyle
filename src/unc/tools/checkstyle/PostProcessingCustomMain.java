@@ -25,7 +25,7 @@ public class PostProcessingCustomMain extends PostProcessingMain {
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\twitter-heron";
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\twitter-heron\\heron\\common\\src\\java\\org\\apache\\heron\\common\\basics\\NIOLooper.java";
 
-//static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce";
+static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\ATokenCountingModel.java";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\AnAbstractModel.java";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\AMultiThreadController.java";
@@ -33,7 +33,7 @@ public class PostProcessingCustomMain extends PostProcessingMain {
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\TokenCountingClientLauncher.java";
 
 
-static final String SOURCE = "D:\\dewan_backup\\Java\\UNCCheckStyle\\src\\test";
+//static final String SOURCE = "D:\\dewan_backup\\Java\\UNCCheckStyle\\src\\test";
 
 //static final String SOURCE  = "C:\\Users\\dewan\\Downloads\\twitter-heron\\contrib\\bolts\\kafka\\src\\java\\org\\apache\\heron\\bolts\\kafka\\KafkaBolt.java";
 //static final String CHECKSTYLE_CONFIGURATION = "unc_checks.xml";
