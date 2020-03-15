@@ -19,7 +19,7 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
 
 public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
-	public static final String MSG_KEY = "expectedSuperTypes";
+//	public static final String MSG_KEY = "expectedSuperTypes";
 //	@Override
 //	public int[] getDefaultTokens() {
 //		return new int[] {
@@ -27,12 +27,12 @@ public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
 //				TokenTypes.INTERFACE_DEF
 //				};
 //	}
-	public void setExpectedSuperTypes(String[] aSpecifications) {
-		setExpectedTypes(aSpecifications);
-//		setSpecifiedTypes(aSpecifications);
-
-
-	}
+//	public void setExpectedSuperTypes(String[] aSpecifications) {
+//		setExpectedTypes(aSpecifications);
+////		setSpecifiedTypes(aSpecifications);
+//
+//
+//	}
 	protected boolean logOnNoMatch() {
 		return true;
 	}
@@ -46,10 +46,10 @@ public  class ExpectedSuperTypesCheck extends SuperTypesCheck {
 //		// TODO Auto-generated method stub
 //		return true;
 //	}
-	@Override
-	protected String msgKey() {
-		return MSG_KEY;
-	}
+//	@Override
+//	protected String msgKey() {
+//		return MSG_KEY;
+//	}
 	@Override
 	protected
 	boolean doCheck(STType anSTType) {

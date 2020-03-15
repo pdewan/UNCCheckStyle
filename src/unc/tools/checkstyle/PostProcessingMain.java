@@ -164,6 +164,7 @@ public class PostProcessingMain {
 		}
 		
 		printTypeInterfaces(anSTType);
+		printTypeSuperTypes(anSTType);
 		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);
 //		processTypeCallInfos(anSTType);
@@ -217,9 +218,9 @@ public class PostProcessingMain {
 		return aPropertiesString.toString();
 
 	}
-	public static void printExpectedInterfaces(String aScopingType, String[] aPropertyNameAndType) {
-		printExectedPairs("ExpectedInterfaces", "expectedInterfaces", aScopingType, aPropertyNameAndType);
-	}
+//	public static void printExpectedInterfaces(String aScopingType, String[] aPropertyNameAndType) {
+//		printExectedPairs("ExpectedInterfaces", "expectedInterfaces", aScopingType, aPropertyNameAndType);
+//	}
 	public static void printExpectedGetters(String aScopingType, String[] aPropertyNameAndType) {
 		printExectedPairs("ExpectedGetters", "expectedProperties", aScopingType, aPropertyNameAndType);
 	}
@@ -388,12 +389,17 @@ public class PostProcessingMain {
 		List<String> aRequiredInterfaces = new ArrayList();
 		for (STNameable anInterface : anInterfaces) {
 			String aFullName = anInterface.getName();
-			String anOutputName = toOutputType(aFullName);
-			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON || anOutputName.equals(aTypeOutputName)) {
-				
+//			String anOutputName = toOutputType(aFullName);
+//			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON || anOutputName.equals(aTypeOutputName)) {
+//				
+//				continue;
+//			}
+			if (!TagBasedCheck.isExternalType(aFullName)) {
 				continue;
 			}
-			aRequiredInterfaces.add(anOutputName);
+//			aRequiredInterfaces.add(anOutputName);
+			aRequiredInterfaces.add(aFullName);
+
 //			if (isExternalType(aFullName) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
 //				printImplementsExternal(anSTType, aFullName);
 //				return;
@@ -411,6 +417,52 @@ public class PostProcessingMain {
 			return;
 		}
 		printModuleSingleProperty("ExpectedInterfaces", "warning", aTypeOutputName, "expectedInterfaces", aRequiredInterfaces.toArray(stringArray) );
+
+		
+
+	}
+	public static void printTypeSuperTypes(STType anSTType) {
+		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+			return;
+		}
+		String aTypeOutputName = toOutputType(anSTType);
+
+
+		List<STNameable> aSuperClasses = anSTType.getAllSuperTypes();
+		if (aSuperClasses == null) {
+			aSuperClasses = Arrays.asList(anSTType.getSuperClass());
+		}
+		List<String> aRequiredClasses = new ArrayList();
+		for (STNameable aSuperClass : aSuperClasses) {
+			String aFullName = aSuperClass.getName();
+			String anOutputName = toOutputType(aFullName);
+			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON || anOutputName.equals(aTypeOutputName) || anOutputName.equals("java.lang.Object")) {
+				
+				continue;
+			}
+//			if (!TagBasedCheck.isExternalType(aFullName)) {
+//				continue;
+//			}
+			aRequiredClasses.add(anOutputName);
+//			aRequiredClasses.add(aFullName);
+
+//			if (isExternalType(aFullName) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//				printImplementsExternal(anSTType, aFullName);
+//				return;
+//			}
+//			STType anInterfaceSTType = symbolTable.getSTClassByFullName(anInterface.getName());
+//			if (anInterfaceSTType == null) {
+//				// continue;
+//				anInterfaceSTType = symbolTable.getSTClassByShortName(anInterface.getName());
+//			}
+//			if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//				printImplementsTagged(anSTType, anInterfaceSTType);
+//			}
+		}
+		if (aRequiredClasses.size() == 0) {
+			return;
+		}
+		printModuleSingleProperty("ExpectedSuperTypes", "warning", aTypeOutputName, "expectedSuperTypes", aRequiredClasses.toArray(stringArray) );
 
 		
 
