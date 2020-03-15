@@ -1239,7 +1239,9 @@ public static String toNormalizedType(String aType) {
 	if (aTags.size() == 1) {
 		return aTags.iterator().next();
 	}
-	return ".*";
+//	return ".*";
+	return MATCH_ANYTHING_REGULAR_EXPERSSON;
+
 	
 }
 public static Set<String> getNonComputedTags (STType anSTType) {

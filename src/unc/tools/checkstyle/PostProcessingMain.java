@@ -163,7 +163,7 @@ public class PostProcessingMain {
 			return;
 		}
 		
-		processTypeInterfaces(anSTType);
+		printTypeInterfaces(anSTType);
 		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);
 //		processTypeCallInfos(anSTType);
@@ -180,7 +180,7 @@ public class PostProcessingMain {
 //	<property name="excludeProperties" value="this" />
 //</module>
 	public static void printProperty(String aProperty, String aValue) {
-		checksPrintStream.println ("	<property name=\"" + aProperty + "\" value=\"" + aValue + "\"/>");
+		checksPrintStream.println ("\t\t<property name=\"" + aProperty + "\" value=\"" + aValue + "\"/>");
 
 	}
 //	 <module name="ExpectedGetters">
@@ -201,11 +201,24 @@ public class PostProcessingMain {
 		StringBuilder aPropertiesAndTypesString = new StringBuilder();
 	
 		for (int i  = 0; i < aPairs.length; i = i+2) {
-			aPropertiesAndTypesString.append("\n\t\t" + aPairs[i] + ":" + aPairs[i+1] + "," );
+			aPropertiesAndTypesString.append("\n\t\t\t" + aPairs[i] + ":" + aPairs[i+1] + "," );
 		}
 		String[] aPropertyNameAndValue = {aPropertyName, aPropertiesAndTypesString.toString()};
 
 		printWarningModuleAndProperties(aCheckName, aScopingType, aPropertyNameAndValue);
+	}
+	public static String toChecksList( String[] aList) {
+		
+		StringBuilder aPropertiesString = new StringBuilder();
+	
+		for (int i  = 0; i < aList.length; i = i+2) {
+			aPropertiesString.append("\n\t\t\t" + aList[i] + "," );
+		}
+		return aPropertiesString.toString();
+
+	}
+	public static void printExpectedInterfaces(String aScopingType, String[] aPropertyNameAndType) {
+		printExectedPairs("ExpectedInterfaces", "expectedInterfaces", aScopingType, aPropertyNameAndType);
 	}
 	public static void printExpectedGetters(String aScopingType, String[] aPropertyNameAndType) {
 		printExectedPairs("ExpectedGetters", "expectedProperties", aScopingType, aPropertyNameAndType);
@@ -257,15 +270,44 @@ public class PostProcessingMain {
 		if (aPropertyNamesAndValues.length %2 != 0) {
 			System.err.println ("mismatched property name and values ");
 		}
-		checksPrintStream.println ("<module name=\"" + aModule + "\">");
-		printProperty("severity", aSeverity);
-		printProperty("includeTypeTags", aScopingType);
+//		checksPrintStream.println ("\t<module name=\"" + aModule + "\">");
+//		printModuleStart(aModule);
+//		printProperty("severity", aSeverity);
+//		printProperty("includeTypeTags", aScopingType);
+		printModuleStart(aModule, aSeverity, aScopingType);
 
 		for (int i = 0; i < aPropertyNamesAndValues.length; i = i + 2) {
 			printProperty(aPropertyNamesAndValues[i], aPropertyNamesAndValues[i+1]);
 		}
-		checksPrintStream.println ("</module>");
+//		checksPrintStream.println ("</module>");
+		printModuleEnd();
 	}
+	
+	
+	public static void printModuleStart(String aModule) {
+		checksPrintStream.println ("\t<module name=\"" + aModule + "\">");
+
+	}
+	public static void printModuleStart(String aModule, String aSeverity, String aScopingType) {
+		printModuleStart(aModule);
+		printProperty("severity", aSeverity);
+		printProperty("includeTypeTags", aScopingType);
+
+	}
+	public static void printModuleEnd() {
+		checksPrintStream.println ("\t</module>");
+
+	}
+	
+	public static void printModuleSingleProperty(String aModule, String aSeverity, String aScopingType, String aProperty,  String[] aPropertyValues) {
+		
+//		checksPrintStream.println ("\t<module name=\"" + aModule + "\">");
+		printModuleStart(aModule, aSeverity, aScopingType);
+		String aPropertiesString = toChecksList(aPropertyValues);
+		checksPrintStream.println ("\t\t<property name=\"" + aProperty + "\" value=\"" + aPropertiesString + "\"/>");
+		printModuleEnd();
+	}
+
 
 	public static boolean isExternalType(String aFullName) {
 //		return !TagBasedCheck.isProjectImport(aFullName) || TagBasedCheck.isExternalType(aFullName);
@@ -332,36 +374,45 @@ public class PostProcessingMain {
 
 	}
 
-	public static void processTypeInterfaces(STType anSTType) {
+	public static void printTypeInterfaces(STType anSTType) {
 		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
 			return;
 		}
+		String aTypeOutputName = toOutputType(anSTType);
 
 
 		List<STNameable> anInterfaces = anSTType.getAllInterfaces();
 		if (anInterfaces == null) {
 			anInterfaces = Arrays.asList(anSTType.getDeclaredInterfaces());
 		}
+		List<String> aRequiredInterfaces = new ArrayList();
 		for (STNameable anInterface : anInterfaces) {
 			String aFullName = anInterface.getName();
 			String anOutputName = toOutputType(aFullName);
-			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON) {
+			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON || anOutputName.equals(aTypeOutputName)) {
 				
 				continue;
 			}
-			if (isExternalType(aFullName) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
-				printImplementsExternal(anSTType, aFullName);
-				return;
-			}
-			STType anInterfaceSTType = symbolTable.getSTClassByFullName(anInterface.getName());
-			if (anInterfaceSTType == null) {
-				// continue;
-				anInterfaceSTType = symbolTable.getSTClassByShortName(anInterface.getName());
-			}
-			if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
-				printImplementsTagged(anSTType, anInterfaceSTType);
-			}
+			aRequiredInterfaces.add(anOutputName);
+//			if (isExternalType(aFullName) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//				printImplementsExternal(anSTType, aFullName);
+//				return;
+//			}
+//			STType anInterfaceSTType = symbolTable.getSTClassByFullName(anInterface.getName());
+//			if (anInterfaceSTType == null) {
+//				// continue;
+//				anInterfaceSTType = symbolTable.getSTClassByShortName(anInterface.getName());
+//			}
+//			if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType) && TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//				printImplementsTagged(anSTType, anInterfaceSTType);
+//			}
 		}
+		if (aRequiredInterfaces.size() == 0) {
+			return;
+		}
+		printModuleSingleProperty("ExpectedInterfaces", "warning", aTypeOutputName, "expectedInterfaces", aRequiredInterfaces.toArray(stringArray) );
+
+		
 
 	}
 	public static void processDeclaredMethods(STType anSTType) {
@@ -616,6 +667,22 @@ public class PostProcessingMain {
 		}
 		String anElementTypeName = TagBasedCheck.toElementTypeName(aTypeName);
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(anElementTypeName);
+		return toOutputType(anSTType);
+//		if (anSTType != null) {
+//			String aTag = toTaggedType(anSTType);
+//			if (aTag != null) {
+//				return "@" + aTag;
+//			}
+////			if (TagBasedCheck.isExplicitlyTagged(anSTType)) {
+////				return aTypeName;
+////			}
+//		}
+//		return TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON;
+
+//		return ".*";
+	}
+	public static String toOutputType (STType anSTType) {
+	
 		if (anSTType != null) {
 			String aTag = toTaggedType(anSTType);
 			if (aTag != null) {

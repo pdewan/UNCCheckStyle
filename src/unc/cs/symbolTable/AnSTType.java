@@ -296,7 +296,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	}
 	@Override
 	public STNameable[] getDerivedTags() {
-		return configuredTags;
+		return derivedTags;
 	}
 	@Override
 	public STNameable[] getImports() {
