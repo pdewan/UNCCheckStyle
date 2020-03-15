@@ -73,6 +73,7 @@ public interface STMethod extends STNameable{
 	Map<String, Set<DetailAST>> getGlobalsAccessedMap();
 	List<STVariable> getParametersAssigned();
 	List<STVariable> getLocalsAssigned();
+	String getSimpleChecksSignature();
 
 
 }

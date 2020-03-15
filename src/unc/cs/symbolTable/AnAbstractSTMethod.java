@@ -204,6 +204,23 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		 return result.toString();
 
 	 }
+	 protected String checksSignature;
+	 @Override
+	 public String getSimpleChecksSignature() {
+		 if (checksSignature == null) {
+		 StringBuilder result = new StringBuilder();
+
+
+		 result.append(name);
+		 result.append(":");
+		 result.append(toStringParameterTypes());
+		 result.append("->");
+		 result.append(TypeVisitedCheck.toShortTypeName(getReturnType()));
+		 checksSignature = result.toString();
+		 }
+		 return checksSignature;
+
+	 }
 	 @Override
 	 public  boolean isInit() {
 			return isInit;

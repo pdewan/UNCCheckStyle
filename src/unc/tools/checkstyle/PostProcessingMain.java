@@ -22,6 +22,7 @@ import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import unc.cs.checks.ClassDefinedCheck;
+import unc.cs.checks.MissingMethodTextCheck;
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.parseTree.AnIFStatement;
@@ -170,7 +171,7 @@ public class PostProcessingMain {
 //		processTypeCallInfos(anSTType);
 //		processDeclaredMethods(anSTType);
 //		processMethodsCalled(anSTType);
-//		processUnknownVariablesAccessed(anSTType);
+		processUnknownVariablesAccessed(anSTType);
 //		processAccessModifiersUsed(anSTType);
 //		processReferencesPerVariable(anSTType);
 		
@@ -490,14 +491,36 @@ public class PostProcessingMain {
 			return;
 		}
 		Set<String> anUnknownsAccessedSet = anUnKnownsAccessed.keySet();
-		for (String anUnkown:anUnknownsAccessedSet) {
-			if (!anUnkown.contains(".")) continue;
-			String aClassName = TagBasedCheck.fromVariableToTypeName(anUnkown);
+		List<String> aMethodAndVariables = new ArrayList();
+		for (String anUnknown:anUnknownsAccessedSet) {
+			if (!anUnknown.contains(".")) continue;
+			if (anUnknown.contains("System.")) continue;
+			String aClassName = TagBasedCheck.fromVariableToTypeName(anUnknown);
 			if (TagBasedCheck.isExternalType(aClassName)) {
-				System.out.println ("type:" + aSubjectType.getName() + " method " + aRootMethod.getName() + " global " + anUnkown);
+				String aSimpleMethodSignature = aRootMethod.getSimpleChecksSignature();
+				int aLastDotIndex = anUnknown.lastIndexOf(".");
+				String aRegularExpression = 
+						TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON + 
+						anUnknown.substring(aLastDotIndex + 1) +
+					TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON;
+				aMethodAndVariables.add(
+						aSimpleMethodSignature + 
+						MissingMethodTextCheck.CALLER_TEXT_SEPARATOR +
+						aRegularExpression);
+				
+
+//				aMethodAndVariables.add (anUnkown);
+//				System.out.println ("type:" + aSubjectType.getName() + " method " + aRootMethod.getName() + " global " + anUnkown);
 
 			}
 		}
+		if (aMethodAndVariables.size() == 0) {
+			return;
+		}
+		String aTypeOutputName = toOutputType(aSubjectType);
+		printModuleSingleProperty("MethodAccessesGlobal", "warning", aTypeOutputName, "expectedReferences", aMethodAndVariables.toArray(stringArray) );
+
+		
 
 	}
 	
