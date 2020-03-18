@@ -74,6 +74,7 @@ public interface STMethod extends STNameable{
 	List<STVariable> getParametersAssigned();
 	List<STVariable> getLocalsAssigned();
 	String getSimpleChecksSignature();
+	void setPublic(boolean isPublic);
 
 
 }

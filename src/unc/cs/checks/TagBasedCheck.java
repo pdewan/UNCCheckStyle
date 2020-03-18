@@ -18,6 +18,8 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.AnSTType;
+import unc.cs.symbolTable.CallInfo;
+import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
@@ -28,7 +30,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	public static final char TAG_CHAR = '@';
 	public static final String TAG_STRING = "" + TAG_CHAR;
 	public static final String MATCH_ANYTHING = "*";
-	public static final String MATCH_ANYTHING_REGULAR_EXPERSSON = ".*";
+	public static final String MATCH_ANYTHING_REGULAR_EXPERSSION = ".*";
+	public static final String MATCH_SOMETHING_REGULAR_EXPERSSON = "(.*)";
+
 
 
 	public static final String TYPE_SEPARATOR = "=";
@@ -99,7 +103,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		"Exception",
 		"InterruptedException",
 		"System",
-		"Object"
+		"Object",
+		"Math"
 };
 	static List<STNameable> emptyList = new ArrayList();
 
@@ -347,8 +352,14 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  	
  }
  public  boolean containsEfficient(List<STNameable> aTags, String aTag, String aTypeName) {
-	 return matchesAllAndedSpecificationTag(aTags, aTag) ||
+	 boolean retVal = matchesAllAndedSpecificationTag(aTags, aTag) ||
 			 matchesPatternEfficient(aTag, aTypeName); // should not need this
+	 if (retVal) {
+		 if (aTag.contains("Model") && aTypeName.contains("Model")) {
+			 System.out.println ("Found model");
+		 }
+	 }
+	 return retVal;
 // 	for (STNameable aNameable:aTags) {
 // 		if (matchesStoredTag(aNameable.getName(), aTag)) {
 // 			matchedTypeOrTagAST = aNameable.getAST();
@@ -738,7 +749,9 @@ public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 	String aTag = aDescriptor.substring(1);
 	if (aShortClassName.matches(aTag) || aShortClassName.matches("A" + aTag))
 		return true; // in case the class name is the same as tag or is ATag
-
+//	if (aTag.contains("Model") && aShortClassName.contains("Model")) {
+//		System.out.println("found model");
+//	}
 	List<STNameable> aTags = getTags(aShortClassName);
 	if (aTags == null)
 		return null;
@@ -746,7 +759,9 @@ public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 //		return false;
 
 //	String aTag = aDescriptor.substring(1);
-
+//	if (aTag.contains("Model") && aShortClassName.contains("Model")) {
+//	System.out.println("found model");
+//	}
 	return containsEfficient(aTags, aTag, aShortClassName);
 }
 public static Boolean matchesType(String aDescriptor, String aShortClassName) {
@@ -1056,6 +1071,23 @@ public static boolean isFieldDeclaredIn (STType aType, String aName) {
 	}
 	return false;
 }
+//public static boolean isCalledMethodDeclaredIn (STType aType, CallInfo aCallInfo) {
+//	STMethod[] aMethods = aType.getDeclaredMethods();
+//	
+//	for (STMethod aMethod:aMethods) {
+//		if (aCallInfo.getCallee().equals(aMethod.getName()) &&
+//				aCallInfo.getActuals().size() == aMethod.getParameterNames().length) {
+//			return true;
+//		}
+//		if (aCallInfo.getActuals().size() != aMethod.getParameterNames().length) {
+//			continue;
+//		}
+//		if (aField.getName().equals(aName)) {
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 public static String toLongVariableName (STNameable aNameable, String aShortOrLongName) {
 	STType aType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aNameable.getName());
 	if (aType == null) {
@@ -1206,8 +1238,29 @@ public static boolean isExternalTypeElement(String aFullName) {
 public static boolean isExplicitlyTagged (STType anSTType) {
 	return (anSTType != null && anSTType.getTags() != null) && (anSTType.getTags().length > 0 || anSTType.getConfiguredTags().length > 0);
 }
+
+/**
+ * Returns the first one found, perhaps should return a set
+ * @param anSTType
+ * @return
+ */
+public static STType findTaggedSubtype (STType anSTType) {
+	boolean isSelfTagged = isExplicitlyTagged(anSTType);
+	if (isSelfTagged) {
+		return anSTType;
+	}
+	Set<STType> aSubTypes = anSTType.getSubSTTypes();
+	STType retVal;
+	for (STType aSubType:aSubTypes) {
+		retVal = findTaggedSubtype(aSubType);
+		if (retVal != null) {
+			return retVal;
+		}
+	}
+	return null;
+}
 public static Boolean isExplicitlyTagged (String aFullName) {
-	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
+	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aFullName);
 	if (anSTType == null) {
 		return false;
 	}
@@ -1240,7 +1293,7 @@ public static String toNormalizedType(String aType) {
 		return aTags.iterator().next();
 	}
 //	return ".*";
-	return MATCH_ANYTHING_REGULAR_EXPERSSON;
+	return MATCH_ANYTHING_REGULAR_EXPERSSION;
 
 	
 }

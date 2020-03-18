@@ -365,7 +365,11 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	protected static boolean isStarParameters(String[] aParameters) {
 		if (aParameters == null)
 			return true;
-		return aParameters.length == 1 && aParameters[0].equals(MATCH_ANYTHING);
+		return aParameters.length == 1 && (
+				aParameters[0].equals(MATCH_ANYTHING) 
+//				|| 
+//				aParameters[0].equals(MATCH_ANYTHING_REGULAR_EXPERSSION)
+				);
 	}
 	static STMethod noMethod = new NoMethod();
 //	protected List<STMethod> getMatchingMethods(STType aTargetSTType, STMethod aSpecifiedMethod) {
@@ -436,7 +440,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 			 if (!retVal) {
 				 return  false;
 			 }
-			 return matchTypeISA(aSpecifiedTarget, toShortTypeOrVariableName(aTypeName));
+//			 return matchTypeISA(aSpecifiedTarget, toShortTypeOrVariableName(aTypeName));
+			 return matchTypeISA(aSpecifiedTarget, aTypeName);
+
 
 		 }
 		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);
@@ -445,7 +451,9 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		 if (!matchesType) {
 				 return false;
 		 }
-
+//		 if (aSpecifiedTarget.contains("Model") && aTypeName.contains("Model")) {
+//				System.out.println("found model");
+//				}
 		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
 			 return aShortMethodName.matches(aSpecifiedMethod.getName()); // not checking for parameters?
 		 }

@@ -11,6 +11,9 @@ import java.util.Set;
 import com.puppycrawl.tools.checkstyle.TreeWalker;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 
+import unc.cs.checks.STBuilderCheck;
+import unc.cs.checks.TagBasedCheck;
+
 public class ASymbolTable implements SymbolTable{
 //	Map<String, DetailAST> classNameToAST = new HashMap<>();
 //	Map<String, DetailAST> interfaceNameToAST = new HashMap<>();
@@ -100,6 +103,10 @@ public class ASymbolTable implements SymbolTable{
 //	}
 	@Override
 	public STType getSTClassByShortName(String aTypeName) {
+		STType retVal = getSTClassByFullName(aTypeName);
+		if (retVal != null) {
+			return retVal;
+		}
 		List<String> aFullNames =  matchingFullSTTypeNames(aTypeName);
 		if (aFullNames.size() == 0) {
 //			System.err.println("No full type name with short name" + aTypeName);
@@ -113,6 +120,14 @@ public class ASymbolTable implements SymbolTable{
 	}
 	@Override
 	public STType getSTClassByFullName(String aTypeName) {
+		boolean isJavaClass = false;
+		if (STBuilderCheck.isJavaLangClass(aTypeName)) {
+			if (Character.isUpperCase(aTypeName.charAt(0))) {
+				aTypeName = "java.lang." + aTypeName;
+				isJavaClass = true;
+			}
+		
+		}
 		STType anSTType = typeNameToSTClass.get(aTypeName);
 //		if (anSTType == null) {
 //			System.out.println("Null ST Type:" + aTypeName);
@@ -122,6 +137,17 @@ public class ASymbolTable implements SymbolTable{
 //			}
 //
 //		}
+		if (anSTType == null) {
+			if (isJavaClass && STBuilderCheck.getImportsAsExistingClasses()) {
+				try {
+					Class aClass = Class.forName(aTypeName);
+					return STBuilderCheck.addExistingClassSTType(aClass);
+
+				} catch (ClassNotFoundException e) {
+					return null;
+				}
+			}
+		}
 		return anSTType;
 //		return anSTType;
 

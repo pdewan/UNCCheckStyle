@@ -265,6 +265,11 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public void setPublic(boolean isPublic) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 

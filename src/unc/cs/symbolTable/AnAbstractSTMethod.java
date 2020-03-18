@@ -15,6 +15,8 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
 public abstract class AnAbstractSTMethod extends AnSTNameable implements STMethod {
+private static final String PARAMETERS_RETURN_VALUE_SEPARATOR = "->";
+private static final String NAME_PARAMETER_SEPARATOR = ":";
 //	final String declaringClass;
 //	final String[] parameterTypes;
 //	final boolean isPublic;
@@ -197,14 +199,21 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 		 result.append(ComprehensiveVisitCheck.toAccessString(getAccessToken()));
 
 		 result.append(name);
-		 result.append(":");
+		 result.append(NAME_PARAMETER_SEPARATOR);
 		 result.append(toStringParameterTypes());
-		 result.append("->");
+		 result.append(PARAMETERS_RETURN_VALUE_SEPARATOR);
 		 result.append(TypeVisitedCheck.toShortTypeName(getReturnType()));
 		 return result.toString();
 
 	 }
 	 protected String checksSignature;
+	 public static String getMatchAnyHeader(String aName) {
+		 return aName + NAME_PARAMETER_SEPARATOR + 
+				 TagBasedCheck.MATCH_ANYTHING+ 
+				PARAMETERS_RETURN_VALUE_SEPARATOR + 
+				TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
+
+	 }
 	 @Override
 	 public String getSimpleChecksSignature() {
 		 if (checksSignature == null) {
@@ -212,9 +221,9 @@ public abstract class AnAbstractSTMethod extends AnSTNameable implements STMetho
 
 
 		 result.append(name);
-		 result.append(":");
+		 result.append(NAME_PARAMETER_SEPARATOR);
 		 result.append(toStringParameterTypes());
-		 result.append("->");
+		 result.append(PARAMETERS_RETURN_VALUE_SEPARATOR);
 		 result.append(TypeVisitedCheck.toShortTypeName(getReturnType()));
 		 checksSignature = result.toString();
 		 }

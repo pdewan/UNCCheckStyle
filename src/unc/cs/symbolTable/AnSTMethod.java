@@ -20,6 +20,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	protected String[] parameterNames;
 	protected String[] parameterTypes;
 	protected boolean isPublic;
+	
 	protected boolean isProcedure;
 	protected boolean isInstance;
 	protected boolean isVisible;
@@ -113,6 +114,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 			Set<Integer> aModifiers) {
 		super(ast, name);
+		if ( name != null && name.equals("setInputString")) {
+			System.out.println("Set input String");
+		}
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
 		parameterNames = aParameterNames;
@@ -220,6 +224,10 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	@Override
 	public boolean isPublic() {
 		return isPublic;
+	}
+	@Override
+	public void setPublic(boolean isPublic) {
+		this.isPublic = isPublic;
 	}
 
 	@Override
@@ -623,6 +631,45 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		initUnknowns();
 		refreshShortNames();
 		refreshLongNames();
+		refreshCallInfos();
+	}
+	protected void refreshCallInfos() {
+		if (methodsCalled == null) {
+			return;
+		}
+		for (CallInfo aCallInfo:methodsCalled) {
+			String aCalledType = aCallInfo.getCalledType();
+			if (aCalledType.startsWith(ComprehensiveVisitCheck.VARIABLE_PREFIX)) {
+				int aDotIndex = aCalledType.lastIndexOf(".");
+				if (!aCalledType.contains("System")) {
+					System.out.println ("Found non system");
+				}
+				STType aType = null;
+				String aShortName = null;
+				if (aDotIndex < 0) {
+					aShortName = aCalledType.substring(1);
+					
+					aType = getDeclaringSTType();
+				} else {
+					aShortName = aCalledType.substring(aDotIndex + 1);
+					String aLongName = aCalledType.substring(1,aDotIndex );
+					aType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aLongName);
+				}
+				if (aType == null) {
+					continue;
+				}
+				STVariable anSTVariable = aType.getDeclaredGlobalSTVariable(aShortName);
+				if (anSTVariable == null) {
+					anSTVariable = aType.getGlobalSTVariable(aShortName);
+					if (anSTVariable == null) {
+						continue;
+					}
+				}
+				String aTypeName = anSTVariable.getType();
+				aCallInfo.setCalledType(aTypeName);
+
+			}
+		}
 	}
 	
 	protected void initUnkowns(Map<String, Set<DetailAST>> anUnknowns) {

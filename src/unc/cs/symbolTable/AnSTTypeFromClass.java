@@ -367,7 +367,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	@Override
 	public List<STVariable> getDeclaredSTGlobals() {
 		// TODO Auto-generated method stub
-		return null;
+		return globalSTVariables;
 	}
 
 

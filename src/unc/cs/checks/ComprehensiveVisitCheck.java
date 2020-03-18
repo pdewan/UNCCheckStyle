@@ -555,8 +555,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public static String[] splitDashHyphen (String aDashHyphenName) {
 		return aDashHyphenName.split("_|-");
 	}
-
+	static Map<String, STMethod> signatureToSTMethod = new HashMap();
 	public static STMethod signatureToMethod(String aSignature) {
+		STMethod retVal = signatureToSTMethod.get(aSignature);
+		if (retVal == null) {
+			retVal = createMethodFromSignature(aSignature);
+			signatureToSTMethod.put(aSignature, retVal);
+		}
+		return retVal;
+	}
+
+	public static STMethod createMethodFromSignature(String aSignature) {
 		String[] aNameAndRest = aSignature.split(":");
 		if (aNameAndRest.length == 1) {
 			if (!aSignature.equals(MATCH_ANYTHING) && !isIdentifier(aSignature)) {
@@ -1155,7 +1164,23 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public static String removeBrackets(String anArrayIndex) {
 		return anArrayIndex.substring(0, anArrayIndex.indexOf("["));
 	}
-
+	
+	public static boolean isClassIdent(String anIdent) {
+		int aStartIndex = 0;
+		String aLastComponent = anIdent;
+		int aDotIndex = anIdent.lastIndexOf(".");
+		if (aDotIndex >= 0 ) {
+//			aLastComponent = anIdent.substring(aDotIndex + 1);	
+			aStartIndex = aDotIndex + 1;
+		}
+		if (Character.isLowerCase(anIdent.charAt(aStartIndex)) 
+				|| ((aStartIndex + 1) >= anIdent.length())) { // assume no one character classes
+			return false;
+		}
+	    return Character.isLowerCase(anIdent.charAt(anIdent.length() - 1));
+		
+	}
+	public static final String VARIABLE_PREFIX = "$";
 	public String lookupType(String aVariable) {
 		boolean isArrayIndex = isArrayIndex(aVariable);
 		if (isArrayIndex)
@@ -1167,8 +1192,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //		String result = lookupLocal(aVariable);
 		if (result == null)
 			result = lookupGlobal(aVariable);
-		if (result == null) // method on a class?
-			result = aVariable;
+		if (result == null) { // method on a class? 
+			if (isClassIdent(aVariable)) {
+				result = toLongTypeName(aVariable);
+			} else {
+				result = VARIABLE_PREFIX + toLongTypeName(aVariable);
+			}
+		}
 		if (isArrayIndex) {
 			if (!isArrayIndex(result)) {
 				return result; // occurs when the variable is not stored but is
@@ -1650,7 +1680,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			if (aList.size() > 0) {
 				DetailAST aType = aList.get(0);
 				DetailAST aCast = aType.getLastChild();
-				if (aCast != null) {
+				
+				
+				if (aCast != null && 
+						isClassIdent(aCast.getText())) // kludgy, we know cast should be a class
+				{
 					aNormalizedParts = new String[]{aCast.getText(), shortMethodName};
 				}
 			
@@ -1713,10 +1747,34 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeOrVariableName(aNormalizedLongName);
-		String aNormalizedLongTypeName = toLongTypeName(aNormalizedParts[0]);
+//		String aNormalizedLongTypeName = toLongTypeName(aNormalizedParts[0]);
+		StringBuilder aNormalizedLongTypeName = new StringBuilder();
+		for (int i = 0; i < aNormalizedParts.length - 1; i++ ) {
+			
+			String aCurrentPart = aNormalizedParts[i];
+			if (aCurrentPart.contains("QUIT")) {
+				System.out.println ("found QUIT");
+			}
+			if (i == 0) {
+				aCurrentPart = toLongTypeName(aCurrentPart);
+			}
+//			if (aCurrentPart.equals("QUIT")) {
+//				System.out.println("QUIT");
+//			}
+			if (i > 0) {
+				aNormalizedLongTypeName.append(".");
+			}			
+			aNormalizedLongTypeName.append(aCurrentPart);
+			
+		}
+		if (!aNormalizedLongTypeName.toString().startsWith(VARIABLE_PREFIX)) {
+			if (!isClassIdent(aNormalizedLongTypeName.toString())) {
+				aNormalizedLongTypeName.insert(0, VARIABLE_PREFIX);
+			}
+		}
 		CallInfo result = new ACallInfo(ast, fullTypeName, currentMethodName, new ArrayList(
 //				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]), aCallee,
-				currentMethodParameterTypes), aNormalizedLongTypeName, aCallee,
+				currentMethodParameterTypes), aNormalizedLongTypeName.toString(), aCallee,
 
 				aCallParameters, aNormalizedParts, aCastType);
 		if (aLeftMostMethodTargetAST != null) {
@@ -1787,6 +1845,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			aNormalizedParts = new String[] { shortMethodName, shortMethodName };
 		}
 		// need to worry about cast at some point I assume
+		
 		CallInfo result = new ACallInfo(ast, fullTypeName, currentMethodName, new ArrayList(
 				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]),
 				aNormalizedParts[1], aCallParameters, aNormalizedParts, null);
@@ -2883,12 +2942,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	public String[] toNormalizedClassBasedCall(String[] aCallParts) {
-		if (aCallParts.length == 3 && "this".equals(aCallParts[0])) { // unncessary
+		if (aCallParts.length == 3 && ("this".equals(aCallParts[0]) || "super".equals(aCallParts[0]))) { // unncessary
 																		// this.global
 			aCallParts = new String[] { aCallParts[1], aCallParts[2] };
 		}
 		List<String> aCallPartsList = new ArrayList();
-		if (aCallParts.length == 1 || "this".equals(aCallParts[0])) { // put the
+		if (aCallParts.length == 1 || "this".equals(aCallParts[0]) || "super".equals(aCallParts[0])) { // put the
 																		// name
 																		// of
 																		// the

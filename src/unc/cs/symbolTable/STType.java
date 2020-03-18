@@ -146,4 +146,7 @@ public interface STType extends STNameable{
 	STMethod getStaticBlocks();
 	void setStaticBlocks(STMethod staticBlocks);
 	String getFileName();
+	Set<STType> getSubSTTypes();
+	Set<STVariable> getAllGlobalVariables();
+	STVariable getGlobalSTVariable(String aGlobal);
 }

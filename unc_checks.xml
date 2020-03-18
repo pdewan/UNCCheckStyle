@@ -157,15 +157,31 @@
 			<property name="max" value="1" />
 		</module>
 		
-		 <module name="ExpectedInterfaces">
-			<property name="severity" value="warning" />	
-			<property name="includeTypeTags" value="ModelClass" />				
-			<property name="expectedInterfaces" 
-			         value="
-						java.rmi.Remote				
-						" 
-			/>
+		<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass"/>
+		<property name="expectedInterfaces" value="
+			java.rmi.Remote,"/>
 		</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedInterfaces" value="
+			java.beans.PropertyChangeListener,"/>
+	</module>
+	
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
 		
 		 <module name="ExpectedGetters">
 			<property name="severity" value="warning" />	
@@ -211,6 +227,48 @@
 			/>
 		</module>
 		
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass"/>
+		<property name="expectedCalls" value="
+			java.util.Map!keySet:->Set,
+			java.util.Map!get:Object->Object,
+			@ReducerFactory!reduce:*->.*,
+			java.rmi.RemoteException!printStackTrace:*->.*,
+			java.util.Map!clear:->void,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceWait:->void,
+			java.util.List!clear:->void,
+			@MapperFactory!getMapper:->Mapper,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceEnqueueRequest:Object->void,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceEnqueue:Object->void,
+			java.util.concurrent.BlockingQueue!put:Object->void,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceNotify:->void,
+			java.util.Map!keySet:->Set,
+			java.util.Map!put:Object;Object->Object,
+			java.util.Map!keySet:->Set,
+			java.util.List!get:int->Object,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceReduce:Object;Object->void,
+			java.util.List!add:Object->boolean,
+			java.util.Stack!add:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:PropertyChangeListener->void,
+			java.util.Stack!quit:*->.*,
+			java.rmi.RemoteException!printStackTrace:*->.*,
+			java.util.Stack!pop:->Object,
+			java.util.Stack!peek:->Object,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceRegister:Object->void,
+			java.util.Stack!push:Object->Object,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedCalls" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceNumbersPrompt:->void,
+			@ModelClass!setInputString:String->void,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceQuit:->void,"/>
+	</module>
+		
 		<module name="MissingMethodCall">
 			<property name="severity" value="warning" />
 			<property name="includeTypeTags" value="ControllerClass" />					
@@ -247,10 +305,11 @@
 			<property name="includeTypeTags" value="ModelClass" />					
 			<property name="expectedReferences"
 				value="
-				    toString#.*MODEL.*,
+				    toString:->String#.*MODEL.*,
 				" 
 			/>			
 		</module>
+		
 		
 		<module name="MissingMethodText">
 			<property name="severity" value="warning" />

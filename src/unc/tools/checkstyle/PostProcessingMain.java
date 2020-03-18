@@ -22,11 +22,13 @@ import com.puppycrawl.tools.checkstyle.api.LocalizedMessage;
 import com.puppycrawl.tools.checkstyle.api.SeverityLevel;
 
 import unc.cs.checks.ClassDefinedCheck;
+import unc.cs.checks.MethodCallCheck;
 import unc.cs.checks.MissingMethodTextCheck;
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.parseTree.AnIFStatement;
 import unc.cs.symbolTable.AccessModifierUsage;
+import unc.cs.symbolTable.AnAbstractSTMethod;
 import unc.cs.symbolTable.CallInfo;
 import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
@@ -168,7 +170,7 @@ public class PostProcessingMain {
 		printTypeSuperTypes(anSTType);
 		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);
-//		processTypeCallInfos(anSTType);
+		processTypeCallInfos(anSTType);
 //		processDeclaredMethods(anSTType);
 //		processMethodsCalled(anSTType);
 		processUnknownVariablesAccessed(anSTType);
@@ -437,7 +439,7 @@ public class PostProcessingMain {
 		for (STNameable aSuperClass : aSuperClasses) {
 			String aFullName = aSuperClass.getName();
 			String anOutputName = toOutputType(aFullName);
-			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON || anOutputName.equals(aTypeOutputName) || anOutputName.equals("java.lang.Object")) {
+			if (anOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION || anOutputName.equals(aTypeOutputName) || anOutputName.equals("java.lang.Object")) {
 				
 				continue;
 			}
@@ -500,9 +502,9 @@ public class PostProcessingMain {
 				String aSimpleMethodSignature = aRootMethod.getSimpleChecksSignature();
 				int aLastDotIndex = anUnknown.lastIndexOf(".");
 				String aRegularExpression = 
-						TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON + 
+						TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION+ 
 						anUnknown.substring(aLastDotIndex + 1) +
-					TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON;
+					TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
 				aMethodAndVariables.add(
 						aSimpleMethodSignature + 
 						MissingMethodTextCheck.CALLER_TEXT_SEPARATOR +
@@ -569,6 +571,13 @@ public class PostProcessingMain {
 			}
 		}
 	    return null;
+	}
+	protected static STType getSTSubtypeTagged (STType anSTType) {
+		String aSubtypeName = getSubtypeTagged(anSTType);
+		if (aSubtypeName != null) {
+			return SymbolTableFactory.getSymbolTable().getSTClassByShortName(aSubtypeName);
+		}
+		return null;
 	}
 	protected static String getSubtypeExternal (STType anSTType) {
 		if (TagBasedCheck.isExternalType(anSTType.getName())) {
@@ -734,7 +743,9 @@ public class PostProcessingMain {
 		if (aTags.size() == 0) {
 			return null;
 		}
-		return aTags.get(0);
+		if (aTags.size() == 1)
+			return aTags.get(0);
+		return TagBasedCheck.MATCH_SOMETHING_REGULAR_EXPERSSON;
 	}
 	public static String toOutputType (String aTypeName) {
 		if (TagBasedCheck.isExternalType(aTypeName)) {
@@ -767,7 +778,29 @@ public class PostProcessingMain {
 //				return aTypeName;
 //			}
 		}
-		return TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSON;
+		return TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
+
+//		return ".*";
+	}
+	public static String toOutputSubtypeOrExternalType (STType anSTType) {
+		if (anSTType.isExternal()) {
+			return anSTType.getName();
+		}
+		
+		if (anSTType != null) {
+			STType aSubtype = getSTSubtypeTagged(anSTType);
+			if (aSubtype == null) {
+				return TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
+			}
+			String aTag = toTaggedType(aSubtype);
+			if (aTag != null) {
+				return "@" + aTag;
+			}
+//			if (TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//				return aTypeName;
+//			}
+		}
+		return TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
 
 //		return ".*";
 	}
@@ -813,27 +846,73 @@ public class PostProcessingMain {
 	}
 
 	public static void processTypeCallInfos(STType anSTType) {
-		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+		
+		String aTypeOutputName = toOutputType(anSTType);
+		if (aTypeOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION ) {
 			return;
 		}
+		
+//		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//			
+//			return;
+//		}
 		List<CallInfo> aCallInfos = anSTType.getAllMethodsCalled();
 		if (aCallInfos == null) {
 			aCallInfos = anSTType.getMethodsCalled();
 		}
+		List<String> aCalledTypeAndMethods = new ArrayList();
 		for (CallInfo aCallInfo : aCallInfos) {
 			String aCalledType = aCallInfo.getCalledType();
+			
 			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledType);
 			if (aCalledSTType == null) {
 				aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aCalledType);
 			}
-			if (isExternalType(aCalledType)) {
-				printCallInfo(anSTType, aCalledSTType, aCallInfo);
+			if (aCalledSTType == null || aCalledSTType == anSTType) {
+				continue;
 			}
-			if (aCalledSTType != null && TagBasedCheck.isExplicitlyTagged(aCalledSTType)) {
-				printCallInfo(anSTType, aCalledSTType, aCallInfo);
-
+			String anOutputType = toOutputSubtypeOrExternalType(aCalledSTType);
+			if (anOutputType == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION) {
+				continue;
 			}
+			STMethod aCallingMethod = aCallInfo.getCallingMethod();
+			String aCallingMethodSignature = 
+					aCallingMethod.isPublic()?
+							aCallingMethod.getSimpleChecksSignature():
+					TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
+			Set<STMethod> aCallMethods = aCallInfo.getMatchingCalledMethods();
+			String aCalledMethodSignature = null;
+			if (aCallMethods.size() == 1 ) {
+				STMethod aCalledMethod = aCallMethods.iterator().next();
+				if (!aCalledMethod.isPublic() || aCalledMethod.isConstructor()) {
+					continue;
+				}
+				aCalledMethodSignature = aCalledMethod.getSimpleChecksSignature();
+			} else {
+				aCalledMethodSignature = AnAbstractSTMethod.getMatchAnyHeader(aCallInfo.getCallee());
+				if (Character.isUpperCase(aCalledMethodSignature.charAt(0))) {
+					continue;// guess it isconstructor call
+				}
+			}
+			aCalledTypeAndMethods.add(anOutputType + MethodCallCheck.TYPE_SIGNATURE_SEPARATOR + aCalledMethodSignature);
+			
+//			String aCalledMethod = aCallInfo.
+		
+//			if (isExternalType(aCalledType)) {
+//				printCallInfo(anSTType, aCalledSTType, aCallInfo);
+//			}
+//			if (aCalledSTType != null && TagBasedCheck.isExplicitlyTagged(aCalledSTType)) {
+//				printCallInfo(anSTType, aCalledSTType, aCallInfo);
+//
+//			}
 		}
+		if (aCalledTypeAndMethods.size() == 0) {
+			return;
+		}
+
+//		String aTypeOutputName = toOutputType(anSTType);
+		printModuleSingleProperty("MissingMethodCall", "warning", aTypeOutputName, "expectedCalls", aCalledTypeAndMethods.toArray(stringArray) );
+
 //		List<STNameable> anInterfaces = anSTType.getAllInterfaces();
 //		if (anInterfaces == null) {
 //			anInterfaces = Arrays.asList(anSTType.getDeclaredInterfaces());

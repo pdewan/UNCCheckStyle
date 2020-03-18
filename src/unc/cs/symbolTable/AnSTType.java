@@ -130,7 +130,13 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		modifiers = aModifiers;
 		accessModifier = STBuilderCheck.toAccessModifier(modifiers);
 		isAbstract = modifiers != null && modifiers.contains(TokenTypes.ABSTRACT);
-		if (!isInterface) {
+		if (isInterface) {
+			for (STMethod aMethod:declaredMethods) {
+				aMethod.setPublic(true);
+			}
+		}
+		//if (!isInterface) 
+		else {
 			getStaticBlocks().setDeclaringSTType(this);
 			getStaticBlocks().processGlobals();
 			// need to process callinfos also
@@ -145,7 +151,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 				methodsCalled.addAll(Arrays.asList(aConstructor.getCallInfoOfMethodsCalled()));
 				aConstructor.processGlobals();
 			}
-		}
+		} 
 	}
 //	public static STNameable toShortPatternName(STNameable aLongName) {
 //		String aShortName = TypeVisitedCheck.toShortTypeName(aLongName.getName());

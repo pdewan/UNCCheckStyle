@@ -21,6 +21,9 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	// protected STNameable[] declaredPropertyNames,
 	// declaredEditablePropertyNames;
 	// protected final STNameable[] imports;
+	protected Set<STType> subSTTypes;
+	
+
 	protected boolean external = false;
 	
 	protected STMethod staticBlocks ;
@@ -38,6 +41,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	protected STNameable[] interfaces;
 	protected STNameable[] declaredFields;
 	protected List<STVariable>	globalSTVariables;
+	protected Set<STVariable>	allGlobalSTVariables;
+
 
 	protected String packageName;
 	// protected final boolean isInterface, isGeneric, isElaboration;
@@ -809,6 +814,35 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		
 		return result;
 	}
+	public Set<STVariable> computeAllGlobalVariables() {
+		Set<STVariable> anAllGlobalSTVariables = new HashSet();	
+		List<STVariable> aDeclaredGlobals = getDeclaredSTGlobals();
+		if (aDeclaredGlobals == null) {
+			return null;
+		}
+		anAllGlobalSTVariables.addAll(aDeclaredGlobals);
+		STNameable aSuperType = getSuperClass();
+		if (aSuperType == null) {
+			return anAllGlobalSTVariables;
+		}
+		STType aSuperClassSTType = SymbolTableFactory.getOrCreateSymbolTable()
+				.getSTClassByShortName(aSuperType.getName());
+		if (aSuperClassSTType == null ) {
+			if (TagBasedCheck.isExternalClass(aSuperType.getName())) {
+				return anAllGlobalSTVariables;
+			}
+			return null;
+		}
+		Set<STVariable> anInheritedVariables =  aSuperClassSTType.getAllGlobalVariables();
+		if (anInheritedVariables == null) {
+			return null;
+		}
+		anAllGlobalSTVariables.addAll(anInheritedVariables);
+		return anAllGlobalSTVariables;
+		
+		
+	}
+
 
 
 	// // should use recursion actually
@@ -817,8 +851,16 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		if (allPropertyInfos == null) {
 			allPropertyInfos = computeAllPropertyInfos();
 		}
-//		allPropertyInfos = computeAllPropertyInfos();
 		return allPropertyInfos;
+
+	}
+	@Override
+	public Set<STVariable> getAllGlobalVariables() {
+		if (allGlobalSTVariables == null) {
+			allGlobalSTVariables = computeAllGlobalVariables();
+		}
+//		allPropertyInfos = computeAllPropertyInfos();
+		return allGlobalSTVariables;
 //		Map<String, PropertyInfo> result = new HashMap<>();
 //		Map<String, PropertyInfo> aPropertyInfos = new HashMap();
 //		STType anSTClass = this;
@@ -1140,6 +1182,8 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		else
 			anAllTypes = aSymbolTable.getAllClassNames();
 		List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
+//		List<String> aNormalizedTypes = anAllTypes;
+
 //		List<String> anAllMyTypes = toNameList(getAllSuperTypes());
 		List<String> anAllMyTypes = toNameList(getAllTypes());
 
@@ -1173,6 +1217,8 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		List<String> aNonSuperTypes = getNonSuperTypes();
 		List<String> result = new ArrayList();
 		String myShortName = TypeVisitedCheck.toShortTypeName(name);
+//		String myShortName = name;
+
 		for (String aNonSuperType : aNonSuperTypes) {
 			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 					.getSTClassByShortName(aNonSuperType);
@@ -2249,6 +2295,21 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		}
 		return null;
 	}
+	@Override
+	public STVariable getGlobalSTVariable(String aGlobal) {
+		Set<STVariable> anAllGlobals = getAllGlobalVariables();
+		if (anAllGlobals == null) {
+			return null;
+		}
+//		STVariable result = null;
+		for (STVariable anSTVariable:anAllGlobals) {
+			String aShortGlobalName = TagBasedCheck.toShortTypeOrVariableName(aGlobal);			 
+			if (anSTVariable.getName().equals(aShortGlobalName)) {
+				return anSTVariable;
+			}
+		}
+		return null;
+	}
 	// @Override
 	// public boolean isParsedClass() {
 	// return true;
@@ -2347,5 +2408,25 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	@Override
 	public void setStaticBlocks(STMethod staticBlocks) {
 		this.staticBlocks = staticBlocks;
+	}
+	@Override
+	public Set<STType> getSubSTTypes() {
+		if (stSubTypes == null) {
+			List<String> aSubTypes = getSubTypes();
+			if (aSubTypes == null) {
+				return null;
+			}
+			stSubTypes = new HashSet();
+			for (String aSubTypeName:aSubTypes) {
+				STType anSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aSubTypeName);
+				if (anSTType == null) {
+					anSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aSubTypeName);
+				}
+				if (anSTType != null) {
+					stSubTypes.add(anSTType);
+				}
+			}
+		}
+		return stSubTypes;
 	}
 }

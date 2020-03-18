@@ -332,7 +332,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public Collection<String> getExistingClassShortNameCollection() {
 		return existingClassesShortNamesCollection;
 	}
-	protected  STType processExistingClass(Class aClass) {
+	public static  STType processExistingClass(Class aClass) {
 		STType anSTType = getExistingClassSTType(aClass);
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
 //				aClass.getName());
@@ -350,7 +350,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		if (anSTType != null) {
 			return anSTType;
 		}
-		 anSTType = new AnSTTypeFromClass(aClass);
+		addExistingClassSTType(aClass);
+//		 anSTType = new AnSTTypeFromClass(aClass);
+//		 addSTType(anSTType);
+
+		
+		return anSTType;
+	}
+	public static  STType addExistingClassSTType(Class aClass) {
+		
+		 STType anSTType = new AnSTTypeFromClass(aClass);
 		 addSTType(anSTType);
 //		 anSTType.setExternal(true);
 //		 SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(
@@ -358,10 +367,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		
 		return anSTType;
 	}
+	
 
 
 
-	protected  STType processExistingClass(String aClassName) {
+	public static  STType processExistingClass(String aClassName) {
 		if (aClassName.endsWith("*"))
 			return null;
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(

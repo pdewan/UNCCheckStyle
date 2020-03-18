@@ -36,6 +36,9 @@ public class ACallInfo implements CallInfo {
 	public ACallInfo(DetailAST anAST, String aCallingType, String caller, List<String> aCallerParameterTypes, String calledType, String aCallee,
 			List<DetailAST> actuals, String[] aNormalizedCall, String aCalledCastType) {
 		super();
+		if (calledType.contains("QUIT") || (calledType.contains("double"))) {
+			System.out.println ("Found  QUIT or double");
+		};
 		ast = anAST;
 		this.caller = caller;
 		this.calledType = calledType;
