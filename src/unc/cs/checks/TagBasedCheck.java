@@ -43,8 +43,9 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 //	public static final String SET_MEMBER_SEPARATOR = "\\|";
 //	public static final String SET_MEMBER_SEPARATOR = "\\" + BASIC_SET_MEMBER_SEPARATOR;
 	public static final String SET_MEMBER_SEPARATOR = BASIC_SET_MEMBER_SEPARATOR;
+	public static final String AND_SYMBOL = "+";
 
-	public static final String AND_SYMBOL = "\\+";
+	public static final String AND_SYMBOL_REGEXP = "\\" + AND_SYMBOL;
 
 
 	protected Set<String> excludeTypeTags;
@@ -174,7 +175,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	}
 	
 	public static  boolean matchesAllAndedSpecificationTag (Collection<STNameable> aStoredTags, String anAndedSpecification) {
-		String[] aSpecifications = anAndedSpecification.split(AND_SYMBOL);
+		String[] aSpecifications = anAndedSpecification.split(AND_SYMBOL_REGEXP);
 	for (String aSpecification:aSpecifications) {
 		if (! matchesSomeStoredTag(aStoredTags, aSpecification))
 			return false;
@@ -354,11 +355,11 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public  boolean containsEfficient(List<STNameable> aTags, String aTag, String aTypeName) {
 	 boolean retVal = matchesAllAndedSpecificationTag(aTags, aTag) ||
 			 matchesPatternEfficient(aTag, aTypeName); // should not need this
-	 if (retVal) {
-		 if (aTag.contains("Model") && aTypeName.contains("Model")) {
-			 System.out.println ("Found model");
-		 }
-	 }
+//	 if (retVal) {
+//		 if (aTag.contains("Model") && aTypeName.contains("Model")) {
+//			 System.out.println ("Found model");
+//		 }
+//	 }
 	 return retVal;
 // 	for (STNameable aNameable:aTags) {
 // 		if (matchesStoredTag(aNameable.getName(), aTag)) {
@@ -518,18 +519,20 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	
  }
  
- public List<STNameable> getTags(String aShortClassName)  {
+ public List<STNameable> getTags(String aLongClassName)  {
 	List<STNameable> aTags = emptyList;
 
 
-	if ( isArray(aShortClassName) ||
-			isJavaLangClass(aShortClassName) ) {
+	if ( isArray(aLongClassName) ||
+			isJavaLangClass(aLongClassName) ) {
 		return emptyList;
 	}
-	aTags = lookupTags(aShortClassName);
+	aTags = lookupTags(aLongClassName);
 	if (aTags == null && (
 //			shortTypeName == null ||
-			aShortClassName.equals(shortTypeName))) {
+//			aLongClassName.equals(shortTypeName))) {
+		aLongClassName.equals(fullTypeName))) {
+
 		aTags = computedTypeTags();
 	}
 	/*
@@ -720,27 +723,28 @@ protected List<String> filterTypesByExcludeSets(List<String> aTypes, String aTyp
 		
 }
 
-public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
+public Boolean matchesTypeUnifying(String aDescriptor, String aLongClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 
 			|| aDescriptor.equals(MATCH_ANYTHING)  || 
-			aShortClassName.matches(aDescriptor))
+			aLongClassName.matches(aDescriptor))
 		return true;
 //	int i = 0;
-	if (aShortClassName.contains("]") || // array element
-			aShortClassName.contains("[") ||
-			aShortClassName.contains("(") ||// casts
-			aShortClassName.contains(")"))
+	if (aLongClassName.contains("]") || // array element
+			aLongClassName.contains("[") ||
+			aLongClassName.contains("(") ||// casts
+			aLongClassName.contains(")"))
 //		return false;
 		return true; // assume the type is right, 
 	aDescriptor = aDescriptor.trim();
+	String aShortClassName = toShortTypeName(aLongClassName);
 //	if (aDescriptor.equals(MATCH_ANYTHING))
 //		return true;
 	if (!aDescriptor.startsWith(TAG_STRING)) {
 //		return aShortClassName.equals(aDescriptor);
 		try {
-		return unifyingMatchesNameVariableOrTag(aDescriptor, aShortClassName, null);
+		return unifyingMatchesNameVariableOrTag(aDescriptor, aLongClassName, null);
 		} catch (PatternSyntaxException e) {
-			System.out.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aShortClassName);
+			System.out.println("Pattern mismatch Descriptor: " + aDescriptor + "aShortClassName "  + aLongClassName);
 			e.printStackTrace();
 			return false;
 		}
@@ -752,7 +756,7 @@ public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 //	if (aTag.contains("Model") && aShortClassName.contains("Model")) {
 //		System.out.println("found model");
 //	}
-	List<STNameable> aTags = getTags(aShortClassName);
+	List<STNameable> aTags = getTags(aLongClassName);
 	if (aTags == null)
 		return null;
 		// this should be changed back to null at some point
@@ -762,7 +766,28 @@ public Boolean matchesTypeUnifying(String aDescriptor, String aShortClassName) {
 //	if (aTag.contains("Model") && aShortClassName.contains("Model")) {
 //	System.out.println("found model");
 //	}
-	return containsEfficient(aTags, aTag, aShortClassName);
+	boolean aClassContainsTags = containsEfficient(aTags, aTag, aLongClassName);
+	if (aClassContainsTags) 
+		return true;
+
+		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aLongClassName);
+		if (anSTType == null)	
+			return null;// this should not happen
+		Set<STType> aSubtypes = anSTType.getSubSTTypes();
+			if (aSubtypes == null) {
+				return null;
+			}
+			for (STType aSubtype:aSubtypes) {
+				List<STNameable>  aSubTags = asListOrNull(aSubtype.getComputedTags());			
+				if (aSubTags == null) {
+					return null;
+				}
+				if (containsEfficient(aSubTags, aTag, aSubtype.getName())) {
+					return true;
+				}
+			}	
+	
+	return false;
 }
 public static Boolean matchesType(String aDescriptor, String aShortClassName) {
 	if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING ))
@@ -859,6 +884,7 @@ public boolean checkIncludeTagsOfCurrentType() {
 //	return checkTags(includeTags, computedTypeTags());
 //	return matchesSomeSpecificationTags(computedTypeTags(), includeTypeTags);
 	return matchesSomeSpecificationTags(lookupTagsOfCurrentTree(), includeTypeTags);
+	
 
 	
 }
@@ -936,7 +962,11 @@ public static List<STNameable> getArrayLiterals (DetailAST parentOfArrayInitiali
 	 
 	 while (anArrayElementExpression != null) {
 		 DetailAST anArrayElementAST = anArrayElementExpression.getFirstChild();
-		 result.add(new AnSTNameable(anArrayElementAST, anArrayElementAST.getText()));
+		 FullIdent aFullIdent = FullIdent.createFullIdentBelow(anArrayElementAST.getParent());
+
+//		 result.add(new AnSTNameable(anArrayElementAST, anArrayElementAST.getText()));
+		 result.add(new AnSTNameable(anArrayElementAST, aFullIdent.getText()));
+
 		 if (anArrayElementExpression.getNextSibling() == null)
 			 break;
 		 anArrayElementExpression = anArrayElementExpression.getNextSibling().getNextSibling();

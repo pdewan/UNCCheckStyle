@@ -1752,9 +1752,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		for (int i = 0; i < aNormalizedParts.length - 1; i++ ) {
 			
 			String aCurrentPart = aNormalizedParts[i];
-			if (aCurrentPart.contains("QUIT")) {
-				System.out.println ("found QUIT");
-			}
+//			if (aCurrentPart.contains("QUIT")) {
+//				System.out.println ("found QUIT");
+//			}
 			if (i == 0) {
 				aCurrentPart = toLongTypeName(aCurrentPart);
 			}

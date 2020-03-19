@@ -59,7 +59,7 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 	protected List<String> subTypes;
 	protected List<STNameable> superTypes;
 
-	protected Set<STType> stSubTypes = new HashSet();
+	protected Set<STType> stSubTypes;
 	protected  Set<STType> superClasses = new HashSet();
 	protected STType stSuperClass;
 	protected List<STNameable> allTypes;
@@ -2416,16 +2416,19 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 			if (aSubTypes == null) {
 				return null;
 			}
-			stSubTypes = new HashSet();
+			Set<STType> anSTSubTypes = new HashSet();
 			for (String aSubTypeName:aSubTypes) {
 				STType anSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aSubTypeName);
 				if (anSTType == null) {
 					anSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aSubTypeName);
 				}
 				if (anSTType != null) {
-					stSubTypes.add(anSTType);
+					anSTSubTypes.add(anSTType);
+				} else {
+					return null;
 				}
 			}
+			stSubTypes = anSTSubTypes;
 		}
 		return stSubTypes;
 	}

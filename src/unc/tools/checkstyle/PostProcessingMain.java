@@ -26,6 +26,7 @@ import unc.cs.checks.MethodCallCheck;
 import unc.cs.checks.MissingMethodTextCheck;
 import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
+import unc.cs.checks.UNCCheck;
 import unc.cs.parseTree.AnIFStatement;
 import unc.cs.symbolTable.AccessModifierUsage;
 import unc.cs.symbolTable.AnAbstractSTMethod;
@@ -59,6 +60,7 @@ public class PostProcessingMain {
 	static String[] externalClassRegularExpressions;
 	static List<STType> sTTypes;
 	static final String  CHECKS_FILE_NAME = "generated_checks.xml";
+	static final String  DUMMY_FILE_NAME = "firstpassresults.text";
 	static PrintStream checksPrintStream;
 
 	public static void initGlobals() {
@@ -215,7 +217,7 @@ public class PostProcessingMain {
 		
 		StringBuilder aPropertiesString = new StringBuilder();
 	
-		for (int i  = 0; i < aList.length; i = i+2) {
+		for (int i  = 0; i < aList.length; i++) {
 			aPropertiesString.append("\n\t\t\t" + aList[i] + "," );
 		}
 		return aPropertiesString.toString();
@@ -743,9 +745,18 @@ public class PostProcessingMain {
 		if (aTags.size() == 0) {
 			return null;
 		}
-		if (aTags.size() == 1)
-			return aTags.get(0);
-		return TagBasedCheck.MATCH_SOMETHING_REGULAR_EXPERSSON;
+		StringBuilder aTagsString = new StringBuilder();
+		for (int i = 0; i < aTags.size(); i++) {
+			if (i > 0) {
+				aTagsString.append(TagBasedCheck.AND_SYMBOL);
+			}
+			aTagsString.append(TagBasedCheck.TAG_CHAR + aTags.get(i));
+		}
+		return aTagsString.toString();
+//		if (aTags.size() == 1)
+//			return aTags.get(0);
+//		
+//		return TagBasedCheck.MATCH_SOMETHING_REGULAR_EXPERSSON;
 	}
 	public static String toOutputType (String aTypeName) {
 		if (TagBasedCheck.isExternalType(aTypeName)) {
@@ -772,7 +783,9 @@ public class PostProcessingMain {
 		if (anSTType != null) {
 			String aTag = toTaggedType(anSTType);
 			if (aTag != null) {
-				return "@" + aTag;
+//				return "@" + aTag;
+				return aTag;
+
 			}
 //			if (TagBasedCheck.isExplicitlyTagged(anSTType)) {
 //				return aTypeName;
@@ -794,7 +807,8 @@ public class PostProcessingMain {
 			}
 			String aTag = toTaggedType(aSubtype);
 			if (aTag != null) {
-				return "@" + aTag;
+//				return "@" + aTag;
+				return aTag;
 			}
 //			if (TagBasedCheck.isExplicitlyTagged(anSTType)) {
 //				return aTypeName;
@@ -862,6 +876,9 @@ public class PostProcessingMain {
 		}
 		List<String> aCalledTypeAndMethods = new ArrayList();
 		for (CallInfo aCallInfo : aCallInfos) {
+//			if (aCallInfo.toString().contains("setInput") && (aCallInfo.toString().contains("input")) ) {
+//				System.out.println ("found set input");
+//			}
 			String aCalledType = aCallInfo.getCalledType();
 			
 			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledType);
@@ -957,6 +974,23 @@ public class PostProcessingMain {
 		// Main.main(ARGS);
 
 		try {
+			UNCCheck.setDoNotVisit(true);
+			PrintStream oldOut = System.out;
+
+			try {
+				File aDummyFile = new File(DUMMY_FILE_NAME);
+				aDummyFile.createNewFile();
+				PrintStream aPrintStream = new PrintStream(aDummyFile);
+				System.setOut(aPrintStream);
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			NonExitingMain.main(args);
+			UNCCheck.setDoNotVisit(false);
+			System.setOut(oldOut);
+
 			NonExitingMain.main(args);
 			initGlobals();
 			processTypes(sTTypes);

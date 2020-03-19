@@ -445,6 +445,13 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 
 
 		 }
+		 boolean methodNamesMatched = false;
+		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
+			 if  (!aShortMethodName.matches(aSpecifiedMethod.getName())) { // not checking for parameters?
+				 return false; // no point checking type if method names do not match
+			 }
+			 methodNamesMatched = true;
+			}
 		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aTypeName);
 		 if (matchesType == null)
 			 return null;
@@ -454,8 +461,11 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 //		 if (aSpecifiedTarget.contains("Model") && aTypeName.contains("Model")) {
 //				System.out.println("found model");
 //				}
-		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
-			 return aShortMethodName.matches(aSpecifiedMethod.getName()); // not checking for parameters?
+//		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
+//			 return aShortMethodName.matches(aSpecifiedMethod.getName()); // not checking for parameters?
+//		 }
+		 if (methodNamesMatched) {
+			 return true; 
 		 }
 		
 		if (!isIdentifier(aTypeName)) { // (cast etc,could not match, assume internal call)

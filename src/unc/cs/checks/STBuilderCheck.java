@@ -969,7 +969,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		// TODO Auto-generated method stub
 		return MSG_KEY;
 	}
-
+	protected boolean isDoNotVisit() {
+		return false;
+	}
 	public void doVisitToken(DetailAST ast) {
 		super.doVisitToken(ast);
 	}

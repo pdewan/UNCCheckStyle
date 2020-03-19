@@ -641,9 +641,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			String aCalledType = aCallInfo.getCalledType();
 			if (aCalledType.startsWith(ComprehensiveVisitCheck.VARIABLE_PREFIX)) {
 				int aDotIndex = aCalledType.lastIndexOf(".");
-				if (!aCalledType.contains("System")) {
-					System.out.println ("Found non system");
-				}
+//				if (!aCalledType.contains("System")) {
+//					System.out.println ("Found non system");
+//				}
 				STType aType = null;
 				String aShortName = null;
 				if (aDotIndex < 0) {

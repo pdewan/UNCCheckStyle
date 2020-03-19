@@ -273,7 +273,20 @@ public abstract class UNCCheck extends Check {
 		
 		lastExecutionTime = aCurrentExecutionTime;
 	}
+	/**
+	 * Build symbol table before visiting
+	 */
+	protected boolean isDoNotVisit() {
+		return doNotVisit;
+	}
+	public static void setDoNotVisit(boolean doNotVisit) {
+		UNCCheck.doNotVisit = doNotVisit;
+	}
+	protected static boolean doNotVisit = false;
 	public void beginTree(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 //		if (vetoChecks())
 //			return;
 		try {
@@ -405,6 +418,9 @@ public abstract class UNCCheck extends Check {
 	}
 
 	public void finishTree(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 		if (vetoChecks() 
 				|| !visitedTree)
 			return;
@@ -442,6 +458,9 @@ public abstract class UNCCheck extends Check {
 	}
 
 	public void leaveToken(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 		if (vetoChecks() 
 				|| !visitedTree)
 			return;
@@ -477,6 +496,9 @@ public abstract class UNCCheck extends Check {
 	}
 
 	public void visitToken(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 		// if (errorOccurred)
 		if (vetoChecks()
 				|| !visitedTree)

@@ -265,9 +265,10 @@
 		<property name="includeTypeTags" value="@ControllerClass"/>
 		<property name="expectedCalls" value="
 			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceNumbersPrompt:->void,
-			@ModelClass!setInputString:String->void,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:String->void,			
 			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceQuit:->void,"/>
 	</module>
+	
 		
 		<module name="MissingMethodCall">
 			<property name="severity" value="warning" />
@@ -292,7 +293,8 @@
 		
 		<module name="MissingMethodText">
 			<property name="severity" value="warning" />
-			<property name="includeTypeTags" value="ModelClass" />					
+			<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+							
 			<property name="expectedCalls"
 				value="
 				    toString#.*EXPR.*MODEL.*,
@@ -300,15 +302,13 @@
 			/>			
 		</module>
 		
-		<module name="MethodAccessesGlobal">
-			<property name="severity" value="warning" />
-			<property name="includeTypeTags" value="ModelClass" />					
-			<property name="expectedReferences"
-				value="
-				    toString:->String#.*MODEL.*,
-				" 
-			/>			
-		</module>
+		
+	   <module name="MethodAccessesGlobal">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedReferences" value="
+			toString:->String#.*MODEL.*,"/>
+	   </module>
 		
 		
 		<module name="MissingMethodText">
