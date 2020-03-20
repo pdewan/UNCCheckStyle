@@ -1166,6 +1166,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	
 	public static boolean isClassIdent(String anIdent) {
+//		if (anIdent.contains("out")) {
+//			System.err.println ("found oout");
+//		}
 		int aStartIndex = 0;
 		String aLastComponent = anIdent;
 		int aDotIndex = anIdent.lastIndexOf(".");
@@ -1177,7 +1180,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				|| ((aStartIndex + 1) >= anIdent.length())) { // assume no one character classes
 			return false;
 		}
-	    return Character.isLowerCase(anIdent.charAt(anIdent.length() - 1));
+ 	    return Character.isLowerCase(anIdent.charAt(anIdent.length() - 1));
 		
 	}
 	public static final String VARIABLE_PREFIX = "$";

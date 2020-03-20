@@ -435,6 +435,27 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		return resultList.toArray(emptyMethodArray);
 
 	}
+	@Override
+	public STMethod[] getDeclaredMethods(String aName, int aNumParameters) {
+		List<STMethod> resultList = new ArrayList();
+		STMethod[] aMethods = getDeclaredMethods();
+
+//		if (aMethods == null) {
+//			if (waitForSuperTypeToBeBuilt())
+//				return null;
+//			else
+//				aMethods = getDeclaredMethods();
+//		}
+		for (STMethod aMethod : aMethods) {
+			if (aMethod.getParameterTypes() == null) {
+				System.err.println ("Nll parameter names");
+			}
+			if (aMethod.getName().equals(aName) && aMethod.getParameterTypes().length == aNumParameters)
+				resultList.add(aMethod);
+		}
+		return resultList.toArray(emptyMethodArray);
+
+	}
 
 	@Override
 	public STNameable getSuperClass() {

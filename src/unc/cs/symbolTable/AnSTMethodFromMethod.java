@@ -70,7 +70,7 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 
 	@Override
 	public boolean isPublic() {
-		return true;
+		return Modifier.isPublic(method.getModifiers());
 	}
 
 	@Override

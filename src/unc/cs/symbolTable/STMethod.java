@@ -75,6 +75,8 @@ public interface STMethod extends STNameable{
 	List<STVariable> getLocalsAssigned();
 	String getSimpleChecksSignature();
 	void setPublic(boolean isPublic);
+	boolean isAmbiguouslyOverloadedMethods();
+	void setAmbiguouslyOverloadedMethods(boolean ambiguouslyOverloadedMethods);
 
 
 }

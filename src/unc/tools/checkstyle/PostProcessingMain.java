@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -171,10 +172,10 @@ public class PostProcessingMain {
 		printTypeInterfaces(anSTType);
 		printTypeSuperTypes(anSTType);
 		processTypeProperties(anSTType);
-//		processTypeSuperTypes(anSTType);
+//		processTypeSuperTypes(anSTType);		
 		processTypeCallInfos(anSTType);
 //		processDeclaredMethods(anSTType);
-//		processMethodsCalled(anSTType);
+		processMethodsCalled(anSTType);
 		processUnknownVariablesAccessed(anSTType);
 //		processAccessModifiersUsed(anSTType);
 //		processReferencesPerVariable(anSTType);
@@ -684,52 +685,7 @@ public class PostProcessingMain {
         xmlLogger.auditFinished(null);
 //        verifyXml(getPath("ExpectedXMLLoggerError.xml"), outStream, message.getMessage());
 	}
-	public static void processMethodsCalled(STType anSTType) {
-		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
-			return;
-		}
-		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
-		for (STMethod aMethod:aMethods) {
-			if (! aMethod.isPublic()) {
-				continue;
-			}
-			Set<STMethod> aCalledMethods = aMethod.getAllDirectlyOrIndirectlyCalledMethods();
-			if (aCalledMethods == null) {
-				continue;
-			}
-			for (STMethod aCalledMethod: aCalledMethods) {
-				if (!aCalledMethod.isPublic()) {
-					continue;
-				}
-				STType aCalledType = aCalledMethod.getDeclaringSTType();
-				String aSubtype = getSubtypeTagged(aCalledType);
-				if (aSubtype == null) {
-					aSubtype = getSubtypeExternal(anSTType);
-				}
-				if (aSubtype != null) {
-					System.out.println("Calling type:" + anSTType + " calling method: " + aMethod + " called type " + aSubtype + " called method " + aCalledMethod);
 
-				}
-				
-
-			
-			}
-//			Set<String> anUnknownsAccessed = aMethod.getUnknownAccessed().keySet();
-			processUnknownVariablesAccessed(anSTType, aMethod, aMethod);
-			processUnknownVariablesAccessed(anSTType, aMethod, aCalledMethods);
-
-//			Set<String> anUnknownAssigned = aMethod.getUnknownAssigned().keySet();
-//			if (anUnknownsAccessed != null) {
-//			for (String anUnknown:anUnknownsAccessed) {
-//				if (anUnknown.contains(".")) {
-//					System.out.println ("type:" + anSTType.getName() + " method " + aMethod.getName() + " anKnown " + anUnknown);
-//				}
-//			}
-//			}
-			
-			
-		}
-	}
 
 	public static void printCallInfo(STType aCallerSTType, STType aCalledSTType, CallInfo aCallInfo) {
 		String aCallingTypeName = aCallerSTType.getName();
@@ -881,11 +837,11 @@ public class PostProcessingMain {
 //			}
 			String aCalledType = aCallInfo.getCalledType();
 			
-			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByFullName(aCalledType);
-			if (aCalledSTType == null) {
-				aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aCalledType);
-			}
-			if (aCalledSTType == null || aCalledSTType == anSTType) {
+			STType aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aCalledType);
+//			if (aCalledSTType == null) {
+//				aCalledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aCalledType);
+//			}
+			if (aCalledSTType == null || aCalledSTType == anSTType) { // do not check internal method calls
 				continue;
 			}
 			String anOutputType = toOutputSubtypeOrExternalType(aCalledSTType);
@@ -905,51 +861,95 @@ public class PostProcessingMain {
 					continue;
 				}
 				aCalledMethodSignature = aCalledMethod.getSimpleChecksSignature();
-			} else {
+			} else { // we could not really identify the method
 				aCalledMethodSignature = AnAbstractSTMethod.getMatchAnyHeader(aCallInfo.getCallee());
 				if (Character.isUpperCase(aCalledMethodSignature.charAt(0))) {
 					continue;// guess it isconstructor call
 				}
 			}
 			aCalledTypeAndMethods.add(anOutputType + MethodCallCheck.TYPE_SIGNATURE_SEPARATOR + aCalledMethodSignature);
-			
-//			String aCalledMethod = aCallInfo.
-		
-//			if (isExternalType(aCalledType)) {
-//				printCallInfo(anSTType, aCalledSTType, aCallInfo);
-//			}
-//			if (aCalledSTType != null && TagBasedCheck.isExplicitlyTagged(aCalledSTType)) {
-//				printCallInfo(anSTType, aCalledSTType, aCallInfo);
-//
-//			}
+
 		}
 		if (aCalledTypeAndMethods.size() == 0) {
 			return;
 		}
-
-//		String aTypeOutputName = toOutputType(anSTType);
 		printModuleSingleProperty("MissingMethodCall", "warning", aTypeOutputName, "expectedCalls", aCalledTypeAndMethods.toArray(stringArray) );
-
-//		List<STNameable> anInterfaces = anSTType.getAllInterfaces();
-//		if (anInterfaces == null) {
-//			anInterfaces = Arrays.asList(anSTType.getDeclaredInterfaces());
+	}
+	public static void processMethodsCalled(STType anSTType) {
+		String aCallingTypeOutputName = toOutputType(anSTType);
+		if (aCallingTypeOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION ) {
+			return;
+		}
+//		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//			return;
 //		}
-//		for (STNameable anInterface : anInterfaces) {
-//			String aFullName = anInterface.getName();
-//			if (isExternalType(aFullName)) {
-//				printImplementsExternal(anSTType, aFullName);
-//				return;
+		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+		Set<String> aCalledTypeAndMethods = new HashSet();
+		
+//		for (STMethod aCallingMethod:aMethods) {
+//			String aCallingMethodSignature = 
+//					aCallingMethod.isPublic()?
+//							aCallingMethod.getSimpleChecksSignature():
+//					TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
+//			Set<STMethod> aCalledMethods = aCallingMethod.getAllDirectlyOrIndirectlyCalledMethods();
+//			if (aCalledMethods == null) {
+//				continue;
 //			}
-//			STType anInterfaceSTType = symbolTable.getSTClassByFullName(anInterface.getName());
-//			if (anInterfaceSTType == null) {
-//				// continue;
-//				anInterfaceSTType = symbolTable.getSTClassByShortName(anInterface.getName());
-//			}
-//			if (TagBasedCheck.isExplicitlyTagged(anInterfaceSTType)) {
-//				printImplementsTagged(anSTType, anInterfaceSTType);
-//			}
-//		}
+//		
+		
 
+		for (STMethod aCallingMethod:aMethods) {
+			String aCallingMethodSignature = 
+					aCallingMethod.isPublic()?
+							aCallingMethod.getSimpleChecksSignature():
+					TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
+			Set<STMethod> aCalledMethods = aCallingMethod.getAllDirectlyOrIndirectlyCalledMethods();
+			if (aCalledMethods == null) {
+				continue;
+			}
+			for (STMethod aCalledMethod: aCalledMethods) {
+//				if (!aCalledMethod.isPublic()) {
+//					continue;
+//				}
+				if (!aCalledMethod.isPublic() || aCalledMethod.isConstructor()) {
+					continue;
+				}
+				STType aCalledType = aCalledMethod.getDeclaringSTType();
+				if (aCalledType == null || aCalledType == anSTType) {
+					continue;
+				}
+				String anOutputType = toOutputSubtypeOrExternalType(aCalledType);
+				if (anOutputType == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION) {
+					continue;
+				}
+				String aCalledMethodSignature =  
+						aCalledMethod.isAmbiguouslyOverloadedMethods()?
+						AnAbstractSTMethod.getMatchAnyHeader(aCalledMethod.getName()):
+//						if (Character.isUpperCase(aCalledMethodSignature.charAt(0))) {
+//							continue;// guess it isconstructor call
+//						}
+						
+						aCalledMethod.getSimpleChecksSignature();
+				//	String aSubtype = getSubtypeTagged(aCalledType);
+//				if (aSubtype == null) {
+//					aSubtype = getSubtypeExternal(anSTType);
+//				}
+						
+				aCalledTypeAndMethods.add(anOutputType + MethodCallCheck.TYPE_SIGNATURE_SEPARATOR + aCalledMethodSignature);
+
+//				if (aSubtype != null) {
+//					System.out.println("Calling type:" + anSTType + " calling method: " + aCallingMethod + " called type " + aSubtype + " called method " + aCalledMethod);
+//
+//				}
+			
+			}
+			
+		}
+		if (aCalledTypeAndMethods.size() == 0) {
+			return;
+		}
+		printModuleSingleProperty("MissingMethodCall", "warning", aCallingTypeOutputName, "expectedCalls", aCalledTypeAndMethods.toArray(stringArray) );
+	
 	}
 
 	public static boolean isPrintOnlyTaggedClasses() {

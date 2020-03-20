@@ -24,9 +24,12 @@ public class ACallInfo implements CallInfo {
 	STMethod callingMethod;
 	Set<STMethod> matchingCalledMethods;
 	boolean hasUnkownCalledType = false;
+	protected STMethod[] stMethods;
 	
 	
-//	public ACallInfo(String caller, String calledType,
+
+
+	//	public ACallInfo(String caller, String calledType,
 //			String calleee) {
 //		super();
 //		this.caller = caller;
@@ -159,5 +162,35 @@ public class ACallInfo implements CallInfo {
 	@Override
 	public String getCallingType() {
 		return callingType;
+	}
+	static STMethod[] emptySTMethodArray = {};
+	@Override
+	public STMethod[] getCalledSTMethods() {
+		if (stMethods == null) {
+			STMethod[] anSTMethods = AnAbstractSTMethod.toSTMethods(this);
+			if (anSTMethods == null) {
+				return null;
+			}
+			if (anSTMethods.length > 1) {
+				List<STMethod> anSTMethodsList = new ArrayList();
+				for (STMethod anSTMethod:anSTMethods) {
+					if (anSTMethod.isPublic()) {
+						anSTMethodsList.add(anSTMethod);
+					}
+				}
+				if (anSTMethodsList.size() > 1) {
+				for (STMethod anSTMethod:anSTMethodsList) {
+					
+					anSTMethod.setAmbiguouslyOverloadedMethods(true);
+				}
+				}
+				if (anSTMethods.length == anSTMethodsList.size()) {
+					stMethods = anSTMethods;
+				} else {
+					stMethods = anSTMethodsList.toArray(emptySTMethodArray);
+				}
+			}
+		}
+		return stMethods;
 	}
 }

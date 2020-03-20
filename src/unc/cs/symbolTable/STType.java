@@ -78,6 +78,8 @@ public interface STType extends STNameable{
 	STMethod[] getDeclaredInitMethods();
 	STMethod getDeclaredMethod(String aName, String[] aParameterTypes);
 	STMethod[] getDeclaredMethods(String aName);
+	STMethod[] getDeclaredMethods(String aName, int aNumParameters);
+
 	List<String> getInstanceSignatures();
 //	Set<String> getDeclaredGlobals();
 //	String getDeclaredGlobalVariableType(String aGlobal);

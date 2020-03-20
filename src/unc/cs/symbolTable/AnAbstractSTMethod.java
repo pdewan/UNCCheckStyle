@@ -24,6 +24,8 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //	final boolean isInstance;
 //	final boolean isVisible;
 	STType declaringSTType;
+	protected boolean ambiguouslyOverloadedMethods;
+	
 	Set<STMethod> allCalledMethods;
 	Set<STMethod> allInternallyCalledMethods;
 	
@@ -265,21 +267,51 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 			declaringSTType = newVal;
 		}
 		static STMethod[] emptySTMethods = {};
+		protected STMethod[] stMethods;
+		
 		//should check length of argument list
 		public static STMethod[] toSTMethods (CallInfo aCallInfo) {
-			
+			STType aCalledMethodClass = aCallInfo.getCalledSTType();
 			String[] aCalledMethod = aCallInfo.getNormalizedCall();
-			String aCalledMethodName = aCalledMethod[1];
-			String aCalledMethodClassName = aCalledMethod[0];
-			if (aCalledMethod.length > 2 || aCalledMethodClassName == null || TagBasedCheck.isExternalClass(aCalledMethodClassName))
-				return emptySTMethods;
-			STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
-			if (aCalledMethodClass == null) {
-//				System.err.println("Null called method class:" + aCalledMethodClassName);
-				return null;
+			String aCalledMethodClassName;
+			if (aCalledMethodClass != null) {
+				aCalledMethodClassName = aCalledMethodClass.getName();
 			}
-			return aCalledMethodClass.getDeclaredMethods(aCalledMethodName);			
+			if (aCalledMethodClass == null) {
+				aCalledMethodClassName = aCallInfo.getCalledType();
+				if (aCalledMethodClassName == null) {
+					aCalledMethodClassName = aCalledMethod[0];
+				}
+				if (aCalledMethodClassName == null) {
+					return null;
+				}
+				 aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
+				 if (aCalledMethodClass == null) {
+					 return null;
+				 }
+
+			}
+			String aCalledMethodName = aCallInfo.getCallee();
+			if (aCalledMethodName == null) {
+				 aCalledMethodName = aCalledMethod[1];
+			}
+//			String aCalledMethodClassName = aCallInfo.getCalledType();
+//			String[] aCalledMethod = aCallInfo.getNormalizedCall();
+//			String aCalledMethodName = aCalledMethod[1];
+//			String aCalledMethodClassName = aCalledMethod[0];
+//			if (aCalledMethod.length > 2 )
+////			if (aCalledMethod.length > 2 || aCalledMethodClassName == null || TagBasedCheck.isExternalClass(aCalledMethodClassName))
+//				return emptySTMethods;
+//			STType aCalledMethodClass = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aCalledMethodClassName);
+//			if (aCalledMethodClass == null) {
+////				System.err.println("Null called method class:" + aCalledMethodClassName);
+//				return null;
+//			}
+			STMethod[] aCalledOverloadedMethods = aCalledMethodClass.getDeclaredMethods(aCalledMethodName, aCallInfo.getActuals().size());	
+			return aCalledOverloadedMethods;
+			
 		}
+		
 		@Override
 		public Set<STMethod> getAllDirectlyOrIndirectlyCalledMethods() {
 			if (allCalledMethods == null || isIndirectMethodsNotFullProcessed()) {
@@ -388,7 +420,9 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //			}
 			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
 			for (CallInfo aCallInfo:aCalledMethods) {
-				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+//				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+
 				if (anAllDirectlyCalledMethods == null) {
 //					return null;
 					indirectMethodsNotFullProcessed = true;
@@ -402,6 +436,9 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 					}
 //					aDirectlyCalledMethod.addCaller(aMethod);
 					result.add(aDirectlyCalledMethod);
+//					if (aDirectlyCalledMethod.getName().contains("export")) {
+//						System.err.println("Export");
+//					}
 //					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllDirectlyOrIndirectlyCalledMethods();
 					Set<STMethod> anAllIndirectlyCalledMethods = computeAllDirectlyOrIndirectlyCalledMethods(result, aDirectlyCalledMethod);
 
@@ -436,7 +473,9 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 				// we did not capture the type
 				if (Character.isLowerCase(aCalledTypeShortName.charAt(0)))
 					continue;
-				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+//				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+
 				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
 //					System.err.println ("directly called methods should not be null");
 					continue;
@@ -480,7 +519,9 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 				}
 				if (Character.isLowerCase(aCalledTypeShortName.charAt(0)))
 					continue;
-				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+//				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
+				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+
 				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
 //					System.err.println ("directly called methods should not be null");
 					continue;
@@ -547,6 +588,14 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		@Override
 		public AccessModifier getAccessModifier() {
 			return accessModifier;
+		}
+		@Override
+		public boolean isAmbiguouslyOverloadedMethods() {
+			return ambiguouslyOverloadedMethods;
+		}
+		@Override
+		public void setAmbiguouslyOverloadedMethods(boolean ambiguouslyOverloadedMethods) {
+			this.ambiguouslyOverloadedMethods = ambiguouslyOverloadedMethods;
 		}
 //		@Override
 //		public boolean isParsedMethod() {
