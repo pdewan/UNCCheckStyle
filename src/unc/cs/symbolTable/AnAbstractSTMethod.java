@@ -24,7 +24,11 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //	final boolean isInstance;
 //	final boolean isVisible;
 	STType declaringSTType;
+	int numParameters;
+
 	protected boolean ambiguouslyOverloadedMethods;
+	protected boolean unresolvedMethod;
+
 	
 	Set<STMethod> allCalledMethods;
 	Set<STMethod> allInternallyCalledMethods;
@@ -57,7 +61,7 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 	
 	
 	public AnAbstractSTMethod(DetailAST ast, String name) {
-		super(ast, name);		
+		super(ast, ComprehensiveVisitCheck.toShortTypeOrVariableName(name));		
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
 //		isInit = computeIsInit();
@@ -244,6 +248,9 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		}
 		@Override
 		public String getSignature() {
+			if (signature == null) {
+				signature = toStringMethod();
+			}
 			return signature;
 		}
 		public boolean equals (Object anotherObject) {
@@ -307,7 +314,7 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 ////				System.err.println("Null called method class:" + aCalledMethodClassName);
 //				return null;
 //			}
-			STMethod[] aCalledOverloadedMethods = aCalledMethodClass.getDeclaredMethods(aCalledMethodName, aCallInfo.getActuals().size());	
+			STMethod[] aCalledOverloadedMethods = aCalledMethodClass.getMethods(aCalledMethodName, aCallInfo.getActuals().size());	
 			return aCalledOverloadedMethods;
 			
 		}
@@ -418,10 +425,16 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //				System.err.println("Declaring type should not be null");
 //				return null;
 //			}
+//			if (this.getName().contains("join")) {
+//				System.err.println("found join");
+//			}
 			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
+			
 			for (CallInfo aCallInfo:aCalledMethods) {
 //				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
-				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+//				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+				Set<STMethod> anAllDirectlyCalledMethods = aCallInfo.getMatchingCalledMethods();
+				
 
 				if (anAllDirectlyCalledMethods == null) {
 //					return null;
@@ -440,6 +453,9 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //						System.err.println("Export");
 //					}
 //					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllDirectlyOrIndirectlyCalledMethods();
+					if (aDirectlyCalledMethod.isUnresolvedMethod()) {
+						continue;
+					}
 					Set<STMethod> anAllIndirectlyCalledMethods = computeAllDirectlyOrIndirectlyCalledMethods(result, aDirectlyCalledMethod);
 
 					if (anAllIndirectlyCalledMethods == null) {
@@ -475,6 +491,8 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 					continue;
 //				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
 				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+//				Set<STMethod> anAllDirectlyCalledMethods = aCallInfo.getMatchingCalledMethods();
+
 
 				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
 //					System.err.println ("directly called methods should not be null");
@@ -482,6 +500,8 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //					return null;
 				}
 				result.addAll(Arrays.asList(anAllDirectlyCalledMethods)); // these are in my class
+//				result.addAll(anAllDirectlyCalledMethods); // these are in my class
+
 				for (STMethod aDirectlyCalledMethod:anAllDirectlyCalledMethods) {
 					
 					Set<STMethod> anAllIndirectlyCalledMethods = aDirectlyCalledMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods();
@@ -521,6 +541,8 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 					continue;
 //				STMethod[] anAllDirectlyCalledMethods = toSTMethods(aCallInfo);
 				STMethod[] anAllDirectlyCalledMethods = aCallInfo.getCalledSTMethods();
+				
+//				Set<STMethod> anAllDirectlyCalledMethods = aCallInfo.getMatchingCalledMethods();
 
 				if (anAllDirectlyCalledMethods == null) { // probbaly a call to a inner variable
 //					System.err.println ("directly called methods should not be null");
@@ -597,6 +619,20 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		public void setAmbiguouslyOverloadedMethods(boolean ambiguouslyOverloadedMethods) {
 			this.ambiguouslyOverloadedMethods = ambiguouslyOverloadedMethods;
 		}
+		@Override
+		public boolean isUnresolvedMethod() {
+			return unresolvedMethod;
+		}
+		@Override
+
+		public void setUnresolvedMethod(boolean unresolvedMethod) {
+			this.unresolvedMethod = unresolvedMethod;
+		}
+		@Override
+		public int getNumParameters() {
+			return numParameters;
+		}
+		
 //		@Override
 //		public boolean isParsedMethod() {
 //			return true;

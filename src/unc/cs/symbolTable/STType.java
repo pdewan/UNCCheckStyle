@@ -85,10 +85,16 @@ public interface STType extends STNameable{
 //	String getDeclaredGlobalVariableType(String aGlobal);
 	STVariable getDeclaredGlobalSTVariable(String aGlobal);
 	STNameable[] getAllDeclaredEditablePropertyNames();
+	/**
+	 * directly called methods by this class
+	 */
 	List<CallInfo> getMethodsCalled();
 	List<STNameable> getTypesInstantiated();
 	List<STMethod> getInstantiatingMethods(String aTypeName);
 	Boolean instantiatesType(String aShortOrLongName);
+	/**
+	 * directly called methods by this class and its superclasses
+	 */
 	List<CallInfo> getAllMethodsCalled();
 //	DetailAST getDeclaredGlobalVariableToRHS(String aGlobal);
 	List<STVariable> getDeclaredSTGlobals();
@@ -151,4 +157,5 @@ public interface STType extends STNameable{
 	Set<STType> getSubSTTypes();
 	Set<STVariable> getAllGlobalVariables();
 	STVariable getGlobalSTVariable(String aGlobal);
+	STMethod[] getMethods(String aName, int aNumParameters);
 }

@@ -465,11 +465,13 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  }
 
  
- public static boolean isJavaLangClass(String aShortClassName) {
-	 return javaLangTypesSet.contains(aShortClassName);
+ public static boolean isJavaLangClass(String aShortName) {
+	
+	 return javaLangTypesSet.contains(aShortName);
  }
  public static boolean isExternalImportCacheChecking(String aFullClassName) {
-	 return allProjectExternalImports.contains(aFullClassName);
+	 return aFullClassName.startsWith("java.") ||
+	  allProjectExternalImports.contains(aFullClassName);
  }
  public static boolean isExternalImportCacheCheckingShortName(String aShortClassName) {
 	 return allProjectExternalImportsShortName.contains(aShortClassName);
@@ -585,7 +587,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			// do not want user scanner to match Scanner class so do not use contains
 			// allow regex
 			try {
-			return aName.matches(aDescriptor) || aShortName.matches(aDescriptor);
+			return aName.equals(aDescriptor) || aShortName.equals(aDescriptor) || aName.matches(aDescriptor) || aShortName.matches(aDescriptor);
 			} catch (Exception e) {
 				e.printStackTrace();
 				return true;

@@ -61,6 +61,10 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		}
 		return result;
 	}
+	@Override
+	public int getNumParameters() {
+		return getParameterTypes().length;
+	}
 
 	@Override
 	public String getReturnType() {

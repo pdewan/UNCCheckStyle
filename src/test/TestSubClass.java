@@ -3,6 +3,7 @@ package test;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.PrintStream;
 
 public abstract class TestSubClass extends TestSuperClass implements PropertyChangeListener{
 //	TestSuperClass testSuperClass;
@@ -112,10 +113,24 @@ public abstract class TestSubClass extends TestSuperClass implements PropertyCha
 //			e.printStackTrace();
 //		}
 //	}
+	public static PrintStream getOut() {
+		return System.out;
+	}
+	public static PrintStream getOut2() {
+		return getOut();
+	}
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
+//		getOut().println("foo");
+//		getOut2().println("foo");
 		superGlobal = 3;
 		System.out.println(superGlobal + superConstant + subConstant);
+		PrintStream aPrintStream = System.out;
+		aPrintStream.println("foo");
+		java.lang.Math.ceil(4.5);
+		Math.ceil(4.5);
+		((PrintStream) aPrintStream).println("bar");
+		TestSubClass.getOut().println("foo");
 		// TODO Auto-generated method stub
 		
 	}

@@ -42,6 +42,9 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	}
 	public AnSTTypeFromClass(Class aClass) {
 		super (null, aClass.getName());
+//		if (aClass.getName().contains("Exception")) {
+//			System.out.println("Found exception");
+//		}
 		external = true;
 		reflectedClass = aClass;
 		Method[] aMethods = aClass.getDeclaredMethods();	
@@ -76,6 +79,9 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 		Class aSuperClass = aClass.getSuperclass();
 		if (aSuperClass != null ) {
 		   superClass = STBuilderCheck.getExistingClassSTType(aSuperClass);
+		   if (superClass == null) {
+			   superClass = new AnSTNameable(aSuperClass.getName());
+		   }
 //		   if (superClass != null) {
 //		   STBuilderCheck.addSTType(((STType) superClass)); 
 //		   }
@@ -311,7 +317,7 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 
 
-	@Override
+//	@Override
 	public List<CallInfo> getMethodsCalled() {
 		// TODO Auto-generated method stub
 		return new ArrayList();

@@ -290,6 +290,144 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 	
 		
 	}
+	protected  Boolean matches (STType aCallingType, String aSpecifier, STMethod aCallingMethod, STMethod aCalledMethod ) {
+//		String aCallingType = toShortTypeOrVariableName(aCallingSTType.getName());
+		String[] aCallerAndRest = aSpecifier.split(CALLER_TYPE_SEPARATOR);
+		String aCaller = MATCH_ANYTHING_REGULAR_EXPERSSION;
+		
+		String aNonTargetPart = aSpecifier;
+//		List<String> aCalledParameters = null;
+
+		if (aCallerAndRest.length == 2) {
+			aCaller = aCallerAndRest[0].trim();
+			aNonTargetPart = aCallerAndRest[1];
+		} 
+		
+		if (!aCallingMethod.getName().matches(aCaller)) {
+			return false;
+		}
+		
+		String[] aTypeAndSignature = aNonTargetPart.split(TYPE_SIGNATURE_SEPARATOR);
+		String aSignature = aNonTargetPart;
+		if (aTypeAndSignature.length == 2) {
+			aSignature = aTypeAndSignature[1];
+		}
+			
+
+//		STMethod aCallingMethod = aCallInfo.getCallingMethod();
+
+		STMethod aCalledSpecifiedMethod = signatureToMethod(aSignature);
+		Boolean aMatch = matchSignature(aCalledSpecifiedMethod, aCalledMethod);
+		if (aMatch == null) {
+			return null;
+		}
+		return aMatch;
+//		if (aMatch) // check if there is a direct call by the specified method
+//		// if (retVal)
+//			return true;
+//
+//		Boolean aMatch = matchesCallingMethod(aCallingType, aCalledSpecifiedMethod, aCallingMethod);
+//		return aMatch;
+//		if (aMatch == null) {
+//			return null;
+//		}
+//		if (!aMatch) {
+//
+////		if (!matchesCallingMethod(aCallingSTType, aCallingSpecifiedMethod, aCallingMethod)) {
+//			return false;
+//		}
+//		String anEvaluatedNonTargetPart = substituteParameters(aNonTargetPart, aCallingMethod);
+//		String[] aNameParts = anEvaluatedNonTargetPart.split(TREE_REGEX_START);
+//		String aSignatureWithTarget = aNameParts[0];
+//		String aParametersText = null;
+//		if (aNameParts.length > 1) {
+//			aParametersText = aNameParts[1];
+//		}
+////		if (aNameParts.length > 1) {
+////			aCalledParameters = new ArrayList<>();
+////			for (int i = 1; i < aNameParts.length; i++) {
+////				aCalledParameters.add(aNameParts[i]);
+////			}							
+////		}		
+//		
+////		STMethod  aCallingMatchingMethod = getMatchingMethod(aCallingSTType, aCallingSpecifiedMethod);
+//
+//		String[] aSignatureAndTarget = aSignatureWithTarget.split(TYPE_SIGNATURE_SEPARATOR);
+//		String aSignature ;
+//		String aSpecifiedTarget;
+////		String aCalledType = aCallInfo.getCalledType();
+////		if (aSignatureAndTarget == null ) {
+////			
+////			System.err.println ("Null signature!");
+////			return false;
+////		}
+////		if (aSignatureAndTarget.length == 0 ) {
+////			
+////			System.err.println ("signature with no elements");
+////			return false;
+////		}
+////		
+////		if (aSignatureAndTarget.length == 1 ) {
+////			
+//////			System.out.println ("signature with only one element");
+////			aSignature = aSignatureAndTarget[0];
+////			if (aCalledType.equals("super")) {
+////				aSpecifiedTarget = "super"; // so we can match super with either super or the called type
+////			} else {
+////			String[] dotSplit = aSignature.split("\\.");
+////			if (dotSplit.length > 1) {
+////				aSpecifiedTarget = dotSplit[0]; // consistent with call info
+////			} else {
+////			aSpecifiedTarget = aCallingType;
+////			}
+////			}
+//////			aSpecifiedTarget = aCallInfo.getCalledType(); // assuming local call
+////			// the following moved to below
+//////			if (aSpecifiedTarget.contains("]") || 
+//////					aSpecifiedTarget.contains("[") ||
+//////					aSpecifiedTarget.contains("(") ||
+//////					aSpecifiedTarget.contains(")"))
+//////				return false;
+//////			return false;
+////		}
+//////		if (aSignatureAndTarget.length < 2 ||
+//////				aSignatureAndTarget[1] == null ) {
+//////			
+//////			System.out.println ("Null signature");
+//////			return false;
+//////		}
+//////		String aSignature = aSignatureAndTarget[1].trim();
+//////		String aSpecifiedTarget = aSignatureAndTarget[0].trim();
+////		else {
+////		aSignature = aSignatureAndTarget[1].trim();
+////		aSpecifiedTarget = aSignatureAndTarget[0].trim();
+////		}
+//////		if (aCalledType.contains("]") || // array element
+//////				aCalledType.contains("[") ||
+//////				aCalledType.contains("(") ||// casts
+//////				aCalledType.contains(")"))
+////////			return false;
+//////			return true; // assume the type is right, 
+//		STMethod aSpecifiedMethod = signatureToMethod(aSignature);
+//		Boolean result = matches(aSpecifiedTarget, aSpecifiedMethod, aCalledMethod);
+////		if (result == null) {
+////			System.out.println ("Null result, comment ths out");
+////		}
+////		if (aCalledParameters == null)
+////			return result;
+//		if (aParametersText == null)
+//			return result;
+//		
+//		if (result != true)
+//			return result;
+//
+////		return incrementalParametersMatch(aCallingMethod, aCallInfo, aCalledParameters);
+//
+////		return parametersMatch(aCallingMethod, aCallInfo, aParametersText);
+
+	
+		
+	}
 	protected void log(DetailAST ast, DetailAST aTreeAST, String aShortMethodName,
 			String aLongMethodName, CallInfo aCallInfo) {
 			log(ast, aTreeAST, specifiedType + " = " + matchedSignature);
@@ -523,6 +661,58 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 		
 
 //		return aShortMethodName.matches(aSpecifiedMethod.getName());
+		
+	
+		
+	}
+	protected Boolean matches (String aSpecifiedTarget,  STMethod aSpecifiedMethod, STMethod aCalledMethod) {
+		
+//		int i = 0;
+//		String aRegex = "(.*)" + aSpecifiedMethod.getName() + "(.*)";
+//		String aRegex = aSpecifiedMethod.getName();
+		if ( !isStarParameters(aSpecifiedMethod.getParameterTypes()) &&
+				aCalledMethod.getParameterTypes().length != aSpecifiedMethod.getParameterTypes().length)
+			return false;
+//		String aTypeName = aCallInfo.getCalledType();
+//		if (aTypeName == null || aTypeName.contains(("["))) {
+//			return null;
+//		}
+		
+		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) && !aSpecifiedTarget.startsWith(TAG_STRING)) { // we do not need to determine tags
+			
+			 Boolean retVal = aCalledMethod.getName().matches(aSpecifiedMethod.getName());
+			 if (!retVal) {
+				 return  false;
+			 }
+//			 return matchTypeISA(aSpecifiedTarget, toShortTypeOrVariableName(aTypeName));
+			 return matchTypeISA(aSpecifiedTarget, aCalledMethod.getDeclaringClass());
+
+
+		 }
+		 boolean methodNamesMatched = false;
+		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
+			 if  (!aCalledMethod.getName().matches(aSpecifiedMethod.getName())) { // not checking for parameters?
+				 return false; // no point checking type if method names do not match
+			 }
+			 methodNamesMatched = true;
+			}
+		 Boolean matchesType = matchesTypeUnifying(aSpecifiedTarget, aCalledMethod.getDeclaringClass());
+		 if (matchesType == null)
+			 return null;
+		 if (!matchesType) {
+				 return false;
+		 }
+//		 if (aSpecifiedTarget.contains("Model") && aTypeName.contains("Model")) {
+//				System.out.println("found model");
+//				}
+//		 if (!aSpecifiedMethod.getName().startsWith(TAG_STRING) ) { // we do not need to determine method tags
+//			 return aShortMethodName.matches(aSpecifiedMethod.getName()); // not checking for parameters?
+//		 }
+		 if (methodNamesMatched) {
+			 return true; 
+		 }
+		
+		return false;
 		
 	
 		

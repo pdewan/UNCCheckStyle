@@ -120,11 +120,12 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 	 * Wonder how it works.
 	 * With the new scheme, we are ignoring aSpecifiedType anyway.
 	 */
-	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
+	protected Boolean processStringsCallInfo(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
 
 	
 		// maybe have a separate check for local calls?
 		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
+		
 		// for efficiency, let us remove mapped calls
 
 
@@ -167,6 +168,82 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //					aCallsToBeChecked.remove(aCallInfo);
 					break;
 				}				
+			}
+			if (!found) {
+//				if (aSpecification.contains("run")) {
+//					System.out.println ("found specification");
+//				}
+				log(anAST, aTree, aSpecification);
+			}
+			
+		}
+		if (returnNull)
+			return null;
+		return true;
+	}
+	/**
+	 * This is ignoring aSpecifiedType It should look for calls in specified type rather than anSTTType.
+	 * Wonder how it works.
+	 * With the new scheme, we are ignoring aSpecifiedType anyway.
+	 */
+	protected Boolean processStrings(DetailAST anAST, DetailAST aTree, STType anSTType, String aSpecifiedType, String[] aStrings) {
+
+		STMethod[] anAllCallingMethods = anSTType.getMethods();
+		// maybe have a separate check for local calls?
+//		List<CallInfo> aCalls = anSTType.getAllMethodsCalled();
+		
+		// for efficiency, let us remove mapped calls
+
+
+		if (anAllCallingMethods == null)
+			return null;
+//		List<CallInfo> aCallsToBeChecked = new ArrayList(aCalls);
+
+		String[] aSpecifications = aStrings;
+		boolean returnNull = false; 
+//		int i = 0;
+		for (String aSpecification:aSpecifications) {
+//			if (aSpecification.contains("createRegistr")) {
+//				System.out.println ("found specification:");
+//			}
+			boolean found = false;
+			for (STMethod aCallingMethod:anAllCallingMethods ) {
+				
+				Set<STMethod> anAllCalledMethods = aCallingMethod.getAllDirectlyOrIndirectlyCalledMethods();
+//				if (aCallInfo.toString().contains("move"))	{
+//					System.out.println ("found move");
+//				}
+				for (STMethod aCalledMethod : anAllCalledMethods) {
+//					if (aCalledMethod.getName().contains("reduce")) {
+//						System.err.println("found reduce:");
+//					}
+
+					Boolean matches = matches(anSTType, maybeStripComment(aSpecification), aCallingMethod,
+							aCalledMethod);
+
+					if (matches == null) {
+						// commenting out this part, perhaps something else will go wrong
+//					if (!aSpecification.contains("!")) { // local call go onto another call, not really what is the difference?
+//						continue;
+//					}
+
+						returnNull = true;
+						found = true; // we will come back to this
+						continue;
+//					return null;
+					}
+					if (matches) {
+						found = true;
+						// same call may be made directly or indirectly, and can cause problems if
+						// removed
+//					aCallsToBeChecked.remove(aCallInfo);
+						break;
+					}
+					
+				}
+				if (found) {
+					break;
+				}
 			}
 			if (!found) {
 //				if (aSpecification.contains("run")) {

@@ -1747,6 +1747,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			}
 		}
 		}
+//		FullIdent aFullIdent = FullIdent.createFullIdentBelow(aLeftMostMethodTargetAST.getParent().getParent());
 		
 		String aNormalizedLongName = toLongName(aNormalizedParts);
 		String aCallee = toShortTypeOrVariableName(aNormalizedLongName);
@@ -3875,21 +3876,53 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public static String toTokenAccessString(Integer aTokenAccess) {
 		return accessTokenToAccessString.get(aTokenAccess);
 	}
+
 	public static Set<STMethod> getMatchingCalledMethods(STType aCalledType, CallInfo aCallInfo) {
 		Set<STMethod> retVal = new HashSet();
+//		if (aCallInfo.getCallee().equals("println")) {
+//			System.err.println ("found println");
+//		}
+//		STType aCalledType = aCallInfo.getCalledSTType();
+
 		if (aCalledType == null)
-				return null;
-			for (STMethod anSTMethod:aCalledType.getDeclaredMethods()) {
-				if (anSTMethod.getName().equals(aCallInfo.getCallee()) &&
-						anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) { // at some point do overload resolution?
-					retVal.add(anSTMethod);
+			return null;
+		STMethod[] aMethods;
+		if (aCallInfo.isConstructor()) {
+			aMethods = aCalledType.getDeclaredConstructors();
+			
+		} else {
+			aMethods = aCalledType.getDeclaredMethods();
+		}
+		for (STMethod anSTMethod : aMethods) {
+			if (anSTMethod.getName().equals(aCallInfo.getCallee())
+					&& anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) { // at some point do
+																									// overload
+																									// resolution?
+				retVal.add(anSTMethod);
 //					anSTMethod.addCaller(callingMethod);
 //					break;
-				}
 			}
+		}
 		
+
 		return retVal;
 	}
+
+	protected static Set<STMethod> emptyMethods = new HashSet();;
+	
+	public static Set<STMethod> getMatchingCalledMethodsInSomeSTType(CallInfo aCallInfo) {
+		List<STType> anSTTypes = SymbolTableFactory.getOrCreateSymbolTable().getAllSTTypes();
+		Set<STMethod> retVal = new HashSet();
+		for (STType anSTType:anSTTypes) {
+			Set<STMethod> aMatch = getMatchingCalledMethods(anSTType, aCallInfo);
+			if (aMatch != null && aMatch.size() > 0) {
+				retVal.addAll(aMatch);
+			}
+		}
+		return retVal;
+		 
+	}
+	
 	
 	static {
 		accessTokenToAccessDegree.put(TokenTypes.LITERAL_PRIVATE, 0);

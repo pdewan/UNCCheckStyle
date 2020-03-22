@@ -81,8 +81,29 @@ public class PostProcessingMain {
 		}
 		return retVal;
 	}
+	
+	public static void refreshUnknowns(List<STType> anSTTypes) {
+		// create some side effects first
+				for (STType anSTType : anSTTypes) {
+					if (anSTType.isExternal()) {
+						continue; // these methods have no callers
+					}
+					if (anSTType.getStaticBlocks() != null) {
+						
+					anSTType.getStaticBlocks().refreshUnknowns();
+					}
+					STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+					for (STMethod aMethod:aMethods) {
+						aMethod.getLocalMethodsCalled(); // side effect of adding caller
+						aMethod.refreshUnknowns();
+//						aMethod.getAllMethodsCalled();
+					}
+					
 
-	public static void processTypes(List<STType> anSTTypes) {
+				}
+	}
+
+	public static void doSecondPass(List<STType> anSTTypes) {
 		// create some side effects first
 		for (STType anSTType : anSTTypes) {
 			if (anSTType.isExternal()) {
@@ -147,9 +168,9 @@ public class PostProcessingMain {
 			for (STMethod aMethod:aMethods) {
 //				aMethod.getLocalMethodsCalled();
 				Set<STMethod> aCallingMethods = aMethod.getCallingMethods();
-				if (aCallingMethods != null) {
-				System.out.println (anSTType + ":" + aMethod + ":" + aMethod.getCallingMethods());
-				}
+//				if (aCallingMethods != null) {
+//				System.out.println (anSTType + ":" + aMethod + ":" + aMethod.getCallingMethods());
+//				}
 			}			
 
 		}
@@ -162,6 +183,12 @@ public class PostProcessingMain {
 
 		}
 		
+	}
+	public static void generateChecks(List<STType> anSTTypes) {
+		for (STType anSTType : anSTTypes) {
+			processTypePrint(anSTType);
+		
+		}
 	}
 
 	public static void processTypePrint(STType anSTType) {
@@ -829,6 +856,8 @@ public class PostProcessingMain {
 		List<CallInfo> aCallInfos = anSTType.getAllMethodsCalled();
 		if (aCallInfos == null) {
 			aCallInfos = anSTType.getMethodsCalled();
+//			aCallInfos = anSTType.getAllMethodsCalled();
+
 		}
 		List<String> aCalledTypeAndMethods = new ArrayList();
 		for (CallInfo aCallInfo : aCallInfos) {
@@ -908,6 +937,9 @@ public class PostProcessingMain {
 				continue;
 			}
 			for (STMethod aCalledMethod: aCalledMethods) {
+//				if (aCalledMethod.getName().contains("reduce")) {
+//					System.err.println("found reduce:");
+//				}
 //				if (!aCalledMethod.isPublic()) {
 //					continue;
 //				}
@@ -923,7 +955,7 @@ public class PostProcessingMain {
 					continue;
 				}
 				String aCalledMethodSignature =  
-						aCalledMethod.isAmbiguouslyOverloadedMethods()?
+						aCalledMethod.isAmbiguouslyOverloadedMethods() || aCalledMethod.isUnresolvedMethod()?
 						AnAbstractSTMethod.getMatchAnyHeader(aCalledMethod.getName()):
 //						if (Character.isUpperCase(aCalledMethodSignature.charAt(0))) {
 //							continue;// guess it isconstructor call
@@ -936,6 +968,9 @@ public class PostProcessingMain {
 //				}
 						
 				aCalledTypeAndMethods.add(anOutputType + MethodCallCheck.TYPE_SIGNATURE_SEPARATOR + aCalledMethodSignature);
+				if (aCalledMethodSignature.contains("ABarrier")) {
+					System.err.println("ABarrier");
+				}
 
 //				if (aSubtype != null) {
 //					System.out.println("Calling type:" + anSTType + " calling method: " + aCallingMethod + " called type " + aSubtype + " called method " + aCalledMethod);
@@ -989,11 +1024,17 @@ public class PostProcessingMain {
 			}
 			NonExitingMain.main(args);
 			UNCCheck.setDoNotVisit(false);
+			
 			System.setOut(oldOut);
+//			initGlobals();
+//			doSecondPass(sTTypes);
+			
 
 			NonExitingMain.main(args);
 			initGlobals();
-			processTypes(sTTypes);
+			doSecondPass(sTTypes);
+			generateChecks(sTTypes);
+			
 		} catch (UnsupportedEncodingException | FileNotFoundException | CheckstyleException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

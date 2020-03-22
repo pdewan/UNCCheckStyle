@@ -77,6 +77,9 @@ public interface STMethod extends STNameable{
 	void setPublic(boolean isPublic);
 	boolean isAmbiguouslyOverloadedMethods();
 	void setAmbiguouslyOverloadedMethods(boolean ambiguouslyOverloadedMethods);
+	boolean isUnresolvedMethod();
+	void setUnresolvedMethod(boolean unresolvedMethod);
+	int getNumParameters();
 
 
 }

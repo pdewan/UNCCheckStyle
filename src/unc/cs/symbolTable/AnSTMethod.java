@@ -89,9 +89,31 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	public AnSTMethod (String aName) {
 		super(null, aName);
 		isPublic = false;
+		signature = toStringMethod();
+
 	}
-	
-	
+	public AnSTMethod (String aName, int aNumParameters) {
+		super(null, aName);
+		isPublic = true;
+		numParameters = aNumParameters;
+		signature = toStringMethod();
+
+	}
+	protected static List emptyList = new ArrayList();
+	protected static String[] emptyStringArray = {};
+	protected static CallInfo[] emptyCallInfos = {};
+	public static STMethod createDefaultConstructor(String declaringClass, DetailAST declaringClassAST) {
+		DetailAST anAST = declaringClassAST;
+		String name = ComprehensiveVisitCheck.toShortTypeName(declaringClass);
+		String returnType = declaringClass;
+		boolean anIsConstructor = true;
+		STNameable[] aTags = {new AnSTNameable(anAST, name)};
+		return new AnSTMethod(anAST, name, declaringClass, emptyStringArray, emptyStringArray, true, true, 
+				anIsConstructor, false, returnType, true, aTags, aTags, false, emptyCallInfos, 
+				null, null, null, null, null, null, null,
+				null, null, null, 0, null, null);
+		
+	}
 
 	public AnSTMethod(DetailAST ast, String name, String declaringClass, String[] aParameterNames,
 			String[] parameterTypes, boolean isPublic, boolean anIsInstance, boolean anIsConstructor,
@@ -119,6 +141,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		}
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
+		if (parameterTypes != null) {
+			 numParameters = parameterTypes.length;
+		}
 		parameterNames = aParameterNames;
 		this.isPublic = isPublic;
 		isInstance = anIsInstance;
@@ -246,6 +271,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 	@Override
 	public CallInfo[] getCallInfoOfMethodsCalled() {
+		refreshUnknowns();
 		return methodsCalled;
 	}
 	

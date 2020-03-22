@@ -318,15 +318,20 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		for (STNameable aClassName : allImportsOfThisClass) {
 			String aLongName = aClassName.getName();
 			// star imports?
-			String aShortName = toShortTypeOrVariableName(aLongName);
+//			String aShortName = toShortTypeOrVariableName(aLongName);
 //			if (aShortName != null && !aShortName.isEmpty()) {
 //			importShortToLongName.put(aShortName, aLongName);
 //			}
 //			if (TagBasedCheck.isProjectImport(aClassName.getName()))
 //				continue;
-			if (isExternalImportCacheChecking(aClassName.getName()))
-				processExistingClass(aClassName.getName());
+//			if (isExternalImportCacheChecking(aClassName.getName()))
+//				processExistingClass(aClassName.getName());
+			processImport(aLongName);
 		}
+	}
+	public static void processImport(String aLongName) {
+		if (isExternalImportCacheChecking(aLongName))
+			processExistingClass(aLongName);
 	}
 
 	public Collection<String> getExistingClassShortNameCollection() {
@@ -368,7 +373,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		return anSTType;
 	}
 	
+	public static  STType addExistingClassSTType(String aClassName) {
+		
+		STType anSTType = new AnSTTypeFromClass(aClassName);
+//		STType anSTType = new AnSTTypeFromClass(aClassName);
 
+		anSTType.setExternal(true);
+		addSTType(anSTType);
+		return anSTType;
+	}
 
 
 	public static  STType processExistingClass(String aClassName) {
@@ -396,14 +409,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //					aClassName) != null)
 			if (anSTType != null)
 				return anSTType;
-			anSTType = new AnSTTypeFromClass(aClassName);
-//			STType anSTType = new AnSTTypeFromClass(aClassName);
-
-			anSTType.setExternal(true);
-			addSTType(anSTType);
-
-//			upateCurrentSTTType(anSTType);
-			return anSTType;
+			return addExistingClassSTType(aClassName);
+//			anSTType = new AnSTTypeFromClass(aClassName);
+////			STType anSTType = new AnSTTypeFromClass(aClassName);
+//
+//			anSTType.setExternal(true);
+//			addSTType(anSTType);
+//
+////			upateCurrentSTTType(anSTType);
+//			return anSTType;
 			// e.printStackTrace();
 		}
 

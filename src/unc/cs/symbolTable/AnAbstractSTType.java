@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import unc.cs.checks.ComprehensiveVisitCheck;
+import unc.cs.checks.STBuilderCheck;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
 
@@ -153,15 +154,18 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 		List<STMethod> retVal = new ArrayList();
 		addToList(retVal, getDeclaredMethods());
 		List<STNameable> anAllTypes = null;
-		if (isInterface()) {
-			anAllTypes = getAllSuperTypes();
-		} else {
-			anAllTypes = new ArrayList();
-			STNameable aSuperClass = getSuperClass();
-			if (aSuperClass != null) {
-			anAllTypes.add(getSuperClass());
-			}
-		}
+		anAllTypes = getAllSuperTypes(); // why only for interfaces
+
+//		if (isInterface()) {
+//			anAllTypes = getAllSuperTypes();
+//		} else {
+//			anAllTypes = new ArrayList();
+//			STNameable aSuperClass = getSuperClass();
+//			if (aSuperClass != null) {
+//			anAllTypes.add(getSuperClass());
+//			}
+//		}
+		
 		if (anAllTypes == null) { // should never happen
 			return null;
 		}
@@ -169,7 +173,8 @@ public abstract class AnAbstractSTType extends AnSTNameable implements STType {
 			if (aSuperType == null || aSuperType.getName() == null) {
 				return null;
 			}
-			if (TagBasedCheck.isExternalType(aSuperType.getName())) {
+			if (TagBasedCheck.isExternalType(aSuperType.getName()) &&
+					!STBuilderCheck.getImportsAsExistingClasses()) {
 				continue;
 			}
 			Object aSuperTypeMethods = addMethodsOfSuperType(retVal, aSuperType);
@@ -232,7 +237,7 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	
 
 	if (aSuperType != null
-			&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {
+			&& (!TagBasedCheck.isExternalClass(aSuperType.getName()) || STBuilderCheck.getImportsAsExistingClasses())) {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aSuperType.getName());
 		if (anSTType == null) {
@@ -456,7 +461,30 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		return resultList.toArray(emptyMethodArray);
 
 	}
+	@Override
+	public STMethod[] getMethods(String aName, int aNumParameters) {
+		List<STMethod> resultList = new ArrayList();
+		STMethod[] aMethods = getMethods();
+		if (aMethods == null) {
+			return null;
+		}
 
+//		if (aMethods == null) {
+//			if (waitForSuperTypeToBeBuilt())
+//				return null;
+//			else
+//				aMethods = getDeclaredMethods();
+//		}
+		for (STMethod aMethod : aMethods) {
+			if (aMethod.getParameterTypes() == null) {
+				System.err.println ("Nll parameter names");
+			}
+			if (aMethod.getName().equals(aName) && aMethod.getParameterTypes().length == aNumParameters)
+				resultList.add(aMethod);
+		}
+		return resultList.toArray(emptyMethodArray);
+
+	}
 	@Override
 	public STNameable getSuperClass() {
 		return superClass;
@@ -934,10 +962,13 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 				}		
 		
 	}
-
+	/**
+	 * Recursively look at both the extends and implements chain
+	 *
+	 */
 	public static List<STNameable> getAllTypes(STType anSTType) {
 		if (TagBasedCheck.isExternalClass(TypeVisitedCheck
-				.toShortTypeName(anSTType.getName())))
+				.toShortTypeName(anSTType.getName())) && !STBuilderCheck.getImportsAsExistingClasses())
 			return emptyList;
 		List<STNameable> result = new ArrayList();
 		result.add(anSTType);
@@ -1034,10 +1065,13 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 	public static List emptyList = new ArrayList();
 	public static STNameable[] emptyNameables = new STNameable[0];
 
-
+	/**
+	 * Go up the extends chain, do not look at the implements chain
+	 *
+	 */
 	public static List<STNameable> getAllSuperTypes(STNameable aType) {
 		if (TagBasedCheck.isExternalClass(TypeVisitedCheck
-				.toShortTypeName(aType.getName())))
+				.toShortTypeName(aType.getName())) && !STBuilderCheck.getImportsAsExistingClasses())
 			return emptyList;
 		List<STNameable> result = new ArrayList();
 //		result.add(aType);

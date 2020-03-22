@@ -120,14 +120,14 @@ public class ASymbolTable implements SymbolTable{
 	}
 	@Override
 	public STType getSTClassByFullName(String aTypeName) {
-		boolean isJavaClass = false;
-		if (STBuilderCheck.isJavaLangClass(aTypeName)) {
-			if (Character.isUpperCase(aTypeName.charAt(0))) {
-				aTypeName = "java.lang." + aTypeName;
-				isJavaClass = true;
-			}
-		
-		}
+//		boolean isExternalClass = aTypeName.startsWith("java.lang") || STBuilderCheck.isExternalImportCacheChecking(aTypeName);
+//		if (STBuilderCheck.isJavaLangClass(aTypeName)) {
+//			if (Character.isUpperCase(aTypeName.charAt(0))) {
+//				aTypeName = "java.lang." + aTypeName;
+//				isExternalClass = true;
+//			}
+//		
+//		}
 		STType anSTType = typeNameToSTClass.get(aTypeName);
 //		if (anSTType == null) {
 //			System.out.println("Null ST Type:" + aTypeName);
@@ -138,13 +138,26 @@ public class ASymbolTable implements SymbolTable{
 //
 //		}
 		if (anSTType == null) {
-			if (isJavaClass && STBuilderCheck.getImportsAsExistingClasses()) {
+			boolean isExternalClass = aTypeName.startsWith("java.lang") || 
+					STBuilderCheck.isExternalImportCacheChecking(aTypeName) ;
+					
+			if (!isExternalClass && STBuilderCheck.isJavaLangClass(aTypeName)) {
+				if (Character.isUpperCase(aTypeName.charAt(0))) {
+					aTypeName = "java.lang." + aTypeName;
+					isExternalClass = true;
+				}
+			
+			}
+			if (!isExternalClass) {
+				isExternalClass = STBuilderCheck.isExternalImportCacheChecking(aTypeName);
+			}
+			if (isExternalClass && STBuilderCheck.getImportsAsExistingClasses()) {
 				try {
 					Class aClass = Class.forName(aTypeName);
 					return STBuilderCheck.addExistingClassSTType(aClass);
 
 				} catch (ClassNotFoundException e) {
-					return null;
+					return STBuilderCheck.addExistingClassSTType(aTypeName);
 				}
 			}
 		}

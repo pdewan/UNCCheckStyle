@@ -33,6 +33,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //	protected Map<String, DetailAST> globalVariableToRHS ;
 	protected List<CallInfo> methodsCalled = new ArrayList();
 	protected List<CallInfo> allMethodsCalled ;
+	
+	
 
 	protected List<STNameable> typesInstantiated;
 	protected Map<String, List<DetailAST>> globalIdentToRHS;
@@ -89,6 +91,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		staticBlocks = aStaticBlocks;
 		this.declaredMethods = declaredMethods;
 		this.declaredConstructors = aDeclaredConstructors;
+		if (aDeclaredConstructors == null || aDeclaredConstructors.length == 0) {
+			STMethod aConstructor = AnSTMethod.createDefaultConstructor(name, ast);
+			declaredConstructors = new STMethod[] {aConstructor};
+		}
 		this.declaredInterfaces = interfaces;
 		this.superClass = superClass;
 		if (superClass == null) {
@@ -146,10 +152,17 @@ public class AnSTType extends AnAbstractSTType implements STType {
 				aMethod.setDeclaringType(this);
 				aMethod.processGlobals();
 			}
+			try {
 			for (STMethod aConstructor:declaredConstructors) {
 				aConstructor.setDeclaringSTType(this);
-				methodsCalled.addAll(Arrays.asList(aConstructor.getCallInfoOfMethodsCalled()));
+				CallInfo[] aMethodsCalled = aConstructor.getCallInfoOfMethodsCalled();
+				if (aMethodsCalled != null) {
+				methodsCalled.addAll(Arrays.asList(aMethodsCalled));
 				aConstructor.processGlobals();
+				}
+			}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		} 
 	}
@@ -896,6 +909,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		
 		List<CallInfo> retVal = new ArrayList();
 		retVal.addAll(getMethodsCalled());
+//		retVal.addAll(getAllMethodsCalled());
+
 		STNameable aSuperType = getSuperClass();
 		if (aSuperType != null
 				&& !TagBasedCheck.isExternalClass(aSuperType.getName())) {

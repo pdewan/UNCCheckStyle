@@ -226,39 +226,57 @@
 				" 
 			/>
 		</module>
-		
 	<module name="MissingMethodCall">
 		<property name="severity" value="warning"/>
-		<property name="includeTypeTags" value="@ModelClass"/>
+		<property name="includeTypeTags" value="@ServerIntegerSummer"/>
 		<property name="expectedCalls" value="
-			java.util.Map!keySet:->Set,
-			java.util.Map!get:Object->Object,
-			@ReducerFactory!reduce:*->.*,
-			java.rmi.RemoteException!printStackTrace:*->.*,
-			java.util.Map!clear:->void,
-			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceWait:->void,
-			java.util.List!clear:->void,
-			@MapperFactory!getMapper:->Mapper,
-			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceEnqueueRequest:Object->void,
-			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceEnqueue:Object->void,
-			java.util.concurrent.BlockingQueue!put:Object->void,
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceMapperChange:Class;Object->void,
+			java.lang.Throwable!printStackTrace:->void,
+			@ControllerClass!processInput:->void,
+			java.rmi.registry.LocateRegistry!createRegistr:int->Registry,
+			java.rmi.registry.Registry!rebind:String;Remote->void,
+			@MapperFactory!setMapper:mapreduce.Mapper->void,
+			java.rmi.server.UnicastRemoteObject!exportObject:Remote;int->Remote,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:java.beans.PropertyChangeListener->void,"/>
+	</module>
+	
+	
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.util.Vector!add:*->.*,
+			java.util.AbstractCollection!isEmpty:*->.*,
 			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
-			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
-			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceNotify:->void,
-			java.util.Map!keySet:->Set,
-			java.util.Map!put:Object;Object->Object,
-			java.util.Map!keySet:->Set,
-			java.util.List!get:int->Object,
-			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceReduce:Object;Object->void,
-			java.util.List!add:Object->boolean,
-			java.util.Stack!add:*->.*,
-			java.beans.PropertyChangeSupport!addPropertyChangeListener:PropertyChangeListener->void,
-			java.util.Stack!quit:*->.*,
-			java.rmi.RemoteException!printStackTrace:*->.*,
-			java.util.Stack!pop:->Object,
 			java.util.Stack!peek:->Object,
-			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceRegister:Object->void,
-			java.util.Stack!push:Object->Object,"/>
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:java.util.Map;String;int->void,
+			java.lang.Object!wait:->void,
+			java.util.List!add:Object->boolean,
+			java.util.concurrent.BlockingQueue!put:Object->void,
+			java.lang.Thread!setName:String->void,
+			java.util.Stack!pop:->Object,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:PropertyChangeListener->void,
+			java.util.Map!get:Object->Object,
+			java.util.AbstractList!add:*->.*,
+			java.util.List!get:int->Object,
+			java.util.Map!put:Object;Object->Object,
+			@ModelClass+@DistributedTags.CLIENT!getThreads:->List,
+			@MapperFactory!getMapper:->Mapper,
+			java.lang.Throwable!printStackTrace:->void,
+			java.util.Vector!isEmpty:*->.*,
+			java.util.List!clear:->void,
+			java.util.Map!keySet:->Set,
+			java.util.LinkedList!clear:->void,
+			java.lang.Thread!interrupt:->void,
+			java.util.Map!clear:->void,
+			java.lang.Thread!start:->void,
+			@JoinerClass!join:->void,
+			java.util.Stack!push:Object->Object,
+			@ReducerFactory!getReducer:->Reducer,
+			java.lang.Object!notify:->void,
+			@PartitionerFactory!getPartitioner:->Partitioner,
+			java.lang.String!split:String->String[],
+			@ModelClass+@DistributedTags.CLIENT!maybeAssignSlavesToClients:->void,"/>
 	</module>
 	<module name="MissingMethodCall">
 		<property name="severity" value="warning"/>

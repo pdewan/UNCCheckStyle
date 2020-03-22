@@ -36,5 +36,6 @@ public interface CallInfo {
 	void setCalledType(String newVal);
 	String getCallingType();
 	STMethod[] getCalledSTMethods();
+	boolean isConstructor();
 
 }
