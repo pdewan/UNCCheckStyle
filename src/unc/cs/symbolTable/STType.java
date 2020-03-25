@@ -20,6 +20,7 @@ public interface STType extends STNameable{
 	String getPackage();
 	boolean isInterface();
 	boolean isAbstract();
+	boolean isGeneric();
 	AccessModifier getAccessModifier();
 	boolean isEnum();
 	STNameable getSuperClass();
@@ -158,4 +159,6 @@ public interface STType extends STNameable{
 	Set<STVariable> getAllGlobalVariables();
 	STVariable getGlobalSTVariable(String aGlobal);
 	STMethod[] getMethods(String aName, int aNumParameters);
+	int getNumberOfDeclaredGenericMethods();
+	int getNumberOfDeclaredAbstractMethods();
 }

@@ -270,6 +270,10 @@ public class AnSTMethodFromConstructor extends AnAbstractSTMethod implements STM
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean isGeneric() {
+		return false;
+	}
 	
 	
 

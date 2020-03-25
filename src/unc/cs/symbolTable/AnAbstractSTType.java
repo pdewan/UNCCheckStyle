@@ -2487,4 +2487,30 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 		}
 		return stSubTypes;
 	}
+	protected Integer numberOfAbstractMethods;
+	@Override
+	public int getNumberOfDeclaredAbstractMethods() {
+		if (numberOfAbstractMethods == null) {
+			numberOfAbstractMethods = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				 if ( aMethod.isAbstract()) {
+					 numberOfAbstractMethods++;
+				 }
+			}
+		}
+		return numberOfAbstractMethods;
+	}
+	protected Integer numberOfGenericMethods;
+	@Override
+	public int getNumberOfDeclaredGenericMethods() {
+		if (numberOfGenericMethods == null) {
+			numberOfGenericMethods = 0;
+			for (STMethod aMethod: getDeclaredMethods()) {
+				 if ( aMethod.isGeneric()) {
+					 numberOfGenericMethods++;
+				 }
+			}
+		}
+		return numberOfGenericMethods;
+	}
 }

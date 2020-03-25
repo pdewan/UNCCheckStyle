@@ -20,6 +20,7 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	protected String[] parameterNames;
 	protected String[] parameterTypes;
 	protected boolean isPublic;
+	protected boolean isAbstract;
 	
 	protected boolean isProcedure;
 	protected boolean isInstance;
@@ -183,6 +184,8 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		modifiers = aModifiers;
 		if (aModifiers != null) {
 		accessModifier = STBuilderCheck.toAccessModifier(aModifiers);
+		isAbstract = modifiers.contains(TokenTypes.ABSTRACT);
+
 		}
 		isAbstract = aModifiers != null && aModifiers.contains(TokenTypes.ABSTRACT);
 //		refreshUnknowns();
@@ -819,6 +822,18 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 	@Override
 	public List<STVariable> getLocalsAssigned() {
 		return localsAssigned;
+	}
+	@Override
+	public boolean isAbstract() {
+		return isAbstract;
+	}
+	@Override
+	public boolean isGeneric() {
+		if (ast == null) {
+			return false;
+		}
+		DetailAST generic = ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);
+		return generic != null;
 	}
 //	@Override
 //	public void addFullNamesToUnknowns() {

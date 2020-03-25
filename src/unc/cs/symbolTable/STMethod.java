@@ -80,6 +80,7 @@ public interface STMethod extends STNameable{
 	boolean isUnresolvedMethod();
 	void setUnresolvedMethod(boolean unresolvedMethod);
 	int getNumParameters();
+	boolean isGeneric();
 
 
 }

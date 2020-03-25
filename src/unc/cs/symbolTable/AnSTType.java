@@ -1145,4 +1145,15 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	}
 
 
+
+	@Override
+	public boolean isGeneric() {
+		if (ast == null) {
+			return false;
+		}
+		DetailAST generic = ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);
+		return generic != null;
+	}
+
+
 }

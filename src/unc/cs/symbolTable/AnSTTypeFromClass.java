@@ -432,6 +432,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public String getFileName() {
 		return getName();
 	}
+	@Override
+	public boolean isGeneric() {
+		return reflectedClass.getTypeParameters().length > 0;
+	}
 
 
 //

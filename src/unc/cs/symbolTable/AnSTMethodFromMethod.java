@@ -284,6 +284,10 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public boolean isGeneric() {
+		return method.getTypeParameters().length > 0;
+	}
 	
 
 }

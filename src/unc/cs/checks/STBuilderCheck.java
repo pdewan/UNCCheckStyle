@@ -507,6 +507,10 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	protected String computeStatisticsString() {
     	return !isLogAggregateStatistics()?
     			EMPTY_STRING:
+    				" Is Abstract:" + currentSTType.isAbstract() +
+    				" Number of Abstract Methods:" + currentSTType.getNumberOfDeclaredAbstractMethods() +
+    				" Is Generic:" + currentSTType.isGeneric() + 
+    				" Number of Generic Methods:" + currentSTType.getNumberOfDeclaredGenericMethods() +
     				" Number of Asserts:" + currentSTType.getNumberOfAsserts() +
     				" Number of Ternary Conditionals:" + currentSTType.getNumberOfTernaryConditionals() +
     				" Number of Methods:" + currentSTType.getNumberOfMethods() +

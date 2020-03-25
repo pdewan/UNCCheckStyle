@@ -200,8 +200,8 @@ public class PostProcessingMain {
 		printTypeSuperTypes(anSTType);
 		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);		
-		processTypeCallInfos(anSTType);
-//		processDeclaredMethods(anSTType);
+//		processTypeCallInfos(anSTType);
+		processDeclaredMethods(anSTType);
 		processMethodsCalled(anSTType);
 		processUnknownVariablesAccessed(anSTType);
 //		processAccessModifiersUsed(anSTType);
@@ -500,23 +500,7 @@ public class PostProcessingMain {
 		
 
 	}
-	public static void processDeclaredMethods(STType anSTType) {
-		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
-			return;
-		}
-		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
-		for (STMethod aMethod:aMethods) {
-			if (!aMethod.isPublic()) {
-				continue;
-			}
-			String[] aNormalizedTypes = TagBasedCheck.toNormalizedTypes(aMethod.getParameterTypes());
-			String aReturnType = aMethod.getReturnType();
-			String aNormalizedReturnType = TagBasedCheck.toNormalizedType(aReturnType);
-			
-			System.out.println("Types:" + Arrays.toString(aNormalizedTypes) + " return:" +aNormalizedReturnType);
-			
-		}
-	}
+	
 	public static void processUnknownVariablesAccessed(STType aSubjectType, STMethod aRootMethod, STMethod aMethod) {
 		Map<String, Set<DetailAST>> anUnKnownsAccessed = aMethod.getUnknownAccessed();
 		if (anUnKnownsAccessed == null) {
@@ -986,6 +970,42 @@ public class PostProcessingMain {
 		printModuleSingleProperty("MissingMethodCall", "warning", aCallingTypeOutputName, "expectedCalls", aCalledTypeAndMethods.toArray(stringArray) );
 	
 	}
+	public static void processDeclaredMethods(STType anSTType) {
+		String aCallingTypeOutputName = toOutputType(anSTType);
+		if (aCallingTypeOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION ) {
+			return;
+		}
+		Set<String> aDeclaredSignatures = new HashSet();
+//		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//			return;
+//		}
+		STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+		for (STMethod aMethod:aMethods) {
+			if (!aMethod.isPublic()) {
+				continue;
+			}
+			STType aDeclaringSTType = aMethod.getDeclaringSTType();
+			if (aDeclaringSTType != null && aDeclaringSTType.isExternal()) {
+				continue;
+			}
+			if (aMethod.isGetter() || aMethod.isSetter()) {
+				continue;
+			}
+
+			aDeclaredSignatures.add(aMethod.getSimpleChecksSignature());
+			String[] aNormalizedTypes = TagBasedCheck.toNormalizedTypes(aMethod.getParameterTypes());
+			String aReturnType = aMethod.getReturnType();
+			String aNormalizedReturnType = TagBasedCheck.toNormalizedType(aReturnType);
+
+//			System.out.println("Types:" + Arrays.toString(aNormalizedTypes) + " return:" +aNormalizedReturnType);
+			
+		}
+		if (aDeclaredSignatures.size() == 0) {
+			return;
+		}
+		printModuleSingleProperty("ExpectedSignatures", "warning", aCallingTypeOutputName, "expectedSignatures", aDeclaredSignatures.toArray(stringArray) );
+
+	}
 
 	public static boolean isPrintOnlyTaggedClasses() {
 		return printOnlyTaggedClasses;
@@ -1041,11 +1061,11 @@ public class PostProcessingMain {
 		}
 		if    (xmlLogger != null)     
 			xmlLogger.auditFinished(null);
-		String[] aPropertyNamesAndValues = {"prop", "1", "prop2", "2"};
-		
-		printWarningModuleAndProperties("test module", "KeyValueClass", aPropertyNamesAndValues);
-		String[] aGetterProperties = {"Key", ".*", "Value", ".*"};
-		printExpectedGetters("KeyValueClass", aGetterProperties);
+//		String[] aPropertyNamesAndValues = {"prop", "1", "prop2", "2"};
+//		
+//		printWarningModuleAndProperties("test module", "KeyValueClass", aPropertyNamesAndValues);
+//		String[] aGetterProperties = {"Key", ".*", "Value", ".*"};
+//		printExpectedGetters("KeyValueClass", aGetterProperties);
 		checksPrintStream.close();
 //		testXMLLogger();
 

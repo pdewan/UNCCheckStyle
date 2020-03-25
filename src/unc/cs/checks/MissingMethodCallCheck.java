@@ -207,9 +207,13 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 //				System.out.println ("found specification:");
 //			}
 			boolean found = false;
+			boolean indirectMethodsNotFullProcessed = false;
 			for (STMethod aCallingMethod:anAllCallingMethods ) {
 				
 				Set<STMethod> anAllCalledMethods = aCallingMethod.getAllDirectlyOrIndirectlyCalledMethods();
+				if (aCallingMethod.isIndirectMethodsNotFullProcessed()) {
+					indirectMethodsNotFullProcessed = true;
+				}
 //				if (aCallInfo.toString().contains("move"))	{
 //					System.out.println ("found move");
 //				}
@@ -245,7 +249,7 @@ public  class MissingMethodCallCheck extends MethodCallCheck {
 					break;
 				}
 			}
-			if (!found) {
+			if (!found && !indirectMethodsNotFullProcessed) {
 //				if (aSpecification.contains("run")) {
 //					System.out.println ("found specification");
 //				}
