@@ -137,8 +137,8 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 			Set<Integer> aModifiers) {
 		super(ast, name);
-		if ( name != null && name.equals("setInputString")) {
-			System.out.println("Set input String");
+		if ( name != null && name.equals("connect")) {
+			System.err.println("connect");
 		}
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
@@ -219,7 +219,11 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 			}
 			if (globalsAccessedMap != null) {
 				for (String aGlobal : globalsAccessedMap.keySet()) {
-					STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+					STType aDeclaringType = getDeclaringSTType();
+					if (aDeclaringType == null) {
+						continue;
+					}
+					STVariable anSTVariable = aDeclaringType.getDeclaredGlobalSTVariable(aGlobal);
 					if (anSTVariable != null) {
 						anSTVariable.getMethodsAccessing().add(this);
 						anSTVariable.getMethodsReferencing().add(this);

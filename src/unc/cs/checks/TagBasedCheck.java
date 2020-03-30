@@ -13,6 +13,7 @@ import java.util.regex.PatternSyntaxException;
 
 import com.puppycrawl.tools.checkstyle.api.AnnotationUtility;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.FileContents;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
@@ -834,8 +835,27 @@ public static Boolean matchesType(String aDescriptor, String aShortClassName) {
 protected boolean inferTag() {
 	return false;
 }
+protected boolean checkExcludeRegularExpressionsOfCurrentType() {
+	
+	if (fullTypeName == null) {
+		
+		return true;
+	}
+//	if (fullTypeName.contains("AbstractSlave")) {
+//		System.err.println("Found abstractslave");
+//	}
+	for (String anExcludeExpression:STBuilderCheck.getExcludeClassRegularExpressions()) {
+		if (fullTypeName.matches(anExcludeExpression)) {
+			return false;
+		}
+	}
+	return true;
+}
 
 protected Boolean checkIncludeExcludeTagsOfCurrentType() {
+	if (!checkExcludeRegularExpressionsOfCurrentType()) {
+		return false;
+	}
 	if (inferTag())
 		return true;
 	if (!hasIncludeTypeTags() && !hasExcludeTypeTags())
@@ -1361,6 +1381,12 @@ public static Set<String> tagsNotContainedIn(STType aContainee, STType aContaine
  */
 public static boolean isProjectImport(String aFullName) {
 	for (String aString:STBuilderCheck.getExternalPackagePrefixes()) {
+		if (aFullName.startsWith(aString)) {
+//			externalImports.add(aFullName);
+			return false;
+		}
+	}
+	for (String aString:STBuilderCheck.getBuiltInExternalPackagePrefixes()) {
 		if (aFullName.startsWith(aString)) {
 //			externalImports.add(aFullName);
 			return false;

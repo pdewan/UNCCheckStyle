@@ -47,6 +47,9 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 			return false;
 
 			}
+			if (!checkExcludeRegularExpressionsOfCurrentType()) {
+				return false;
+			}
 		}
 		STType anSTType = SymbolTableFactory.getSymbolTable().
 				getSTClassByFullName(fullTypeName);

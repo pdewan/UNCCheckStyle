@@ -198,6 +198,7 @@ public class PostProcessingMain {
 		
 		printTypeInterfaces(anSTType);
 		printTypeSuperTypes(anSTType);
+		printTypeIsGeneric(anSTType);
 		processTypeProperties(anSTType);
 //		processTypeSuperTypes(anSTType);		
 //		processTypeCallInfos(anSTType);
@@ -337,8 +338,10 @@ public class PostProcessingMain {
 		
 //		checksPrintStream.println ("\t<module name=\"" + aModule + "\">");
 		printModuleStart(aModule, aSeverity, aScopingType);
+		if (aPropertyValues != null && aPropertyValues.length > 0) {
 		String aPropertiesString = toChecksList(aPropertyValues);
 		checksPrintStream.println ("\t\t<property name=\"" + aProperty + "\" value=\"" + aPropertiesString + "\"/>");
+		}
 		printModuleEnd();
 	}
 
@@ -455,12 +458,14 @@ public class PostProcessingMain {
 
 	}
 	public static void printTypeSuperTypes(STType anSTType) {
-		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
-			return;
-		}
+//		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//			return;
+//		}
 		String aTypeOutputName = toOutputType(anSTType);
 
-
+		if (aTypeOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION ) {
+			return;
+		}
 		List<STNameable> aSuperClasses = anSTType.getAllSuperTypes();
 		if (aSuperClasses == null) {
 			aSuperClasses = Arrays.asList(anSTType.getSuperClass());
@@ -500,7 +505,24 @@ public class PostProcessingMain {
 		
 
 	}
-	
+	public static void printTypeIsGeneric(STType anSTType) {
+//		if (!TagBasedCheck.isExplicitlyTagged(anSTType)) {
+//			return;
+//		}
+		String aTypeOutputName = toOutputType(anSTType);
+
+		if (aTypeOutputName == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION ) {
+			return;
+		}
+		if (anSTType == null || !anSTType.isGeneric()) {
+			return;
+		}
+		
+		printModuleSingleProperty("ClassIsGeneric", "warning", aTypeOutputName, null,null );
+
+		
+
+	}
 	public static void processUnknownVariablesAccessed(STType aSubjectType, STMethod aRootMethod, STMethod aMethod) {
 		Map<String, Set<DetailAST>> anUnKnownsAccessed = aMethod.getUnknownAccessed();
 		if (anUnKnownsAccessed == null) {
@@ -938,6 +960,9 @@ public class PostProcessingMain {
 				if (anOutputType == TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION) {
 					continue;
 				}
+//				if (anSTType.getName().contains("CustomGIPCAndRMIAndNIOServerLauncher") && aCalledMethod.getName().contains("enablePrint")) {
+//					System.err.println("Found CustomGIPCAndRMIAndNIOServerLauncher --> enablePrint ");
+//				}
 				String aCalledMethodSignature =  
 						aCalledMethod.isAmbiguouslyOverloadedMethods() || aCalledMethod.isUnresolvedMethod()?
 						AnAbstractSTMethod.getMatchAnyHeader(aCalledMethod.getName()):
@@ -1016,6 +1041,7 @@ public class PostProcessingMain {
 	}
 
 	public static void main(String[] args) {
+//		Set<String> aSet = UnixDictionarySet.getUnixDictionary();
 		File aFile = new File(CHECKS_FILE_NAME);
 			try {
 				aFile.createNewFile();

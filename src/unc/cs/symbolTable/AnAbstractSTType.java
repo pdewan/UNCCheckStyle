@@ -1211,10 +1211,14 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 			return null;
 		List<String> result = new ArrayList();
 		for (STNameable aNameable : aNameableList) {
-			String aShortName = TypeVisitedCheck.toShortTypeName(aNameable
-					.getName());
-			if (!result.contains(aShortName))
-				result.add(aShortName);
+//			String aShortName = TypeVisitedCheck.toShortTypeName(aNameable
+//					.getName());
+			String aLongName = aNameable
+					.getName();
+//			if (!result.contains(aShortName))
+//				result.add(aShortName);
+			if (!result.contains(aLongName))
+				result.add(aLongName);
 		}
 		return result;
 	}
@@ -1236,8 +1240,8 @@ public List<STMethod>  addMethodsOfSuperType(List<STMethod> retVal, STNameable a
 			anAllTypes = aSymbolTable.getAllInterfaceNames();
 		else
 			anAllTypes = aSymbolTable.getAllClassNames();
-		List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
-//		List<String> aNormalizedTypes = anAllTypes;
+//		List<String> aNormalizedTypes = toNormalizedList(anAllTypes);
+		List<String> aNormalizedTypes = anAllTypes;
 
 //		List<String> anAllMyTypes = toNameList(getAllSuperTypes());
 		List<String> anAllMyTypes = toNameList(getAllTypes());

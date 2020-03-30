@@ -120,6 +120,7 @@ public class ASymbolTable implements SymbolTable{
 	}
 	@Override
 	public STType getSTClassByFullName(String aTypeName) {
+		
 //		boolean isExternalClass = aTypeName.startsWith("java.lang") || STBuilderCheck.isExternalImportCacheChecking(aTypeName);
 //		if (STBuilderCheck.isJavaLangClass(aTypeName)) {
 //			if (Character.isUpperCase(aTypeName.charAt(0))) {
@@ -148,9 +149,10 @@ public class ASymbolTable implements SymbolTable{
 				}
 			
 			}
-			if (!isExternalClass) {
-				isExternalClass = STBuilderCheck.isExternalImportCacheChecking(aTypeName);
-			}
+			// why are we checking this again
+//			if (!isExternalClass) {
+//				isExternalClass = STBuilderCheck.isExternalImportCacheChecking(aTypeName);
+//			}
 			if (isExternalClass && STBuilderCheck.getImportsAsExistingClasses()) {
 				try {
 					Class aClass = Class.forName(aTypeName);

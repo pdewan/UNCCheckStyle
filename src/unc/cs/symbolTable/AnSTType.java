@@ -85,9 +85,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			fileName = aFileName;
 		else
 			fileName = name;
-//		if (name.contains("Cell")) {
-//			System.out.println (" found an inner class");
-//		}
+		if (name.contains("TrickOrTreatPostProcessingCustomMain")) {
+			System.err.println (" found TrickOrTreatPostProcessingCustomMain");
+		}
 		staticBlocks = aStaticBlocks;
 		this.declaredMethods = declaredMethods;
 		this.declaredConstructors = aDeclaredConstructors;

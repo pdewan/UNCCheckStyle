@@ -61,7 +61,11 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 	
 	
 	public AnAbstractSTMethod(DetailAST ast, String name) {
-		super(ast, ComprehensiveVisitCheck.toShortTypeOrVariableName(name));		
+		super(ast, ComprehensiveVisitCheck.toShortTypeOrVariableName(name));
+		
+//		if (name != null && name.equals("connect")) {
+//			System.err.println("found connect");
+//		}
 //		isSetter = computeIsSetter();
 //		isGetter = computeIsGetter();
 //		isInit = computeIsInit();
@@ -263,8 +267,12 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		
 		@Override
 		public STType getDeclaringSTType() {
+			String aDeclaringClass = getDeclaringClass();
+			if (aDeclaringClass == null) {
+				return null;
+			}
 			if (declaringSTType == null) {
-				declaringSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(getDeclaringClass());
+				declaringSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aDeclaringClass);
 			}
 			return declaringSTType;
 			

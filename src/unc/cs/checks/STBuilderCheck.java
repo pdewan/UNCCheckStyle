@@ -64,7 +64,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static final Map<String, String> classToConfiguredClass = new HashMap();
 	static String[] projectPackagePrefixes = { "assignment", "project",
 			"homework", "test", "comp", "proj", "ass", "hw" };
-	static String[] externalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen", "util", "gradingTools" };
+	static String[] excludeClassRegularExpressions = {};
+	
+
+	static String[] externalPackagePrefixes = {  };
+
+	static String[] builtInExternalPackagePrefixes = { "java", "com.google", "com.sun", "org.apache", "org.eclipse", "bus.uigen", "util", "gradingTools" };
 	static String[] externalMethodRegularExpressions = { "trace.*"};
 	static String[] externalClassRegularExpressions = { ".*utton.*"};
 
@@ -182,6 +187,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public static String[] getExternalPackagePrefixes() {
 		return externalPackagePrefixes;
 	}
+	public static String[] getBuiltInExternalPackagePrefixes() {
+		return builtInExternalPackagePrefixes;
+	}
 	public static String[] getExternalMethodRegularExpressions() {
 		return externalMethodRegularExpressions;
 	}
@@ -247,6 +255,13 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	public void setLogAggregateStatistics(boolean logAggregateStatistics) {
 		this.logAggregateStatistics = logAggregateStatistics;
+	}
+	public static  String[] getExcludeClassRegularExpressions() {
+		return excludeClassRegularExpressions;
+	}
+
+	public  void setExcludeClassRegularExpressions(String[] excludeClassRegularExpressions) {
+		STBuilderCheck.excludeClassRegularExpressions = excludeClassRegularExpressions;
 	}
 
 	protected void newProjectDirectory(String aNewProjectDirectory) {
@@ -505,6 +520,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     		
     }
 	protected String computeStatisticsString() {
+		if (currentSTType == null) {
+			return null;
+		}
     	return !isLogAggregateStatistics()?
     			EMPTY_STRING:
     				" Is Abstract:" + currentSTType.isAbstract() +
@@ -591,6 +609,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			if (currentMethodName != null)
 				processPreviousMethodData();
 			processMethodAndClassData();
+		}
+		if (!checkExcludeRegularExpressionsOfCurrentType()) {
+			return;
 		}
 		checkTags(ast); // want to check tags after symbol table built
 		super.doFinishTree(ast);

@@ -1,0 +1,38 @@
+package unc.cs.tools.checkstyle.dictionary ;
+public class DictionaryX {
+public static String[] dictionary =
+	{
+	 "X",
+	 "XEmacs",
+	 "Xanadu",
+	 "Xanthippe",
+	 "Xavier",
+	 "Xe",
+	 "Xenakis",
+	 "Xenia",
+	 "Xenophon",
+	 "Xerox",
+	 "Xeroxes",
+	 "Xerxes",
+	 "Xhosa",
+	 "Xiaoping",
+	 "Ximenes",
+	 "Xingu",
+	 "Xiongnu",
+	 "Xmas",
+	 "Xmases",
+	 "Xochipilli",
+	 "Xuzhou",
+	 "x",
+	 "xenon",
+	 "xenophobia",
+	 "xenophobic",
+	 "xerographic",
+	 "xerography",
+	 "xylem",
+	 "xylophone",
+	 "xylophones",
+	 "xylophonist",
+	 "xylophonists",
+	};
+}

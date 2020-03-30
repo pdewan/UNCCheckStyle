@@ -24,8 +24,9 @@ public class PostProcessingCustomMain extends PostProcessingMain {
 
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\twitter-heron";
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\twitter-heron\\heron\\common\\src\\java\\org\\apache\\heron\\common\\basics\\NIOLooper.java";
+static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
 
-static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce";
+//static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\ATokenCountingModel.java";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\AnAbstractModel.java";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapreduce\\AMultiThreadController.java";
@@ -39,7 +40,9 @@ static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src\\mapr
 //static final String CHECKSTYLE_CONFIGURATION = "unc_checks.xml";
 static final String CHECKSTYLE_CONFIGURATION = "D:\\dewan_backup\\Java\\UNCCheckStyle\\unc_checks.xml";
 
-static final String[] ARGS = {"-c", CHECKSTYLE_CONFIGURATION, "-f", "xml", SOURCE};
+//static final String[] ARGS = {"-c", CHECKSTYLE_CONFIGURATION, "-f", "xml", SOURCE};
+static final String[] ARGS = {"-c", CHECKSTYLE_CONFIGURATION,  SOURCE};
+
 	public static void main (String[] args) {
 		setPrintOnlyTaggedClasses(true);
 		PostProcessingMain.main(ARGS);

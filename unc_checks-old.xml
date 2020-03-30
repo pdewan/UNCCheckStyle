@@ -1,0 +1,729 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+	editor -->
+<!-- Checkstyle-Configuration: Test Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+
+<module name="unc.tools.checkstyle.AnExtendibleChecker">
+		
+
+	<property name="severity" value="warning" />
+
+
+	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
+		<property name="severity" value="info" />
+
+		<module name="STBuilder">
+			<property name="configurationFileName" value="MyMapReduceConfiguration.csv" />		
+			<property name="includeTypeTags" value="*" />
+			<property name="severity" value="info" />
+			<property name="logNoMatches" value="true" />	
+			<property name="importsAsExistingClasses" value="true" />
+			<property name="logAggregateStatistics" value="true" />		
+			
+			<property name="logMethodsDeclared" value="true" />	
+			<property name="logVariablesDeclared" value="true" />
+			<property name="logPropertiesDeclared" value="true" />
+			<property name="logAccessModifiersUsed" value="true" />					
+								
+					
+
+		</module>
+		
+
+	</module>
+
+
+	<module name="unc.tools.checkstyle.ANonCachingTreeWalker">
+		<property name="severity" value="warning" />
+	
+				
+		<module name="DuplicateShortTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+		
+		
+		
+		<module name="FunctionAssignsGlobal">
+			<property name="severity" value="warning" />
+			<property name="excludeMethodTags"
+				value="
+					next(.*), 
+					pop(.*), 
+					delete(.*), 
+					remove(.*), 
+					read(.*), 					
+					set(.*), 
+					process(.*), 
+					scan(.*), 
+					(.*)create(.*), 					 
+					parse(.*),
+					(.*)actory(.*),
+					fetch(.*),
+					run(.*),
+					update(.*),
+					add(.*),
+					
+					" />
+
+		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />		
+		</module>
+		<module name="BulkierThen">
+			<property name="severity" value="warning" />	
+			<property name="minThenElseRatio" value="1" />
+			<property name="maxElsePartSize" value="1" /> 				
+		</module>
+		<module name="ThenBranching">
+			<property name="severity" value="warning" />					
+				
+		</module>
+		
+		<module name="LiberalMagicNumber" >
+			<property name="severity" value="warning" />
+			<property name="allowedSiblings" value=
+				"Math.(.*)" 
+			/>
+			
+		</module>		
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="warning" />		
+		</module>
+		<module name="ClassHasAtLeastOneInterface">
+		<property name="severity" value="info" />		
+		</module>
+		<module name="ClassHasOneInterface">
+			<property name="severity" value="warning" />					
+		</module>
+		<module name="VariableHasClassType">
+		<property name="severity" value="warning" />		
+		</module>
+			<module name="VariableHasClassType">
+		<property name="severity" value="info" />		
+		</module>
+		
+		
+		
+		 <module name="PeerCommonProperties">
+		 	<property name="severity" value="warning" />		 
+					
+				
+		 </module>
+		 
+		 <module name="ConstantDefined">
+		 	<property name="severity" value="info" />				
+		 </module>
+		 
+		 <module name="FinalParameterDefined">
+		 	<property name="severity" value="info" />				
+		 </module>
+		 
+		  <module name="EqualAvoidedNullCheck">
+		 	<property name="severity" value="info" />				
+		 </module>
+		 <module name="BulkierElse">
+			<property name="severity" value="info" />	
+			<property name="minElseThenRatio" value="1" />
+		</module>
+		 <module name="ElseBranching">
+			<property name="severity" value="info" />	
+		</module>
+		 <module name="MnemonicNameCheck">
+			<property name="severity" value="warning" />
+			<property name="processType" value="false" />			
+			<property name="processLocals" value="false" />
+			<property name="processParameters" value="false" />
+			<property name="processGlobals" value="false" />
+			<property name="processPublicMethods" value="false" />
+			<property name="processNonPublicMethods" value="false" />
+			<property name="minimumLettersInNameComponent" value="1" />
+			<property name="minimumVowelsInNameComponent" value="0" />
+			<property name="printName" value="false" />
+			<property name="printComponents" value="false" />		
+		</module>
+		 <module name="MnemonicNameCheck">	
+		 	<property name="severity" value="info" />		 		
+			<property name="printComponents" value="true" />				
+		</module>
+		 <module name="MethodBlockLimit">
+			<property name="severity" value="warning" />		
+			<property name="max" value="1" />
+		</module>
+		 <module name="NestedBlockDepth">
+			<property name="severity" value="warning" />		
+			<property name="max" value="1" />
+		</module>
+		
+		<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass"/>
+		<property name="expectedInterfaces" value="
+			java.rmi.Remote,"/>
+		</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedInterfaces" value="
+			java.beans.PropertyChangeListener,"/>
+	</module>
+	
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="KeyValueClass" />				
+			<property name="expectedProperties" 
+			         value="
+						 Key:.*, 
+						 Value:.*				
+						" 
+			/>
+		</module>
+		
+
+			
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ModelClass" />				
+			<property name="expectedProperties" 
+			         value="
+						 InputString:String, 
+						 Result:Map				
+						" 
+			/>
+		</module>
+		
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ModelClass" />				
+			<property name="expectedProperties" 
+			         value="
+						 InputString:String, 
+						" 
+			/>
+		</module>
+		
+		<module name="ExpectedSignatures">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ModelClass" />					
+			<property name="expectedSignatures"
+				value="
+				    addPropertyChangeListener:PropertyChangeListener->void,
+				" 
+			/>
+		</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerIntegerSummer"/>
+		<property name="expectedCalls" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceMapperChange:Class;Object->void,
+			java.lang.Throwable!printStackTrace:->void,
+			@ControllerClass!processInput:->void,
+			java.rmi.registry.LocateRegistry!createRegistr:int->Registry,
+			java.rmi.registry.Registry!rebind:String;Remote->void,
+			@MapperFactory!setMapper:mapreduce.Mapper->void,
+			java.rmi.server.UnicastRemoteObject!exportObject:Remote;int->Remote,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:java.beans.PropertyChangeListener->void,"/>
+	</module>
+	
+	
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.util.Vector!add:*->.*,
+			java.util.AbstractCollection!isEmpty:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.util.Stack!peek:->Object,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:java.util.Map;String;int->void,
+			java.lang.Object!wait:->void,
+			java.util.List!add:Object->boolean,
+			java.util.concurrent.BlockingQueue!put:Object->void,
+			java.lang.Thread!setName:String->void,
+			java.util.Stack!pop:->Object,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:PropertyChangeListener->void,
+			java.util.Map!get:Object->Object,
+			java.util.AbstractList!add:*->.*,
+			java.util.List!get:int->Object,
+			java.util.Map!put:Object;Object->Object,
+			@ModelClass+@DistributedTags.CLIENT!getThreads:->List,
+			@MapperFactory!getMapper:->Mapper,
+			java.lang.Throwable!printStackTrace:->void,
+			java.util.Vector!isEmpty:*->.*,
+			java.util.List!clear:->void,
+			java.util.Map!keySet:->Set,
+			java.util.LinkedList!clear:->void,
+			java.lang.Thread!interrupt:->void,
+			java.util.Map!clear:->void,
+			java.lang.Thread!start:->void,
+			@JoinerClass!join:->void,
+			java.util.Stack!push:Object->Object,
+			@ReducerFactory!getReducer:->Reducer,
+			java.lang.Object!notify:->void,
+			@PartitionerFactory!getPartitioner:->Partitioner,
+			java.lang.String!split:String->String[],
+			@ModelClass+@DistributedTags.CLIENT!maybeAssignSlavesToClients:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedCalls" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceNumbersPrompt:->void,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:String->void,			
+			gradingTools.comp533s19.assignment0.AMapReduceTracer!traceQuit:->void,"/>
+	</module>
+	
+		
+		<module name="MissingMethodCall">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ControllerClass" />					
+			<property name="expectedCalls"
+				value="
+				    .*!setInputString:String->void,
+				" 
+			/>
+		</module>
+		
+		<module name="MissingMethodCall">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ViewClass" />					
+			<property name="expectedCalls"
+				value="
+				    propertyChange#.*!tracePropertyChange:PropertyChangeEvent->void,
+				" 
+			/>
+		</module>
+		
+		
+		<module name="MissingMethodText">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+							
+			<property name="expectedCalls"
+				value="
+				    toString#.*EXPR.*MODEL.*,
+				" 
+			/>			
+		</module>
+		
+		
+	   <module name="MethodAccessesGlobal">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedReferences" value="
+			toString:->String#.*MODEL.*,"/>
+	   </module>
+		
+		
+		<module name="MissingMethodText">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ViewClass" />					
+			<property name="expectedCalls"
+				value="
+				    toString#.*EXPR.*VIEW.*,
+				" 
+			/>
+		</module>
+		
+		<module name="MissingMethodText">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="ControllerClass" />					
+			<property name="expectedCalls"
+				value="
+				    toString#.*EXPR.*CONTROLLER.*,
+				" 
+			/>
+		</module>
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="MapperFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Mapper:.*				
+						" 
+			/>
+		</module>
+		
+		 <module name="ExpectedGetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ReducerFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Reducer:.*				
+						" 
+			/>
+		</module>
+		
+		<module name="ExpectedSetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="MapperFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Mapper:.*				
+						" 
+			/>
+		</module>
+		
+		 <module name="ExpectedSetters">
+			<property name="severity" value="warning" />	
+			<property name="includeTypeTags" value="ReducerFactory" />				
+			<property name="expectedProperties" 
+			         value="
+						 Reducer:.*				
+						" 
+			/>
+		</module>
+	
+		<module name="ClassIsGeneric">
+			<property name="severity" value="warning" />		
+			<property name="includeTypeTags" value="KeyValueClass" />
+		</module>
+		
+		
+		
+		 
+
+	</module>
+	<module name="TreeWalker">		
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="PackageDeclaration" />		
+		<module name="HiddenField"/>
+
+		
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="LocalVariableName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="NeedBraces"/>
+		<module name="MultipleStringLiterals"/>		
+ 		<module name="InvalidPackageName"/>
+ 		<module name="OuterTypeFilename"/>
+        <module name="IllegalTokenText">
+            <property name="tokens" value="STRING_LITERAL, CHAR_LITERAL"/>
+            <property name="format"
+             value="\\u00(09|0(a|A)|0(c|C)|0(d|D)|22|27|5(C|c))|\\(0(10|11|12|14|15|42|47)|134)"/>
+            <property name="message"
+             value="Consider using special escape sequence instead of octal value or Unicode escaped value."/>
+        </module>
+        <module name="AvoidEscapedUnicodeCharacters">
+            <property name="allowEscapesForControlCharacters" value="true"/>
+            <property name="allowByTailComment" value="true"/>
+            <property name="allowNonPrintableEscapes" value="true"/>
+        </module>
+        <module name="OneTopLevelClass"/>
+        <module name="NoLineWrap"/>
+        <module name="EmptyBlock">
+            <property name="option" value="TEXT"/>
+            <property name="tokens"
+             value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+        </module>
+        <module name="NeedBraces"/>
+        <module name="LeftCurly"/>
+        <module name="RightCurly">
+            <property name="id" value="RightCurlySame"/>
+            <property name="tokens"
+             value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO"/>
+        </module>
+        <module name="RightCurly">
+            <property name="id" value="RightCurlyAlone"/>
+            <property name="option" value="alone"/>
+            <property name="tokens"
+             value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT"/>
+        </module>
+        <module name="WhitespaceAround">
+            <property name="allowEmptyConstructors" value="true"/>
+            <property name="allowEmptyMethods" value="true"/>
+            <property name="allowEmptyTypes" value="true"/>
+            <property name="allowEmptyLoops" value="true"/>
+            <message key="ws.notFollowed"
+             value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+            <message key="ws.notPreceded"
+             value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+        </module>
+        <module name="OneStatementPerLine"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="MissingSwitchDefault"/>
+        <module name="FallThrough"/>
+        <module name="UpperEll"/>
+        <module name="ModifierOrder"/>
+        <module name="EmptyLineSeparator">
+            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapDot"/>
+            <property name="tokens" value="DOT"/>
+            <property name="option" value="nl"/>
+        </module>
+        <module name="SeparatorWrap">
+            <property name="id" value="SeparatorWrapComma"/>
+            <property name="tokens" value="COMMA"/>
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <!-- ELLIPSIS is EOL until https://github.com/google/styleguide/issues/258 -->
+            <property name="id" value="SeparatorWrapEllipsis"/>
+            <property name="option" value="EOL"/>
+        </module>
+        <module name="SeparatorWrap">
+            <!-- ARRAY_DECLARATOR is EOL until https://github.com/google/styleguide/issues/259 -->
+            <property name="id" value="SeparatorWrapArrayDeclarator"/>
+            <property name="tokens" value="ARRAY_DECLARATOR"/>
+            <property name="option" value="EOL"/>
+        </module>
+        
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+            <message key="name.invalidPattern"
+             value="Package name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="TypeName">
+            <message key="name.invalidPattern"
+             value="Type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9]*$"/>
+            <message key="name.invalidPattern"
+             value="Member name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="ParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+             value="Parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="LambdaParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+                     value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="CatchParameterName">
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+             value="Catch parameter name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="LocalVariableName">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+            <message key="name.invalidPattern"
+             value="Local variable name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="ClassTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+             value="Class type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="MethodTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+             value="Method type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="InterfaceTypeParameterName">
+            <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+            <message key="name.invalidPattern"
+             value="Interface type name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="NoFinalizer"/>
+        <module name="GenericWhitespace">
+            <message key="ws.followed"
+             value="GenericWhitespace ''{0}'' is followed by whitespace."/>
+            <message key="ws.preceded"
+             value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
+            <message key="ws.illegalFollow"
+             value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+            <message key="ws.notPreceded"
+             value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
+        </module>
+        <module name="Indentation">
+            <property name="basicOffset" value="2"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="2"/>
+            <property name="throwsIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+            <property name="arrayInitIndent" value="2"/>
+        </module>
+        <module name="AbbreviationAsWordInName">
+            <property name="ignoreFinal" value="false"/>
+            <property name="allowedAbbreviationLength" value="1"/>
+        </module>
+        <module name="OverloadMethodsDeclarationOrder"/>
+        <module name="VariableDeclarationUsageDistance"/>
+        <module name="AvoidStarImport" />  
+        <module name="RedundantImport"/> 
+        <module name="UnusedImports"/>   
+        <module name="AvoidStaticImport"/>  
+        <module name="CustomImportOrder">
+            <property name="sortImportsInGroupAlphabetically" value="true"/>
+            <property name="separateLineBetweenGroups" value="true"/>
+            <property name="customImportOrderRules" value="STATIC###THIRD_PARTY_PACKAGE"/>
+        </module>
+        <module name="MethodParamPad"/>
+        <module name="NoWhitespaceBefore">
+            <property name="tokens"
+             value="SEMI, POST_INC, POST_DEC, DOT"/>
+            <property name="allowLineBreaks" value="true"/>
+        </module>
+        <module name="ParenPad"/>
+        <module name="OperatorWrap">
+            <property name="option" value="NL"/>
+            <property name="tokens"
+             value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR "/>
+        </module>
+        <module name="AnnotationLocation">
+            <property name="id" value="AnnotationLocationMostCases"/>
+            <property name="tokens"
+             value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+        </module>
+        <module name="AnnotationLocation">
+            <property name="id" value="AnnotationLocationVariables"/>
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="allowSamelineMultipleAnnotations" value="true"/>
+        </module>
+        <module name="NonEmptyAtclauseDescription"/>
+        <module name="JavadocTagContinuationIndentation"/>
+        <module name="SummaryJavadoc">
+            <property name="forbiddenSummaryFragments"
+             value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )"/>
+        </module>
+        <module name="JavadocParagraph"/>
+        <module name="AtclauseOrder">
+            <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+            <property name="target"
+             value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingParamTags" value="true"/>
+            <property name="allowMissingThrowsTags" value="true"/>
+            <property name="allowMissingReturnTag" value="true"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
+            <property name="allowThrowsTagsForSubclasses" value="true"/>
+        </module>
+        <module name="MissingJavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="minLineCount" value="2"/>
+            <property name="allowedAnnotations" value="Override, Test"/>
+        </module>
+        <module name="MethodName">
+            <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+            <message key="name.invalidPattern"
+             value="Method name ''{0}'' must match pattern ''{1}''."/>
+        </module>
+        <module name="SingleLineJavadoc">
+        </module>
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected"/>
+        </module>
+        <module name="CommentsIndentation"/>
+        <module name="JavadocStyleCheck"/>
+        <module name="JavadocVariableCheck"/>
+        <module name="MissingJavadocType"/>
+        <module name="MissingJavadocPackage"/>
+        <module name="WriteTagCheck"/>
+        <module name="BooleanExpressionComplexity">
+  			<property name="max" value="3"/>
+		</module>
+		<module name="ClassDataAbstractionCoupling">
+  			<property name="max" value="7"/>
+		</module>
+		<module name="ClassFanOutComplexity">
+  			<property name="max" value="20"/>
+		</module>
+		<module name="CyclomaticComplexity">
+  			<property name="max" value="10"/>
+		</module>
+		<module name="JavaNCSS">
+ 		 	<property name="methodMaximum" value="50"/>
+ 		 	<property name="classMaximum" value="1500"/>
+ 		 	 <property name="fileMaximum" value="2000"/>
+ 		 </module>
+ 		 
+		 <module name="PackageAnnotation"/>   
+		 <module name="SuppressWarnings"/> 
+		 <module name="MissingOverride"/>  
+		 <module name="AvoidNestedBlocks"/>
+		 <module name="DesignForExtension"/>
+		 <module name="FinalClass"/>
+		 <module name="HideUtilityClassConstructor"/>
+		 <module name="InnerTypeLast"/>
+		 <module name="InterfaceIsType"/>
+		 <module name="MutableException"/>
+		 <module name="ThrowsCount">
+  		     <property name="max" value="4"/>
+         </module>
+         <module name="AvoidInlineConditionals"/>
+         <module name="ArrayTrailingComma"/>
+         <module name="CovariantEquals"/>
+         <module name="DeclarationOrder"/>
+         <module name="DefaultComesLast"/>
+         <module name="EqualsHashCode"/>
+         <module name="ExplicitInitialization"/>
+         <module name="FallThrough"/>
+         <module name="FinalLocalVariable"/>
+         <module name="IllegalCatch"/>
+         <module name="IllegalThrows"/>
+         <module name="IllegalToken"/>
+         <module name="IllegalType"/>
+         <module name="InnerAssignment"/>
+         <module name="MissingCtor"/>
+         <module name="ModifiedControlVariable"/>
+         <module name="NestedTryDepth">
+  			<property name="max" value="1"/>
+		</module>
+		<module name="NoClone"/>
+		<module name="ParameterAssignment"/>
+		<module name="RequireThis"/>
+		<module name="ReturnCount">
+  			<property name="max" value="2"/>
+		</module>
+		<module name="SuperClone"/>
+		<module name="SuperFinalize"/>
+		<module name="UnnecessaryParentheses"/>
+	
+		<module name="VariableDeclarationUsageDistance">
+  			<property name="allowedDistance" value="3"/>  		
+		</module>
+		<module name="FinalParameters"/>
+		<module name="TodoComment"/>
+		<module name="TrailingComment"/>
+		<module name="UncommentedMain">
+		</module>
+		<module name="CommentsCheck"/>
+		 <module name="MagicNumber"/>
+		
+		
+	</module>
+</module>

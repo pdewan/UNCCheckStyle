@@ -1,10 +1,13 @@
 package unc.cs.checks;
 
+import unc.tools.checkstyle.DictionarySet;
+
 public class NameComponentMetrics {
 	public int numChars;
 	public int numLetters;
 	public int numVowels;
 	public int numDigits;
+	public boolean isDictionaryWord;
 
 public static boolean isVowel(char c) {
 		  return "AEIOUaeiou".indexOf(c) != -1;
@@ -23,6 +26,7 @@ public static NameComponentMetrics computeComponentMetrics(String aName) {
 			}
 		}
 	}
+	retVal.isDictionaryWord = DictionarySet.getDictionary().contains(aName.toLowerCase());
 	retVal.numChars = aName.length();
 	return retVal;
 }

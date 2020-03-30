@@ -549,7 +549,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	
 	public static String[] splitCamelCaseHyphenDash (String aCamelCaseName) {
 //		return aCamelCaseName.split("(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
-		return aCamelCaseName.split("_|-|(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
+		return aCamelCaseName.split("_|-|\\.|(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])|(?<=[0-9])(?=[A-Z][a-z])|(?<=[a-zA-Z])(?=[0-9])");
 
 	}
 	public static String[] splitDashHyphen (String aDashHyphenName) {
