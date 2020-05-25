@@ -117,7 +117,11 @@ public class ACallInfo implements CallInfo {
 	@Override
 	public STType getCalledSTType() {
 		if (calledSTType == null) {
-			calledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(calledType);
+			String aNameUsed = calledType;
+			if (calledType.startsWith(ComprehensiveVisitCheck.VARIABLE_PREFIX)) { // we screwed up with variable identification perhaps
+				aNameUsed = calledType.substring(ComprehensiveVisitCheck.VARIABLE_PREFIX.length());
+			}
+			calledSTType = SymbolTableFactory.getSymbolTable().getSTClassByShortName(aNameUsed);
 		}
 		return calledSTType;
 	}
@@ -206,7 +210,7 @@ public class ACallInfo implements CallInfo {
 				anSTMethod.setUnresolvedMethod(true);
 				retVal.add(anSTMethod);
 				
-			} else if (retVal.size() > 0) {
+			} else if (retVal.size() > 1) {
 				for (STMethod aMethod:retVal) {
 					aMethod.setAmbiguouslyOverloadedMethods(true);
 				}

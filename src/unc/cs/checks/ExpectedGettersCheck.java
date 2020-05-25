@@ -44,7 +44,10 @@ public class ExpectedGettersCheck extends BeanTypedPropertiesCheck {
 	@Override
 	public Boolean matchType(String aSpecifiedType, PropertyInfo aProperty) {
 		// TODO Auto-generated method stub
-		return matchGetter(aSpecifiedType, aProperty);
+		Boolean retVal = matchGetter(aSpecifiedType, aProperty);
+		
+		return retVal;
+//		return matchGetter(aSpecifiedType, aProperty);
 	}
 
 

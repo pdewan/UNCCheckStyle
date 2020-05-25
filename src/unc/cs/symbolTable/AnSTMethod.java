@@ -137,9 +137,9 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 
 			Set<Integer> aModifiers) {
 		super(ast, name);
-		if ( name != null && name.equals("connect")) {
-			System.err.println("connect");
-		}
+//		if ( name != null && name.contains("setKey")) {
+//			System.err.println("getKey");
+//		}
 		this.declaringClass = declaringClass;
 		this.parameterTypes = parameterTypes;
 		if (parameterTypes != null) {
@@ -384,10 +384,13 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		if (allMethodsCalled == null) {
 			List<STMethod> aList = new ArrayList();
 			for (CallInfo aCall : methodsCalled) {
-
+//				if (aCall.getCallee().contains("join")) {
+//					System.err.println("found join");
+//				}
 				Set<STMethod> anSTMethods = aCall.getMatchingCalledMethods();
 				if (anSTMethods == null) {
-					return null;
+//					return null; 
+					continue; // we will assume this is done in second pass
 				}
 				// aList.add(anSTMethod);
 				// ComprehensiveVisitCheck.addAllNoDuplicates(allMethodsCalled,

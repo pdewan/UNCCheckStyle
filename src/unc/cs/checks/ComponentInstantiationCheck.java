@@ -137,7 +137,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 		String aMethodName;
 		if (aTreeAST == currentTree) {
 			aMethodName = currentMethodName;
-			anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+			anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(getFullTypeName());
 		} else {
 
 			aMethodName = getEnclosingMethodName(ast);
@@ -150,7 +150,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 				return true; //benefit of doubt with duplicate names
 		}
 		if (anSTType == null) {
-			System.err.println("No ST Type for:" + fullTypeName);
+			System.err.println("No ST Type for:" + getFullTypeName());
 		}
 		STMethod[] anSTMethods = anSTType.getDeclaredMethods(aMethodName);
 		for (STMethod anSTMethod:anSTMethods) {

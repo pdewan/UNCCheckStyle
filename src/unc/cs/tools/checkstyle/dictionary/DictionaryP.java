@@ -5607,5 +5607,6 @@ public static String[] dictionary =
 	 "pythons",
 	 "pyx",
 	 "pyxes",
+	 "partitioner",
 	};
 }

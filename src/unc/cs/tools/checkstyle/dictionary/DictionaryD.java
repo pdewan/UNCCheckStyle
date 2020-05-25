@@ -4436,5 +4436,7 @@ public static String[] dictionary =
 	 "dyspepsia",
 	 "dyspeptic",
 	 "dyspeptics",
+	 "david",
+	 "demoer",
 	};
 }

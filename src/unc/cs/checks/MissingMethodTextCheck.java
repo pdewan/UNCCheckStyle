@@ -152,7 +152,15 @@ public  class MissingMethodTextCheck extends MissingMethodCallCheck {
 							aStringCheck:
 							!aStringCheck;
 			if (aDoLog) {
-	    		log(anAST, aTree, anAST);
+				String[] aCallerAndText = aString.split(CALLER_TYPE_SEPARATOR);
+				if (aCallerAndText.length == 2) {
+					
+				
+	    		log(anAST, aTree, aCallerAndText[0], aCallerAndText[1]);
+				} else {
+		    		log(anAST, aTree,  aCallerAndText[0]);
+
+				}
 			}
 //			if (!aStringCheck) {
 //				log(anAST, aTree, aString);

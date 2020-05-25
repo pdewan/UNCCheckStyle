@@ -57,7 +57,13 @@ public class AnSTMethodFromMethod extends AnAbstractSTMethod implements STMethod
 		Class[] parameterTypes = method.getParameterTypes();
 		String[] result = new String[parameterTypes.length];
 		for (int i = 0; i < parameterTypes.length; i++) {
-			result[i] = parameterTypes[i].getSimpleName();
+//			result[i] = parameterTypes[i].getSimpleName();
+			result[i] = parameterTypes[i].getName();
+			if (result[i].startsWith("[L")) {
+				result[i] = result[i].substring("[L".length(), result[i].length()-1) + "[]";
+			}
+			result[i] = result[i].replaceAll("java.lang.", "");
+
 		}
 		return result;
 	}

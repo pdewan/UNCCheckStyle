@@ -27,6 +27,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 
 	public AnSTTypeFromClass(String aClassName) {
 		super (null, aClassName);
+//		if (aClassName.contains("rmi")) {
+//			System.err.println("found rmi");
+//		}
+				
 		// all instance  variables are now initialized
 		declaredMethods = new STMethod[0];
 		methods = new STMethod[0];
@@ -435,6 +439,10 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	@Override
 	public boolean isGeneric() {
 		return reflectedClass.getTypeParameters().length > 0;
+	}
+	@Override
+	public List<String> getTypeParameterNames() {
+		return null;
 	}
 
 

@@ -21,7 +21,7 @@ public abstract class STClassVisited extends STTypeVisited {
 			visitPackage(ast);
 			return;
 		case TokenTypes.CLASS_DEF:
-			if (fullTypeName == null)
+			if (getFullTypeName() == null)
 
 			visitType(ast);
 			return;		

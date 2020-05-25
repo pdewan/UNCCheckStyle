@@ -161,4 +161,7 @@ public interface STType extends STNameable{
 	STMethod[] getMethods(String aName, int aNumParameters);
 	int getNumberOfDeclaredGenericMethods();
 	int getNumberOfDeclaredAbstractMethods();
+	List<String> getTypeParameterNames();
+	int getNumberOfNonPublicMethods();
+	long getTimeOfEntry();
 }

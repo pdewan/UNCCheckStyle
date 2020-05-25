@@ -83,6 +83,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 	protected void logSignatureNotMatched(DetailAST anAST, DetailAST aTreeAST, String aSignature) {
 //		String aSourceName = shortFileName(astToFileContents.get(aTreeAST)
 //				.getFilename());
+//		if (aSignature.contains("map")) {
+//			System.err.println("found map signature");
+//		}
 		String aTypeName = getName(getEnclosingTypeDeclaration(anAST));
 		super.log(anAST, aTreeAST, aSignature, aTypeName);
 //		if (aTreeAST == currentTree) {
@@ -113,8 +116,8 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 		boolean retVal = true;
 		List<STMethod> aMethodsCopy = new ArrayList<STMethod>(Arrays.asList(aMethods));
 		for (STMethod aSpecification : aSpecifications) {
-//			if (aSpecification.getName().contains("parseSleep")) {
-//				System.out.println("found method specified");
+//			if (aSpecification.getName().contains("remote")) {
+//				System.err.println("found method specified");
 //			}
 //			String[] aPropertiesPath = aPropertySpecification.split(".");	
 			Boolean hasMatched = matchMethod(aSpecification, aMethodsCopy);
@@ -125,6 +128,9 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 				if (anOriginalSignature == null) {
 					anOriginalSignature = aSpecification.getSignature();
 				}
+//				if (anOriginalSignature.contains("Remote")) {
+//					System.err.println("Found remote");
+//				}
 				logSignatureNotMatched(aTypeAST, aTreeAST, 
 						anOriginalSignature
 //						aSpecification.getSignature()
@@ -270,8 +276,10 @@ public  class ExpectedSignaturesCheck extends ComprehensiveVisitCheck {
 			}
 			
 			if (!unifyingMatchesNameVariableOrTag(aSpecificationParameterTypes[i], aMethodParameterTypes[i], parameterTags)) {
+				if (!matchISA(aSpecificationParameterTypes[i], aMethodParameterTypes[i])) {
 				backTrackUnification();
 				return false;
+				}
 			}
 		}
 		return true;		

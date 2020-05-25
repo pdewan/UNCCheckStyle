@@ -34,5 +34,6 @@ public static String[] dictionary =
 	 "xylophones",
 	 "xylophonist",
 	 "xylophonists",
+	 "xml",
 	};
 }

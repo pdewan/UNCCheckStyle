@@ -81,6 +81,7 @@ public interface STMethod extends STNameable{
 	void setUnresolvedMethod(boolean unresolvedMethod);
 	int getNumParameters();
 	boolean isGeneric();
+	String getSimpleChecksTaggedSignature();
 
 
 }

@@ -194,6 +194,9 @@ public abstract class AnAbstractSTVariable extends AnSTNameable implements STVar
 					retVal.add(null);
 				} else if (isSubType) {
 					retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PROTECTED, aReferencer, aReferenceMethods));
+				} else {
+					retVal.add(new AccessModifierUsage(aSubject, aDeclared, AccessModifier.PUBLIC, aReferencer, aReferenceMethods));
+
 				}
 			}
 		}

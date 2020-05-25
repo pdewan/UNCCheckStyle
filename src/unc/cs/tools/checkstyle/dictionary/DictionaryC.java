@@ -6933,5 +6933,8 @@ public static String[] dictionary =
 	 "czarina",
 	 "czarinas",
 	 "czars",
+	 "cathy",
+	 "comp",
+	 "coupler",
 	};
 }

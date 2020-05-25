@@ -35,6 +35,9 @@ public class AccessModifierUsage {
 		}
 		
 	}
+	public STType getTypeReferencing() {
+		return typeReferencing;
+	}
 	public STNameable getSubject() {
 		return subject;
 	}
@@ -54,7 +57,7 @@ public class AccessModifierUsage {
 		return methodsReferencing;
 	}
 	public String toString() {
-		return "(" + subject + ", " +  declared + ", " + used  + ", " + getDifference() + ", " + methodsReferencing + " )";
+		return "(" + subject + ", " +  declared + ", " + used  + ", " + getDifference() + ", " + typeReferencing + ", " +  methodsReferencing + " )";
 	}
 	
 

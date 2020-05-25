@@ -2837,5 +2837,6 @@ public static String[] dictionary =
 	 "ivories",
 	 "ivory",
 	 "ivy",
+	 "int",
 	};
 }

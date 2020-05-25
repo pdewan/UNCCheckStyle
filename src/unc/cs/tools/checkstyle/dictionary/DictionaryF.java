@@ -3070,5 +3070,6 @@ public static String[] dictionary =
 	 "fuzzy",
 	 "fête",
 	 "fêtes",
+	 "filterer",
 	};
 }

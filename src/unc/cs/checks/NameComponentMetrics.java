@@ -26,7 +26,9 @@ public static NameComponentMetrics computeComponentMetrics(String aName) {
 			}
 		}
 	}
-	retVal.isDictionaryWord = DictionarySet.getDictionary().contains(aName.toLowerCase());
+//	retVal.isDictionaryWord = DictionarySet.getDictionary().contains(aName.toLowerCase());
+	retVal.isDictionaryWord = DictionarySet.getDictionary().contains(aName);
+
 	retVal.numChars = aName.length();
 	return retVal;
 }

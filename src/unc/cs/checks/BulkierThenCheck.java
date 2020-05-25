@@ -6,12 +6,26 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class BulkierThenCheck extends ComprehensiveVisitCheck{
 	public static final String MSG_KEY = "bulkierThen";
-	protected int maxElsePartSize = 4;
-	protected int minThenElseRatio = 3;
+	public static final String MSG_KEY_INFO = "bulkierElse";
 
+	protected int maxElsePartSize = 4;
+	protected double minThenElseRatio = 3;
+
+//	@Override
+//	protected String msgKey() {
+//		return MSG_KEY;
+//	}
+	@Override
+	protected String msgKeyWarning() {
+		return MSG_KEY;
+	}
 	@Override
 	protected String msgKey() {
-		return MSG_KEY;
+		return isInfo()?msgKeyInfo():msgKeyWarning();
+	}
+	@Override
+	protected String msgKeyInfo() {
+		return MSG_KEY_INFO;
 	}
 	public int[] getDefaultTokens() {
 	return new int[] {
@@ -23,7 +37,7 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 	public void setMaxElsePartSize (int anElsePartSize) {
 		maxElsePartSize =  anElsePartSize;
 	}
-	public void setMinThenElseRatio (int aRatio) {
+	public void setMinThenElseRatio (double aRatio) {
 		minThenElseRatio =  aRatio;
 	}
 //	  @Override
@@ -58,11 +72,22 @@ public class BulkierThenCheck extends ComprehensiveVisitCheck{
 		   }
 		   
 //		   double aThenElseRatio = ((double) numStatementsInThenPart)/numStatementsInElsePart;
-		   if (numStatementsInElsePart <= maxElsePartSize &&
+//		   if (numStatementsInElsePart <= maxElsePartSize &&
+//				   (numStatementsInElsePart == 0) ||
+//				   numStatementsInThenPart/numStatementsInElsePart >= minThenElseRatio) {
+////			   logBulkierThen(aThenPart);
+////				log(aThenPart, "Then#:" + numStatementsInThenPart + " Else#: " +numStatementsInElsePart );
+//				log(aThenPart, "" + numStatementsInThenPart,  "" +numStatementsInElsePart, "" + numStatementsInThenPart/numStatementsInElsePart );
+//
+//		   }
+		   if (!isInfo() && numStatementsInElsePart <= maxElsePartSize &&
 				   (numStatementsInElsePart == 0) ||
 				   numStatementsInThenPart/numStatementsInElsePart >= minThenElseRatio) {
 //			   logBulkierThen(aThenPart);
 //				log(aThenPart, "Then#:" + numStatementsInThenPart + " Else#: " +numStatementsInElsePart );
+				log(aThenPart, "" + numStatementsInThenPart,  "" +numStatementsInElsePart, "" + numStatementsInThenPart/numStatementsInElsePart );
+
+		   } else if (isInfo() && numStatementsInThenPart/numStatementsInElsePart <= minThenElseRatio) {
 				log(aThenPart, "" + numStatementsInThenPart,  "" +numStatementsInElsePart, "" + numStatementsInThenPart/numStatementsInElsePart );
 
 		   }

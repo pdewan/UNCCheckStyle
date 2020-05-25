@@ -26,6 +26,7 @@ import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
 import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
+import unc.tools.checkstyle.PostProcessingMain;
 import unc.tools.checkstyle.ProjectDirectoryHolder;
 import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
@@ -74,6 +75,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	static String[] externalClassRegularExpressions = { ".*utton.*"};
 
 	static int lastSequenceNumberOfExpectedTypes = -1;
+	static boolean isFirstPass = true;
+	
+
 	protected String checksName;
 	protected  String[] existingClasses = {};
 	public  Collection<String> existingClassesShortNamesCollection = new HashSet();
@@ -461,7 +465,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			STMethod anSTMethod = new AnSTMethod(
 					currentMethodAST,
 					currentMethodName,
-					fullTypeName,
+					getFullTypeName(),
 					aParameterNames,
 					aLongParameterTypes,
 					currentMethodIsPublic || isInterface,
@@ -535,6 +539,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     				" Number of Functions:" + currentSTType.getNumberOfFunctions() +
     				" Number of Non Getter Functions:" + currentSTType.getNumberOfNonGetterFunctions() +
     				" Number of Getters and Setters:" + currentSTType.getNumberOfGettersAndSetters() +
+    				" Number of Non Public Methods:" + currentSTType.getNumberOfNonPublicMethods() +
     				" Public Methods Fraction:" + currentSTType.getFractionOfPublicMethods() +
     				" Protected Methods Fraction:" + currentSTType.getFractionOfProtectedMethods() +
     				" Package Access Methods Fraction:" + currentSTType.getFractionOfPackageAccessMethods() +
@@ -720,6 +725,17 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //		SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass()
 //				.put(aName, anSTClass);
 		
+//		boolean anOldFirstPass = isFirstPass();
+//		if (anOldFirstPass) {
+//			STType anExistingEntry = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aName);
+//			if (anExistingEntry != null) {
+//				setFirstPass(false);
+//				if (anOldFirstPass) {
+//					PostProcessingMain.doSecondPass(SymbolTableFactory.getOrCreateSymbolTable().getAllSTTypes());
+//				}
+//			}
+//			
+//		}
 		SymbolTableFactory.getOrCreateSymbolTable()
 		.putSTType(aName, anSTClass);
 		
@@ -758,7 +774,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				new ArrayList(),
 				new HashMap(),
 				new HashMap(),
-				aModifiers
+				aModifiers,
+				typeParameterNames
 				);
 
 		// anSTClass.introspect();
@@ -945,6 +962,16 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 			return AccessModifier.PACKAGE;
 		}
 	}
+	public static long BETWEEN_PASS_TIME = 30000; // 30 seconds
+	public static boolean nonInteractive = false;
+	public static boolean isNonInteractive() {
+		return nonInteractive;
+	}
+
+	public static void setNonInteractive(boolean nonInteractive) {
+		STBuilderCheck.nonInteractive = nonInteractive;
+	}
+
 	protected void processMethodAndClassData() {
 		if (typeAST == null) { // isEnum probably
 			return;
@@ -958,11 +985,31 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
 		
 //		List<DetailAST> modifierASTs = findAllInOrderMatchingNodes(modifiers, 62);
+		boolean anOldFirstPass = isFirstPass();		
+		
+		STType anExistingEntry = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(getFullTypeName());
+		if (anExistingEntry == null || 
+				anExistingEntry instanceof AnSTTypeFromClass // we falsely predicted it as external class
+				|| (!isNonInteractive()
+				&& System.currentTimeMillis() - anExistingEntry.getTimeOfEntry() > BETWEEN_PASS_TIME)) {
+			setFirstPass(true);
+		} else {
+
+			setFirstPass(false);
+			if (anOldFirstPass) {
+				PostProcessingMain.doSecondPass(SymbolTableFactory.getOrCreateSymbolTable().getAllSTTypes());
+			}
+			currentSTType = anExistingEntry;
+//			PostProcessingMain.doSecondPass(anExistingEntry);
+			return; // do not add entry again
+		}
+			
+		
 		
 		STType anSTClass = new AnSTType(
 				currentFullFileName,
 				typeAST,
-				fullTypeName, // may be an inner class
+				getFullTypeName(), // may be an inner class
 				currentStaticBlocks,
 				aMethods, aConstructors, interfaces, superClass, packageName,
 				isInterface, isGeneric, isElaboration, isEnum,
@@ -983,7 +1030,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				new ArrayList(globalSTVariables),
 				new HashMap<>(globalIdentToLHS),
 				new HashMap<>(globalIdentToRHS),
-				aModifiers
+				aModifiers,
+				typeParameterNames
 				);
 
 		// anSTClass.introspect();
@@ -1033,19 +1081,21 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	public void checkTags(DetailAST ast) {
 		List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
 //    	System.err.println("Checking full type name: " + fullTypeName);
-    	if (tagMatches.containsKey(fullTypeName)) {
-    		tagMatches.remove(fullTypeName);
+    	if (tagMatches.containsKey(getFullTypeName())) {
+    		tagMatches.remove(getFullTypeName());
     		if (!overlappingTags) {
-    			unmatchedTypes.remove(tagMatches.get(fullTypeName));
+    			unmatchedTypes.remove(tagMatches.get(getFullTypeName()));
     		}
     	}
     	
     	boolean aFoundMatch = false;
 		String aClassOrInterface = isInterface?"Interface":"Class";
+		
+		StringBuffer aTags = new StringBuffer();
 
     	for (String anExpectedClassOrTag:checkTags) {
     		if ( matchesMyType(maybeStripComment(anExpectedClassOrTag))) {
-    			tagMatches.put(fullTypeName, anExpectedClassOrTag);
+    			tagMatches.put(getFullTypeName(), anExpectedClassOrTag);
 //    			matchedTypes.add(fullTypeName);
     			unmatchedTypes.remove(anExpectedClassOrTag);
 //    			if (shownMissingClasses) {
@@ -1058,12 +1108,21 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //    			log(ast, anExpectedClassOrTag, unmatchedTypes.toString().replaceAll(",", " "));
 //    			String aClassOrInterface = isInterface?"Interface":"Class";
 //    			System.err.println ("STBuilder:" + aClassOrInterface + " " + anExpectedClassOrTag);
-    			log(ast, anExpectedClassOrTag, aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+//    			log(ast, anExpectedClassOrTag, aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
     			aFoundMatch = true;
+    			if (aTags.length() != 0) {
+    			aTags.append(" + " );
+    			}
+    			aTags.append(anExpectedClassOrTag);
+
 //
 //    			}
     		}
     		
+    	}
+    	if (aFoundMatch) {
+			log(ast, aTags.toString(), aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+
     	}
     	if (!aFoundMatch && logNoMatches) {
     		
@@ -1178,5 +1237,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //		return objectSTType;
 //	}
 
+	public static boolean isFirstPass() {
+		return isFirstPass;
+	}
 
+	public static void setFirstPass(boolean isFirstPass) {
+		STBuilderCheck.isFirstPass = isFirstPass;
+	}
 }

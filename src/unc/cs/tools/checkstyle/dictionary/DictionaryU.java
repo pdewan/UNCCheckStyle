@@ -1677,5 +1677,8 @@ public static String[] dictionary =
 	 "uvular",
 	 "uvulars",
 	 "uvulas",
+	 "ui",
+	 "undos",
+	 "url",
 	};
 }

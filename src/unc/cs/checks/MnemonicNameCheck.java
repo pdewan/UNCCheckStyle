@@ -21,6 +21,11 @@ public class MnemonicNameCheck extends STTypeVisited {
 
 	public static final String CHECK_MSG_KEY = "mnemonicNameCheck";
 	public static final String PRINT_MSG_KEY = "mnemonicNamePrint";	
+	
+	protected String[] allowedComponents = {};
+	protected Set<String> allowedComponentsSet = new HashSet();
+
+	
 
 	protected boolean processType = false;
 	
@@ -154,6 +159,18 @@ public class MnemonicNameCheck extends STTypeVisited {
 	public void setPrintComponents(boolean printComponents) {
 		this.printComponents = printComponents;
 	}
+	public String[] getAllowedComponents() {
+		return allowedComponents;
+	}
+
+	public void setAllowedComponents(String[] allowedComponents) {
+		this.allowedComponents = allowedComponents;
+		for (String aComponent:allowedComponents) {
+			allowedComponentsSet.add(aComponent.toLowerCase());
+//			allowedComponentsSet.add((aComponent + 's').toLowerCase());
+			
+		}
+	}
 	@Override
 	protected String msgKey() {
 		// TODO Auto-generated method stub
@@ -187,9 +204,18 @@ public class MnemonicNameCheck extends STTypeVisited {
 	
 	protected void checkComponent(DetailAST aTreeAST, DetailAST anIdentifierAST, String aName, String aComponent,STVariable anStVariable) {
 		NameComponentMetrics aMetrics = NameComponentMetrics.computeComponentMetrics(aComponent);
-		checkNumLetters(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);		
-		checkNumVowels(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);
-		checkInDictionary(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);
+//		checkNumLetters(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);		
+//		checkNumVowels(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);
+		if (allowedComponentsSet.contains(aComponent)) {
+			return;
+		}
+		if (aMetrics.numLetters == 0) {
+			return; // numbers are ok
+		}
+		if (!checkInDictionary(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable) ) {
+			checkNumLetters(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);		
+			checkNumVowels(aMetrics, aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);
+		}
 	}
 
 	protected void checkNumLetters(NameComponentMetrics aMetrics, DetailAST aTreeAST, DetailAST anIdentifierAST,
@@ -197,7 +223,7 @@ public class MnemonicNameCheck extends STTypeVisited {
 		if (!isCheckNumLetters())
 			return;
 		if (aMetrics.numLetters < minimumLettersInNameComponent) {
-			log(anIdentifierAST, MIN_NAME_LENGTH_CHECK, "Class " + fullTypeName, aVariable, aComponent, minimumLettersInNameComponent);
+			log(anIdentifierAST, MIN_NAME_LENGTH_CHECK, "Class " + getFullTypeName(), aVariable, aComponent, minimumLettersInNameComponent);
 
 //			log(MIN_NAME_LENGTH_CHECK, anIdentifierAST, aTreeAST, aVariable, aComponent, MIN_NAME_LENGTH_CHECK);
 		}
@@ -207,19 +233,27 @@ public class MnemonicNameCheck extends STTypeVisited {
 		if (!isCheckNumVowels())
 			return;
 		if (aMetrics.numVowels < minimumVowelsInNameComponent) {
-			log(anIdentifierAST, MIN_VOWEL_LENGTH_MSG_KEY, "Class " + fullTypeName, aVariable, aComponent, minimumVowelsInNameComponent);
+			log(anIdentifierAST, MIN_VOWEL_LENGTH_MSG_KEY, "Class " + getFullTypeName(), aVariable, aComponent, minimumVowelsInNameComponent);
 
 //			log(MIN_VOWEL_LENGTH_MSG_KEY, anIdentifierAST,aTreeAST, MIN_VOWEL_LENGTH_MSG_KEY, aVariable, aComponent, MIN_VOWEL_LENGTH_MSG_KEY);
 		}
 	}
-	protected void checkInDictionary(NameComponentMetrics aMetrics, DetailAST aTreeAST, DetailAST anIdentifierAST,
+	/**
+	 *return true if we know for sure the word is in dictionary
+	 */
+	protected boolean checkInDictionary(NameComponentMetrics aMetrics, DetailAST aTreeAST, DetailAST anIdentifierAST,
 			String aVariable, String aComponent, STVariable anStVariable) {
 		if (!isCheckInDictionary())
-			return;
+			return false;
+//		if (aComponent.matches(".*[0-9].*")) { 
+//		    return true; // it is effectively in dictionary
+//		}
 		if (!aMetrics.isDictionaryWord) {
 //			log(IN_DICTIONARY_CHECK, anIdentifierAST, aTreeAST, aVariable, aComponent);
-			log(anIdentifierAST, IN_DICTIONARY_CHECK,  "Class " + fullTypeName, aVariable, aComponent);
-
+			log(anIdentifierAST, IN_DICTIONARY_CHECK,  "Class " + getFullTypeName(), aVariable, aComponent);
+			return false;
+		} else {
+			return true;
 		}
 	}
 	protected void checkIdentifier (DetailAST aTreeAST, DetailAST anIdentifierAST, String aName, String anExplanation, STVariable anStVariable) {
@@ -230,7 +264,7 @@ public class MnemonicNameCheck extends STTypeVisited {
 		}
 		
 		for (String aComponent:aComponents) {
-			checkComponent(aTreeAST, anIdentifierAST, aName, aComponent, anStVariable);
+			checkComponent(aTreeAST, anIdentifierAST, aName, aComponent.toLowerCase(), anStVariable);
 
 		}
 	}
@@ -245,11 +279,15 @@ public class MnemonicNameCheck extends STTypeVisited {
 		
 	}
 	protected void processGlobalVars(DetailAST ast, List<STVariable> aVariables) {
+		if (aVariables == null) {
+			System.err.println ("Null global variables");
+			return;
+		}
 		for (STVariable anSTVariable:aVariables) {
 			boolean isConstant = anSTVariable.isFinal();
 			String aName = anSTVariable.getName();
 			String aConstantOrVariable = isConstant?"Constant":"Variable";
-			String anExplanation = fullTypeName + ".Global " + aConstantOrVariable;
+			String anExplanation = getFullTypeName() + ".Global " + aConstantOrVariable;
 
 			checkIdentifier(ast, anSTVariable.getAST(), aName, anExplanation, anSTVariable);
 //			String aComponents = Arrays.toString(ComprehensiveVisitCheck.splitCamelCaseHyphenDash(aName));
@@ -257,11 +295,15 @@ public class MnemonicNameCheck extends STTypeVisited {
 		}
 	}
 	protected void processLocalVars(DetailAST ast, STMethod anSTMethod, List<STVariable> aVariables) {
+		if (aVariables == null) {
+			System.err.println("NUll variables in:" + anSTMethod);
+			return;
+		}
 		for (STVariable anSTVariable:aVariables) {
 			boolean isConstant = anSTVariable.isFinal();
 			String aName = anSTVariable.getName();
 			String aConstantOrVariable = isConstant?"Constant":"Variable";
-			String anExplanation = fullTypeName + "." + anSTMethod.getName() + ".Local " + aConstantOrVariable;
+			String anExplanation = getFullTypeName() + "." + anSTMethod.getName() + ".Local " + aConstantOrVariable;
 			checkIdentifier(ast, anSTVariable.getAST(), aName, anExplanation, anSTVariable);
 
 		}
@@ -277,11 +319,15 @@ public class MnemonicNameCheck extends STTypeVisited {
 		}
 	
 	protected void processParameters(DetailAST ast, STMethod anSTMethod, List<STVariable> aVariables) {
+		if (aVariables == null) {
+			System.err.println("Null parameters in:" + anSTMethod);
+			return;
+		}
 		for (STVariable anSTVariable:aVariables) {
 			boolean isConstant = anSTVariable.isFinal();
 			String aName = anSTVariable.getName();
 			String aConstantOrVariable = isConstant?"Constant":"Variable";
-			String anExplanation = fullTypeName + "." + anSTMethod.getName() + ".Parameter " + aConstantOrVariable;
+			String anExplanation = getFullTypeName() + "." + anSTMethod.getName() + ".Parameter " + aConstantOrVariable;
 			checkIdentifier(ast, anSTVariable.getAST(), aName, anExplanation, anSTVariable);
 		}
 	}
@@ -289,7 +335,9 @@ public class MnemonicNameCheck extends STTypeVisited {
 		for (STMethod anSTMethod:aMethods) {
 			String aName = anSTMethod.getName();
 			String aComponents = Arrays.toString(ComprehensiveVisitCheck.splitCamelCaseHyphenDash(aName));
-			log(ast, PRINT_MSG_KEY, fullTypeName + ".Method:"  + aName + " Components:" + aComponents);
+			if (isPrintComponents()) {
+			log(ast, PRINT_MSG_KEY, getFullTypeName() + ".Method:"  + aName + " Components:" + aComponents);
+			}
 			processLocalVars(ast, anSTMethod, anSTMethod.getLocalVariables());
 			processParameters(ast, anSTMethod, anSTMethod.getParameters() );
 		}

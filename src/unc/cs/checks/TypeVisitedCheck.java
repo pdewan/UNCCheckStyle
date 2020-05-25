@@ -15,13 +15,15 @@ import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 
 public abstract class TypeVisitedCheck extends UNCCheck {
 	public static final String MSG_KEY = "typeDefined";	
 	public static final String DEFAULT_PACKAGE = "default"; 
 	protected String packageName;
-	protected String fullTypeName, shortTypeName;
+	private String fullTypeName;
+	protected String shortTypeName;
+
+	
 	protected DetailAST typeAST;
 	protected DetailAST typeNameAST;
 	protected STNameable typeNameable;
@@ -333,6 +335,12 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		for (int i = 0; i < aStrings.length; i++) {
 			aStrings[i] = aStrings[i].trim();
 		}
+	}
+	protected String getFullTypeName() {
+		return fullTypeName;
+	}
+	protected void setFullTypeName(String fullTypeName) {
+		this.fullTypeName = fullTypeName;
 	}
 
 }

@@ -24,6 +24,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, configuredTags, derivedTags, computedTags, imports;
 
 	protected final boolean isInterface, isGeneric, isElaboration, isEnum;
+	protected final List<String> typeParameterNames;
 //	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
 
@@ -78,16 +79,18 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			List<STVariable> aGlobalSTVariables,
 			Map<String, List<DetailAST>> aGlobalIdentToLHS,
 			Map<String, List<DetailAST>> aGlobalIdentToRHS,
-			Set<Integer> aModifiers
+			Set<Integer> aModifiers,
+			List<String> aTypeParameterNames
+
 			) {
 		super(ast, name);
 		if (aFileName != null)
 			fileName = aFileName;
 		else
 			fileName = name;
-		if (name.contains("TrickOrTreatPostProcessingCustomMain")) {
-			System.err.println (" found TrickOrTreatPostProcessingCustomMain");
-		}
+//		if (name.contains("TrickOrTreatPostProcessingCustomMain")) {
+//			System.err.println (" found TrickOrTreatPostProcessingCustomMain");
+//		}
 		staticBlocks = aStaticBlocks;
 		this.declaredMethods = declaredMethods;
 		this.declaredConstructors = aDeclaredConstructors;
@@ -103,6 +106,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		this.packageName = packageName;
 		this.isInterface = isInterface;
 		isGeneric = anIsGeneric;
+		typeParameterNames = aTypeParameterNames;
 		isElaboration = anIsElaboration;
 		isEnum = anIsEnum;
 		structurePatternName = aStructurePatternName;
@@ -1154,6 +1158,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		DetailAST generic = ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);
 		return generic != null;
 	}
-
+	@Override
+	public List<String> getTypeParameterNames() {
+		return typeParameterNames;
+	}
 
 }

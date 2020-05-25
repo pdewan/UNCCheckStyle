@@ -47,7 +47,7 @@ public class NoStructuredSetterCheck extends ComprehensiveVisitCheck {
 		
 	}
 public void doFinishTree(DetailAST ast) {
-		if (fullTypeName == null)
+		if (getFullTypeName() == null)
 			return; // we are an interface
 		maybeAddToPendingTypeChecks(ast);
 		super.doFinishTree(ast);

@@ -3405,5 +3405,6 @@ public static String[] dictionary =
 	 "sizzled",
 	 "sizzles",
 	 "sizzling",
+	 "serializer",
 	};
 }

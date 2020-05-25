@@ -4151,5 +4151,7 @@ public static String[] dictionary =
 	 "mythologists",
 	 "mythology",
 	 "myths",
+	 "mapreduce",
+	 "mvc",
 	};
 }

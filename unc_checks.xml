@@ -34,7 +34,8 @@
 								port, 
 								inputport, 
 								multiserverport,
-								assignments.util
+								assignments.util,
+								stringProcessors
 							"/>	
 		
 		</module>

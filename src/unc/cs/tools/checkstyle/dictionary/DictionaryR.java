@@ -4113,5 +4113,10 @@ public static String[] dictionary =
 	 "rutted",
 	 "rutting",
 	 "rye",
+	 "reducer",
+	 "relayer",
+	 "ret",
+	 "rpc",
+	 "rmi",
 	};
 }

@@ -20,7 +20,7 @@ public class InterfaceDefinedCheckOld extends ComprehensiveVisitCheck{
     	super.visitType(ast);
     	if (checkIncludeExcludeTagsOfCurrentType())
 //		log(ast.getLineNo(), msgKey(), fullTypeName);
-    		super.log(ast, fullTypeName);
+    		super.log(ast, getFullTypeName());
 
 
     }

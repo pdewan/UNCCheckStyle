@@ -4992,5 +4992,6 @@ public static String[] dictionary =
 	 "systemics",
 	 "systems",
 	 "systolic",
+	 "sync",
 	};
 }

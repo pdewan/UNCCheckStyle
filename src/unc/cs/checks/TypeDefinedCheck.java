@@ -66,17 +66,17 @@ public class TypeDefinedCheck extends ComprehensiveVisitCheck{
     		return;
     	List<String> checkTags = new ArrayList( overlappingTags?expectedTypes:unmatchedTypes);
 //    	System.out.println("Checking full type name: " + fullTypeName);
-    	if (tagMatches.containsKey(fullTypeName)) {
-    		tagMatches.remove(fullTypeName);
+    	if (tagMatches.containsKey(getFullTypeName())) {
+    		tagMatches.remove(getFullTypeName());
     		if (!overlappingTags) {
-    			unmatchedTypes.remove(tagMatches.get(fullTypeName));
+    			unmatchedTypes.remove(tagMatches.get(getFullTypeName()));
     		}
     	}
     	
     	boolean aFoundMatch = false;
     	for (String anExpectedClassOrTag:checkTags) {
     		if ( matchesMyType(maybeStripComment(anExpectedClassOrTag))) {
-    			tagMatches.put(fullTypeName, anExpectedClassOrTag);
+    			tagMatches.put(getFullTypeName(), anExpectedClassOrTag);
 //    			matchedTypes.add(fullTypeName);
     			unmatchedTypes.remove(anExpectedClassOrTag);
 //    			if (shownMissingClasses) {

@@ -10,6 +10,7 @@ import unc.cs.checks.ComprehensiveVisitCheck;
 import unc.cs.checks.STTypeVisited;
 import unc.cs.checks.TagBasedCheck;
 import unc.cs.checks.TypeVisitedCheck;
+import unc.tools.checkstyle.PostProcessingMain;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
@@ -197,6 +198,20 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		 }
 		 return result.toString();
 	 }
+	 String toStringParameterTaggedTypes() {
+		 
+		 if (getParameterTypes() == null)
+			 return "null";
+		 StringBuilder result = new StringBuilder();
+		 
+		 for (int i = 0; i < getParameterTypes().length; i++) {
+			 if (i > 0) {
+				 result.append(PARAMETER_SEPARATOR);
+			 }
+			 result.append(PostProcessingMain.toTaggedType(getParameterTypes()[i]));
+		 }
+		 return result.toString();
+	 }
 	 String toStringMethod() {
 		 StringBuilder result = new StringBuilder();
 		 String aStatic = isInstance()?"":"static ";
@@ -216,7 +231,6 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		 return result.toString();
 
 	 }
-	 protected String checksSignature;
 	 public static String getMatchAnyHeader(String aName) {
 		 return aName + NAME_PARAMETER_SEPARATOR + 
 				 TagBasedCheck.MATCH_ANYTHING+ 
@@ -224,6 +238,7 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 				TagBasedCheck.MATCH_ANYTHING_REGULAR_EXPERSSION;
 
 	 }
+	 protected String checksSignature;
 	 @Override
 	 public String getSimpleChecksSignature() {
 		 if (checksSignature == null) {
@@ -238,6 +253,28 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 		 checksSignature = result.toString();
 		 }
 		 return checksSignature;
+
+	 }
+	 protected String checksTaggedSignature;
+
+	 @Override
+	 public String getSimpleChecksTaggedSignature() {
+		 if (checksTaggedSignature == null) {
+		 StringBuilder result = new StringBuilder();
+
+
+		 result.append(name);
+		 result.append(NAME_PARAMETER_SEPARATOR);
+		 result.append(toStringParameterTaggedTypes());
+
+//		 result.append(toStringParameterTypes());
+		 result.append(PARAMETERS_RETURN_VALUE_SEPARATOR);
+//		 result.append(TypeVisitedCheck.toShortTypeName(getReturnType()));
+		 result.append(TypeVisitedCheck.toShortTypeName(PostProcessingMain.toTaggedType(getReturnType())));
+
+		 checksTaggedSignature = result.toString();
+		 }
+		 return checksTaggedSignature;
 
 	 }
 	 @Override

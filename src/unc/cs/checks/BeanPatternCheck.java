@@ -40,9 +40,11 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 	}
 	
 	public Boolean checkIncludeExcludeTagsOfCurrentType() {
-		if (fullTypeName == null) {
-			fullTypeName = getFullTypeName(currentTree);
-			if (fullTypeName == null) {
+		if (getFullTypeName() == null) {
+//			fullTypeName = getFullTypeName(currentTree);
+			setFullTypeName(getFullTypeName(currentTree));
+
+			if (getFullTypeName() == null) {
 			System.err.println ("Full type name not initialized ");
 			return false;
 
@@ -52,9 +54,9 @@ public abstract class BeanPatternCheck extends ExpectedGettersCheck {
 			}
 		}
 		STType anSTType = SymbolTableFactory.getSymbolTable().
-				getSTClassByFullName(fullTypeName);
+				getSTClassByFullName(getFullTypeName());
 		if (anSTType == null) { // inner class
-			System.err.println ("cannot find entry for" + fullTypeName);
+			System.err.println ("cannot find entry for" + getFullTypeName());
 			
 			return false;
 		}

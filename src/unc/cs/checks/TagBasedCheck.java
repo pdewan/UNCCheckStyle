@@ -400,6 +400,10 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	} 
 
  public  List<String> findMatchingTypes (Collection<String> aTypesToBeMatched, STType anSTType) {
+	 if (anSTType == null) {
+		 System.err.println("Null anSType in findMathcingTypes");
+		 return null;
+	 }
 	List<String> retVal = new ArrayList();
 	 for (String aSpecifiedType:aTypesToBeMatched) {
 			matchedTypeOrTagAST = anSTType.getAST();
@@ -484,7 +488,8 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	if (anSTType != null // what if we create existing classes, we may not have the external class in our path
 			)
 //			&& !STBuilderCheck.getImportsAsExistingClasses()) 
-		return false;
+//		return false;
+		return anSTType.isExternal();
 	return aShortClassName.equals("Object") ||
 			isExternalImportCacheCheckingShortName(aShortClassName) || 
 			isExternalImportCacheChecking(aShortClassName) || // not really short name
@@ -534,7 +539,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	if (aTags == null && (
 //			shortTypeName == null ||
 //			aLongClassName.equals(shortTypeName))) {
-		aLongClassName.equals(fullTypeName))) {
+		aLongClassName.equals(getFullTypeName()))) {
 
 		aTags = computedTypeTags();
 	}
@@ -562,8 +567,31 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 	return aTags;
 	
 }
+ public Boolean matchISA(String aDescriptor, String aName) {
+	 Boolean retVal = null;
+	 try {
+			STType anActualType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aName);
+			if (anActualType != null) {
+				retVal = anActualType.isSubtypeOf(aDescriptor);
+				if (retVal != null) {
+					return retVal;
+				}
+				
+			}
+			Class anActualClass = Class.forName(aName) ;
+			Class aSpecifiedClass = Class.forName(aDescriptor);
+			return aSpecifiedClass.isAssignableFrom(anActualClass);
+		 
+	 } catch (Throwable t) {
+		 return false;
+		 
+	 }
+ }
  public Boolean unifyingMatchesNameVariableOrTag(String aDescriptor, String aName, STNameable[] aTags) {
 	 if (aDescriptor == null) {
+		 return true;
+	 }
+	 if (aName == null) {
 		 return true;
 	 }
 	 aDescriptor = aDescriptor.trim();
@@ -588,9 +616,26 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 			// do not want user scanner to match Scanner class so do not use contains
 			// allow regex
 			try {
-			return aName.equals(aDescriptor) || aShortName.equals(aDescriptor) || aName.matches(aDescriptor) || aShortName.matches(aDescriptor);
-			} catch (Exception e) {
-				e.printStackTrace();
+			Boolean retVal = aName.equals(aDescriptor) || aShortName.equals(aDescriptor) || aName.matches(aDescriptor) || aShortName.matches(aDescriptor);
+//			if (retVal) {
+//				return true;
+//			}
+			return retVal;
+//			STType anActualType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aName);
+//			if (anActualType != null) {
+//				retVal = anActualType.isSubtypeOf(aDescriptor);
+//				if (retVal != null) {
+//					return retVal;
+//				}
+//				
+//			}
+//			Class anActualClass = Class.forName(aName) ;
+//			Class aSpecifiedClass = Class.forName(aDescriptor);
+//			return aSpecifiedClass.isAssignableFrom(anActualClass);
+			} 
+			
+			catch (Throwable e) {
+//				e.printStackTrace();
 				return true;
 			}
 
@@ -609,7 +654,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 		if (aDescriptor == null || aDescriptor.length() == 0 || aDescriptor.equals(MATCH_ANYTHING))
 			return true;
 		if (aDescriptor.startsWith(TAG_STRING)) {
-			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);
+			STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(getFullTypeName());
 			if (anSTType == null) {
 				return false;
 			}
@@ -618,10 +663,14 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
 
 //			String aTag = aDescriptor.substring(1);
 //			return contains(typeTags(), aDescriptor, shortTypeName);
+			if (checkTags == null) {
+				System.err.println("Null check tags:");
+				return null;
+			}
 
 			return containsEfficient(Arrays.asList(checkTags), aDescriptor, shortTypeName);
 		} else {
-			return unifyingMatchesNameVariableOrTag(aDescriptor, shortTypeName, null) ||  unifyingMatchesNameVariableOrTag(aDescriptor, fullTypeName, null);
+			return unifyingMatchesNameVariableOrTag(aDescriptor, shortTypeName, null) ||  unifyingMatchesNameVariableOrTag(aDescriptor, getFullTypeName(), null);
 		}
 			
 //		} else if (aDescriptor.startsWith("$")) {
@@ -837,7 +886,7 @@ protected boolean inferTag() {
 }
 protected boolean checkExcludeRegularExpressionsOfCurrentType() {
 	
-	if (fullTypeName == null) {
+	if (getFullTypeName() == null) {
 		
 		return true;
 	}
@@ -845,7 +894,7 @@ protected boolean checkExcludeRegularExpressionsOfCurrentType() {
 //		System.err.println("Found abstractslave");
 //	}
 	for (String anExcludeExpression:STBuilderCheck.getExcludeClassRegularExpressions()) {
-		if (fullTypeName.matches(anExcludeExpression)) {
+		if (getFullTypeName().matches(anExcludeExpression)) {
 			return false;
 		}
 	}
@@ -1090,20 +1139,21 @@ protected String toLongTypeNameNoArray (String aShortOrLongName) {
 	 
 	return  aShortOrLongName;
 }
-protected String toLongTypeName (String aShortOrLongName) {
-//	String retVal = aShortName;
-	
-	int aSubscriptStart = aShortOrLongName.indexOf("[");
-	String aSubscriptSuffix = "";
-	String aShortOrLongNameWithoutSuffix = aShortOrLongName;
-	if (aSubscriptStart >= 0) {
-		aShortOrLongNameWithoutSuffix = aShortOrLongName.substring(0, aSubscriptStart);
-		aSubscriptSuffix = aShortOrLongName.substring(aSubscriptStart);
-	}
-	String aNameWithoutSuffix = toLongTypeNameNoArray(aShortOrLongNameWithoutSuffix);
-	return aNameWithoutSuffix + aSubscriptSuffix;
-
-}
+//protected String toLongTypeName (String aShortOrLongName) {
+//	String aTypeParameterName = toNormalizedTypeParameterName(aShortOrLongName);
+////	String retVal = aShortName;
+//	
+//	int aSubscriptStart = aShortOrLongName.indexOf("[");
+//	String aSubscriptSuffix = "";
+//	String aShortOrLongNameWithoutSuffix = aShortOrLongName;
+//	if (aSubscriptStart >= 0) {
+//		aShortOrLongNameWithoutSuffix = aShortOrLongName.substring(0, aSubscriptStart);
+//		aSubscriptSuffix = aShortOrLongName.substring(aSubscriptStart);
+//	}
+//	String aNameWithoutSuffix = toLongTypeNameNoArray(aShortOrLongNameWithoutSuffix);
+//	return aNameWithoutSuffix + aSubscriptSuffix;
+//
+//}
 public static String toElementTypeName(String aShortOrLongName) {
 	int aSubscriptStart = aShortOrLongName.indexOf("[");
 	if (aSubscriptStart < 0) {
@@ -1174,14 +1224,14 @@ public static String toLongVariableName (STType aType, String aShortOrLongName) 
 	return aShortOrLongName;	
 	
 }
-protected String[] toLongTypeNames (String[] aShortNames) {
-	String[] retVal = new String[aShortNames.length];
-	for (int i=0; i < aShortNames.length; i++) {
-		retVal[i] = toLongTypeName(aShortNames[i]);
-	}
-	return retVal;
-	
-}
+//protected String[] toLongTypeNames (String[] aShortNames) {
+//	String[] retVal = new String[aShortNames.length];
+//	for (int i=0; i < aShortNames.length; i++) {
+//		retVal[i] = toLongTypeName(aShortNames[i]);
+//	}
+//	return retVal;
+//	
+//}
 public void visitImport(DetailAST ast) {
 	 FullIdent anImport = FullIdent.createFullIdentBelow(ast);
 	 String aLongClassName = anImport.getText();
@@ -1193,6 +1243,9 @@ public void visitImport(DetailAST ast) {
 	 allImportsOfThisClass.add(anSTNameable);
 	 if (!isProjectImport(aLongClassName)) {
 //		 allProjectExternalImports.add(aShortClassName);
+//		 if (aLongClassName.startsWith("rmi")) {
+//			 System.err.println("found rmi");
+//		 }
 		 allProjectExternalImports.add(aLongClassName);
 		 if (!aShortClassName.equals("*"))
 		 allProjectExternalImportsShortName.add(aShortClassName);
@@ -1573,7 +1626,8 @@ public void doBeginTree(DetailAST ast) {
 	 	computedTypeTags = emptyNameableList;
 //	 	typeScope.clear();
 	 	// not sure why we need this as 
-	 	fullTypeName = null;
+	 	setFullTypeName(null);
+//	 	fullTypeName = null;
 //	 	isInterface = false;
 //	 	isGeneric = false;
 //	 	isElaboration = false;
@@ -1689,6 +1743,9 @@ public static DetailAST getOutermostTypeDeclaration (DetailAST ast) {
 		return null; // this should never happen on first call
 	}
 	DetailAST aPreviousAST = anEnclosingType.getPreviousSibling(); 
+	if (aPreviousAST == null) {
+		return anEnclosingType;
+	}
 	int aPreviousASTType = aPreviousAST.getType();
 	if (aPreviousAST == null || aPreviousAST.getType() == OBSERVED_IMPORT_TYPE || aPreviousAST.getType() == TokenTypes.IMPORT || aPreviousAST.getType() == TokenTypes.PACKAGE_DEF) // just check if it is class def?
 		return anEnclosingType; // this means no package

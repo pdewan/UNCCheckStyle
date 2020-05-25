@@ -6,8 +6,8 @@ import com.puppycrawl.tools.checkstyle.checks.CheckUtils;
 
 public class BulkierElseCheck extends BulkierThenCheck{
 	public static final String MSG_KEY = "bulkierElse";
-	protected int maxThenPartSize = 4;
-	protected int minElseThenRatio = 3;
+	protected double maxThenPartSize = 4;
+	protected double minElseThenRatio = 3;
 
 	@Override
 	protected String msgKey() {
@@ -20,10 +20,10 @@ public class BulkierElseCheck extends BulkierThenCheck{
 //			TokenTypes.LITERAL_IF
 //			};
 //	}
-	public void setMaxThenPartSize (int newVal) {
+	public void setMaxThenPartSize (double newVal) {
 		maxThenPartSize =  newVal;
 	}
-	public void setMinElseThenRatio (int aRatio) {
+	public void setMinElseThenRatio (double aRatio) {
 		minElseThenRatio =  aRatio;
 	}
 //	  @Override

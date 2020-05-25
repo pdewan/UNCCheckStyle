@@ -47,9 +47,9 @@ public class MinCalledMethodsCheck extends ComprehensiveVisitCheck {
     public void visitType(DetailAST ast) {
     	super.visitType(ast);    	
     	STType anSTClass = SymbolTableFactory.getOrCreateSymbolTable().
-    			getSTClassByFullName(fullTypeName);
+    			getSTClassByFullName(getFullTypeName());
     	if (anSTClass == null) {
-    		System.err.println("No ST Clas for:" + fullTypeName);
+    		System.err.println("No ST Clas for:" + getFullTypeName());
     		return;
     	}
     	STMethod[] anSTMethods = anSTClass.getDeclaredMethods();
@@ -58,9 +58,9 @@ public class MinCalledMethodsCheck extends ComprehensiveVisitCheck {
     		aMaxMethods = Math.max(aMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods().size(), aMaxMethods);   		
     	}
     	if (aMaxMethods < minCalledMethods) {
-    		if (fullTypeName.contains("Cell")) {
-    			System.err.println("Found inner class:");
-    		}
+//    		if (getFullTypeName().contains("Cell")) {
+//    			System.err.println("Found inner class:");
+//    		}
 //          log(ast.getLineNo(), msgKey(), min);
           log(ast, currentTree, aMaxMethods, minCalledMethods);
         }

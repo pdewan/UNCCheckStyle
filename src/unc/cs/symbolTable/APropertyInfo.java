@@ -32,8 +32,8 @@ public class APropertyInfo implements PropertyInfo {
 	
 
 	public APropertyInfo(STType anSTType, String aPropertyName, String aPropertyType) {
-//		if (aPropertyName.equals("Class")) {
-//			System.out.println("Found class:");
+//		if (aPropertyName.equals("Key")) {
+//			System.err.println("Found Key:");
 //		}
 		name = aPropertyName;
 		type = aPropertyType;

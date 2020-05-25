@@ -142,6 +142,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
     protected String variablesDeclaredString;
     protected String propertiesDeclaredString;
     protected String statisticsString;
+	protected List<String> typeParameterNames ;
+	public static final String NORMALIZED_TYPE_PARAMETER_NAME = "TypeParam";
+
 //	protected Map<String, String> importShortToLongName = new HashMap();
 
 
@@ -400,14 +403,20 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		// let someone else add this , some instance method that calls it
 		variablesAdded.clear();
 		
-		
+		String aDescriptor = aSpecification.getName();
+		String aName = aMethod.getName();
 		//New replacement lines
-		Boolean aMatchesName = unifyingMatchesNameVariableOrTag(aSpecification.getName(),
-				aMethod.getName(), aMethod.getComputedTags());
+//		Boolean aMatchesName = unifyingMatchesNameVariableOrTag(aSpecification.getName(),
+//				aMethod.getName(), aMethod.getComputedTags());
+		Boolean aMatchesName = unifyingMatchesNameVariableOrTag(aDescriptor,
+				aName, aMethod.getComputedTags());
 		if (aMatchesName == null)
 			return null;
-		if (!aMatchesName)
+		if (!aMatchesName) {
+//			aMatchesName = matchISA(aDescriptor, aName);
+//			if (!Matches)
 			return false;
+		}
 //		Boolean aMatchesType = matchReturnType(aSpecification, aMethod);
 		Boolean aMatchesType = matchReturnTypeISA(aSpecification, aMethod);
 
@@ -564,9 +573,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		return retVal;
 	}
+	
+	public static String METHOD_NAME_REST_SEPARATOR = ":";
 
 	public static STMethod createMethodFromSignature(String aSignature) {
-		String[] aNameAndRest = aSignature.split(":");
+		String[] aNameAndRest = aSignature.split(METHOD_NAME_REST_SEPARATOR);
 		if (aNameAndRest.length == 1) {
 			if (!aSignature.equals(MATCH_ANYTHING) && !isIdentifier(aSignature)) {
 				System.err
@@ -806,12 +817,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typeNameAST = getEnumNameAST(anEnumDef);
 		// shortTypeName = getEnumName(anEnumDef);
 		shortTypeName = typeNameAST.getText();
-		fullTypeName = packageName + "." + shortTypeName;
+//		fullTypeName = packageName + "." + shortTypeName;
+		setFullTypeName(packageName + "." + shortTypeName);
 		typeAST = anEnumDef;
 		superClass = null;
 		interfaces = emptyNameableArray;
 		isInterface = false;
-		typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
+		typeNameable = new AnSTNameable(typeNameAST, getFullTypeName());
 
 		// shortTypeName = anEnumDef.getNextSibling().toString();
 		// DetailAST anEnumIdent =
@@ -921,6 +933,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected void leaveMethodOrConstructor(DetailAST methodDef) {
 		inMethodOrConstructor = false;
 	}
+	protected void leaveMethodCall(DetailAST methodDef) {
+	}
 
 	protected void leaveMethod(DetailAST methodDef) {
 		leaveMethodOrConstructor(methodDef);
@@ -1024,11 +1038,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		addToMethodScope(paramDef, VariableKind.PARAMETER); // add a parameter to say param and return value perhaps
 
 	}
+	
+	
 
-	protected void visitTypeParameters(DetailAST typeParameters) {
+	protected void visitTypeParameters(DetailAST aTypeParameters) {
+		List<DetailAST> aTypeParameterASTs = findAllInOrderMatchingNodes(aTypeParameters, TokenTypes.IDENT);
 		isGeneric = true;
+		typeParameterNames = new ArrayList();
+		for (int i=0; i <aTypeParameterASTs.size();i++) {
+			typeParameterNames.add( aTypeParameterASTs.get(i).getText());
+		}
 
 	}
+	
 
 	protected void visitTypeArguments(DetailAST typeParameters) {
 		isElaboration = true;
@@ -1231,7 +1253,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (aVariable == null)
 			return null;
 		if (aVariable.equals("this")) {
-			return fullTypeName; // short type name?
+			return getFullTypeName(); // short type name?
 		}
 		return typeScope.get(aVariable);
 	}
@@ -1339,7 +1361,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		DetailAST modifierAST = paramOrVarDef.findFirstToken(TokenTypes.MODIFIERS);
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
 		STVariable anSTVariable = new AnSTVariable (
-				fullTypeName,
+				getFullTypeName(),
 //				currentSTType,
 				currentBlock(),
 				paramOrVarDef, 
@@ -1776,7 +1798,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 				aNormalizedLongTypeName.insert(0, VARIABLE_PREFIX);
 			}
 		}
-		CallInfo result = new ACallInfo(ast, fullTypeName, currentMethodName, new ArrayList(
+		CallInfo result = new ACallInfo(ast, getFullTypeName(), currentMethodName, new ArrayList(
 //				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]), aCallee,
 				currentMethodParameterTypes), aNormalizedLongTypeName.toString(), aCallee,
 
@@ -1850,7 +1872,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		}
 		// need to worry about cast at some point I assume
 		
-		CallInfo result = new ACallInfo(ast, fullTypeName, currentMethodName, new ArrayList(
+		CallInfo result = new ACallInfo(ast, getFullTypeName(), currentMethodName, new ArrayList(
 				currentMethodParameterTypes), toLongTypeName(aNormalizedParts[0]),
 				aNormalizedParts[1], aCallParameters, aNormalizedParts, null);
 
@@ -2048,7 +2070,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (!leftCurlySeen) {
 			return;
 		}
-		if (fullTypeName == null)
+		if (getFullTypeName() == null)
 		return;
 //		if (currentMethodName == null)
 //			return;
@@ -2077,10 +2099,16 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		
 
 		boolean isLHSOfAssignment = isLHSOfAssignment(anIdentAST);
+//		 STVariable aLocalVariable = getLocalVariable(anIdentName);
 		 STVariable aLocalVariable = getLocalVariable(anIdentName);
+
 		 STVariable aParameter = null;
 		 if (aLocalVariable == null) {
 			 aParameter = getParameterVariable(anIdentName);
+		 }
+		 if (anIdentAST.getParent().getType() == TokenTypes.DOT) {
+			 aLocalVariable = null;
+			 aParameter = null;
 		 }
 		if (isLHSOfAssignment) {
 //			STVariable aVariable = getLocalVariable(anIdentName);
@@ -2395,7 +2423,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		return (lookupLocal(aName) == null || 
 				   (anIdentAST.getPreviousSibling() != null && 
-				       anIdentAST.getPreviousSibling().getType() == TokenTypes.LITERAL_THIS))
+				       (anIdentAST.getPreviousSibling().getType() == TokenTypes.LITERAL_THIS) || 
+				       anIdentAST.getPreviousSibling().getText().equals(shortTypeName)
+				       
+						   ))
 				&& isLHSOfAssignment(anIdentAST);
 
 	}
@@ -2449,12 +2480,14 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typeTags = emptyNameableList;
 		computedTypeTags = emptyNameableList;
 		typeScope.clear();
-		fullTypeName = null;
+//		fullTypeName = null;
+		setFullTypeName(null);
 		shortTypeName = null;
 		isInterface = false;
 		leftCurlySeen = false;
 		isEnum = false;
 		isGeneric = false;
+		typeParameterNames = null;
 		isElaboration = false;
 		// stMethods.clear();
 		allImportsOfThisClass.clear();
@@ -2961,7 +2994,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 																		// the
 																		// call
 																		// occurs
-			aCallPartsList.add(fullTypeName);
+			aCallPartsList.add(getFullTypeName());
 			aCallPartsList.add(aCallParts[aCallParts.length - 1]);
 		} else if (aCallParts.length == 2) {
 			String aType = lookupType(aCallParts[0]);
@@ -3214,6 +3247,10 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	protected void log(String aMessageKey, DetailAST ast, DetailAST aTreeAST,
 			Object... anExplanations) {
+		if (ast == null) {
+			System.err.println ("Null ast:" + currentFile);
+			return;
+		}
 //		int i = 0;
 		Object[] anArgs = composeArgs(aMessageKey, ast, aTreeAST, ast.getLineNo(),
 				anExplanations);
@@ -3397,6 +3434,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected void doLeaveToken(DetailAST ast) {
 		switch (ast.getType()) {
 		case TokenTypes.METHOD_CALL:
+			leaveMethodCall(ast);
+			break;
+		case TokenTypes.METHOD_DEF:
 			leaveMethod(ast);
 			break;
 		case TokenTypes.CTOR_CALL:
@@ -3478,13 +3518,13 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			visitPackage(ast);
 			return;
 		case TokenTypes.CLASS_DEF:
-			if (fullTypeName == null // outer class
+			if (getFullTypeName() == null // outer class
 			|| ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) // avoid inner class if we haev visited
 										
 				visitClass(ast);
 			return;
 		case TokenTypes.INTERFACE_DEF:
-			if (fullTypeName == null // avoid inner class if we have visited
+			if (getFullTypeName() == null // avoid inner class if we have visited
 										// outer class
 				|| ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses())
 
@@ -3893,6 +3933,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		} else {
 			aMethods = aCalledType.getDeclaredMethods();
 		}
+		if (aMethods == null) {
+			return null;
+		}
 		for (STMethod anSTMethod : aMethods) {
 			if (anSTMethod.getName().equals(aCallInfo.getCallee())
 					&& anSTMethod.getParameterTypes().length == aCallInfo.getActuals().size()) { // at some point do
@@ -3937,6 +3980,53 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 		accessTokenToAccessString.put(TokenTypes.LITERAL_PROTECTED, "protected ");
 		accessTokenToAccessString.put(TokenTypes.LITERAL_PUBLIC, "public ");
+	}
+	public  String toNormalizedTypeParameterName(String aShortName) {
+		if (typeParameterNames == null) {
+			return null;
+		}
+		int anIndex = typeParameterNames.indexOf(aShortName);
+		if (anIndex < 0) {
+			return null;
+		}
+		return NORMALIZED_TYPE_PARAMETER_NAME+anIndex;
+	}
+	protected String[] toLongTypeNames (String[] aShortNames) {
+		String[] retVal = new String[aShortNames.length];
+		for (int i=0; i < aShortNames.length; i++) {
+			String aShortName = aShortNames[i];
+//			retVal[i] = toNormalizedTypeParameterName(aShortName);
+//			if (retVal[i] == null) {
+				retVal[i] = toLongTypeName(aShortName);
+
+//			}
+
+			
+		}
+		return retVal;
+		
+	}
+	protected String toLongTypeName (String aShortOrLongName) {
+		
+		String aTypeParameterName = toNormalizedTypeParameterName(aShortOrLongName);
+		if (aTypeParameterName != null) {
+			return aTypeParameterName;
+		}
+//		String retVal = aShortName;
+		
+		int aSubscriptStart = aShortOrLongName.indexOf("[");
+		String aSubscriptSuffix = "";
+		String aShortOrLongNameWithoutSuffix = aShortOrLongName;
+		if (aSubscriptStart >= 0) {
+			aShortOrLongNameWithoutSuffix = aShortOrLongName.substring(0, aSubscriptStart);
+			aSubscriptSuffix = aShortOrLongName.substring(aSubscriptStart);
+		}
+		String aNameWithoutSuffix = toLongTypeNameNoArray(aShortOrLongNameWithoutSuffix);
+		return aNameWithoutSuffix + aSubscriptSuffix;
+
+	}
+	public static boolean isTypeParameter(String aType) {
+		return aType.startsWith(NORMALIZED_TYPE_PARAMETER_NAME);
 	}
 	public static void main (String[] args) {
 		System.out.println ( "Math.PI".matches("Math.(.*)"));
