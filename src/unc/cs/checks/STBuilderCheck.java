@@ -760,7 +760,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		String aFullName = packageName + "." + shortTypeName + "." + anEnumName;
 		if (aTypeAST == anEnumDef) { // top-level enum
 			aFullName = packageName + "." + anEnumName;
+			setShortTypeName (anEnumName);
 		}
+		setFullTypeName(aFullName);
 		DetailAST modifierAST = anEnumDef.findFirstToken(TokenTypes.MODIFIERS);
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
 		STType anSTClass = new AnSTType(currentFullFileName, anEnumDef, aFullName, currentStaticBlocks, emptyMethods,

@@ -2482,7 +2482,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typeScope.clear();
 //		fullTypeName = null;
 		setFullTypeName(null);
-		shortTypeName = null;
+//		shortTypeName = null;
+		setShortTypeName(null);
+
 		isInterface = false;
 		leftCurlySeen = false;
 		isEnum = false;
@@ -3609,6 +3611,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		case TokenTypes.COLON:
 			visitColon(ast);	
 			return;
+			
 
 		default:
 			System.err.println(checkAndFileDescription + "Unexpected token");

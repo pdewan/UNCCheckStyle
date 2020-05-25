@@ -24,6 +24,7 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected String shortTypeName;
 
 	
+	
 	protected DetailAST typeAST;
 	protected DetailAST typeNameAST;
 	protected STNameable typeNameable;
@@ -48,7 +49,9 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //	}
 	protected void resetProject() {
 		super.resetProject();
-		fullTypeName = null;
+//		fullTypeName = null;
+		setFullTypeName(null);
+
 		shortTypeName = null;
 		typeAST = null;
 		typeNameAST = null;
@@ -102,7 +105,9 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 //			 if (shortTypeName.contains("ListImp")) {
 //				 System.out.println("inner interface");
 //			 }
-			 fullTypeName = packageName + "." + shortTypeName;
+//			 fullTypeName = packageName + "." + shortTypeName;
+			 setFullTypeName(packageName + "." + shortTypeName);
+
 			 
 			 typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
 		if (ProjectSTBuilderHolder.getSTBuilder().getVisitInnerClasses()) {
@@ -147,7 +152,8 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 			 shortTypeName = myPop(shortTypeNameStack);
 //			 shortTypeNameStack.pop();
 //			 shortTypeName = shortTypeNameStack.peek();
-			fullTypeName = myPop(fullTypeNameStack);
+//			fullTypeName = myPop(fullTypeNameStack);
+			setFullTypeName(myPop(fullTypeNameStack));
 //			fullTypeNameStack.pop();
 //			fullTypeName = fullTypeNameStack.peek();
 			typeNameable = myPop(typeNameableStack);
@@ -341,6 +347,12 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	}
 	protected void setFullTypeName(String fullTypeName) {
 		this.fullTypeName = fullTypeName;
+	}
+	public String getShortTypeName() {
+		return shortTypeName;
+	}
+	public void setShortTypeName(String shortTypeName) {
+		this.shortTypeName = shortTypeName;
 	}
 
 }
