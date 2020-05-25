@@ -97,6 +97,12 @@
 				"Math.(.*)" 
 			/>
 			
+		</module>
+		<module name="MethodAccessModifier">
+			<property name="severity" value="info" />
+		</module>
+		<module name="MethodAccessModifier">
+			<property name="severity" value="warning" />
 		</module>		
 		<module name="ClassHasAtLeastOneInterface">
 		<property name="severity" value="warning" />		
@@ -140,21 +146,25 @@
 		 <module name="ElseBranching">
 			<property name="severity" value="info" />	
 		</module>
-		 <module name="MnemonicNameCheck">
+		<module name="MnemonicNameCheck">
 			<property name="severity" value="warning" />
-			<property name="processType" value="false" />			
+			<property name="processType" value="false" />
 			<property name="processLocals" value="true" />
 			<property name="processParameters" value="true" />
 			<property name="processGlobals" value="true" />
 			<property name="processPublicMethods" value="false" />
 			<property name="processNonPublicMethods" value="true" />
 			<property name="minimumLettersInNameComponent" value="2" />
-			<property name="minimumVowelsInNameComponent" value= "1" />
+			<property name="minimumVowelsInNameComponent" value="1" />
 			<property name="checkNumVowels" value="true" />
 			<property name="checkNumLetters" value="true" />
-			<property name="checkInDictionary" value="true" />			
-			<property name="printName" value="true" />
-			<property name="printComponents" value="true" />		
+			<property name="checkInDictionary" value="true" />
+			<property name="allowedComponents" value="
+					
+					nio,
+					xml,
+			" />			
+
 		</module>
 		
 		 <module name="MethodBlockLimit">

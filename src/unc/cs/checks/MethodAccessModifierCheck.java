@@ -90,6 +90,16 @@ public class MethodAccessModifierCheck extends ComprehensiveVisitCheck {
 		}
 		List<AccessModifierUsage> aUsages = anSTMethod.getAccessModifiersUsed();
 		if (aUsages == null || aUsages.size() == 0) {
+			
+				if (!isInfo()) {
+					
+		
+				
+				log (methodDef, anSTMethod.getSimpleChecksSignature(), anSTMethod.getAccessModifier().toString(), "None", "" + (AccessModifier.PRIVATE.ordinal() + 1 - anSTMethod.getAccessModifier().ordinal()),
+						"No Referencing Method", "No Access Modifiers" );
+			}
+				
+			
 			return;
 		}
 		boolean aMatch = true;
@@ -110,11 +120,12 @@ public class MethodAccessModifierCheck extends ComprehensiveVisitCheck {
 			aUsedAccessModifiers.add(aUsage.getUsed().toString());
 		}
 		if (aMinDifference == 0 && isInfo()) {
-			log (methodDef, anSTMethod.getAccessModifier().toString(),
+			log (methodDef, anSTMethod.getSimpleChecksSignature(), anSTMethod.getAccessModifier().toString(),
 					aReferencingTypes.toString(), aUsedAccessModifiers.toString() );
 		} 
-		else if (aMinDifference > 0 && !isInfo()) {
-			log (methodDef, anSTMethod.getAccessModifier().toString(),
+		else if (aMinDifference > 0 && !isInfo()) {			
+			AccessModifier anAccessNeeded = AccessModifier.values()[anSTMethod.getAccessModifier().ordinal() +  aMinDifference];
+			log (methodDef, anSTMethod.getSimpleChecksSignature(), anSTMethod.getAccessModifier().toString(), anAccessNeeded.toString(), "" + aMinDifference,
 					aReferencingTypes.toString(), aUsedAccessModifiers.toString() );
 		}
 		
