@@ -238,10 +238,16 @@ public abstract class UNCCheck extends Check {
 	protected abstract void doLeaveToken(DetailAST ast);
 
 	public void doFinishTree(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 
 	}
 
 	public void doBeginTree(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 
 	}
 	protected boolean notInPlugIn() {
