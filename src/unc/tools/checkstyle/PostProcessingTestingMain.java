@@ -20,14 +20,14 @@ import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTable;
 import unc.cs.symbolTable.SymbolTableFactory;
 
-public class PostProcessingCustomMain extends PostProcessingMain {
+public class PostProcessingTestingMain extends PostProcessingMain {
 
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\twitter-heron";
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\twitter-heron\\heron\\common\\src\\java\\org\\apache\\heron\\common\\basics\\NIOLooper.java";
-static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
+//static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\UNCCheckStyle\\src\\test";
-//static final String SOURCE = "src\\test";
+static final String SOURCE = "src\\test";
 
 
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\RamA1-A5\\Assignment5OG\\src";
@@ -49,9 +49,9 @@ static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
 //static final String CHECKSTYLE_CONFIGURATION = "D:\\dewan_backup\\Java\\UNCCheckStyle\\unc_checks.xml";
 //static final String CHECKSTYLE_CONFIGURATION = "D:\\dewan_backup\\Java\\UNCCheckStyle\\checks\\533-s20\\unc_checks_533_A3.xml";
 //static final String CHECKSTYLE_CONFIGURATION = "D:\\dewan_backup\\Java\\UNCCheckStyle\\checks\\533-s20\\unc_checks_app_independent.xml";
-static final String CHECKSTYLE_CONFIGURATION = "D:\\dewan_backup\\Java\\UNCCheckStyle\\checks\\533-s20\\unc_checks_533_A6.xml";
+//static final String CHECKSTYLE_CONFIGURATION = "D:\\dewan_backup\\Java\\UNCCheckStyle\\checks\\533-s20\\unc_checks_533_A6.xml";
 
-//static final String CHECKSTYLE_CONFIGURATION = "unc_checks.xml";
+static final String CHECKSTYLE_CONFIGURATION = "unc_checks.xml";
 
 //static final String[] ARGS = {"-c", CHECKSTYLE_CONFIGURATION, "-f", "xml", SOURCE};
 static final String[] ARGS = {"-c", CHECKSTYLE_CONFIGURATION,  SOURCE};
