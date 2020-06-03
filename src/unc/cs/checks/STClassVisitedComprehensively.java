@@ -18,7 +18,7 @@ public abstract class STClassVisitedComprehensively extends STTypeVisitedCompreh
 	@Override
 	protected
 	boolean doCheck(STType anSTType)  {
-    	return !anSTType.isInterface() && !anSTType.isEnum();
+    	return !anSTType.isInterface() && !anSTType.isEnum() && !anSTType.isAnnotation();
     }
 
 //	public void doVisitToken(DetailAST ast) {		

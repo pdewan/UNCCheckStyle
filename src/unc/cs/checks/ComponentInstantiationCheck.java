@@ -86,7 +86,7 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 				.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		if (anInstantiatingSTClass == null)
 			return false; // multiple classes with short name, just give up
-		if (anInstantiatingSTClass.isEnum() || anInstantiatingSTClass.isInterface())
+		if (anInstantiatingSTClass.isEnum() || anInstantiatingSTClass.isInterface() || anInstantiatingSTClass.isAnnotation())
 			return false;
 		if (anInstantiatingSTClass == null)
 			return null; // this should never happen

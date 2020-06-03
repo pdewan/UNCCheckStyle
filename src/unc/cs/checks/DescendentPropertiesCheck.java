@@ -131,7 +131,7 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 			STType aPropertySTType = SymbolTableFactory.getOrCreateSymbolTable()
 					.getSTClassByShortName(
 							aTypeName);
-			if (anSTType.isEnum())
+			if (anSTType.isEnum() || anSTType.isAnnotation())
 				return true;
 			if (aPropertySTType == null) return null;
 //			STNameable[] aTags = aPropertySTType.getTags();
@@ -169,7 +169,7 @@ public  class DescendentPropertiesCheck extends ComprehensiveVisitCheck {
 //						aTypeName);
 		STType anSTType = getSTType(aTree);
 		if (anSTType.isEnum() 
-				|| anSTType.isInterface())
+				|| anSTType.isInterface() || anSTType.isAnnotation())
 			return true;
 
 		return addProperties(anSTType, aTypeName, aTypeName);

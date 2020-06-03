@@ -42,7 +42,7 @@ public  class ExpectedInterfacesCheck extends ExpectedTypesCheck {
 	@Override
 	protected
 	boolean doCheck(STType anSTType) {
-		return !anSTType.isInterface() && !anSTType.isEnum();
+		return !anSTType.isInterface() && !anSTType.isEnum() && !anSTType.isAnnotation();
 	}
 	@Override
 	protected String msgKey() {

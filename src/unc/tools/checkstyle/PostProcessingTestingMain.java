@@ -27,7 +27,7 @@ public class PostProcessingTestingMain extends PostProcessingMain {
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\NIOTrickOrTreat\\src";
 //static final String SOURCE = "D:\\dewan_backup\\Java\\UNCCheckStyle\\src\\test";
-static final String SOURCE = "src\\test";
+static final String SOURCE = "src/test";
 
 
 //static final String SOURCE = "C:\\Users\\dewan\\Downloads\\RamA1-A5\\Assignment5OG\\src";

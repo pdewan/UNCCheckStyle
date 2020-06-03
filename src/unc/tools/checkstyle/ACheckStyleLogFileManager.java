@@ -101,9 +101,11 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 //				}
 //			}
 			Set<String> missingFiles = new HashSet(fileNameToMessages.keySet());
-			missingFiles.removeAll(aFilesInLastPhase);			
+			missingFiles.removeAll(aFilesInLastPhase);
+			if (isPrintLogInconsistency()) {
 			System.err.println("files in last phase: " + aFilesInLastPhase.size() + " < files with messages " +  fileNameToMessages.size() + ", not doing merge");
 			System.err.println ("Missing files:" + missingFiles);
+			}
 //			return;
 		}
 //		int aNumFilesInLastPhase = aFilesInLastPhase.size();
@@ -123,7 +125,9 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 	}
 	
 	protected void incrementalMergeWithLastPhase(Set<String> aFilesInLastPhase) {
+		if (isPrintLogInconsistency()) {
 		System.err.println("Merging with last phase");
+		}
 
 		for (String aFileName:aFilesInLastPhase) { // only the files we received errors from
 //		for (String aFileName:fileNameToMessages.keySet()) { 
@@ -285,6 +289,13 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 
 		
 	}
+	static boolean printLogInconsistency = true;
+	public static boolean isPrintLogInconsistency() {
+		return printLogInconsistency;
+	}
+	public static void setPrintLogInconsistency(boolean printLogInconsistency) {
+		ACheckStyleLogFileManager.printLogInconsistency = printLogInconsistency;
+	}
 	public void readLog (boolean isAddition, int aSequenceNumber,  String aFileName, String key,
             Object... arg) {
 		String aMessage = toMessage(aFileName, key, arg);
@@ -302,13 +313,14 @@ public class ACheckStyleLogFileManager implements CheckStyleLogManager {
 			anExistingMessages.add(aMessage);
 		} else {
 			boolean retVal = anExistingMessages.remove(aMessage);
-			if (!retVal) {
+			if (!retVal && isPrintLogInconsistency()) {
 				System.err.println("Log inconsistency, not in log: " + aMessage);
 			}
 		}
 		lastReadSequenceNumber = aSequenceNumber;
 		
 	}
+	
 	
 	static StringBuilder stringBuilder = new StringBuilder();
 	public static String toString (boolean isAddition, int aSequenceNumber, String aFileName, String aMessage) {

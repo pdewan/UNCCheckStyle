@@ -14,24 +14,30 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 	public int[] getDefaultTokens() {
 		return new int[] {
 				TokenTypes.PACKAGE_DEF,
+				TokenTypes.ANNOTATION_DEF
 //				TokenTypes.CLASS_DEF,
 //				TokenTypes.INTERFACE_DEF
 				};
 	} 
 	public void doVisitToken(DetailAST ast) {		
 		switch (ast.getType()) {
-		case TokenTypes.PACKAGE_DEF: 
+	
+		case TokenTypes.ANNOTATION_DEF: 
+			visitAnnotationDef(ast);
+			return;
+		case TokenTypes.PACKAGE_DEF:
 			visitPackage(ast);
 			return;
 		
-		default:
-			System.err.println("Unexpected token");
+//		default:
+//			System.err.println("Unexpected token");
 		}
 		
 	}
-	boolean badPackage;
-	public void visitPackage(DetailAST ast) {
-		super.visitPackage(ast);
+	public void doFinishTree(DetailAST ast) {
+		if (isDoNotVisit()) {
+			return;
+		}
 		badPackage = false;
 		String[] prefixes = STBuilderCheck.getProjectPackagePrefixes();
 		if (prefixes == null || prefixes.length == 0 || (prefixes.length == 1 && "*".equals(prefixes[0]))) {
@@ -50,9 +56,70 @@ public  class InvalidPackageNameCheck extends ComprehensiveVisitCheck {
 		}
 		
 		log(ast,  packageName, Arrays.asList(prefixes).toString().replaceAll(",", " "));
-		
 
 	}
+	
+//	public void doLeaveToken(DetailAST ast) {		
+//		switch (ast.getType()) {
+//		case TokenTypes.PACKAGE_DEF: 
+//			leavePackage(ast);
+//			return;
+//		case TokenTypes.ANNOTATION_DEF: 
+//			leaveAnnotationDef(ast);
+//			return;
+//		
+//		default:
+//			System.err.println("Unexpected token");
+//		}
+//		
+//	}
+	boolean badPackage;
+//	public void visitPackage(DetailAST ast) {
+//		super.visitPackage(ast);
+//		badPackage = false;
+//		String[] prefixes = STBuilderCheck.getProjectPackagePrefixes();
+//		if (prefixes == null || prefixes.length == 0 || (prefixes.length == 1 && "*".equals(prefixes[0]))) {
+//			return;			
+//		}
+//		if (packageName == null) {
+//			log(ast,  "default", Arrays.asList(prefixes).toString());
+//		}
+//		for (String aPrefix:prefixes) {
+//			if (packageName.startsWith(aPrefix)) {
+//				return;
+//			}
+//			if (packageName.matches(aPrefix)) {
+//				return;
+//			}
+//		}
+//		
+//		log(ast,  packageName, Arrays.asList(prefixes).toString().replaceAll(",", " "));
+//		
+//
+//	}
+//	public void leavePackage(DetailAST ast) {
+////		super.leavePackage(ast);
+//		badPackage = false;
+//		String[] prefixes = STBuilderCheck.getProjectPackagePrefixes();
+//		if (prefixes == null || prefixes.length == 0 || (prefixes.length == 1 && "*".equals(prefixes[0]))) {
+//			return;			
+//		}
+//		if (packageName == null) {
+//			log(ast,  "default", Arrays.asList(prefixes).toString());
+//		}
+//		for (String aPrefix:prefixes) {
+//			if (packageName.startsWith(aPrefix)) {
+//				return;
+//			}
+//			if (packageName.matches(aPrefix)) {
+//				return;
+//			}
+//		}
+//		
+//		log(ast,  packageName, Arrays.asList(prefixes).toString().replaceAll(",", " "));
+//		
+//
+//	}
 	
 	@Override
 	protected String msgKey() {

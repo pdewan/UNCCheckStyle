@@ -517,6 +517,7 @@ public abstract class TagBasedCheck extends TypeVisitedCheck{
  public List<STNameable> lookupTagsOfCurrentTree()  {
 	STType anSTType = getSTType(currentTree);
 	if (anSTType == null) {
+		
 		return computedTypeTags(); // STBuilder
 	} else {
 //		return Arrays.asList(anSTType.getComputedTags());
@@ -1711,6 +1712,30 @@ public static DetailAST getEnclosingEnumDeclaration(DetailAST anAST) {
 //	return anEnumDef.getFirstChild().getNextSibling();
 //	return getEnumNameAST(anEnumAST);
 }
+public static DetailAST getEnclosingAnnotationDeclaration(DetailAST anAST) {
+	DetailAST root = anAST;
+	while (true) {
+		if (root.getType() == TokenTypes.ANNOTATION_DEF)
+			return anAST;
+		DetailAST aParent = root.getParent();
+		if (aParent == null)
+			break;
+		root = aParent;
+	}
+//	DetailAST result = root.findFirstToken(TokenTypes.ENUM);
+	DetailAST anAnnotationDef = root;
+	while (true)  {
+		if (anAnnotationDef == null) {
+			break;
+		}
+		if (anAnnotationDef.getType() == TokenTypes.ANNOTATION_DEF) 
+			break;
+		anAnnotationDef = anAnnotationDef.getNextSibling();
+	}
+	return anAnnotationDef;
+//	return anEnumDef.getFirstChild().getNextSibling();
+//	return getEnumNameAST(anEnumAST);
+}
 public static String getFullTypeName(DetailAST aTree) {
 	String aTypeName = getName(getEnclosingTypeDeclaration(aTree));
 //	int i = 1;
@@ -1720,9 +1745,13 @@ public static String getFullTypeName(DetailAST aTree) {
 		 aPackageName = getPackageName(aPackageAST);
 	return aPackageName + "." + aTypeName;
 }
-public static STType getSTType(DetailAST aTreeAST) {
+public  STType getSTType(DetailAST aTreeAST) {
 //	int i = 1;
-	String aFullName = getFullTypeName(aTreeAST);
+	
+	String aFullName = getFullTypeName();
+	if (aFullName == null) {
+		aFullName = getFullTypeName(aTreeAST);
+	}
 //	STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullName);
 //	if (anSTType == null) {
 //		System.out.println("Null symbol table entry for:" + aFullName);
@@ -1793,6 +1822,9 @@ public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 	if (anAST.getType() == TokenTypes.CLASS_DEF) {
 		return getEnclosingClassDeclaration(anAST);
 	}
+	if (anAST.getType() == TokenTypes.ANNOTATION_DEF) {
+		return getEnclosingAnnotationDeclaration(anAST);
+	}
 	DetailAST result =		getEnclosingClassDeclaration(anAST);
 	if (result != null)
 		return result;
@@ -1802,7 +1834,8 @@ public static DetailAST getEnclosingTypeDeclaration(DetailAST anAST) {
 	result = getEnclosingEnumDeclaration(anAST);
 	if (result != null)
 		return result;
-	System.err.println(" could not find a type declaration for:" + anAST + "" + anAST.getText());
+	
+//	System.err.println(" could not find a type declaration for:" + anAST + "" + anAST.getText());
 	return result;
 	
 //		return aClassDef;
@@ -1973,7 +2006,7 @@ protected  String[] getStringArrayToBeChecked(DetailAST anAST, DetailAST aTree){
 		System.err.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
 		 return null; // this was commented out
 	}
-	if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate
+	if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation()) // why duplicate
 														// checking for
 														// interfaces
 		return null;
@@ -2008,7 +2041,7 @@ public Boolean doStringArrayBasedPendingCheck(DetailAST anAST, DetailAST aTree) 
 		System.err.println("Symboltable names" + SymbolTableFactory.getOrCreateSymbolTable().getAllTypeNames());
 		 return true; // this was commented out
 	}
-	if (anSTType.isEnum() || anSTType.isInterface()) // why duplicate
+	if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation()) // why duplicate
 														// checking for
 														// interfaces
 		return true;

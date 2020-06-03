@@ -80,7 +80,7 @@ public  class ExpectedConstructorsCheck extends ExpectedSignaturesCheck {
 	
 	@Override
 	 protected boolean doCheck(STType anSTType) {
-		  return !anSTType.isInterface() && !anSTType.isEnum();
+		  return !anSTType.isInterface() && !anSTType.isEnum() && !anSTType.isAnnotation();
 	  }
 
 	public  STMethod signatureToMethodorOrConstructor(String aSignature) {

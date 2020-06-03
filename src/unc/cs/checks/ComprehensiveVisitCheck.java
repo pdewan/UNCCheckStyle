@@ -172,7 +172,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	@Override
 	public int[] getDefaultTokens() {
 		return new int[] { TokenTypes.PACKAGE_DEF, TokenTypes.CLASS_DEF,
-				TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF,
+				TokenTypes.INTERFACE_DEF, TokenTypes.ENUM_DEF, TokenTypes.ANNOTATION_DEF, TokenTypes.ANNOTATION_FIELD_DEF,
 				TokenTypes.TYPE_ARGUMENTS,
 				TokenTypes.TYPE_PARAMETERS, TokenTypes.VARIABLE_DEF,
 				
@@ -809,6 +809,11 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	// }
 	// currentMethodTags = getArrayLiterals(annotationAST);
 	// }
+	 protected void leaveAnnotationDef(DetailAST ast) {
+	    	
+	    	leaveType(ast);
+
+		}
 
 	public void visitEnumDef(DetailAST anEnumDef) {
 		visitType(anEnumDef);
@@ -888,7 +893,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 					return null;
 				return null;
 			}
-			if (anSTType.isEnum())
+			if (anSTType.isEnum() || anSTType.isAnnotation())
 				return null;
 			return anSTType.getStructurePatternName();
 		}
@@ -1070,6 +1075,19 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //		interfaces = getInterfaces(ast);
 //		isInterface = false;
 	}
+	
+//	protected void visitAnnotationDef(DetailAST ast) {
+//		annotationDef = true;
+//		DetailAST anAnnotationAST = 
+//				ast.getFirstChild()//Modifiers
+//				.getNextSibling()// @
+//				.getNextSibling()//interface
+//				.getNextSibling();//name
+//		String anAnnotationName = anAnnotationAST.getText();
+//	}
+//	protected void visitAnnotationFieldDef(DetailAST ast) {
+//		annotationDef = true;
+//	}
 
 	protected void visitInterface(DetailAST ast) {
 		visitType(ast);
@@ -3222,7 +3240,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		anArgs[1] = composeSourceName(aSourceName, aLineNo);
 //		anArgs[2] = getEnclosingShortClassName(anAST);
 //		anArgs[2] = getEnclosingShortTypeName(anAST);
-		anArgs[2] = getOutermostOrEnclosingShortTypeName(anAST);
+		String aShortTypeName = shortTypeName;
+		if (aShortTypeName == null) {
+			aShortTypeName = getOutermostOrEnclosingShortTypeName(anAST);
+		}
+		anArgs[2] = aShortTypeName;
+//		anArgs[2] = 		getOutermostOrEnclosingShortTypeName(anAST);
 //		DetailAST anEnclosingTypeAST = getEnclosingTypeDeclaration(anAST);
 //		String  anEnclosingTypeName = getEnclosingShortTypeName(anEnclosingTypeAST);
 		if (anArgs[2] == null || anArgs[2].toString().isEmpty()) {
@@ -3453,6 +3476,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		case TokenTypes.ENUM_DEF:
 			leaveEnum(ast);
 			break;
+		case TokenTypes.ANNOTATION_DEF:
+			leaveAnnotationDef(ast);
+			break;
 		case TokenTypes.LITERAL_IF:
 			leaveLiteralIf(ast);
 			return;
@@ -3516,6 +3542,12 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	protected void doVisitToken(DetailAST ast) {
 		// System.out.println("Check called:" + MSG_KEY);
 		switch (ast.getType()) {
+		case TokenTypes.ANNOTATION_FIELD_DEF:
+			visitAnnotationFieldDef(ast);
+			return;
+		case TokenTypes.ANNOTATION_DEF:
+			visitAnnotationDef(ast);
+			return;
 		case TokenTypes.PACKAGE_DEF:
 			visitPackage(ast);
 			return;

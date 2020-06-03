@@ -114,7 +114,7 @@ public class MinComponentObjectsCheck extends ComprehensiveVisitCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isAnnotation())
 			return true;
 		String aType = findMatchingType(typeToInt.keySet(), anSTType);
 		Integer aMinComponents;

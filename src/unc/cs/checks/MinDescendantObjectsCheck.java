@@ -116,7 +116,7 @@ public class MinDescendantObjectsCheck extends DescendentPropertiesCheck {
 		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(
 						getName(getEnclosingTypeDeclaration(aTree)));
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isAnnotation())
 			return true;
 		String aType = findMatchingType(typeToInt.keySet(), anSTType);
 		Integer aMinDescendents;

@@ -43,7 +43,7 @@ public  class SuperTypesCheck extends ExpectedTypesCheck {
 	protected
 	boolean doCheck(STType anSTType) {
 		// TODO Auto-generated method stub
-		return !anSTType.isEnum();
+		return !anSTType.isEnum() && !anSTType.isAnnotation();
 	}
 	@Override
 	protected String msgKey() {

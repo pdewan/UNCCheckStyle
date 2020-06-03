@@ -311,8 +311,10 @@ public class MnemonicNameCheck extends STTypeVisited {
 	protected void processType(DetailAST ast, STType anSTType) {
 		String anExplanation = "";
 		anExplanation += 
+				anSTType.isAnnotation()?"Annotation":
 				anSTType.isEnum()?"Enum": 
-				   anSTType.isInterface()?"Interface":"Class";
+				   anSTType.isInterface()?"Interface":
+					   "Class";
 		String aName = anSTType.getName();
 		
 			checkIdentifier(ast, ast, aName, anExplanation, null);

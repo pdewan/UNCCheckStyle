@@ -174,7 +174,7 @@ public class PeerCommonSignaturesCheck extends ExpectedSignaturesCheck{
 //		STType anSTType = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByShortName(aTypeName);
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isAnnotation())
 			return true;
 
 		List<String> aPeerTypes = filterTypes(anSTType.getPeerTypes(), aTypeName);

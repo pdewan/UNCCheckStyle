@@ -712,7 +712,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		currentSTType = anSTType; //is this really correct as imports are processed here also
 	}
 	public static void addSTType(STType anSTClass) {
-		if (!anSTClass.isEnum()) {
+		if (!anSTClass.isEnum() && anSTClass.isAnnotation()) {
 			anSTClass.introspect();
 			anSTClass.findDelegateTypes();
 		}
@@ -746,8 +746,36 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	Object[] emptyArray = {};
 	STMethod[] emptyMethods = {};
 	STType[] emptyTypes = {};
+	 protected void leaveAnnotationDef(DetailAST ast) {
+			DetailAST modifierAST = ast.findFirstToken(TokenTypes.MODIFIERS);
 
+		 Set<Integer> aModifiers = extractModifiers(modifierAST);
+			STType anSTClass = new AnSTType(currentFullFileName, ast, getFullTypeName(), currentStaticBlocks, emptyMethods,
+					emptyMethods, emptyTypes, null, packageName, false, false,
+					false, false, true, null, dummyArray, dummyArray, dummyArray,
+					dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
+					new HashMap(),
+//					new HashMap(), 
+//					new HashMap(), 
+					new ArrayList(), 
+					new ArrayList(),
+					new HashMap(),
+					new HashMap(),
+					aModifiers,
+					typeParameterNames
+					);
+
+			// anSTClass.introspect();
+			// anSTClass.findDelegateTypes();
+			// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+			// fullTypeName, anSTClass);
+			addSTType(anSTClass);
+			upateCurrentSTTType(anSTClass);
+	    	leaveType(ast);
+
+		}
 	@Override
+	// should be done in leave enum def
 	public void visitEnumDef(DetailAST anEnumDef) {
 		DetailAST aTypeAST = getEnclosingTypeDeclaration(anEnumDef);
 		// why not build symbol table for top level rnums also?
@@ -767,7 +795,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
 		STType anSTClass = new AnSTType(currentFullFileName, anEnumDef, aFullName, currentStaticBlocks, emptyMethods,
 				emptyMethods, emptyTypes, null, packageName, false, false,
-				false, true, null, dummyArray, dummyArray, dummyArray,
+				false, true, false, null, dummyArray, dummyArray, dummyArray,
 				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
 				new HashMap(),
 //				new HashMap(), 
@@ -1014,7 +1042,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				getFullTypeName(), // may be an inner class
 				currentStaticBlocks,
 				aMethods, aConstructors, interfaces, superClass, packageName,
-				isInterface, isGeneric, isElaboration, isEnum,
+				isInterface, isGeneric, isElaboration, isEnum, isAnnotation,
 				structurePattern, propertyNames.toArray(dummyArray),
 				editablePropertyNames.toArray(dummyArray), 
 				typeTags().toArray(
@@ -1091,7 +1119,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	
     	boolean aFoundMatch = false;
-		String aClassOrInterface = isInterface?"Interface":"Class";
+		String aClassOrInterface = isInterface?"Interface":
+									isEnum? "Enum":isAnnotation?"Annotation":"Class";
 		
 		StringBuffer aTags = new StringBuffer();
 

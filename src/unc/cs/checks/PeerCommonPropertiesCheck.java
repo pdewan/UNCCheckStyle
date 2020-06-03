@@ -119,7 +119,7 @@ public class PeerCommonPropertiesCheck extends BeanTypedPropertiesCheck{
 			return true;
 		}
 
-		if (anSTType.isEnum() || anSTType.isInterface()) // no point duplicating interface checks
+		if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation()) // no point duplicating interface checks
 			return true;
 //		List<String> aTypes = anSTType.getAllTypeNames();
 //		if (aTypes == null) 

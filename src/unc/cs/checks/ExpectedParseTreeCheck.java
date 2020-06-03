@@ -411,7 +411,7 @@ public class ExpectedParseTreeCheck extends MethodCallCheck{
 //			return true;
 		}
 		if (anSTType.isEnum() ||
-				anSTType.isInterface()) // why duplicate checking for interfaces
+				anSTType.isInterface() || anSTType.isAnnotation()) // why duplicate checking for interfaces
 			return true;
 		String aSpecifiedType = findMatchingType(typeToSpecifications.keySet(),
 				anSTType);

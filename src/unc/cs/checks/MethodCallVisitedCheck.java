@@ -339,7 +339,7 @@ public abstract class MethodCallVisitedCheck extends ComprehensiveVisitCheck {
 		String aSpecificationTag = aMethodSpecification.substring(1);
 		STType aTypeST = SymbolTableFactory.getOrCreateSymbolTable()
 				.getSTClassByShortName(aShortMethodClassName);
-		if (aTypeST.isEnum())
+		if (aTypeST.isEnum() || aTypeST.isAnnotation())
 			return true;
 		if (aTypeST == null)
 			return null;

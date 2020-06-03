@@ -1,5 +1,6 @@
 package unc.cs.checks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -24,7 +25,9 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected String shortTypeName;
 
 	
-	
+	protected boolean isAnnotation = false;
+	protected List<DetailAST> annotationParameters = new ArrayList();
+
 	protected DetailAST typeAST;
 	protected DetailAST typeNameAST;
 	protected STNameable typeNameable;
@@ -59,10 +62,10 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		fullTypeNameStack.clear();
 		shortTypeNameStack.clear();
 		typeNameASTStack.clear();
-		typeNameableStack.clear();;
+		typeNameableStack.clear();
 		typeASTStack.clear();
 		isGenericStack.clear();
-		
+		annotationParameters.clear();		
 	}
 	
 	public boolean maybeVisitPackage(DetailAST ast) {
@@ -87,6 +90,23 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	 public void leaveType(DetailAST ast) {
 		 leaveTypeMinimal(ast);
 	 }
+		protected void visitAnnotationDef(DetailAST ast) {
+			isAnnotation = true;
+			typeAST = ast;
+			typeNameAST = 
+					ast.getFirstChild()//Modifiers
+					.getNextSibling()// @
+					.getNextSibling()//interface
+					.getNextSibling();//name
+			 shortTypeName = typeNameAST.getText();
+			 setFullTypeName(packageName + "." + shortTypeName);
+
+			 
+			 typeNameable = new AnSTNameable(typeNameAST, fullTypeName);
+		}
+		protected void visitAnnotationFieldDef(DetailAST ast) {
+			annotationParameters.add(ast);
+		}
 	 protected void visitTypeMinimal(DetailAST ast) { 
 //		 DetailAST generic = ast.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
 //		 generic = ast.findFirstToken(TokenTypes.TYPE_PARAMETERS);

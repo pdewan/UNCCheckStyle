@@ -87,7 +87,7 @@ public void doFinishTree(DetailAST ast) {
 
 		if (anSTType == null) // we did not  visit the type
 			return true;
-		if (anSTType.isEnum() || anSTType.isInterface())
+		if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation())
 			return true;
 		Map<String, PropertyInfo> aPropertyInfos = anSTType.getPropertyInfos();
 		if (aPropertyInfos == null)

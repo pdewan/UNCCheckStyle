@@ -164,4 +164,5 @@ public interface STType extends STNameable{
 	List<String> getTypeParameterNames();
 	int getNumberOfNonPublicMethods();
 	long getTimeOfEntry();
+	boolean isAnnotation();
 }

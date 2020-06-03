@@ -50,7 +50,7 @@ public class ISATypesCheck extends ComprehensiveVisitCheck{
 		if (anSTType == null) {
 			System.err.println("Null sttype");
 		}
-		if (anSTType.isEnum())
+		if (anSTType.isEnum() || anSTType.isAnnotation())
 			return true;
 		List<String> aTypes = anSTType.getAllTypeNames();
 		if (aTypes == null) 

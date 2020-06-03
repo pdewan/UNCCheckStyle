@@ -1,0 +1,2576 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This configuration file was written by the eclipse-cs plugin configuration 
+	editor -->
+<!-- Checkstyle-Configuration: Test Description: none -->
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.3//EN" "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
+
+
+<module name="unc.tools.checkstyle.AnExtendibleChecker">
+
+
+	<property name="severity" value="warning" />
+
+
+	<module name="unc.tools.checkstyle.AnExtendibleTreeWalker">
+		<property name="severity" value="info" />
+
+		<module name="STBuilder">
+			<property name="configurationFileName"
+				value="MyMapReduceConfiguration.csv" />
+			<property name="includeTypeTags" value="*" />
+			<property name="severity" value="info" />
+			<property name="importsAsExistingClasses" value="true" />
+			<property name="excludeClassRegularExpressions"	value="
+				checkstyle.*,
+				test.simulation.*
+			" />
+			<property name="externalPackagePrefixes" value="
+				port, 
+				inputport, 
+				multiserverport,
+				commandProcessor,
+				assignments.util,
+				port,								
+				stringProcessors
+			" />
+			<property name="expectedTypes" value="
+				@StandAloneTokenCounter,
+				@ControllerClass,
+				@KeyValueClass,
+				@ModelClass,
+				@StandAloneIntegerSummer,
+				@MapperFactory,
+				@ViewClass,
+				@ReducerFactory,
+			"/>
+			
+
+		</module>
+
+
+	</module>
+
+
+	<module name="unc.tools.checkstyle.ANonCachingTreeWalker">
+		<property name="severity" value="warning" />
+
+
+		<module name="DuplicateShortTypeName">
+			<property name="severity" value="warning" />
+			<property name="includeTypeTags" value="*" />
+		</module>
+
+
+
+		<module name="FunctionAssignsGlobal">
+			<property name="severity" value="warning" />
+			<property name="excludeMethodTags"
+				value="
+					next(.*), 
+					pop(.*), 
+					delete(.*), 
+					remove(.*), 
+					read(.*), 					
+					set(.*), 
+					process(.*), 
+					scan(.*), 
+					(.*)create(.*), 					 
+					parse(.*),
+					(.*)actory(.*),
+					fetch(.*),
+					run(.*),
+					update(.*),
+					add(.*),
+					getSingleton,
+					getInstance,
+					getOrCreate(.*),
+					
+					" />
+
+		</module>
+		<module name="SetterAssignsGlobal">
+			<property name="severity" value="warning" />
+		</module>
+
+		<module name="ThenBranching">
+			<property name="severity" value="warning" />
+
+		</module>
+
+		<module name="LiberalMagicNumber">
+			<property name="severity" value="warning" />
+			<property name="allowedSiblings" value="Math.(.*)" />
+
+		</module>
+		<module name="ClassHasAtLeastOneInterface">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="ClassHasAtLeastOneInterface">
+			<property name="severity" value="info" />
+		</module>
+		<module name="ClassHasOneInterface">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="VariableHasClassType">
+			<property name="severity" value="warning" />
+		</module>
+		<module name="VariableHasClassType">
+			<property name="severity" value="info" />
+		</module>
+
+
+
+		<module name="PeerCommonProperties">
+			<property name="severity" value="warning" />
+
+
+		</module>
+
+
+		<module name="EqualAvoidedNullCheck">
+			<property name="severity" value="info" />
+		</module>
+
+		<module name="BulkierElse">
+			<property name="severity" value="info" />
+			<property name="minElseThenRatio" value="1.2" />
+		</module>
+		<module name="ElseBranching">
+			<property name="severity" value="info" />
+		</module>
+		<module name="MnemonicNameCheck">
+			<property name="severity" value="warning" />
+			<property name="processType" value="false" />
+			<property name="processLocals" value="true" />
+			<property name="processParameters" value="true" />
+			<property name="processGlobals" value="true" />
+			<property name="processPublicMethods" value="false" />
+			<property name="processNonPublicMethods" value="true" />
+			<property name="minimumLettersInNameComponent" value="2" />
+			<property name="minimumVowelsInNameComponent" value="1" />
+			<property name="checkNumVowels" value="true" />
+			<property name="checkNumLetters" value="true" />
+			<property name="checkInDictionary" value="true" />
+			<property name="allowedComponents" value="
+					gipc,
+					oe,
+					nio,
+					xml,
+			" />			
+
+		</module>
+
+		<module name="MethodBlockLimit">
+			<property name="severity" value="warning" />
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedBlockDepth">
+			<property name="severity" value="warning" />
+			<property name="max" value="1" />
+		</module>
+
+			<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerIntegerSummer"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerIntegerSummer"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			@MapperFactory!setMapper:*->.*,
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			@ControllerClass!processInput:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ClassIsGeneric">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+		<property name="expectedSignatures" value="
+			getPartition:String;mapreduce.ValueType;int->int,
+			main:String[]->void,
+			print:int->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Character!toLowerCase:*->.*,
+			java.lang.String!charAt:*->.*,
+			java.lang.Math!floor:*->.*,
+			java.lang.Math!ceil:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedInterfaces" value="
+			java.rmi.Remote,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedProperties" value="
+			Threads:java.util.List,
+			TokenizedInput:.*,
+			Joiner:@JoinerClass,
+			NumThreads:int,
+			KeyValueQueue:java.util.concurrent.BlockingQueue,
+			ReductionQueueList:java.util.List,
+			InputString:.*,
+			Barrier:@BarrierClass,
+			Result:java.util.Map,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedSignatures" value="
+			quit:->void,
+			putSubResult:java.util.Map->void,
+			split:java.util.Map->void,
+			toString:->String,
+			waitForResult:->void,
+			processKeyValueList:java.util.List->Map,
+			register:mapreduce.ClientKeyValueProcessor->void,
+			maybeAssignSlavesToClients:->void,
+			reduce:int;java.util.Map->void,
+			addPropertyChangeListener:java.beans.PropertyChangeListener->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.util.AbstractCollection!isEmpty:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.util.Stack!pop:*->.*,
+			java.util.ArrayList!isEmpty:*->.*,
+			java.util.HashSet!isEmpty:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Vector!isEmpty:*->.*,
+			java.util.Stack!peek:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!getThreads:*->.*,
+			java.util.List!isEmpty:*->.*,
+			java.util.Stack!push:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.lang.Object!wait:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!quit:*->.*,
+			java.util.Vector!add:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			@PartitionerFactory!getPartitioner:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.util.AbstractMap!isEmpty:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			java.util.List!get:*->.*,
+			java.util.Set!isEmpty:*->.*,
+			java.util.Map!isEmpty:*->.*,
+			java.util.List!clear:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			java.util.LinkedList!add:*->.*,
+			java.lang.String!split:*->.*,
+			java.util.HashMap!isEmpty:*->.*,
+			@ReducerClass!reduce:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!maybeAssignSlavesToClients:*->.*,
+			java.lang.String!isEmpty:*->.*,
+			java.util.Collection!add:*->.*,
+			java.lang.Thread!interrupt:*->.*,
+			java.util.Collection!isEmpty:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.Map!keySet:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT,
+			@DistributedTags.NIO+@DistributedTags.CLIENT,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			RMIAndNIOSimulationClient:.*,
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			ipcMechanism:util.interactiveMethodInvocation.IPCMechanism->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!main:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!connectToServer:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!launchClient:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!atomicBroadcast:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!createModelAndUI:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!ipcMechanism:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!initialize:*->.*,
+			java.lang.String!split:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initializeRMI:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@TokenCountingMapperClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@TokenCountingMapperClass"/>
+		<property name="expectedSignatures" value="
+			map:String->KeyValue,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@TokenCountingMapperClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerFactory"/>
+		<property name="expectedProperties" value="
+			Partitioner:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			@DistributedTags.REGISTRY+@DistributedTags.RMI!launch:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedProperties" value="
+			RMIAndNIOSimulationClient:.*,
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedSignatures" value="
+			ipcMechanism:util.interactiveMethodInvocation.IPCMechanism->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!connectToServer:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!createModelAndUI:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!initialize:*->.*,
+			java.lang.String!split:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			@DistributedTags.REGISTRY+@DistributedTags.RMI!launch:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ClientTokenCounter"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ClientTokenCounter"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.System!exit:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedInterfaces" value="
+			java.io.Serializable,"/>
+	</module>
+	<module name="ClassIsGeneric">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedProperties" value="
+			Value:.*,
+			Key:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedSignatures" value="
+			toString:->String,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedCalls" value="
+			java.util.Collection!add:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneIntegerSummer"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneIntegerSummer"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			@MapperFactory!setMapper:*->.*,
+			@ControllerClass!processInput:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedSignatures" value="
+			toString:->String,
+			processInput:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedCalls" value="
+			java.util.Scanner!nextLine:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.lang.System!exit:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@BarrierClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@BarrierClass"/>
+		<property name="expectedSignatures" value="
+			barrier:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@BarrierClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Object!notifyAll:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerClass"/>
+		<property name="expectedSignatures" value="
+			reduce:java.util.List->Map,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Map!put:*->.*,
+			java.util.Map!get:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT,
+			@DistributedTags.NIO+@DistributedTags.CLIENT,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			RMIAndNIOSimulationClient:.*,
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			initializeGIPC:String[]->void,
+			ipcMechanism:util.interactiveMethodInvocation.IPCMechanism->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int;int->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int;int->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!connectToServer:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!atomicBroadcast:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!createModelAndUI:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!ipcMechanism:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!initialize:*->.*,
+			java.lang.String!split:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initialize:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initializeRMI:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.SocketChannelAcceptListener,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			NIOManagerSimulationServer:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			initializeGIPC:String[]->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			socketChannelAccepted:java.nio.channels.ServerSocketChannel;java.nio.channels.SocketChannel->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			initialize:int;String;int->void,
+			initialize:int->void,
+			experimentInput:->void,
+			initialize:int;String;int;int->void,
+			main:String[]->void,
+			launch:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!initialize:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initializeRMI:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO!initialize:*->.*,
+			java.nio.channels.ServerSocketChannel!open:*->.*,
+			java.nio.channels.ServerSocketChannel!bind:*->.*,
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.nio.channels.ServerSocketChannel!socket:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO!initializeRMI:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_1+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_1+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_2+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_2+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.SocketChannelAcceptListener,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			NIOManagerSimulationServer:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			initializeRMI:String[]->void,
+			quit:int->void,
+			socketChannelAccepted:java.nio.channels.ServerSocketChannel;java.nio.channels.SocketChannel->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			initialize:int;String;int->void,
+			initialize:int->void,
+			experimentInput:->void,
+			main:String[]->void,
+			launch:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.nio.channels.ServerSocketChannel!open:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			java.nio.channels.ServerSocketChannel!bind:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!initialize:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.nio.channels.ServerSocketChannel!socket:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.lang.Thread!setName:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launch:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedInterfaces" value="
+			java.beans.PropertyChangeListener,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedSignatures" value="
+			toString:->String,
+			propertyChange:java.beans.PropertyChangeEvent->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.beans.PropertyChangeEvent!toString:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneTokenCounter"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneTokenCounter"/>
+		<property name="expectedCalls" value="
+			@ControllerClass!processInput:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@JoinerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@JoinerClass"/>
+		<property name="expectedSignatures" value="
+			join:->void,
+			finish:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@JoinerClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Object!notify:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@DistributedTags.RMI"/>
+		<property name="expectedSignatures" value="
+			launch:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@DistributedTags.RMI"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedSuperTypes" value="
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedProperties" value="
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedSignatures" value="
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			quit:int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			java.lang.String!split:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerFactory"/>
+		<property name="expectedProperties" value="
+			Reducer:@ReducerClass,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerTokenCounter"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerTokenCounter"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			@ControllerClass!processInput:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launch:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@IntSummingMapperClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@IntSummingMapperClass"/>
+		<property name="expectedSignatures" value="
+			map:String->KeyValue,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@IntSummingMapperClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.SERVER"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.SERVER"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launch:*->.*,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@MapperFactory"/>
+		<property name="expectedProperties" value="
+			Mapper:@TokenCountingMapperClass,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@MapperFactory"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerIntegerSummer"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerIntegerSummer"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			@MapperFactory!setMapper:*->.*,
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			@ControllerClass!processInput:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ClassIsGeneric">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+		<property name="expectedSignatures" value="
+			getPartition:String;mapreduce.ValueType;int->int,
+			main:String[]->void,
+			print:int->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Character!toLowerCase:*->.*,
+			java.lang.String!charAt:*->.*,
+			java.lang.Math!floor:*->.*,
+			java.lang.Math!ceil:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedInterfaces" value="
+			java.rmi.Remote,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedProperties" value="
+			Threads:java.util.List,
+			TokenizedInput:.*,
+			Joiner:@JoinerClass,
+			NumThreads:int,
+			KeyValueQueue:java.util.concurrent.BlockingQueue,
+			ReductionQueueList:java.util.List,
+			InputString:.*,
+			Barrier:@BarrierClass,
+			Result:java.util.Map,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedSignatures" value="
+			quit:->void,
+			putSubResult:java.util.Map->void,
+			split:java.util.Map->void,
+			toString:->String,
+			waitForResult:->void,
+			processKeyValueList:java.util.List->Map,
+			register:mapreduce.ClientKeyValueProcessor->void,
+			maybeAssignSlavesToClients:->void,
+			reduce:int;java.util.Map->void,
+			addPropertyChangeListener:java.beans.PropertyChangeListener->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ModelClass+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.util.AbstractCollection!isEmpty:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.util.Stack!pop:*->.*,
+			java.util.ArrayList!isEmpty:*->.*,
+			java.util.HashSet!isEmpty:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Vector!isEmpty:*->.*,
+			java.util.Stack!peek:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!getThreads:*->.*,
+			java.util.List!isEmpty:*->.*,
+			java.util.Stack!push:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.lang.Object!wait:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!quit:*->.*,
+			java.util.Vector!add:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			@PartitionerFactory!getPartitioner:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.util.AbstractMap!isEmpty:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			java.util.List!get:*->.*,
+			java.util.Set!isEmpty:*->.*,
+			java.util.Map!isEmpty:*->.*,
+			java.util.List!clear:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			java.util.LinkedList!add:*->.*,
+			java.lang.String!split:*->.*,
+			java.util.HashMap!isEmpty:*->.*,
+			@ReducerClass!reduce:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!maybeAssignSlavesToClients:*->.*,
+			java.lang.String!isEmpty:*->.*,
+			java.util.Collection!add:*->.*,
+			java.lang.Thread!interrupt:*->.*,
+			java.util.Collection!isEmpty:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.Map!keySet:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT,
+			@DistributedTags.NIO+@DistributedTags.CLIENT,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			RMIAndNIOSimulationClient:.*,
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			ipcMechanism:util.interactiveMethodInvocation.IPCMechanism->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!main:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!connectToServer:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!launchClient:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!atomicBroadcast:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!createModelAndUI:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!ipcMechanism:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!initialize:*->.*,
+			java.lang.String!split:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initializeRMI:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@TokenCountingMapperClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@TokenCountingMapperClass"/>
+		<property name="expectedSignatures" value="
+			map:String->KeyValue,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@TokenCountingMapperClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@PartitionerFactory"/>
+		<property name="expectedProperties" value="
+			Partitioner:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			@DistributedTags.REGISTRY+@DistributedTags.RMI!launch:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedProperties" value="
+			RMIAndNIOSimulationClient:.*,
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedSignatures" value="
+			ipcMechanism:util.interactiveMethodInvocation.IPCMechanism->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!connectToServer:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!createModelAndUI:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!initialize:*->.*,
+			java.lang.String!split:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			@DistributedTags.REGISTRY+@DistributedTags.RMI!launch:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ClientTokenCounter"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ClientTokenCounter"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.System!exit:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedInterfaces" value="
+			java.io.Serializable,"/>
+	</module>
+	<module name="ClassIsGeneric">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedProperties" value="
+			Value:.*,
+			Key:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedSignatures" value="
+			toString:->String,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@KeyValueClass"/>
+		<property name="expectedCalls" value="
+			java.util.Collection!add:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneIntegerSummer"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneIntegerSummer"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			@MapperFactory!setMapper:*->.*,
+			@ControllerClass!processInput:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedSignatures" value="
+			toString:->String,
+			processInput:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ControllerClass"/>
+		<property name="expectedCalls" value="
+			java.util.Scanner!nextLine:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.lang.System!exit:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@BarrierClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@BarrierClass"/>
+		<property name="expectedSignatures" value="
+			barrier:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@BarrierClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Object!notifyAll:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerClass"/>
+		<property name="expectedSignatures" value="
+			reduce:java.util.List->Map,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Map!put:*->.*,
+			java.util.Map!get:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.NIO,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT,
+			@DistributedTags.NIO+@DistributedTags.CLIENT,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			RMIAndNIOSimulationClient:.*,
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			initializeGIPC:String[]->void,
+			ipcMechanism:util.interactiveMethodInvocation.IPCMechanism->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			initialize:String;int;String;String;int;int;int;int;int;int;String;int;int->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int;String;int;int->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!connectToServer:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.rmi.registry.Registry!lookup:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!atomicBroadcast:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!createModelAndUI:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!ipcMechanism:*->.*,
+			@DistributedTags.NIO+@DistributedTags.CLIENT!initialize:*->.*,
+			java.lang.String!split:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initialize:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initializeRMI:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.SocketChannelAcceptListener,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO,
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			NIOManagerSimulationServer:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			initializeGIPC:String[]->void,
+			initializeRMI:String[]->void,
+			quit:int->void,
+			socketChannelAccepted:java.nio.channels.ServerSocketChannel;java.nio.channels.SocketChannel->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			initialize:int;String;int->void,
+			initialize:int->void,
+			experimentInput:->void,
+			initialize:int;String;int;int->void,
+			main:String[]->void,
+			launch:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!initialize:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!initializeRMI:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO!initialize:*->.*,
+			java.nio.channels.ServerSocketChannel!open:*->.*,
+			java.nio.channels.ServerSocketChannel!bind:*->.*,
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.nio.channels.ServerSocketChannel!socket:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO!initializeRMI:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_1+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_1+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_2+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT_2+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedInterfaces" value="
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.SocketChannelAcceptListener,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSuperTypes" value="
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedProperties" value="
+			NIOManagerSimulationServer:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedSignatures" value="
+			initializeRMI:String[]->void,
+			quit:int->void,
+			socketChannelAccepted:java.nio.channels.ServerSocketChannel;java.nio.channels.SocketChannel->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			initialize:int;String;int->void,
+			initialize:int->void,
+			experimentInput:->void,
+			main:String[]->void,
+			launch:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.NIO"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.nio.channels.ServerSocketChannel!open:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			java.nio.channels.ServerSocketChannel!bind:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!initialize:*->.*,
+			java.rmi.registry.LocateRegistry!getRegistry:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.nio.channels.ServerSocketChannel!socket:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.lang.Thread!setName:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC+@Comp533Tags.CUSTOM_IPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launch:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedInterfaces" value="
+			java.beans.PropertyChangeListener,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedSignatures" value="
+			toString:->String,
+			propertyChange:java.beans.PropertyChangeEvent->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ViewClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.beans.PropertyChangeEvent!toString:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneTokenCounter"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@StandAloneTokenCounter"/>
+		<property name="expectedCalls" value="
+			@ControllerClass!processInput:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.GIPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.CLIENT+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@JoinerClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@JoinerClass"/>
+		<property name="expectedSignatures" value="
+			join:->void,
+			finish:->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@JoinerClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Object!notify:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@DistributedTags.RMI"/>
+		<property name="expectedSignatures" value="
+			launch:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.REGISTRY+@DistributedTags.RMI"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			java.lang.Object!wait:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedInterfaces">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedInterfaces" value="
+			inputport.nio.manager.listeners.SocketChannelConnectListener,
+			assignments.util.mainArgs.ServerPort,
+			inputport.nio.manager.listeners.WriteBoundedBufferListener,
+			assignments.util.inputParameters.SimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedSuperTypes" value="
+			assignments.util.inputParameters.AnAbstractSimulationParametersBean,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedProperties" value="
+			NIOManagerSimulationClient:.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedSignatures" value="
+			initialize:String;int;String;String;int;int;int;int;int;int->void,
+			launchClient:String;int;String;String;int;int;int;int;int;int->void,
+			connectToServer:String;int->void,
+			processCommands:->void,
+			connected:java.nio.channels.SocketChannel->void,
+			quit:int->void,
+			createModelAndUI:String;int;int;int;int;int;int->void,
+			writeBufferIsEmpty:java.nio.channels.SocketChannel->void,
+			simulationCommand:String->void,
+			experimentInput:->void,
+			main:String[]->void,
+			notConnected:java.nio.channels.SocketChannel;Exception->void,
+			atomicBroadcast:boolean->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.CLIENT"/>
+		<property name="expectedCalls" value="
+			java.io.OutputStream!close:*->.*,
+			java.util.ArrayList!add:*->.*,
+			java.beans.PropertyChangeSupport!firePropertyChange:*->.*,
+			java.nio.channels.spi.AbstractInterruptibleChannel!close:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!setInputString:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.nio.channels.SocketChannel!open:*->.*,
+			java.util.concurrent.LinkedBlockingDeque!add:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.util.Map!put:*->.*,
+			@JoinerClass!join:*->.*,
+			java.util.Map!get:*->.*,
+			java.util.AbstractList!add:*->.*,
+			java.lang.Thread!start:*->.*,
+			java.lang.System!exit:*->.*,
+			java.nio.channels.Selector!close:*->.*,
+			java.util.Map!clear:*->.*,
+			java.beans.PropertyChangeSupport!addPropertyChangeListener:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!processKeyValueList:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!accumulateCounts:*->.*,
+			java.util.Scanner!close:*->.*,
+			java.util.concurrent.ArrayBlockingQueue!add:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,
+			java.io.PrintStream!println:*->.*,
+			java.util.concurrent.BlockingQueue!add:*->.*,
+			java.util.LinkedList!clear:*->.*,
+			@TokenCountingMapperClass!map:*->.*,
+			java.util.Set!add:*->.*,
+			java.util.Vector!add:*->.*,
+			java.io.PrintStream!close:*->.*,
+			@KeyValueClass!getValue:*->.*,
+			java.util.Queue!add:*->.*,
+			java.lang.System!currentTimeMillis:*->.*,
+			@KeyValueClass!getKey:*->.*,
+			java.util.AbstractCollection!add:*->.*,
+			java.lang.Thread!setName:*->.*,
+			java.util.HashSet!add:*->.*,
+			java.lang.Object!notify:*->.*,
+			java.util.List!clear:*->.*,
+			java.io.FilterOutputStream!close:*->.*,
+			java.net.Socket!close:*->.*,
+			java.util.AbstractQueue!add:*->.*,
+			@MapperFactory!getMapper:*->.*,
+			java.util.LinkedList!add:*->.*,
+			java.lang.String!split:*->.*,
+			@ReducerClass!reduce:*->.*,
+			java.util.Collection!add:*->.*,
+			java.net.InetAddress!getByName:*->.*,
+			@ReducerFactory!getReducer:*->.*,
+			java.util.concurrent.BlockingQueue!put:*->.*,
+			java.util.List!add:*->.*,
+			java.lang.Thread!currentThread:*->.*,
+			@IntSummingMapperClass!map:*->.*,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ReducerFactory"/>
+		<property name="expectedProperties" value="
+			Reducer:@ReducerClass,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerTokenCounter"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@ServerTokenCounter"/>
+		<property name="expectedCalls" value="
+			java.rmi.registry.LocateRegistry!createRegistry:*->.*,
+			@ControllerClass!processInput:*->.*,
+			java.rmi.registry.Registry!rebind:*->.*,
+			@ModelClass+@DistributedTags.CLIENT!addPropertyChangeListener:*->.*,
+			java.rmi.server.UnicastRemoteObject!exportObject:*->.*,
+			java.lang.Throwable!printStackTrace:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.SERVER+@DistributedTags.GIPC"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launch:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.CLIENT+@DistributedTags.RMI"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.NIO+@DistributedTags.RMI+@DistributedTags.CLIENT!launchClient:*->.*,"/>
+	</module>
+	<module name="ExpectedSuperTypes">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@IntSummingMapperClass"/>
+		<property name="expectedSuperTypes" value="
+			gradingTools.comp533s19.assignment0.AMapReduceTracer,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@IntSummingMapperClass"/>
+		<property name="expectedSignatures" value="
+			map:String->KeyValue,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@IntSummingMapperClass"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Integer!parseInt:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+	<module name="ExpectedSignatures">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.SERVER"/>
+		<property name="expectedSignatures" value="
+			main:String[]->void,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@DistributedTags.NIO+@DistributedTags.SERVER"/>
+		<property name="expectedCalls" value="
+			@DistributedTags.NIO+@DistributedTags.CLIENT!processCommands:*->.*,
+			@DistributedTags.SERVER+@DistributedTags.RMI+@DistributedTags.GIPC+@DistributedTags.NIO!launch:*->.*,"/>
+	</module>
+	<module name="ExpectedGetters">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@MapperFactory"/>
+		<property name="expectedProperties" value="
+			Mapper:@TokenCountingMapperClass,"/>
+	</module>
+	<module name="MissingMethodCall">
+		<property name="severity" value="warning"/>
+		<property name="includeTypeTags" value="@MapperFactory"/>
+		<property name="expectedCalls" value="
+			java.io.PrintStream!println:*->.*,
+			java.lang.Thread!currentThread:*->.*,"/>
+	</module>
+		
+	</module>
+	<module name="TreeWalker">
+		<module name="EqualsAvoidNull" />
+		<module name="EmptyStatement" />
+		<module name="SimplifyBooleanExpression" />
+		<module name="SimplifyBooleanReturn" />
+		<module name="StringLiteralEquality" />
+		<module name="NestedForDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NestedIfDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="PackageDeclaration" />
+		<module name="HiddenField">
+			<property name="tokens" value="VARIABLE_DEF" />
+		</module>
+
+
+		<module name="VisibilityModifier">
+			<property name="packageAllowed" value="true" />
+			<property name="protectedAllowed" value="true" />
+		</module>
+		<module name="ConstantName" />
+		<module name="TypeName" />
+		<module name="MethodName" />
+		<module name="MemberName" />
+		<module name="StaticVariableName" />
+		<module name="LocalVariableName"/>
+		<module name="PackageName"/>
+		<module name="NeedBraces" />
+		<module name="MultipleStringLiterals" />
+		<module name="InvalidPackageName" />
+		<module name="OuterTypeFilename" />		
+		<module name="AvoidEscapedUnicodeCharacters">
+			<property name="allowEscapesForControlCharacters"
+				value="true" />
+			<property name="allowByTailComment" value="true" />
+			<property name="allowNonPrintableEscapes" value="true" />
+		</module>
+		<module name="OneTopLevelClass" />
+		<module name="NoLineWrap" />
+		<module name="EmptyBlock">
+			<property name="option" value="TEXT" />
+			<property name="tokens"
+				value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH" />
+		</module>
+		<module name="NeedBraces" />
+		<module name="MultipleVariableDeclarations" />
+		<module name="MissingSwitchDefault" />
+		<module name="FallThrough" />
+		<module name="UpperEll" />
+		
+		
+		<module name="NoFinalizer" />
+
+
+		<module name="AbbreviationAsWordInName">
+			<property name="severity" value="info" />
+			<property name="ignoreFinal" value="false" />
+			<property name="allowedAbbreviationLength" value="4" />
+			<property name="allowedAbbreviations"
+				value="XML,URL,GIPC,OE,NIO" />
+		</module>
+		<module name="OverloadMethodsDeclarationOrder" />
+		<module name="VariableDeclarationUsageDistance" />
+		<module name="AvoidStarImport" />
+		<module name="RedundantImport" />
+		<module name="UnusedImports" />
+		<module name="AvoidStaticImport" />
+		
+
+
+		<module name="NonEmptyAtclauseDescription" />
+
+		
+
+		<module name="EmptyCatchBlock">
+			<property name="exceptionVariableName" value="expected" />
+		</module>
+
+		<module name="BooleanExpressionComplexity">
+			<property name="max" value="3" />
+		</module>
+		<module name="ClassDataAbstractionCoupling">
+			<property name="max" value="7" />
+		</module>
+		<module name="ClassFanOutComplexity">
+			<property name="max" value="20" />
+		</module>
+		<module name="CyclomaticComplexity">
+			<property name="max" value="4" />
+		</module>
+		<module name="JavaNCSS">
+			<property name="methodMaximum" value="50" />
+			<property name="classMaximum" value="1500" />
+			<property name="fileMaximum" value="2000" />
+		</module>
+
+		<module name="MissingOverride" />
+		<module name="AvoidNestedBlocks" />
+		<module name="FinalClass" />
+		<module name="InnerTypeLast" />
+		<module name="MutableException" />
+		<module name="ThrowsCount">
+			<property name="max" value="4" />
+		</module>
+		<module name="AvoidInlineConditionals">
+			<property name="severity" value="info" />
+		</module>
+		<module name="CovariantEquals" />
+		<module name="DefaultComesLast" />
+		<module name="EqualsHashCode" />
+		<module name="FallThrough" />
+		<module name="IllegalCatch">
+			<property name="severity" value="info" />
+		</module>
+		<module name="IllegalThrows" />
+		<module name="IllegalType" />
+		<module name="InnerAssignment" />
+		<module name="ModifiedControlVariable" />
+		<module name="NestedTryDepth">
+			<property name="max" value="1" />
+		</module>
+		<module name="NoClone" />
+		<module name="ParameterAssignment" />		
+		<module name="SuperClone" />
+		<module name="SuperFinalize" />
+		<module name="UnnecessaryParentheses" />
+
+		<module name="VariableDeclarationUsageDistance">
+			<property name="allowedDistance" value="3" />
+		</module>
+
+	</module>
+</module>

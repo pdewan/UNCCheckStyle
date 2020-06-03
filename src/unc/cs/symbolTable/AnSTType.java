@@ -23,7 +23,7 @@ import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 public class AnSTType extends AnAbstractSTType implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, configuredTags, derivedTags, computedTags, imports;
 
-	protected final boolean isInterface, isGeneric, isElaboration, isEnum;
+	protected final boolean isInterface, isGeneric, isElaboration, isEnum, isAnnotation;
 	protected final List<String> typeParameterNames;
 //	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
@@ -63,6 +63,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			boolean anIsGeneric,
 			boolean anIsElaboration,
 			boolean anIsEnum,
+			boolean anIsAnnotation,
 			STNameable aStructurePatternName,
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
@@ -109,6 +110,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		typeParameterNames = aTypeParameterNames;
 		isElaboration = anIsElaboration;
 		isEnum = anIsEnum;
+		isAnnotation = anIsAnnotation;
 		structurePatternName = aStructurePatternName;
 		declaredPropertyNames = aDeclaredPropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
@@ -877,6 +879,10 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	@Override
 	public boolean isEnum() {
 		return isEnum;
+	}
+	@Override
+	public boolean isAnnotation() {
+		return isAnnotation;
 	}
 //	@Override
 //	public Set<String> getDeclaredGlobals() {

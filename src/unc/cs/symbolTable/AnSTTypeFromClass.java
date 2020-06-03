@@ -444,6 +444,13 @@ public class AnSTTypeFromClass extends AnAbstractSTType implements STType {
 	public List<String> getTypeParameterNames() {
 		return null;
 	}
+	@Override
+	public boolean isAnnotation() {
+		if (reflectedClass == null) return false;
+		
+		return reflectedClass.isAnnotation();
+		// TODO Auto-generated method stub
+	}
 
 
 //

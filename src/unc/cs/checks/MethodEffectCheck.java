@@ -206,7 +206,7 @@ public abstract class MethodEffectCheck extends ComprehensiveVisitCheck{
 //				System.err.println("Did not find sttype, returning from MethodeffectCheckdoPendingChecks:" + getFullTypeName(anAST));
 				return null;
 			}
-			if (anSTType.isEnum() || anSTType.isInterface())
+			if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation())
 				return true;
 
 		 STMethod[] aMethods = anSTType.getDeclaredMethods();// we check only out methods

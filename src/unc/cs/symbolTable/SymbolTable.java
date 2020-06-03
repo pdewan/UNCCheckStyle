@@ -31,5 +31,6 @@ public interface SymbolTable {
 	public Set<String> getTypeNamesKeySet();
 	STType putSTType(String aName, STType anSTType);
 	Set<String> getPackageNames();
+	int size();
 
 }

@@ -58,7 +58,7 @@ public abstract  class AbstractActualPropertyCheck extends ComprehensiveVisitChe
 			System.err.println("Probably an inner class:" + aTypeName);
 			return true;
 		}
-		if (anSTType.isEnum() || anSTType.isInterface())
+		if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation())
 			return true;
 		Boolean retVal = true;
 		

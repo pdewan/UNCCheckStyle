@@ -59,7 +59,7 @@ public class ASymbolTable implements SymbolTable{
 	@Override
 	public boolean isClass (String aTypeName) {
 		STType aClass = getSTClassByShortName(aTypeName);
-		return aClass != null && !aClass.isInterface() && !aClass.isEnum();
+		return aClass != null && !aClass.isInterface() && !aClass.isEnum() && !aClass.isAnnotation();
 //		return matchingFullClassNames(aTypeName).size() >= 1;
 	}
 //	@Override
@@ -120,6 +120,10 @@ public class ASymbolTable implements SymbolTable{
 	}
 	@Override
 	public STType getSTClassByFullName(String aTypeName) {
+		if (aTypeName == null) {
+			System.err.println("Null type name");
+			return null;
+		}
 		
 //		boolean isExternalClass = aTypeName.startsWith("java.lang") || STBuilderCheck.isExternalImportCacheChecking(aTypeName);
 //		if (STBuilderCheck.isJavaLangClass(aTypeName)) {
@@ -219,5 +223,9 @@ public class ASymbolTable implements SymbolTable{
 	@Override
 	public Set<String> getPackageNames() {
 		return packageNames;
+	}
+	@Override
+	public int size() {
+		return typeNameToSTClass.size();
 	}
 }

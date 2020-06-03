@@ -268,7 +268,7 @@ public final class VariableHasClassTypeCheck extends ComprehensiveVisitCheck imp
 		if (anSTClass == null)
 //		if (!SymbolTableFactory.getOrCreateSymbolTable().isType(aTypeName))
 			return null;
-		if (anSTClass.isEnum() )
+		if (anSTClass.isEnum() || anSTClass.isAnnotation())
 				//|| anSTClass.isInterface())
 			return true;
 		Boolean aTypeCheck = checkType(anSTClass);

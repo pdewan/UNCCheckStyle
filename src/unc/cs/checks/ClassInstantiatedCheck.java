@@ -83,7 +83,7 @@ public abstract  class ClassInstantiatedCheck extends ComprehensiveVisitCheck {
 //						getName(getEnclosingTypeDeclaration(aTree)));
 		STType anSTType = getSTType(anAST);
 
-		if (anSTType.isEnum() || anSTType.isInterface())
+		if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation())
 			return true;
 		
 		specifiedType = findMatchingType(typeToSpecifications.keySet(),

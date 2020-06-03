@@ -727,7 +727,7 @@ public abstract  class MethodCallCheck extends MethodCallVisitedCheck {
 
 		STType anSTType = getSTType(aTree);
 
-		if (anSTType.isEnum() || anSTType.isInterface())
+		if (anSTType.isEnum() || anSTType.isInterface() || anSTType.isAnnotation())
 			return true;
 		
 //		specifiedType = findMatchingType(typeToSignaturesWithTargets.keySet(),
