@@ -122,6 +122,7 @@ public class PostProcessingMain {
 	}
 
 	public static void doSecondPass(List<STType> anSTTypes) {
+		System.err.println ("Start O(n2) inter- and intra class method calls:" + new Date(System.currentTimeMillis()));
 		// create some side effects first
 		for (STType anSTType : anSTTypes) {
 			if (anSTType.isExternal()) {
@@ -140,6 +141,7 @@ public class PostProcessingMain {
 
 		}
 		for (STType anSTType : anSTTypes) {
+//			System.err.println("All methods called:" + anSTType.getName());
 			if (anSTType.isExternal()) {
 				continue; // these methods have no callers
 			}
@@ -156,35 +158,40 @@ public class PostProcessingMain {
 			}
 			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 			for (STMethod aMethod : aMethods) {
+//				System.err.println("All internal methods called:" + anSTType.getName());
+
 //				aMethod.getLocalMethodsCalled();
 				aMethod.getAllInternallyDirectlyAndIndirectlyCalledMethods();// side effect of adding caller
 
 			}
 
 		}
-		for (STType anSTType : anSTTypes) {
-			if (anSTType.isExternal()) {
-				continue; // these methods have no callers
-			}
-			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
-			for (STMethod aMethod : aMethods) {
-//				aMethod.getLocalMethodsCalled();
-				aMethod.getAllDirectlyOrIndirectlyCalledMethods();// side effect of adding caller
-			}
-
-		}
+		// this seems duplication of previous code
+//		for (STType anSTType : anSTTypes) {
+//			if (anSTType.isExternal()) {
+//				continue; // these methods have no callers
+//			}
+//			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
+//			for (STMethod aMethod : aMethods) {
+////				aMethod.getLocalMethodsCalled();
+//				aMethod.getAllDirectlyOrIndirectlyCalledMethods();// side effect of adding caller
+//			}
+//
+//		}
 		for (STType anSTType : anSTTypes) {
 //			if (!anSTType.isExternal()) {
 //				continue; // these methods have no callers
 //			}
+//			System.err.println("All calling methods:" + anSTType.getName());
+
 			STMethod[] aMethods = getDeclaredOrAllMethods(anSTType);
 			if (aMethods == null) {
 				aMethods = anSTType.getDeclaredMethods();
 			}
 			for (STMethod aMethod : aMethods) {
-				if (anSTType.getName().contains("Client") && aMethod.getName().contains("createSimulation")) {
-					System.err.println("found target method:" + aMethod + " in class  " + anSTType);
-				}
+//				if (anSTType.getName().contains("Client") && aMethod.getName().contains("createSimulation")) {
+//					System.err.println("found target method:" + aMethod + " in class  " + anSTType);
+//				}
 //				aMethod.getLocalMethodsCalled();
 				Set<STMethod> aCallingMethods = aMethod.getCallingMethods();
 //				if (aCallingMethods != null) {
@@ -201,6 +208,7 @@ public class PostProcessingMain {
 //			// }
 //
 //		}
+		System.err.println ("End O(n2) inter- and intra class method calls:" + new Date(System.currentTimeMillis()));
 
 	}
 
@@ -1206,19 +1214,21 @@ public class PostProcessingMain {
 			}
 			NonExitingMain.main(args);
 			System.err.println("Symbol table size:" + SymbolTableFactory.getOrCreateSymbolTable().size());
-			System.err.println("Running Checks " +  new Date(System.currentTimeMillis()));
 			UNCCheck.setDoNotVisit(false);
 
 			System.setOut(oldOut);
 //			initGlobals();
 //			doSecondPass(sTTypes);
+			System.err.println("Running Checks " +  new Date(System.currentTimeMillis()));
 
 			NonExitingMain.main(args);
-			System.err.println("Processing symbol table:" + new Date(System.currentTimeMillis()));
-			initGlobals();
+//			System.err.println("Processing symbol table:" + new Date(System.currentTimeMillis()));
+//			initGlobals();
 //			doSecondPass(sTTypes);
-			System.err.println("Finished processing symbol table:" + new Date (System.currentTimeMillis()));
+			System.err.println("Finished checks:" + new Date (System.currentTimeMillis()));
 			if (isGenerateChecks()) {
+				initGlobals();
+
 				System.err.println("Generating checks" + new Date (System.currentTimeMillis()));
 
 				generateChecks(sTTypes);

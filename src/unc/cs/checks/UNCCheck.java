@@ -75,8 +75,28 @@ public abstract class UNCCheck extends Check {
 	}
 	
 	protected void resetProject() {
-		lastExecutionTime = 0;
+		
 		currentFile = null;
+		resetStatics();
+//		lastExecutionTime = 0;
+//		checkDirectory = null;
+//		String consentFileName = null;
+//		consentFormSigned  = false;
+//		consentFormShown = false;
+//		sequenceNumber = null;
+//		numFilesInLastPhase = null;
+//		filesInCurrentPhase.clear();
+//		allFilesInProject.clear();
+//		filesInLastPhase.clear();
+////		projectDirectory = null;
+//		ProjectDirectoryHolder.setCurrentProjectDirectory(null);
+//		checkDirectory = null;
+//		consentFileName = null;
+		
+	}
+	protected static void resetStatics() {
+		lastExecutionTime = 0;
+//		currentFile = null;
 		checkDirectory = null;
 		String consentFileName = null;
 		consentFormSigned  = false;
@@ -626,4 +646,17 @@ public abstract class UNCCheck extends Check {
    protected boolean isInfo() {
 	   return INFO.equals(getSeverity());
    }
+//   public static void  reset() {
+//	   UNCCheck.allFilesInProject.clear();
+//	   UNCCheck.checkDirectory = null;
+//	   UNCCheck.doNotVisit = false;
+//	   UNCCheck.errorOccurred = false;
+//	   UNCCheck.filesInCurrentPhase.clear();
+//	   UNCCheck.filesInLastPhase.clear();
+//	   UNCCheck.lastExecutionTime = 0;
+//	   UNCCheck.numFilesInLastPhase 
+//
+//
+//	   
+//   }
 }

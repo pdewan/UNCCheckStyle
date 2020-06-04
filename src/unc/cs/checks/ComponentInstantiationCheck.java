@@ -14,6 +14,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.cs.symbolTable.TypeType;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
@@ -76,7 +77,8 @@ public abstract class ComponentInstantiationCheck extends ComprehensiveVisitChec
 	}
 
 	public Boolean componentInstantiated(String anInstantiatedTypeName, DetailAST aTreeAST) {
-		if (isInterface || isEnum)
+//		if (isInterface || isEnum)
+		if (typeType != TypeType.CLASS)
 			return false;
 		DetailAST aClassDefAST = getClassDef(aTreeAST);
 		DetailAST aTypeAST = aClassDefAST.findFirstToken(TokenTypes.IDENT);

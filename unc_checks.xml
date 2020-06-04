@@ -437,7 +437,6 @@
         <module name="EmptyCatchBlock">
             <property name="exceptionVariableName" value="expected"/>
         </module>
-        <module name="CommentsIndentation"/>
         <module name="JavadocStyleCheck"/>
         <module name="JavadocVariableCheck"/>
         <module name="MissingJavadocType"/>

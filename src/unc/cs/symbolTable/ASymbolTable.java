@@ -150,6 +150,11 @@ public class ASymbolTable implements SymbolTable{
 				if (Character.isUpperCase(aTypeName.charAt(0))) {
 					aTypeName = "java.lang." + aTypeName;
 					isExternalClass = true;
+					 anSTType = typeNameToSTClass.get(aTypeName);
+					 if (anSTType != null) {
+						 return anSTType;
+					 }
+
 				}
 			
 			}

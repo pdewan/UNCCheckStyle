@@ -8,6 +8,7 @@ import java.util.Set;
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.checks.naming.AccessModifier;
 
+import unc.cs.checks.BulkierThenCheck;
 import unc.cs.checks.ComprehensiveVisitCheck;
 
 
@@ -15,6 +16,10 @@ public  class AnSTNameable implements STNameable {
 	protected DetailAST ast;
 	protected String name;
 	protected Object data;
+	
+	protected String stringTree;
+	protected String[] statements;
+	protected Integer size;
 	protected AccessModifier accessModifier = AccessModifier.PACKAGE;
 
 //	int numReferences;
@@ -92,6 +97,25 @@ public  class AnSTNameable implements STNameable {
 	public List<AccessModifierUsage> getAccessModifiersUsed() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Override
+	public String getStringTree() {
+		if (stringTree == null) {
+			stringTree = ast.toStringTree();
+		}
+		return stringTree;
+	}
+	@Override
+	public String[] getStatements() {
+		if (statements == null) {
+			String aStringTree = getStringTree();			
+			statements = aStringTree.split(BulkierThenCheck.STATEMENT_SEPARATOR);
+		}
+		return statements;
+	}
+	@Override
+	public Integer getSize() {
+		return getStatements().length;
 	}
 	
 //	public static void main (String[] args) {

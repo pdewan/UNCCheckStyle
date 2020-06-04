@@ -33,6 +33,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.cs.symbolTable.TypeType;
 import unc.cs.symbolTable.VariableKind;
 import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
@@ -67,8 +68,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 
 	// public static final String MSG_KEY = "stBuilder";
 	protected boolean leftCurlySeen;
-	protected boolean isEnum;
-	protected boolean isInterface;
+//	protected boolean isEnum;
+//	protected boolean isInterface;
 	protected boolean isElaboration;
 	protected STNameable superClass;
 	protected STNameable[] interfaces;
@@ -818,7 +819,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	public void visitEnumDef(DetailAST anEnumDef) {
 		visitType(anEnumDef);
 //		propertyNames = emptyArrayList; //no properties
-		isEnum = true;
+//		isEnum = true;
+		typeType = TypeType.ENUM;
 		typeNameAST = getEnumNameAST(anEnumDef);
 		// shortTypeName = getEnumName(anEnumDef);
 		shortTypeName = typeNameAST.getText();
@@ -827,7 +829,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		typeAST = anEnumDef;
 		superClass = null;
 		interfaces = emptyNameableArray;
-		isInterface = false;
+//		isInterface = false;
 		typeNameable = new AnSTNameable(typeNameAST, getFullTypeName());
 
 		// shortTypeName = anEnumDef.getNextSibling().toString();
@@ -1106,7 +1108,8 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		else
 			superClass = superTypes[0];
 		interfaces = getInterfaces(ast);
-		isInterface = false;
+//		isInterface = false;
+		typeType = TypeType.CLASS;
 		}
 		leaveType(ast);
 
@@ -1118,16 +1121,17 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
     	if (checkIncludeExcludeTagsOfCurrentType()) {
 		superClass = null;
 		interfaces = getSuperTypes(ast);
-		isInterface = true;
+//		isInterface = true;
+		typeType = TypeType.INTERFACE;
     	}
     	leaveType(ast);
 
 	}
     protected void leaveEnum(DetailAST ast) {
-    	if (checkIncludeExcludeTagsOfCurrentType()) {
-	
-		isEnum = true;
-    	}
+//    	if (checkIncludeExcludeTagsOfCurrentType()) { // why conditional?
+//	
+//		isEnum = true;
+//    	}
     	leaveType(ast);
 
 	}
@@ -1206,6 +1210,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 	
 	public static boolean isClassIdent(String anIdent) {
+		if (anIdent.isEmpty()) {
+			return false;
+		}
 //		if (anIdent.contains("out")) {
 //			System.err.println ("found oout");
 //		}
@@ -1215,6 +1222,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 		if (aDotIndex >= 0 ) {
 //			aLastComponent = anIdent.substring(aDotIndex + 1);	
 			aStartIndex = aDotIndex + 1;
+			if (anIdent.length() <= aStartIndex) {
+				return false;
+			}
 		}
 		if (Character.isLowerCase(anIdent.charAt(aStartIndex)) 
 				|| ((aStartIndex + 1) >= anIdent.length())) { // assume no one character classes
@@ -2503,9 +2513,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 //		shortTypeName = null;
 		setShortTypeName(null);
 
-		isInterface = false;
+//		isInterface = false;
 		leftCurlySeen = false;
-		isEnum = false;
+//		isEnum = false;
 		isGeneric = false;
 		typeParameterNames = null;
 		isElaboration = false;
@@ -3018,7 +3028,7 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 			aCallPartsList.add(aCallParts[aCallParts.length - 1]);
 		} else if (aCallParts.length == 2) {
 			String aType = lookupType(aCallParts[0]);
-			if (aType != null) { // not a static method
+			if (aType != null && !aType.isEmpty()) { // not a static method
 				aCallPartsList.add(aType);
 				aCallPartsList.add(aCallParts[1]);
 			} else {
@@ -3179,6 +3189,9 @@ public abstract class ComprehensiveVisitCheck extends TagBasedCheck implements
 	}
 
 	protected String getLongFileName(DetailAST aTreeAST) {
+		if (currentFullFileName != null) {
+			return currentFullFileName; // why was this not there earlier?
+		}
 		if (aTreeAST == currentTree)
 			return getFileContents().getFilename();
 		FileContents aFileContents = astToFileContents.get(aTreeAST);

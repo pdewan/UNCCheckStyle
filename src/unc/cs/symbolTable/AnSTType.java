@@ -23,7 +23,10 @@ import com.sun.nio.sctp.SctpStandardSocketOptions.InitMaxStreams;
 public class AnSTType extends AnAbstractSTType implements STType {
 	protected final STNameable[] declaredPropertyNames, declaredEditablePropertyNames, tags, configuredTags, derivedTags, computedTags, imports;
 
-	protected final boolean isInterface, isGeneric, isElaboration, isEnum, isAnnotation;
+//	protected final boolean isInterface, isGeneric, isElaboration, isEnum, isAnnotation;
+	protected final TypeType typeType;
+	protected final boolean isGeneric, isElaboration;
+
 	protected final List<String> typeParameterNames;
 //	protected final STNameable superClass;
 	protected final  STNameable structurePatternName;	
@@ -59,11 +62,13 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			STMethod[] declaredMethods,
 			STMethod[] aDeclaredConstructors,
 			STNameable[] interfaces, STNameable superClass,
-			String packageName, boolean isInterface,
+			String packageName,
+//			boolean isInterface,
+			TypeType aTypeType,
 			boolean anIsGeneric,
 			boolean anIsElaboration,
-			boolean anIsEnum,
-			boolean anIsAnnotation,
+//			boolean anIsEnum,
+//			boolean anIsAnnotation,
 			STNameable aStructurePatternName,
 			STNameable[] aDeclaredPropertyNames, 
 			STNameable[] aDeclaredEditablePropertyNames, 
@@ -91,6 +96,9 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			fileName = name;
 //		if (name.contains("TrickOrTreatPostProcessingCustomMain")) {
 //			System.err.println (" found TrickOrTreatPostProcessingCustomMain");
+//		}'
+//		if (fileName.contains("Backpress")) {
+//		System.err.println (" found file");
 //		}
 		staticBlocks = aStaticBlocks;
 		this.declaredMethods = declaredMethods;
@@ -105,12 +113,16 @@ public class AnSTType extends AnAbstractSTType implements STType {
 			superClass = STBuilderCheck.getExistingClassSTType(Object.class);
 		}
 		this.packageName = packageName;
-		this.isInterface = isInterface;
+		typeType = aTypeType;
+//		this.isInterface = isInterface;
 		isGeneric = anIsGeneric;
 		typeParameterNames = aTypeParameterNames;
 		isElaboration = anIsElaboration;
-		isEnum = anIsEnum;
-		isAnnotation = anIsAnnotation;
+//		isEnum = anIsEnum;
+//		isAnnotation = anIsAnnotation;
+//		if (isInterface && isAnnotation) {
+//			System.err.println("is annotation and interface");
+//		}
 		structurePatternName = aStructurePatternName;
 		declaredPropertyNames = aDeclaredPropertyNames;
 		declaredEditablePropertyNames = aDeclaredEditablePropertyNames;
@@ -142,7 +154,8 @@ public class AnSTType extends AnAbstractSTType implements STType {
 		modifiers = aModifiers;
 		accessModifier = STBuilderCheck.toAccessModifier(modifiers);
 		isAbstract = modifiers != null && modifiers.contains(TokenTypes.ABSTRACT);
-		if (isInterface) {
+//		if (isInterface) {
+		if (aTypeType == TypeType.INTERFACE) {
 			for (STMethod aMethod:declaredMethods) {
 				aMethod.setPublic(true);
 			}
@@ -215,7 +228,7 @@ public class AnSTType extends AnAbstractSTType implements STType {
 //		return packageName;
 //	}
 	public boolean isInterface() {
-		return isInterface;
+		return typeType == TypeType.INTERFACE;
 	}
 	public static void addToList(List<STMethod> aList, STMethod[] anAdditions) {
 		for (STMethod anAddition:anAdditions) {
@@ -878,11 +891,12 @@ public class AnSTType extends AnAbstractSTType implements STType {
 	}
 	@Override
 	public boolean isEnum() {
-		return isEnum;
+		return typeType == TypeType.ENUM;
+
 	}
 	@Override
 	public boolean isAnnotation() {
-		return isAnnotation;
+		return typeType == TypeType.ANNOTATION;
 	}
 //	@Override
 //	public Set<String> getDeclaredGlobals() {

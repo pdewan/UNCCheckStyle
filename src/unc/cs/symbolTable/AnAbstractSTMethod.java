@@ -473,6 +473,10 @@ private static final String NAME_PARAMETER_SEPARATOR = ":";
 //			if (this.getName().contains("join")) {
 //				System.err.println("found join");
 //			}
+			if (result.contains(this)) {
+				return result; // recursive call
+			}
+			
 			CallInfo[] aCalledMethods = aMethod.getCallInfoOfMethodsCalled();
 			
 			for (CallInfo aCallInfo:aCalledMethods) {

@@ -13,6 +13,7 @@ import unc.cs.symbolTable.PropertyInfo;
 import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STType;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.cs.symbolTable.TypeType;
 
 public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 	public static final String MSG_KEY = "beanProperties";
@@ -35,7 +36,8 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 			visitType(ast);
 			return;
 		default:
-			System.err.println("Unexpected token");
+			super.doVisitToken(ast);
+//			System.err.println("Unexpected token");
 		}
 	}
 	// do not neeed any tokens as we do deferred checking
@@ -193,7 +195,7 @@ public abstract class BeanPropertiesCheck extends ComprehensiveVisitCheck {
 //	}
 
 	public void doFinishTree(DetailAST ast) {
-		if (isEnum)
+		if (typeType == TypeType.ENUM || typeType == TypeType.ANNOTATION)
 			return;
 		// STType anSTType =
 		// SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(fullTypeName);

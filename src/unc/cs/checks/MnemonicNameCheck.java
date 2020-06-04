@@ -196,8 +196,15 @@ public class MnemonicNameCheck extends STTypeVisited {
 
 			visitType(ast);
 			return;	
+		case TokenTypes.ANNOTATION_DEF:
+			visitAnnotationDef(ast);
+			return;
+		case TokenTypes.ANNOTATION_FIELD_DEF:
+			visitAnnotationFieldDef(ast);
+			return;
 		default:
-			System.err.println("Unexpected token");
+			
+//			System.err.println("Unexpected token");
 		}
 		
 	}

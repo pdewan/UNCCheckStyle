@@ -18,6 +18,12 @@ public interface STNameable extends STElement {
 	AccessModifier getAccessModifier();
 	List<AccessModifierUsage> getAccessModifiersUsed();
 
+	String getStringTree();
+
+	Integer getSize();
+
+	String[] getStatements();
+
 //	String[] getComponents();
 
 

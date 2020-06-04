@@ -24,6 +24,7 @@ import unc.cs.symbolTable.STMethod;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STVariable;
 import unc.cs.symbolTable.SymbolTableFactory;
+import unc.cs.symbolTable.TypeType;
 import unc.tools.checkstyle.AConsentFormVetoer;
 import unc.tools.checkstyle.CheckStyleLogManagerFactory;
 import unc.tools.checkstyle.PostProcessingMain;
@@ -468,8 +469,9 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 					getFullTypeName(),
 					aParameterNames,
 					aLongParameterTypes,
-					currentMethodIsPublic || isInterface,
-					currentMethodIsInstance || isInterface,
+//					currentMethodIsPublic || isInterface,
+					currentMethodIsPublic || typeType == TypeType.ENUM,
+					currentMethodIsInstance || typeType == TypeType.ENUM,
 					currentMethodIsConstructor,
 					currentMethodIsSynchronized,
 					aLongReturnType,
@@ -712,7 +714,7 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		currentSTType = anSTType; //is this really correct as imports are processed here also
 	}
 	public static void addSTType(STType anSTClass) {
-		if (!anSTClass.isEnum() && anSTClass.isAnnotation()) {
+		if (!anSTClass.isEnum() && !anSTClass.isAnnotation()) {
 			anSTClass.introspect();
 			anSTClass.findDelegateTypes();
 		}
@@ -751,8 +753,15 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 		 Set<Integer> aModifiers = extractModifiers(modifierAST);
 			STType anSTClass = new AnSTType(currentFullFileName, ast, getFullTypeName(), currentStaticBlocks, emptyMethods,
-					emptyMethods, emptyTypes, null, packageName, false, false,
-					false, false, true, null, dummyArray, dummyArray, dummyArray,
+					emptyMethods, emptyTypes, null, packageName, 
+//					false, 
+					typeType,
+					false,
+					false, 
+//					false, 
+//					true, 
+					null, 
+					dummyArray, dummyArray, dummyArray,
 					dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
 					new HashMap(),
 //					new HashMap(), 
@@ -774,28 +783,69 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 	    	leaveType(ast);
 
 		}
+//	@Override
+//	// should be done in leave enum def
+//	public void visitEnumDef(DetailAST anEnumDef) {
+//		DetailAST aTypeAST = getEnclosingTypeDeclaration(anEnumDef);
+//		// why not build symbol table for top level rnums also?
+////		if (aTypeAST == anEnumDef) { // top-level enum
+////			super.visitEnumDef(anEnumDef);
+////			return;
+////		}
+//		// isEnum = true;
+//		String anEnumName = getEnumName(anEnumDef);
+//		String aFullName = packageName + "." + shortTypeName + "." + anEnumName;
+//		if (aTypeAST == anEnumDef) { // top-level enum
+//			aFullName = packageName + "." + anEnumName;
+//			setShortTypeName (anEnumName);
+//		}
+//		setFullTypeName(aFullName);
+//		DetailAST modifierAST = anEnumDef.findFirstToken(TokenTypes.MODIFIERS);
+//		Set<Integer> aModifiers = extractModifiers(modifierAST);
+//		STType anSTClass = new AnSTType(currentFullFileName, anEnumDef, aFullName, currentStaticBlocks, emptyMethods,
+//				emptyMethods, emptyTypes, null, packageName, false, false,
+//				false, true, false, null, dummyArray, dummyArray, dummyArray,
+//				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
+//				new HashMap(),
+////				new HashMap(), 
+////				new HashMap(), 
+//				new ArrayList(), 
+//				new ArrayList(),
+//				new HashMap(),
+//				new HashMap(),
+//				aModifiers,
+//				typeParameterNames
+//				);
+//
+//		// anSTClass.introspect();
+//		// anSTClass.findDelegateTypes();
+//		// SymbolTableFactory.getOrCreateSymbolTable().getTypeNameToSTClass().put(
+//		// fullTypeName, anSTClass);
+//		addSTType(anSTClass);
+//		upateCurrentSTTType(anSTClass);
+//
+//		// shortTypeName = anEnumDef.getNextSibling().toString();
+//		// DetailAST anEnumIdent =
+//		// anEnumDef.getNextSibling().findFirstToken(TokenTypes.IDENT);
+//		// if (anEnumIdent == null) {
+//		// System.err.println("null enum ident");
+//		// }
+//		// shortTypeName = anEnumIdent.getText();
+//	}
 	@Override
 	// should be done in leave enum def
-	public void visitEnumDef(DetailAST anEnumDef) {
-		DetailAST aTypeAST = getEnclosingTypeDeclaration(anEnumDef);
-		// why not build symbol table for top level rnums also?
-//		if (aTypeAST == anEnumDef) { // top-level enum
-//			super.visitEnumDef(anEnumDef);
-//			return;
-//		}
-		// isEnum = true;
-		String anEnumName = getEnumName(anEnumDef);
-		String aFullName = packageName + "." + shortTypeName + "." + anEnumName;
-		if (aTypeAST == anEnumDef) { // top-level enum
-			aFullName = packageName + "." + anEnumName;
-			setShortTypeName (anEnumName);
-		}
-		setFullTypeName(aFullName);
+	public void leaveEnum(DetailAST anEnumDef) {
 		DetailAST modifierAST = anEnumDef.findFirstToken(TokenTypes.MODIFIERS);
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
-		STType anSTClass = new AnSTType(currentFullFileName, anEnumDef, aFullName, currentStaticBlocks, emptyMethods,
-				emptyMethods, emptyTypes, null, packageName, false, false,
-				false, true, false, null, dummyArray, dummyArray, dummyArray,
+		STType anSTClass = new AnSTType(currentFullFileName, anEnumDef, getFullTypeName(), currentStaticBlocks, emptyMethods,
+				emptyMethods, emptyTypes, null, packageName, 
+//				false, 
+				typeType,
+				false,
+				false, 
+//				true, 
+//				false, 
+				null, dummyArray, dummyArray, dummyArray,
 				dummyArray, dummyArray, dummyArray, dummyArray, dummyArray,
 				new HashMap(),
 //				new HashMap(), 
@@ -814,6 +864,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		// fullTypeName, anSTClass);
 		addSTType(anSTClass);
 		upateCurrentSTTType(anSTClass);
+		super.leaveEnum(anEnumDef);
+
 
 		// shortTypeName = anEnumDef.getNextSibling().toString();
 		// DetailAST anEnumIdent =
@@ -866,9 +918,14 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 //		return true;
 //	}
 
+
 	protected List<STNameable> computedAndDerivedTypeTags() {
+		if (typeType != TypeType.INTERFACE && typeType != TypeType.CLASS) {
+			return emptyList;
+		}
+		boolean anIsInterface = (typeType == TypeType.INTERFACE);
 		List<STNameable> result = computedTypeTags();
-		List<STNameable> derivedTags = derivedTags(typeAST, isInterface?INTERFACE_START:CLASS_START);
+		List<STNameable> derivedTags = derivedTags(typeAST, anIsInterface?INTERFACE_START:CLASS_START);
 		String aConfiguredName = classToConfiguredClass.get(shortTypeName);
 		
 		addAllNoDuplicates(result, new HashSet(derivedTags));
@@ -1015,18 +1072,30 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 		Set<Integer> aModifiers = extractModifiers(modifierAST);
 		
 //		List<DetailAST> modifierASTs = findAllInOrderMatchingNodes(modifiers, 62);
-		boolean anOldFirstPass = isFirstPass();		
+		boolean anOldFirstPass = isFirstPass();
+		String aFullTypeName = getFullTypeName();
 		
-		STType anExistingEntry = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(getFullTypeName());
+		
+		STType anExistingEntry = SymbolTableFactory.getOrCreateSymbolTable().getSTClassByFullName(aFullTypeName);
 		if (anExistingEntry == null || 
 				anExistingEntry instanceof AnSTTypeFromClass // we falsely predicted it as external class
 				|| (!isNonInteractive()
 				&& System.currentTimeMillis() - anExistingEntry.getTimeOfEntry() > BETWEEN_PASS_TIME)) {
 			setFirstPass(true);
+//			System.err.println ("First pass:" +currentFullFileName );
 		} else {
+			if (anExistingEntry != null && (anExistingEntry.isAnnotation() || anExistingEntry.isEnum())) {
+				currentSTType = anExistingEntry;
+
+				return;
+			}
 
 			setFirstPass(false);
-			if (anOldFirstPass) {
+			if (anOldFirstPass ) {
+//				System.err.println ("Second pass:" +currentFullFileName );
+
+
+//			if (anOldFirstPass && !UNCCheck.doNotVisit) {
 				PostProcessingMain.doSecondPass(SymbolTableFactory.getOrCreateSymbolTable().getAllSTTypes());
 			}
 			currentSTType = anExistingEntry;
@@ -1042,7 +1111,12 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 				getFullTypeName(), // may be an inner class
 				currentStaticBlocks,
 				aMethods, aConstructors, interfaces, superClass, packageName,
-				isInterface, isGeneric, isElaboration, isEnum, isAnnotation,
+//				isInterface, 
+				typeType,
+				isGeneric, 
+				isElaboration, 
+//				isEnum, 
+//				isAnnotation,
 				structurePattern, propertyNames.toArray(dummyArray),
 				editablePropertyNames.toArray(dummyArray), 
 				typeTags().toArray(
@@ -1119,8 +1193,8 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	
     	boolean aFoundMatch = false;
-		String aClassOrInterface = isInterface?"Interface":
-									isEnum? "Enum":isAnnotation?"Annotation":"Class";
+//		String aClassOrInterface = isInterface?"Interface":
+//									isEnum? "Enum":isAnnotation?"Annotation":"Class";
 		
 		StringBuffer aTags = new StringBuffer();
 
@@ -1152,12 +1226,14 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     		
     	}
     	if (aFoundMatch) {
-			log(ast, aTags.toString(), aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+//			log(ast, aTags.toString(), aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+			log(ast, aTags.toString(), typeType, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
 
     	}
     	if (!aFoundMatch && logNoMatches) {
-    		
-			log(ast, "None", aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+			log(ast, "None", typeType, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+
+//			log(ast, "None", aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
 		}
 //    		
 //    		
@@ -1274,5 +1350,14 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
 
 	public static void setFirstPass(boolean isFirstPass) {
 		STBuilderCheck.isFirstPass = isFirstPass;
+	}
+	public static void reset() {
+		STBuilderCheck.classToConfiguredClass.clear();
+		STBuilderCheck.configurationFileFullName = null;
+		STBuilderCheck.configurationFileName = null;
+		STBuilderCheck.isFirstPass = true;
+		STBuilderCheck.lastSequenceNumberOfExpectedTypes = -1;
+		STBuilderCheck.latestInstance = null;
+		STBuilderCheck.nonInteractive = true;
 	}
 }

@@ -10,6 +10,7 @@ import java.util.Stack;
 import unc.cs.symbolTable.AnSTNameable;
 import unc.cs.symbolTable.STNameable;
 import unc.cs.symbolTable.STType;
+import unc.cs.symbolTable.TypeType;
 import unc.tools.checkstyle.ProjectSTBuilderHolder;
 
 import com.puppycrawl.tools.checkstyle.api.Check;
@@ -23,9 +24,13 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	protected String packageName;
 	private String fullTypeName;
 	protected String shortTypeName;
-
+	protected TypeType typeType = null;
 	
-	protected boolean isAnnotation = false;
+//	protected boolean isAnnotation = false;
+//	protected boolean isEnum = false;
+//	protected boolean isInterface = false;
+
+
 	protected List<DetailAST> annotationParameters = new ArrayList();
 
 	protected DetailAST typeAST;
@@ -54,6 +59,10 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 		super.resetProject();
 //		fullTypeName = null;
 		setFullTypeName(null);
+//		isAnnotation = false;
+//		isEnum = false;
+//		isInterface = false;
+		typeType = null;
 
 		shortTypeName = null;
 		typeAST = null;
@@ -90,8 +99,34 @@ public abstract class TypeVisitedCheck extends UNCCheck {
 	 public void leaveType(DetailAST ast) {
 		 leaveTypeMinimal(ast);
 	 }
+	 public void visitEnumDef(DetailAST anEnumDef) {
+			visitType(anEnumDef);
+//			propertyNames = emptyArrayList; //no properties
+//			isEnum = true;
+			typeType = TypeType.ENUM;
+			typeNameAST = getEnumNameAST(anEnumDef);
+			// shortTypeName = getEnumName(anEnumDef);
+			shortTypeName = typeNameAST.getText();
+//			fullTypeName = packageName + "." + shortTypeName;
+			setFullTypeName(packageName + "." + shortTypeName);
+			typeAST = anEnumDef;
+//			superClass = null;
+//			interfaces = emptyNameableArray;
+//			isInterface = false;
+			
+			typeNameable = new AnSTNameable(typeNameAST, getFullTypeName());
+
+			// shortTypeName = anEnumDef.getNextSibling().toString();
+			// DetailAST anEnumIdent =
+			// anEnumDef.getNextSibling().findFirstToken(TokenTypes.IDENT);
+			// if (anEnumIdent == null) {
+			// System.out.println("null enum ident");
+			// }
+			// shortTypeName = anEnumIdent.getText();
+		}
 		protected void visitAnnotationDef(DetailAST ast) {
-			isAnnotation = true;
+//			isAnnotation = true;
+			typeType = TypeType.ANNOTATION;
 			typeAST = ast;
 			typeNameAST = 
 					ast.getFirstChild()//Modifiers

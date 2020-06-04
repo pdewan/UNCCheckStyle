@@ -210,7 +210,13 @@ public class AnSTMethod extends AnAbstractSTMethod implements STMethod {
 		super.setDeclaringSTType(declaringSTType);
 		if (globalsAssignedMap != null) {
 			for (String aGlobal : globalsAssignedMap.keySet()) {
-				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+				STType aDeclaringSTType = getDeclaringSTType();
+				if (aDeclaringSTType == null) {
+					continue;
+				}
+//				STVariable anSTVariable = getDeclaringSTType().getDeclaredGlobalSTVariable(aGlobal);
+				STVariable anSTVariable = aDeclaringSTType.getDeclaredGlobalSTVariable(aGlobal);
+
 				if (anSTVariable != null) {
 					anSTVariable.getMethodsAssigning().add(this);
 					anSTVariable.getMethodsReferencing().add(this);
