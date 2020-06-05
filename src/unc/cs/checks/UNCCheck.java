@@ -127,8 +127,17 @@ public abstract class UNCCheck extends Check {
 						ProjectSTBuilderHolder.getSTBuilder().getChecksName()
 						);
 	}
-
+	protected static boolean manualProjectDirectory = false;
+	public static boolean isManualProjectDirectory() {
+		return manualProjectDirectory;
+	}
+	public static void setManualProjectDirectory(boolean manualProjectDirectory) {
+		UNCCheck.manualProjectDirectory = manualProjectDirectory;
+	}
 	protected boolean maybeSaveProjectDirectory(String aFileName) {
+		if (isManualProjectDirectory()) {
+			return false;
+		}
 		// if (projectDirectory != null)
 		// return;
 		int anIndex = aFileName.indexOf("src");

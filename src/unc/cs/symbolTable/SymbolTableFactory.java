@@ -9,7 +9,7 @@ import unc.tools.checkstyle.ProjectDirectoryHolder;
 public class SymbolTableFactory {
 	static Map<String, SymbolTable> projectToSymbolTable = new HashMap<>();
 	
-	public Map<String, SymbolTable> getProjectSymbolTables() {
+	public static Map<String, SymbolTable>  getProjectSymbolTables() {
 		return projectToSymbolTable;
 	}
 	
