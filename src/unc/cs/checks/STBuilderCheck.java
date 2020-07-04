@@ -1227,11 +1227,11 @@ public class STBuilderCheck extends ComprehensiveVisitCheck {
     	}
     	if (aFoundMatch) {
 //			log(ast, aTags.toString(), aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
-			log(ast, aTags.toString(), typeType, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+			log(ast, ast, aTags.toString(), typeType, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
 
     	}
     	if (!aFoundMatch && logNoMatches) {
-			log(ast, "None", typeType, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
+			log(ast, ast, "None", typeType, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
 
 //			log(ast, "None", aClassOrInterface, getStatisticsString(), getMethodsDeclaredString(), getVariablesDeclaredString(), getPropertiesDeclaredString(), computeAccessModifiersUsedString());
 		}
